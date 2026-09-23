@@ -8,7 +8,7 @@ BSC is preparing an evidence-based battery and engineering analysis system. The 
 
 Bounded data preparation has been completed for the accepted historical runs. The first database/retrieval/tool/Qwen build does not yet exist, and no current test result should be read as acceptance of that future build.
 
-The prepared coverage includes a large experimental corpus and a lithium-product increment, with known gaps retained. Team members do not need the raw corpus to draft tests or review user-facing requirements.
+The raw-source archive upload is complete: 300 original objects and 18 lithium-supplement captures, totalling 112.48 GB (112,476,007,760 bytes), are stored through Git LFS. This gives the team direct access to experimental data and lithium-product references for evidence-based test design. Known coverage gaps remain; upload completion refers to the registered collection.
 
 ## Start here
 
@@ -20,7 +20,7 @@ The prepared coverage includes a large experimental corpus and a lithium-product
 
 ## Repository contents
 
-A clone contains authored code, processing scripts, contracts, configuration examples, plans, reports and source catalogues. The original source collection and lithium supplement are stored under `data/raw/` using Git LFS. A skip-smudge clone holds pointers until a contributor explicitly fetches selected files; test authors need not download the collection. The repository still excludes extracted full text, prepared/experimental derivatives, secrets and private evaluation answers. See [the data guide](data/README.md) for the source layout and selective retrieval.
+A clone contains authored code, processing scripts, contracts, configuration examples, plans, reports and source catalogues. The original source collection and lithium supplement are stored under `data/raw/` using Git LFS. A skip-smudge clone holds pointers until a contributor fetches selected files; teammates can retrieve relevant sources without downloading the full collection. The repository still excludes extracted full text, prepared/experimental derivatives, secrets and private evaluation answers. See [the data guide](data/README.md) for the source layout and selective retrieval.
 
 The owner/build stream may use [the data map](data/README.md) and the path registry as build background. They are not required for test drafting or an automatic runtime interface.
 

@@ -10,9 +10,9 @@ Read [the team guide](docs/TEAM_PROJECT_GUIDE.md) and [the project instructions]
 
 ## Your own checkout
 
-Use relative paths and submit reviewable changes through the repository. No task requires access to the project owner's computer. Describe missing fixtures or evidence so the owner can provide the relevant inputs or interface later.
+Use relative paths and submit reviewable changes through the repository. No task requires access to the project owner's computer. For test design, select relevant archived sources yourself and record their source ID, path, citation and status. Describe evidence still missing so the owner can resolve it.
 
-Original source files are available in the approved private raw-source archive and can be retrieved selectively through Git LFS under `data/raw/`; no task requires downloading the full collection. See [the data guide](data/README.md). Repository access alone does not approve a source for retrieval context, training or server transfer.
+Original source files are available in the approved private raw-source archive and can be retrieved selectively through Git LFS under `data/raw/`; test drafting does not require downloading or reviewing the full collection. See [the data guide](data/README.md). Repository access alone does not approve a source for retrieval context, training or server transfer.
 
 AI can draft and implement most of a task. A human reviews evidence, resolves uncertain answers and accepts results. Agree task-specific criteria during collaboration; no universal threshold or predefined kickoff checklist applies.
 

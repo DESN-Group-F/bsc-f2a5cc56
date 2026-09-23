@@ -36,7 +36,7 @@ Human team members own contributions and reviews. AI may assist with implementat
 
 ## Data and test work
 
-The raw corpus is available by selective LFS retrieval and is not needed to draft tests. Test authors work from user requirements, observable behaviour, approved summaries and evidence supplied for the case. When a first build exists, tests should use its documented interfaces.
+The raw archive upload is complete. Test authors can fetch selected source files through LFS to support cases and expected answers, alongside requirements, observable behaviour and approved summaries. Keep each source ID, repository path, citation and status with the test; a failed or excluded capture is not usable evidence. When a first build exists, tests should also use its documented interfaces.
 
 The local data map and path registry are for the owner/build stream. Historical scripts may retain old machine paths; team instructions should not depend on them. Any later database, retrieval or training input must be selected through the applicable source-use decision and a purpose-specific manifest rather than a whole directory.
 

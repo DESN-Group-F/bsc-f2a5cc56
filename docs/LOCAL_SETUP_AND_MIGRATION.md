@@ -4,9 +4,9 @@
 
 Clone the private repository wherever convenient. Read `docs/TEAM_PROJECT_GUIDE.md` and `evaluation/README.md`, then work on the agreed task using relative paths.
 
-You do not need to download the source collection or access the owner's drive layout, database or model endpoint to draft cases. Use supplied fixtures or explicitly stated inputs; record missing evidence for the owner. AI may draft questions and answers; people review evidence and accept the work.
+To draft cases, fetch relevant archived sources selectively from your own checkout when evidence is needed. Keep their source ID, path, citation and status with the case. A full collection download, access to the owner's drive, database or model endpoint is unnecessary for test drafting. Record evidence still missing for the owner to resolve. AI may draft questions and answers; people review evidence and accept the work.
 
-Submit reviewable changes through GitHub. Keep hidden final-acceptance answers outside the shared repository. No source-data download, environment installation or server connection is required by this guide. If a task needs an original, follow the selective LFS instructions in `data/README.md`.
+Submit reviewable changes through GitHub. Keep hidden final-acceptance answers outside the shared repository. Follow the selective LFS instructions in `data/README.md` when a task needs an original; no server connection is required for drafting.
 
 ## Project owner: data and database
 

@@ -51,7 +51,7 @@ Test drafting can proceed alongside the owner's build because it starts from exp
 
 These details are agreed during collaboration. The project does not impose one universal gate, numeric threshold, kickoff agenda or permanent individual assignment for every task.
 
-No team member needs to inspect the approximately 112 GB source corpus record by record. The originals are shared under `data/raw/` through selective Git LFS retrieval, but test authors can work from requirements, approved summaries, metadata, representative evidence supplied for the task and later the running interface.
+Test authors can select relevant originals under `data/raw/` through Git LFS and use them to ground cases and expected answers. Record the source ID, repository path, citation and status, and check applicability before treating a capture as evidence. No one needs to download or inspect the approximately 112 GB collection record by record for test drafting; requirements, approved summaries and later the running interface also remain useful inputs.
 
 ## Evidence and evaluation discipline
 
@@ -72,7 +72,7 @@ AI is an execution aid for implementation, research organisation, test drafting 
 
 ## Collaboration
 
-Each member works from their own checkout, creates a focused branch and submits changes through a pull request. Use repository-relative paths in team instructions and reviews. Downloading raw source files and configuring owner-only prepared-data paths are not required for drafting tests. Repository presence grants no additional source-use rights.
+Each member works from their own checkout, creates a focused branch and submits changes through a pull request. Use repository-relative paths in team instructions and reviews. Test authors may retrieve selected archived sources without configuring owner-only prepared-data paths. Repository presence grants no additional source-use rights.
 
 Start with:
 
