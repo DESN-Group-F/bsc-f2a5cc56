@@ -28,7 +28,7 @@ def check_envelope_consistency(envelope:dict) -> list[str]:
 
 def validate()->dict:
     errors=[]
-    required=['README.md','IMPLEMENTATION_PLAN.md','AGENTS.md','CODEX_START.md','docs/ARCHITECTURE.md','docs/RAG_AND_DATA.md','docs/CONTRACTS_AND_API.md','docs/STATE_TOOLS_AND_PREDICTION.md','docs/EVALUATION_AND_TRAINING_LATER.md','docs/LOCAL_SETUP_AND_MIGRATION.md','docs/SOURCES_AND_DECISIONS.md','docs/OPEN_DECISIONS.md']
+    required=['README.md','IMPLEMENTATION_PLAN.md','AGENTS.md','PROJECT_START.md','docs/ARCHITECTURE.md','docs/RAG_AND_DATA.md','docs/CONTRACTS_AND_API.md','docs/STATE_TOOLS_AND_PREDICTION.md','docs/EVALUATION_AND_TRAINING_LATER.md','docs/LOCAL_SETUP_AND_MIGRATION.md','docs/SOURCES_AND_DECISIONS.md','docs/OPEN_DECISIONS.md']
     for f in required:
         if not (ROOT/f).is_file():errors.append('MISSING '+f)
     schemas={}

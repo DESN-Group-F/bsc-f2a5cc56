@@ -1,23 +1,19 @@
 {
-  "version": "0.3",
-  "profile": "LOCAL_DATA_PREPARATION_ONLY",
+  "version": "0.3.3",
+  "profile": "LOCAL_CONTROLLED_DATA_PROCESSING",
   "execution_policy_ref": "config/execution_policy.json",
-  "current_stage": "LOCAL_DATA_PREPARATION_ONLY",
+  "current_stage": "LOCAL_CONTROLLED_DATA_PROCESSING",
   "t00_enabled": false,
   "project_test_execution_enabled": false,
   "model_inference_enabled": false,
   "server_connection_enabled": false,
   "source_transfer_enabled": false,
-  "application_home": "E:\\desn 2000\\bsc",
-  "source_roots": [
-    "E:\\desn 2000\\data"
-  ],
-  "evaluation_roots": [
-    "E:\\desn 2000\\Qwen original physics and chem ability test"
-  ],
+  "application_home": ".",
+  "source_roots": [],
+  "evaluation_roots": [],
   "source_allowlist_manifest": null,
   "workspace_path": "workspace",
-  "database_url": "sqlite:///workspace/db/bsc.sqlite3",
+  "database_url": null,
   "provider": {
     "type": "UNCONFIGURED",
     "base_url": null,
@@ -36,22 +32,20 @@
     "session_token_env": "BSC_SESSION_TOKEN"
   },
   "retrieval": {
-    "sparse": "sqlite_fts5",
-    "dense": "numpy_exact",
-    "embedding_model_candidate": "Qwen/Qwen3-Embedding-0.6B",
+    "method_selection_status": "PENDING_OWNER_ASSESSMENT",
+    "sparse": null,
+    "dense": null,
+    "embedding_model_candidate": null,
     "embedding_revision": null,
     "embedding_enabled": false,
-    "reranker_model_candidate": "Qwen/Qwen3-Reranker-0.6B",
+    "reranker_model_candidate": null,
     "reranker_enabled": false,
-    "rrf_k": 60,
-    "sparse_top_k": 20,
-    "dense_top_k": 20,
-    "rerank_top_k": 12,
-    "max_evidence_chunks": 6,
-    "chunk_target_tokens": [
-      400,
-      800
-    ]
+    "rrf_k": null,
+    "sparse_top_k": null,
+    "dense_top_k": null,
+    "rerank_top_k": null,
+    "max_evidence_chunks": null,
+    "chunk_target_tokens": null
   },
   "harness": {
     "max_tool_rounds": 8,
@@ -83,5 +77,10 @@
   "device_control_enabled": false,
   "training_enabled": false,
   "automatic_seed_generation_enabled": false,
-  "online_feedback_training_enabled": false
+  "online_feedback_training_enabled": false,
+  "configuration_notes": [
+    "Owner/runtime template only; test authors do not need source or private-evaluation access.",
+    "Paths are local to each checkout. Real settings belong in ignored configuration.",
+    "Database and retrieval methods are unconfigured until the owner's assessment; older candidates remain only in historical plans and Git history."
+  ]
 }

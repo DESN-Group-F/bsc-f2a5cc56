@@ -4,7 +4,7 @@
   "server_transfer_requires_explicit_manifest": true,
   "raw_source_root_upload_forbidden": true,
   "server_transfer_currently_enabled": false,
-  "local_source_workspace": "E:/desn 2000/data/battery_data_workspace_v0_3",
+  "local_source_workspace": null,
   "local_source_workspace_read_only": true,
   "local_metadata_routing_enabled": true,
   "local_content_preparation_requires_explicit_purpose_evidence": true,
@@ -27,5 +27,6 @@
   "withdrawal_blocks_context_immediately": true,
   "incident_actions_are_not_procedures": true,
   "research_use_is_not_local_approval": true,
-  "test_inputs_and_answers_must_never_be_indexed": true
+  "test_inputs_and_answers_must_never_be_indexed": true,
+  "local_source_workspace_config_ref": "config/data_locations.json#source_workspace"
 }
