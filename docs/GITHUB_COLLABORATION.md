@@ -2,49 +2,47 @@
 
 Repository: https://github.com/qwerty1218171-creator/bsc (private).
 
-This private repository is the shared home for authored project material. Git is used for code and reviewable project records; it is not the data store for the source workspace or prepared payloads.
+Each member works in their own checkout, creates a focused branch and submits changes through a pull request to `main`. Use repository-relative paths in issues, documentation and reviews so instructions work across machines.
 
-## Repository scope
+## What belongs in the repository
 
 Include:
 
-- authored source code and processing scripts, including `data_preparation/**/*.py`;
-- contracts, schemas, configuration examples, task plans and backlog definitions;
-- concise reports, decisions and validation summaries placed in the reviewed `docs/` or `reports/` areas and containing no source text;
-- final PDFs under `reports/**/output/pdf/`;
-- the lean catalogues in `data/catalogue/`.
+- authored source code and processing scripts;
+- contracts, schemas, configuration examples, task definitions and reviewed documentation;
+- test specifications and public fixtures that do not reveal held-out answers;
+- concise reviewed reports and intentional final PDFs;
+- metadata-only catalogues approved for collaboration.
 
 Exclude:
 
-- the original workspace at `E:/desn 2000/data/battery_data_workspace_v0_3`;
-- lithium source captures under the accepted coverage run's `products/sources/`, `background/sources/` and `audits/quarantine/` directories;
-- all historical `data_preparation/` outputs by default, including extracted text, facts, audit excerpts, large experimental profiles or subsets, native binary data and generated indexes; only reviewed authored `*.py` scripts are excepted;
+- the owner's raw corpus and lithium source captures;
+- extracted full text, historical run payloads, large experimental data and generated dataset indexes;
 - quarantined or copy-controlled material;
-- virtual environments, caches, temporary renders and report build intermediates;
-- machine-local configuration, credentials, tokens and private evaluation answers.
+- virtual environments, caches and temporary renders;
+- machine-local configuration, credentials and tokens;
+- private evaluation prompts, expected answers, scoring notes or final-acceptance evidence.
 
-Git LFS is not used. A file being small enough for Git does not make it eligible. Source permission, local processing, RAG admission, training, redistribution and server transfer remain separate decisions.
+Git LFS is not used. File size alone does not decide eligibility. Source access, local processing, RAG admission, training, redistribution and server transfer remain separate decisions.
 
-## Local data setup
+## Team workflow
 
-1. Clone the private repository.
-2. Copy `config/data_locations.example.json` to `config/data_locations.json` and record paths for the local machine. The destination file is ignored by Git. This is currently a path registry only: historical processing scripts retain their original machine/run paths and do not automatically load it.
-3. Obtain source or prepared data through the separately approved team channel. A clone does not download or reconstruct local data.
-4. Use `data/catalogue/source_objects.jsonl` to match the 300 original objects by source ID, relative path, registered hash and byte count.
-5. Use `data/catalogue/lithium_supplement_sources.jsonl` to locate the later lithium source captures. Its failed and quarantined entries remain excluded from use.
+1. Pull the latest `main` into your own checkout.
+2. Create a short-lived branch for one bounded change.
+3. Keep commits focused and describe the user-visible intent, evidence used, checks performed and remaining uncertainty.
+4. Open a pull request for human review before merging.
+5. Resolve review comments without adding local data merely to reproduce the owner's environment.
 
-The accepted prepared artifacts remain local under `data_preparation/`. Any later database or RAG build must select inputs through a purpose-specific allowlist and the applicable source-action decisions; do not ingest a directory wholesale.
+Human team members own contributions and reviews. AI may assist with implementation, drafting and analysis, but it is not listed as a project owner, assignee or byline.
 
-## Collaboration workflow
+## Data and test work
 
-- Keep `main` as the reviewed integration branch and create a short-lived branch for each bounded change.
-- Keep commits focused and describe changed files, checks run, and any unresolved limitation.
-- Review changes through a pull request before merging to `main`.
-- Do not add generated payloads merely to make another machine reproduce a local run. Share approved data separately and verify it against the catalogue hashes.
-- Never commit a real `.env`, `config/data_locations.json`, server configuration, secret-bearing manifest or private oracle.
+The raw corpus remains with the project owner and is not needed to draft tests. Test authors work from user requirements, observable behaviour, approved summaries and evidence supplied for the case. When a first build exists, tests should use its documented interfaces rather than direct access to the owner's folders.
 
-This repository setup does not start T00, a database, RAG, Qwen, model evaluation or server work. Those actions remain controlled by `docs/LOCAL_SERVER_EXECUTION_BOUNDARY.md` and `config/execution_policy.json`.
+The local data map and path registry are for the owner/build stream. Historical scripts may retain old machine paths; team instructions should not depend on them. Any later database, retrieval or training input must be selected through the applicable source-use decision and a purpose-specific manifest rather than a whole directory.
 
-## Pre-commit review
+Keep held-out evaluation material separate from normal retrieval and training inputs. Public test structure may be reviewed in Git; private expected answers and final acceptance evidence stay outside the ordinary build context.
 
-Before each commit, review the proposed file list for unexpected binaries, source captures, extracted text, historical run outputs, personal machine paths, credentials or private answers. Confirm that any data catalogue contains metadata only and that final report PDFs are intentional.
+## Before merging
+
+Review the changed-file list for unexpected binaries, source captures, extracted text, historical payloads, personal paths, credentials or private answers. Confirm that test changes describe status honestly: drafted cases are not executed tests, mock output is not Qwen output, and no build is called accepted without its actual review evidence.

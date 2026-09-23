@@ -1,22 +1,24 @@
 # Battery Safety Copilot · 模型核心实施方案
 ## v0.3.2｜本地数据准备 + 服务器测试／微调｜Qwen + RAG + 最小状态库 + 分析工具 + 运行／评测 Harness
 
+> **Historical technical proposal.** Retained as optional design background. Current responsibilities, sequencing and task-specific acceptance follow [the team guide](docs/TEAM_PROJECT_GUIDE.md) and [project instructions](AGENTS.md). Start from [PROJECT_START.md](PROJECT_START.md). Execution and source-use restrictions remain governed by [the execution boundary](docs/LOCAL_SERVER_EXECUTION_BOUNDARY.md) and [execution policy](config/execution_policy.json). This older proposal does not assign work, choose a platform, impose a project-wide gate or waive source restrictions. Owner-specific locations are in [the data locator](data/README.md).
+
 **日期：2026-09-19**  
-**项目工作区：`E:\desn 2000\bsc`（活动副本；原 v0.3 交接包保留）**  
-**交付对象：项目负责人、Codex；当前阶段：LOCAL_DATA_PREPARATION_ONLY**  
-**状态：本地可做受控source routing与portable seed准备；T00未启动；所有项目测试与任何微调由服务器执行。**
+**项目工作区：当前 checkout（原 v0.3 交接包保留）**  
+**历史交付对象：项目负责人和实施团队；记录阶段：LOCAL_DATA_PREPARATION_ONLY**  
+**历史状态：本地可做受控source routing与portable seed准备；T00未启动；所有项目测试与任何微调由服务器执行。**
 
 > 产品目标：围绕电池全生命周期，提供有技术内容的理解、诊断辅助、条件性风险预测、方案分析与工作支持；在有规范、规范发生偏差、没有本地专项规范、没有直接参考案例四类情形下，都有恰当的处理路径。不是只有审批问答，也不是自称能够确定任何电池的内部状态。
 >
-> 当前顺序：**保留已有材料 → 本地完成用途分流、可移植数据seed与服务器交接准备 → 用户确认内容加工/传输门禁 → 服务器执行T00、重建数据库/RAG并测试 → 根据服务器失败证据决定是否微调。** 不提前启动T00，不在本地运行项目测试，不提前执行固定数量的种子生产或 SFT/CPPO/PPO/SimPO 训练流水线。
+> 当时顺序：**保留已有材料 → 本地完成用途分流、可移植数据seed与服务器交接准备 → 用户确认内容加工/传输门禁 → 服务器执行T00、重建数据库/RAG并测试 → 根据服务器失败证据决定是否微调。** 这是历史计划，不自动启动任何LP/T任务。
 
-### 0.1 当前环境决策（ADR-EXEC-001）
+### 0.1 历史环境决策（ADR-EXEC-001）
 
-`docs/LOCAL_SERVER_EXECUTION_BOUNDARY.md`是当前执行环境的最高优先级决定。本地允许文档、源码、合同、配置、manifest、测试定义、元数据分流及用途许可明确对象的portable seed准备；不允许执行T00、项目测试、模型probe/推理、目标RAG/数据库入库、查询验证、应用启动或微调。所有可执行测试与任何未来微调均为服务器专属。该决定改变执行地点和当前阶段，不改变本方案的技术、安全、来源、模型真实性与评测隔离要求。
+`docs/LOCAL_SERVER_EXECUTION_BOUNDARY.md`是该记录阶段的执行环境决定。当时本地允许文档、源码、合同、配置、manifest、测试定义、元数据分流及用途许可明确对象的portable seed准备，并将T00、项目测试、模型probe/推理、目标RAG/数据库入库、查询验证、应用启动或微调留给后续阶段。这些限制作为历史证据保留；当前执行权限由`AGENTS.md`决定。
 
 ## 0. 依据、优先级与本次变更
 
-本文件是现阶段的统一实施基线，替代旧计划中与本轮范围冲突的安排，但不覆盖历史文件。依据按以下类别标识：
+本文件是当时的实施基线，作为历史设计证据保留，不覆盖历史文件，也不规定当前团队队列。依据按以下类别标识：
 
 - **[U] 用户最新确认**：模型区块优先；已有资料放在 `data`；已有底模物化与理论工程小测试；完整业务后台仅保留接口；先做 RAG/数据库/工具/harness，再据测试决定训练；标准、偏差、无本地标准和无直接案例均需处理。
 - **[U-EXEC] 用户最新环境决定**：源数据在本地工作区；当前允许本地完成受控数据准备，本阶段不启动T00；目标数据库/RAG测试和微调必须在服务器执行。
@@ -26,7 +28,7 @@
 - **[D] 本版实施设计**：技术栈、目录、字段、接口、阶段、预算和测试规格；不是学校制度或已有实测结果。
 - **[W] 外部工程参考**：只用于核实软件接口与技术方法；完整地址及核查限制见 `docs/SOURCES_AND_DECISIONS.md`。
 
-出现冲突时，当前项目需求以[U]和本方案的明确变更为准；法律、资料许可或学校有效制度不是由项目说明覆盖。未知事实记录在 `docs/OPEN_DECISIONS.md`，不能由 Codex 自动补成批准。
+出现冲突时，以当前[TEAM_PROJECT_GUIDE.md](docs/TEAM_PROJECT_GUIDE.md)、[AGENTS.md](AGENTS.md)及明确的项目决策为准；法律、资料许可或学校有效制度不是由项目说明覆盖。未知事实记录在 `docs/OPEN_DECISIONS.md`，不得自动补成批准。
 
 ### 已改变的旧安排
 
@@ -120,20 +122,14 @@ Embedding/Reranker不是必须再用27B底模来做。向量服务可在CPU或�
 
 ## 4. 目录、历史资料与当前落盘规则
 
-`E:\desn 2000`继续作为总工作区，已有目录保持原状。当前活动副本是`E:\desn 2000\bsc`，原v0.3交接包不覆盖。服务器工作目录另行配置，不能把本地绝对路径写死为服务器路径。
+每位团队成员使用自己的当前 checkout；原v0.3交接包不覆盖。物理数据位置由负责人在工作站配置，统一说明见[data/README.md](data/README.md)。服务器工作目录另行配置，不能把本地绝对路径写死为服务器路径。
 
 ```text
-E:\desn 2000\
-├─ data\                                  已收录原件，默认只读
-├─ Battery_Safety_Data_Package_v0_2\        历史规范包，非安全知识库
-├─ Qwen original physics and chem ability test\
-│                                         已用初测，排除日常RAG
-├─ PROJECT_PLAN.md / DATA_BLUEPRINT.md / 课程文件
-└─ bsc\                                   本轮实施仓库
-   ├─ AGENTS.md / CODEX_START.md / IMPLEMENTATION_PLAN.md
+current checkout/
+   ├─ AGENTS.md / PROJECT_START.md / IMPLEMENTATION_PLAN.md
    ├─ docs\ / contracts\ / config\ / backlog\
-   ├─ apps\api\                           Codex后续实现
-   ├─ apps\web\                           Codex后续实现
+   ├─ apps\api\                           团队后续实现
+   ├─ apps\web\                           团队后续实现
    ├─ src\bsc_core\                       核心逻辑与适配器
    ├─ evals\inputs\                       评测输入；不作RAG来源
    ├─ evals\private_expected\             评分答案；不提供给模型
@@ -143,7 +139,7 @@ E:\desn 2000\
    └─ research\training_decisions\        仅未来训练决策记录
 ```
 
-当前只使用明确源工作区`E:\desn 2000\data\battery_data_workspace_v0_3`及其冻结审计作为只读输入，不重新无差别扫描整个data或约112GB历史快照。允许基于现有审计做元数据分流、权限sidecar和pilot候选；正文加工必须有精确用途依据。不默认读取测试答案，不无必要解包，不跟随symlink/junction。服务器只接收allowlist中的文件，不接收整个本地根目录。
+当时使用负责人配置的源工作区（见[data/README.md](data/README.md)）及其冻结审计作为只读输入，不重新无差别扫描整个data或约112GB历史快照。允许基于现有审计做元数据分流、权限sidecar和pilot候选；正文加工必须有精确用途依据。不默认读取测试答案，不无必要解包，不跟随symlink/junction。服务器只接收allowlist中的文件，不接收整个本地根目录。
 
 本包继承`inventory_local.py`，但CR-DATA-ROUTE-001优先复用现有EXT-AUDIT-01清单，不重新运行全量inventory。它不是内容解析、许可审核或索引服务。所有新manifest和派生产物写在bsc的`data_preparation`目录，不覆盖源工作区报告；服务器收到批准bundle后再核对传输快照。
 
@@ -308,14 +304,14 @@ SFT / CPPO / PPO / SimPO是未来候选，不是固定串行四阶段。CPPO具�
 | P3 服务器评测与加固 | B0–B3、oracle诊断、回归与安全测试、失败归因、成本 | 可复现服务器基线与按组件划分的改进清单 |
 | P4 服务器训练决策，不自动训练 | 用服务器失败证据决定数据、方法、预算和基准 | 训练研究决定书；没有必要时继续保留底模 |
 
-按阶段而非虚构周数排期。当前只做LP；细分任务位于`backlog/local_preparation_tasks.json`。T00–T21继续位于`backlog/tasks.json`并保持NOT_STARTED，直到服务器门禁获批。
+按阶段而非虚构周数排期。当时只计划LP；细分任务位于`backlog/local_preparation_tasks.json`，T00–T21位于`backlog/tasks.json`。这些状态仅作历史证据，不是当前队列。
 
-## 13. Codex执行与未决事项
+## 13. 历史执行假设与未决事项
 
-从`CODEX_START.md`和`docs/LOCAL_SERVER_EXECUTION_BOUNDARY.md`开始。先完成LP文件准备；当前不运行交接校验或只读盘点，不连接本地模型或服务器。只有服务器、路径、权限、传输manifest和模型接口得到用户确认后，才另行启动T00。
+当时的执行假设如下；当前团队应从[PROJECT_START.md](PROJECT_START.md)、[TEAM_PROJECT_GUIDE.md](docs/TEAM_PROJECT_GUIDE.md)和[AGENTS.md](AGENTS.md)开始。下述LP/T编号及门禁仅作历史规划证据，不会自动启动任务或覆盖当前责任和验收安排。
 
 默认不确定项：服务器访问方式/OS/路径、GPU/显存/CUDA、模型服务方式和地址、源文件逐用途解析/派生/传输许可、真实初测记录、独立领域审核支持、站点应急卡、CPPO含义。非关键未知不阻止元数据分流和文件准备，涉及正文加工、连接、传输、安装、费用、运行、训练、权限或现场声明的未知保持阻断。
 
 本轮交付中不附第三方全文、模型权重或训练集。配置和情景例子是本项目设计；程序化检查只说明交接包一致性和辅助脚本行为，不是Qwen能力测试。来源与新旧差异见`docs/SOURCES_AND_DECISIONS.md`。
 
-**当前完成标准：本地形成有血缘、有用途状态的source routing、批准范围内的portable seed候选、隔离manifest与服务器执行矩阵，状态为READY_FOR_SERVER_HANDOFF_REVIEW；T00仍未开始。最终数据库/RAG、模型核心和任何训练收益必须由服务器真实运行证明。**
+**历史完成标准：本地形成有血缘、有用途状态的source routing、批准范围内的portable seed候选、隔离manifest与服务器执行矩阵，状态为READY_FOR_SERVER_HANDOFF_REVIEW；T00仍未开始。该标准不作为当前全局验收门禁。**

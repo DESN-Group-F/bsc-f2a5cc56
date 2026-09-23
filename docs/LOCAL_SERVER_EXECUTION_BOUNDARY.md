@@ -1,99 +1,45 @@
-# 本地准备／服务器执行边界
+# Preparation and runtime execution scope
 
-**决策编号：ADR-EXEC-001**  
-**版本：0.3.3**  
-**状态：ACTIVE**  
-**生效日期：2026-09-19**
+Decision: ADR-EXEC-001, v0.3.3, with the 2026-09-23 collaboration clarification. The execution stage remains `LOCAL_CONTROLLED_DATA_PROCESSING`. This document governs execution environments; it sets no universal acceptance threshold and does not prevent parallel test preparation.
 
-## 1. 决策
+## Work in contributors' own checkouts
 
-当前阶段调整为 `LOCAL_CONTROLLED_DATA_PROCESSING`。Phase A已经收口并作为固定输入复用；本地开始对已有依据覆盖的对象进行正文、表格、字段、参数和限定实验数据的实际加工，并运行与这些转换直接相关的低成本正确性检查。
+Contributors may write and review English documents, test questions, reference answers, case inputs, implementation drafts, schemas, configuration examples and runner drafts within their assigned tasks. AI may perform detailed drafting; people review and accept the work.
 
-本阶段仍不启动 T00，不执行Qwen推理、模型性能评测、微调、大规模embedding/reranker、正式目标RAG、权威业务数据库或生产服务部署，也不连接或上传服务器。本地可执行解析/转换单元测试、字段合同检查、数值一致性检查及临时文件/临时测试库查询；结果必须注明范围，不得冒充服务器验收、模型成绩或现场安全验证。
+Test authors do not need the owner's drive, full source collection, running database or Qwen endpoint. Design cases around intended behaviour and identify fixtures/interfaces for the owner to provide later.
 
-本决策覆盖 v0.3 中关于“立即在本机执行 P0/T00、模型 probe、应用测试或评测”的安排，但不改变以下要求：原件保护、来源许可、评测隔离、安全边界、Qwen 身份真实性、Mock 与真实结果分离、训练须由失败证据驱动。
+The data/database workstream belongs to the project owner. Authorised work may include source inspection, extraction, cleaning, conversion, bounded experimental analysis and related checks. Existing source/version/action evidence governs use. Originals remain read-only; reuse manifests instead of repeating collection-wide inventories or hash audits.
 
-## 2. 当前本地阶段允许与禁止的工作
+Parsing/conversion tests, field-contract checks, numerical-consistency checks and queries against temporary files/databases may run when relevant to an authorised processing task. They establish only that scope, not deployment readiness, model scores, system acceptance or field safety.
 
-允许：
+## Actions not started by onboarding or test drafting
 
-- 修改设计文档、接口合同、JSON Schema、配置样例和 backlog。
-- 编写应用源码、迁移脚本、服务器启动脚本和测试 fixture，但全部标记为 `PREPARED_LOCALLY_UNVERIFIED`。
-- 准备依赖锁定文件、容器或环境描述、数据传输 manifest 和服务器运行清单。
-- 只读访问明确登记的源工作区和审计台账，执行元数据分流、版本／hash／血缘整理和权限缺口登记。
-- 在用途许可明确的对象上准备可移植正文片段、规格seed、实验子集及数据库导入seed；原件保持不变，派生产物写入bsc。
-- 对允许相应用途的资料读取正文、表格和字段，执行清洗、格式转换、限定子集读取与必要计算；已有合格提取件优先复用。
-- 编写并执行确定性的处理程序，校准新的资料结构后继续处理同类合格批次；系统性错误只暂停受影响批次。
-- 执行解析/转换单元测试、字段合同检查、数值一致性检查及临时文件或临时SQLite查询，并按实际范围报告PASS/FAIL。
-- 做必要来源核对、关键内容人工审阅、异常批次复核和变更对象哈希检查；不重复全量审计。
-- 优先复用依赖；必要的轻量CPU解析依赖可安装于项目隔离环境并记录版本。
+T00, production/target database or RAG deployment, Qwen inference, model-performance evaluation, large embedding/reranking jobs, production services, server access and fine-tuning do not start automatically. Do not run inherited handoff/system-test commands merely because they occur in an older plan.
 
-当前禁止：
+Do not scan unspecified directories, inspect historical private answer keys, unpack all archives, execute source-document code/macros, download models, alter system environments or upload the source collection as part of preparation.
 
-- 启动 T00，扫描整个`E:\desn 2000\data`或任何未明确登记的目录，读取旧模型测试题或答案。
-- 启动本地 Qwen、探测本地模型端点、执行模型推理或性能基准。
-- 执行Qwen/模型推理、模型性能评测、正式检索验收、生产UI/端到端验收或评测 harness。
-- 运行生产应用、正式数据库迁移、目标权威数据库／RAG入库、大规模embedding或reranker。
-- 下载模型、修改系统环境、搭建大型服务、连接服务器、上传资料或发送源内容。
-- 无目标扩大下载、扫描未登记目录、全量解压全部实验档案，或执行下载资料中的代码、宏和不可信序列化内容。
-- 生成训练数据或运行 SFT、CPPO、PPO、SimPO 等微调任务。
+Private GitHub collaboration is authorised for reviewed code, authored documents/reports, configuration examples and metadata-only catalogues. Raw sources, extracted text, experimental/derived payloads, private keys/answers and machine secrets remain excluded. Git permission does not authorise transfer of data to a runtime or model service.
 
-## 3. 环境职责
+## Before a runtime task
 
-|环境|职责|不可声称|
-|---|---|---|
-|本地活动目录|作者工作区；实际加工获准内容，运行限定的数据处理正确性检查，准备代码、配置、清单、真实数据产物与服务器交接包|不得把局部转换检查声称为服务器验收、Qwen成绩、正式RAG/数据库可用或现场安全确认|
-|服务器|依赖安装、环境 probe、数据接收核验、数据库迁移、解析／检索、应用与模型运行、全部测试和未来微调|没有原始日志与 run manifest 时不得声称通过|
-|本地源工作区|作为明确范围的只读输入；内容加工按具体动作和输出用途核对既有依据；未来只按批准manifest选择传输|文件存在或已解析不等于允许新解析、上传、RAG或训练|
+The owner will scope the first database-plus-Qwen execution separately. Identify its environment/workspace, dependencies, actual model service, selected inputs, access and cost permissions, secrets and result location. Any source transfer uses a selected manifest rather than a whole-folder upload.
 
-服务器是项目测试和微调的唯一权威执行环境。服务器执行结果须回传到本地项目的 `outputs/server_runs/` 或后续约定目录，连同原始日志、环境信息、输入／输出哈希和运行状态保存。
+These are operational prerequisites for execution, not a team-wide quality gate. Draft questions before the runtime is configured. Agree interfaces, measurements and acceptance criteria for each task; there is no requirement here to finish a universal checklist before any Qwen test.
 
-## 4. T00 启动门禁
+The server remains the designated environment for authoritative system/model/deployment evaluation and future training. Local document reviews and parser checks are not those runs. Record future environment changes when actually decided.
 
-T00 保持 `NOT_STARTED`。只有以下事项全部明确并经用户确认后，才可另行启动：
+## Evidence and separation
 
-1. 服务器访问方式、操作系统、工作目录、Python/Node、GPU/CUDA、存储和联网规则。
-2. 服务器上的实际 Qwen 服务或权重位置，以及目标 `served_model_id`、revision、量化、模板和有效推理参数的核验方法。
-3. 明确批准的数据传输范围；使用哈希和 source ID 的 allowlist，不上传整个本地目录。
-4. RAG 资料、公开评测输入、私有 oracle、运行日志和未来训练候选数据具有独立目录及独立权限。
-5. secret 注入方式和日志脱敏方式；任何 secret 不进入代码、配置样例、prompt 或交接包。
-6. 服务器依赖安装、模型下载、外部网络、计算预算和昂贵作业的授权边界。
-7. 结果回传目录、命名、哈希、保留期限和失败记录规则。
+- Separate source data, case uploads, development tests, held-out acceptance material, logs and later training data. Model-visible test inputs are distinct from hidden answer keys.
+- Keep evaluation material out of ordinary retrieval; keep held-out acceptance material out of debugging and training. Directory names alone do not provide access isolation.
+- Record actual inputs, configuration, outputs and failures when execution occurs. Planned tests remain unrun; mocks do not demonstrate Qwen performance.
+- Agree criteria before judging the relevant task's results. Leave unresolved criteria explicit; no shared passing score, fixed question count or global threshold is set now.
+- Training methods/exercises follow analysed test results. Training execution needs a defined method, permitted dataset, environment, budget, evaluation arrangement and owner authorisation.
 
-门禁未满足时，只能继续本地文件与数据准备，不能把“已准备”升级成“已实现”或“已验证”。
+## Paths and configuration
 
-## 5. 服务器数据隔离
+Team paths are relative to each contributor's checkout. Owner-specific source paths belong in ignored local configuration; the physical locator is documented once in `data/README.md`. Shared examples have no active source or private-evaluation path by default.
 
-服务器交接至少使用五类互不混用的输入：
+`config/data_locations.example.json` is a path registry template, not an automatic resolver for historical scripts. Owner tasks using those scripts must check their explicit inputs/paths. Missing owner configuration does not block test drafting.
 
-1. `code_bundle`：源码、合同、迁移、测试定义和启动文件。
-2. `rag_source_bundle`：仅含明确允许 AI 上下文／索引的来源快照。
-3. `eval_public_inputs`：模型可见的评测输入。
-4. `eval_private_oracle`：评分答案与判据；模型、RAG 和普通应用进程不可访问。
-5. `training_candidate_bundle`：未来经许可、去敏和审核的数据；当前不得创建或上传。
-
-每类 bundle 都要有 manifest、文件哈希、用途、来源权限、创建时间和批准记录。不得用目录名推断许可，不得让评测答案进入 RAG，不得把运行日志自动转成训练数据。
-
-## 6. 本地检查、服务器验收与微调状态规则
-
-- 已实际运行的本地解析/转换单元测试、字段合同检查、数值一致性检查和临时查询可以标记`PASSED`或`FAILED`，同时记录命令、输入范围、输出和检查边界。
-- 未运行的检查保持`DEFINED_NOT_RUN`；未经过任何本地检查的代码可标记`PREPARED_LOCALLY_UNVERIFIED`。
-- 本地数据派生可标记`PREPARED`、`LOCALLY_CHECKED`、`NEEDS_REVIEW`、`BLOCKED`或`PREPARATION_FAILED`。
-- 服务器验收、正式RAG/数据库状态、性能数字和模型分数只能来自对应服务器实际执行记录；不得用本地数据检查替代。
-- Mock 测试与真实 Qwen 测试分开；Mock 永远不能作为 Qwen 结果。
-- 微调仍由 T20 的失败归因与 TrainingDecision 控制。服务器可用不等于允许训练。
-- 任何训练启动仍需用户对方法、数据、预算、模型、评测和输出位置作明确确认。
-
-## 7. 当前阶段完成条件
-
-本地受控加工阶段结束不代表 T00 完成。本轮以真实内容、真实参数、选定实验数据和已运行处理程序为主要成果；随后在以下材料就绪时标记 `READY_FOR_SERVER_HANDOFF_REVIEW`：
-
-- 服务器配置样例和执行策略；
-- 代码、RAG、评测和未来训练数据的分离 manifest 模板；
-- 可复现的服务器命令草稿及预期输出位置；
-- T00–T06 的服务器执行矩阵和验收证据要求；
-- 所有未知项、阻塞项与需要用户确认的传输／计算权限清单。
-- 已批准范围内的source routing、portable seed、血缘和服务器导入计划；未知许可保持阻断。
-- 实际加工对象的来源定位、处理范围、关键字段/单位/条件检查结果，以及成功、失败、受限和暂不处理状态。
-
-随后由用户决定服务器信息和何时启动 T00。
+`config/execution_policy.json` retains the machine-readable restrictions. No server connection, deployment, system/model test or training run is claimed by this documentation update.

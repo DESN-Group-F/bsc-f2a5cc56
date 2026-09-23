@@ -1,11 +1,13 @@
 # 模型核心架构与依赖边界
 
+> **Historical technical proposal.** Retained as optional design background. Current responsibilities, sequencing and task-specific acceptance follow [the team guide](TEAM_PROJECT_GUIDE.md) and [project instructions](../AGENTS.md). Start from [PROJECT_START.md](../PROJECT_START.md). Execution and source-use restrictions remain governed by [the execution boundary](LOCAL_SERVER_EXECUTION_BOUNDARY.md) and [execution policy](../config/execution_policy.json). This older proposal does not assign work, choose a platform, impose a project-wide gate or waive source restrictions. Owner-specific locations are in [the data locator](../data/README.md).
+
 本文件为v0.3技术设计及v0.3.2执行边界，不是已经存在或已经测试的组件。采用单进程模块化API服务、轻量Web界面、独立模型服务，避免多智能体/消息总线/微服务集群的初始成本。
 
-## 0. 当前执行拓扑
+## 0. 历史执行拓扑
 
 ```text
-本地作者工作区 E:\desn 2000\bsc
+当前 checkout（每台工作站自行配置）
   └─ 文档／源码／合同／配置／manifest／测试定义
         │ 仅在用户批准的传输manifest内
         ▼
@@ -19,7 +21,7 @@
 本地 outputs/server_runs/（未来回传，不自动索引）
 ```
 
-当前阶段处理拓扑上方的文件准备和受控本地数据准备，不启动T00，不连接服务器。明确源工作区只读，portable seed及脚本写入bsc。服务器是目标数据库/RAG、测试与微调的唯一权威执行环境。任何本地源码和测试定义都必须分别标记`PREPARED_LOCALLY_UNVERIFIED`与`DEFINED_NOT_RUN`。
+该记录阶段处理拓扑上方的文件准备和受控本地数据准备，未启动T00或连接服务器。源工作区作为只读输入，portable seed及脚本写入当时的checkout。标记`PREPARED_LOCALLY_UNVERIFIED`与`DEFINED_NOT_RUN`是该历史执行阶段的状态证据，不自动约束当前工作流。
 
 ## 1. 源码布局（本地准备，服务器执行）
 

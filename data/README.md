@@ -1,10 +1,10 @@
-# Local data map
+# Data locator for the project owner
 
-The data payload is deliberately outside Git. This directory contains documentation and lean catalogues only.
+The data payload remains with the project owner, outside Git. This directory contains documentation and lean catalogues only. Teammates preparing tests do not need to configure these locations, obtain the whole collection or examine its records individually. Request only the fixtures or evidence needed for an agreed test task.
 
 ## Original source workspace
 
-Local reference location used during preparation:
+The owner's original collection is at the following local reference location. It is not a required path for other contributors:
 
 `E:/desn 2000/data/battery_data_workspace_v0_3`
 
@@ -30,4 +30,4 @@ These directories are ignored and are not pushed. `catalogue/lithium_supplement_
 
 Processed content, experimental profiles, extracted full text and other derived artifacts remain under local `data_preparation/` run directories. Authored processing scripts remain eligible for Git, but payloads must be connected later through a purpose-specific manifest. Their existence does not grant RAG, training, redistribution or server-transfer permission.
 
-Copy `config/data_locations.example.json` to the ignored `config/data_locations.json` and update it for each machine. This file is currently a path registry, not an implemented runtime configuration interface: historical scripts retain their original machine/run paths and do not automatically read it. Do not edit the example with personal paths or credentials.
+For owner-scoped database work, copy `config/data_locations.example.json` to the ignored `config/data_locations.json` and configure the needed paths. Test authors can leave these settings unconfigured. The registry is not an implemented runtime configuration interface: historical scripts retain original machine/run paths and do not automatically read it. Keep personal settings and credentials out of shared examples. Submit team work through the repository rather than writing onto the owner's disk.

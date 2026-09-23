@@ -1,8 +1,10 @@
 # RAG、原件保护与数据适配
 
+> **Historical technical proposal.** Retained as optional design background. Current responsibilities, sequencing and task-specific acceptance follow [the team guide](TEAM_PROJECT_GUIDE.md) and [project instructions](../AGENTS.md). Start from [PROJECT_START.md](../PROJECT_START.md). Execution and source-use restrictions remain governed by [the execution boundary](LOCAL_SERVER_EXECUTION_BOUNDARY.md) and [execution policy](../config/execution_policy.json). This older proposal does not assign work, choose a platform, impose a project-wide gate or waive source restrictions. Owner-specific locations are in [the data locator](../data/README.md).
+
 ## 1. 当前输入的事实边界
 
-用户确认源数据位于`E:\desn 2000\data\battery_data_workspace_v0_3`。当前依据ADR-EXEC-001把该目录作为只读输入，已核对EXT-AUDIT-01的报告与台账状态，但不把审计历史结果冒充本轮执行。当前审计记录300份原件、约112.44GB冻结快照、RAG准入0；逐用途解析与外发状态仍需保持原记录。
+历史运行使用负责人配置的源工作区（物理位置见[data/README.md](../data/README.md)）作为只读输入，并核对了EXT-AUDIT-01的报告与台账状态，但不把审计历史结果冒充本轮执行。当时审计记录300份原件、约112.44GB冻结快照、RAG准入0；逐用途解析与外发状态仍需保持原记录。
 
 当前可复用现有审计清单做metadata routing、current-state视图、权限sidecar和pilot候选，不重复全量hash或扫描。用途许可明确后，可在bsc派生目录准备portable chunks/spec seed/experiment subset；不能在本地建立目标RAG或执行查询验证。服务器传输前形成明确allowlist并核对版本、hash和来源，不根据目录名直接准入。
 

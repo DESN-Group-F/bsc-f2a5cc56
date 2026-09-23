@@ -43,11 +43,13 @@
       "SOURCE_UPLOAD",
       "FINE_TUNING"
     ],
-    "source_workspace": "E:/desn 2000/data/battery_data_workspace_v0_3",
+    "source_workspace": null,
     "source_workspace_access": "READ_ONLY_INPUT",
     "derived_output_root": "data_preparation",
     "artifact_status": "PREPARED_OR_LOCALLY_CHECKED_WITH_SCOPE",
-    "query_verification_status": "LOCAL_TEMP_QUERY_ALLOWED_SERVER_ACCEPTANCE_PENDING"
+    "query_verification_status": "LOCAL_TEMP_QUERY_ALLOWED_SERVER_ACCEPTANCE_PENDING",
+    "source_workspace_config_ref": "config/data_locations.json#source_workspace",
+    "path_configuration_status": "OWNER_CONFIGURED_NOT_REQUIRED_FOR_TEST_AUTHORING"
   },
   "server": {
     "connection_configured": false,
@@ -70,5 +72,15 @@
     "server_acceptance_requires_server_run": true,
     "model_score_requires_real_qwen_server_run": true,
     "training_requires_explicit_user_approval": true
+  },
+  "collaboration": {
+    "decision_date": "2026-09-23",
+    "guide": "docs/TEAM_PROJECT_GUIDE.md",
+    "data_database_owner": "PROJECT_OWNER",
+    "parallel_test_authoring_enabled": true,
+    "human_review_and_acceptance": true,
+    "acceptance_criteria": "AGREED_PER_TASK",
+    "legacy_backlog_is_current_queue": false,
+    "private_github_code_and_metadata_only": true
   }
 }

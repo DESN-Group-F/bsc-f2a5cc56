@@ -1,6 +1,8 @@
 # 核心合同、API与最小持久化
 
-当前本地阶段只准备本文件、Schema与实现草稿，不启动API、数据库或迁移，也不执行合同测试。所有可执行验证在服务器进行；本地文件存在不等于接口已实现。
+> **Historical technical proposal.** Retained as optional design background. Current responsibilities, sequencing and task-specific acceptance follow [the team guide](TEAM_PROJECT_GUIDE.md) and [project instructions](../AGENTS.md). Start from [PROJECT_START.md](../PROJECT_START.md). Execution and source-use restrictions remain governed by [the execution boundary](LOCAL_SERVER_EXECUTION_BOUNDARY.md) and [execution policy](../config/execution_policy.json). This older proposal does not assign work, choose a platform, impose a project-wide gate or waive source restrictions. Owner-specific locations are in [the data locator](../data/README.md).
+
+该历史本地阶段只准备了本文件、Schema与实现草稿，未启动API、数据库或迁移，也未执行合同测试。本地文件存在不等于接口已实现。
 
 ## 1. 可信边界
 
@@ -27,7 +29,7 @@
 
 先用少量规范表+JSON字段即可；额外人员、完整采购、废物和审批数据由未来ports提供。存储实际对象ID和准确版本，不只存最终聊天字符串。
 
-## 3. API规格（尚待Codex实现）
+## 3. API规格（历史实现提案）
 
 | 方法/路径 | 目的与限制 |
 |---|---|
@@ -64,4 +66,4 @@
 
 ## 6. JSON Schema能做与不能做
 
-Schema能检查字段、枚举和部分引用前提。不能验证真实身份、资料适用性、工程方案充分性或预测正确性。v0.3还需要semantic validators：C4须成功完成检索；数值概率只来自有效predictor result；引用访问与版本一致；工具结果确实存在；case freshness；明确模拟环境。对应软件测试由Codex实现。
+Schema能检查字段、枚举和部分引用前提。不能验证真实身份、资料适用性、工程方案充分性或预测正确性。v0.3还需要semantic validators：C4须成功完成检索；数值概率只来自有效predictor result；引用访问与版本一致；工具结果确实存在；case freshness；明确模拟环境。对应软件测试是团队后续候选实现，须由当前工作流选择。

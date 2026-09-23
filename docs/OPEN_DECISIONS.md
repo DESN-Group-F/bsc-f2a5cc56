@@ -1,5 +1,7 @@
 # 未决事项
 
+> **Historical decision register.** Retained as optional background. Current responsibilities and task-specific criteria follow [the team guide](TEAM_PROJECT_GUIDE.md) and [project instructions](../AGENTS.md). Start from [PROJECT_START.md](../PROJECT_START.md). Execution and source-use restrictions remain governed by [the execution boundary](LOCAL_SERVER_EXECUTION_BOUNDARY.md) and [execution policy](../config/execution_policy.json). Older entries do not automatically assign work, choose a platform, impose a project-wide gate or waive source restrictions.
+
 |ID|事项|当前状态|解决时点|
 |---|---|---|---|
 |O01|服务器Qwen端点/权重、served_id、模板、量化和有效参数|UNKNOWN|服务器T01真实运行前；本地仅准备adapter|
@@ -17,4 +19,4 @@
 |O13|服务器运行产物、原始日志和hash的保留位置|TO_CONFIRM|首次服务器执行前|
 |O14|文档、规格、实验三条pilot的精确样本及解析/派生许可|BLOCKED_PENDING_PURPOSE_DECISION|CR-DATA-ROUTE-001 Phase B前；Phase A可继续|
 
-当前只继续不依赖这些事项的本地文件准备。影响连接、传输、安装、费用、执行、训练、权限或真实能力声明的工作保持阻断。不得由Codex代填服务器事实、真实批准或测试结果。
+上表保留当时的未决状态，不自动继续任务或建立全局门禁。服务器事实、真实批准或测试结果不得由任何工具或团队成员代填；当前处理方法和阻塞关系由负责工作流确认。
