@@ -1,6 +1,6 @@
 # Source-use notes for the private raw archive
 
-The owner's approval covers transfer of the 300 registered originals and 18 lithium-supplement captures into the private internal course-group repository `https://github.com/DESN-Group-F/bsc-f2a5cc56`, as listed in `raw_source_transfer.jsonl`. This is an archive/access decision, not a licence determination or approval for public redistribution, RAG/model context, training or server transfer. Check the source/version and intended action before reuse. The catalogue statuses and the frozen decisions below remain controlling; these notes do not replace them.
+The approved transfer covers 300 registered originals and 18 lithium-supplement captures in the private internal course-group repository `https://github.com/DESN-Group-F/bsc-f2a5cc56`, as listed in `raw_source_transfer.jsonl`. This is an archive/access decision, not a licence determination or approval for public redistribution, RAG/model context, training or server transfer. Check the source/version and intended action before reuse. The catalogue statuses and frozen decisions below remain controlling; these notes do not replace them.
 
 | Source ID | Existing constraint or uncertainty | Locator |
 | --- | --- | --- |

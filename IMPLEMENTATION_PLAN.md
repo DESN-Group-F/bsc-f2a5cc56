@@ -1,7 +1,7 @@
 # Battery Safety Copilot · 模型核心实施方案
 ## v0.3.2｜本地数据准备 + 服务器测试／微调｜Qwen + RAG + 最小状态库 + 分析工具 + 运行／评测 Harness
 
-> **Historical technical proposal.** Retained as optional design background. Current responsibilities, sequencing and task-specific acceptance follow [the team guide](docs/TEAM_PROJECT_GUIDE.md) and [project instructions](AGENTS.md). Start from [PROJECT_START.md](PROJECT_START.md). Execution and source-use restrictions remain governed by [the execution boundary](docs/LOCAL_SERVER_EXECUTION_BOUNDARY.md) and [execution policy](config/execution_policy.json). This older proposal does not assign work, choose a platform, impose a project-wide gate or waive source restrictions. Owner-specific locations are in [the data locator](data/README.md).
+> **Historical technical proposal.** Retained as optional design background. Current work and task-specific acceptance follow [the team guide](docs/TEAM_PROJECT_GUIDE.md) and [project instructions](AGENTS.md). Start from [PROJECT_START.md](PROJECT_START.md). Execution and source-use restrictions remain governed by [the execution boundary](docs/LOCAL_SERVER_EXECUTION_BOUNDARY.md) and [execution policy](config/execution_policy.json). This older proposal does not assign work, choose a platform, impose a project-wide gate or waive source restrictions. Data locations are in [the data locator](data/README.md).
 
 **日期：2026-09-19**  
 **项目工作区：当前 checkout（原 v0.3 交接包保留）**  

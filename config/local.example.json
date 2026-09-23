@@ -32,7 +32,7 @@
     "session_token_env": "BSC_SESSION_TOKEN"
   },
   "retrieval": {
-    "method_selection_status": "PENDING_OWNER_ASSESSMENT",
+    "method_selection_status": "PENDING_ASSESSMENT",
     "sparse": null,
     "dense": null,
     "embedding_model_candidate": null,
@@ -79,8 +79,8 @@
   "automatic_seed_generation_enabled": false,
   "online_feedback_training_enabled": false,
   "configuration_notes": [
-    "Owner/runtime template only; test authors do not need source or private-evaluation access.",
+    "Runtime configuration template; not required for test drafting.",
     "Paths are local to each checkout. Real settings belong in ignored configuration.",
-    "Database and retrieval methods are unconfigured until the owner's assessment; older candidates remain only in historical plans and Git history."
+    "Database and retrieval methods are unconfigured pending assessment; older candidates remain in historical plans and Git history."
   ]
 }

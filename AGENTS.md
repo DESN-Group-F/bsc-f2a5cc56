@@ -1,23 +1,23 @@
 # BSC project instructions
 
-## Current team arrangement
+## Current work
 
-The current user request takes precedence over older plans. Read `docs/TEAM_PROJECT_GUIDE.md` and follow the assigned task. `PROJECT_START.md` is the portable entry point for contributors and their AI assistants.
+The current user request takes precedence over older plans. Read `docs/TEAM_PROJECT_GUIDE.md` and follow the assigned task. `PROJECT_START.md` is the portable entry point.
 
-1. **Data and database:** the project owner is responsible for data preparation, processing-method selection, database/retrieval construction, analysis tools and the first database-plus-Qwen integration. AI performs most detailed execution under that ownership.
-2. **Test preparation:** teammates can start now, alongside database development. AI helps draft comprehensive database-access, evidence, tool and real scientific/engineering capability tests. People review questions, reference answers, evidence and eventual results. No teammate must inspect the full source collection or implement a data-processing lane.
+1. **Data and database:** prepare data, select processing methods, and build the database/retrieval layer, analysis tools and first database-plus-Qwen integration.
+2. **Test preparation:** start alongside database development. Draft and review database-access, evidence, tool and real scientific/engineering capability tests. Test drafting does not require inspecting the full source collection or implementing a data-processing lane.
 3. **Training preparation:** use actual test failures to propose improvements, training methods and exercises where justified. Missing data, retrieval failures and tool defects are not automatically model-training problems. Training execution remains a separate decision.
 
-People own tasks and accept results. AI tools assist execution; do not name them as project members, assignees, approvers or deliverers in current team documents. Use English for current team instructions and deliverables. Historical records may retain their original language and provenance.
+Use English for current team instructions and deliverables. Historical records may retain their original language and provenance.
 
 There is no project-wide score threshold, universal pre-Qwen checklist, mandatory kickoff agenda or fixed allocation of people. Agree scope and acceptance criteria for each task during collaboration, before judging its results. Leave unresolved criteria explicit.
 
-Processing-method research belongs to the owner. The future information-type by file-format matrix and assessment of mature existing solutions are deferred owner work, not assignments for the testing team. No RAG, SQL or other processing platform is selected by this documentation change.
+The future information-type by file-format matrix and assessment of mature existing solutions remain deferred data-method work. No RAG, SQL or other processing platform is selected by this documentation change.
 
 ## Portable collaboration
 
-- Use each contributor's own checkout and repository-relative paths. Share reviewable changes through the private GitHub repository, not by requiring teammates to write onto the owner's computer.
-- Test authors do not need the owner's disk, a full raw-source download or private evaluation directory. Use product requirements and supplied case inputs; record missing fixtures for the owner to resolve.
+- Use each contributor's own checkout and repository-relative paths. Share reviewable changes through the private GitHub repository.
+- Test drafting needs neither a full raw-source download nor a private evaluation directory. Select relevant archived evidence and record source IDs, paths, citations and status; record missing fixtures for follow-up.
 - `data/README.md` holds the portable raw-source layout and prepared-data locator. `config/data_locations.example.json` is an optional registry for database work; machine-specific paths belong in the ignored `config/data_locations.json`.
 - Historical processing scripts retain some original run paths and do not automatically load the registry. Check scope and inputs before executing any of them.
 - Keep originals read-only and frozen runs unchanged. Do not scan unspecified directories, follow junctions/symlinks or repeat a full inventory/hash audit. Write new derived outputs to the configured project workspace.
@@ -27,7 +27,7 @@ Processing-method research belongs to the owner. The future information-type by 
 
 Read `docs/LOCAL_SERVER_EXECUTION_BOUNDARY.md` and `config/execution_policy.json` before execution. Their operational restrictions do not block teammates from drafting tests and reviewing documents on their own computers.
 
-The current execution stage remains `LOCAL_CONTROLLED_DATA_PROCESSING`. T00, target database/RAG deployment, Qwen inference, model performance evaluation, large embeddings, server access and fine-tuning have not been started by the preparation or collaboration work. Do not start them automatically from an old plan. Follow the owner's concrete work order and the applicable execution scope.
+The current execution stage remains `LOCAL_CONTROLLED_DATA_PROCESSING`. T00, target database/RAG deployment, Qwen inference, model performance evaluation, large embeddings, server access and fine-tuning have not been started by the preparation or collaboration work. Do not start them automatically from an old plan. Follow the current task and applicable execution scope.
 
 Local documentation, implementation drafts and test design are allowed. Authorised data inspection, extraction, conversion and bounded analysis may include parsing/conversion tests, field-contract checks, numerical checks and temporary-file/database queries. Report only checks actually run and their exact scope; they are not server acceptance or model scores. Do not run the inherited handoff suite for a documentation task.
 
@@ -38,7 +38,7 @@ For authorised processing, calibrate each new format/structure on a bounded samp
 ## Tests and improvement
 
 - Design cases against intended behaviour, including successful ordinary tasks, complex reasoning, data access, citations, calculations, missing/conflicting inputs and case updates. Drafting does not depend on a final platform or API.
-- AI-written questions and answers are proposals until reviewed. Use independent references/calculations where possible; AI agreement alone is not validation. Record uncertain answers explicitly.
+- Draft questions and answers are proposals until reviewed. Use independent references/calculations where possible; agreement between generated answers alone is not validation. Record uncertain answers explicitly.
 - Development cases can support debugging. Held-out acceptance cases and keys stay separate from debugging, training and ordinary retrieval. A folder in a shared repository does not provide access isolation.
 - Do not open historical private test questions/answers without an assigned task requiring that access. Never index evaluation material into ordinary RAG.
 - When execution is authorised, retain actual inputs, configuration, outputs and failures. Plans, schemas, mocks and fixtures do not prove Qwen or system performance.
@@ -70,4 +70,4 @@ Remaining gaps include product operating conditions, exact LMO models, named lig
 
 Older implementation plans, LP/T backlogs, CR cards and reports are background, not the current team queue or acceptance gates. Do not restart stale `IN_PROGRESS` entries. See `backlog/README.md`. Frozen evidence and Git history preserve previous decisions.
 
-For bounded delegated work, follow the user's preference for Sol with concise, independent assignments. The coordinator reviews results. Report actual changes/checks and unresolved issues honestly; never conceal uncertainty.
+For bounded delegated work, follow the user's preference for Sol with concise, independent assignments and review their results. Report actual changes/checks and unresolved issues honestly; never conceal uncertainty.

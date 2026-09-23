@@ -13,15 +13,15 @@
     "lithium_coverage": "CR-LITHIUM-COVERAGE-001/20260921T043456_AEST"
   },
   "access": {
-    "source_workspace": "owner_configured_materialized_read_only_input",
+    "source_workspace": "locally_configured_materialized_read_only_input",
     "raw_archive": "locator_only_selective_lfs_fetch_required",
     "prepared_data": "local_only_until_purpose_approved",
     "server_transfer": "not_configured"
   },
   "notes": [
-    "Optional registry for the project owner's database work. Teammates can draft tests without configuring it.",
+    "Optional path registry for database work. Test drafting does not require it.",
     "Copy to ignored config/data_locations.json and set only the paths needed for an assigned task. Raw archive roots may contain LFS pointers and split files, so they are not directly readable processing workspaces.",
-    "Fetch only selected LFS objects, verify and reassemble split originals as needed, then set source_workspace to the owner-configured materialized input location. A full collection download is not required.",
+    "Fetch selected LFS objects, verify and reassemble split originals as needed, then set source_workspace to the materialized input location for the task.",
     "Historical scripts do not automatically read this registry; check their explicit inputs and run paths.",
     "Keep credentials, source content and private answer keys out of shared configuration.",
     "A path grants no source-use, RAG, training, redistribution or transfer permission."

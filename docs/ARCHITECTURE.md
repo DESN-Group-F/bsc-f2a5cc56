@@ -1,6 +1,6 @@
 # 模型核心架构与依赖边界
 
-> **Historical technical proposal.** Retained as optional design background. Current responsibilities, sequencing and task-specific acceptance follow [the team guide](TEAM_PROJECT_GUIDE.md) and [project instructions](../AGENTS.md). Start from [PROJECT_START.md](../PROJECT_START.md). Execution and source-use restrictions remain governed by [the execution boundary](LOCAL_SERVER_EXECUTION_BOUNDARY.md) and [execution policy](../config/execution_policy.json). This older proposal does not assign work, choose a platform, impose a project-wide gate or waive source restrictions. Owner-specific locations are in [the data locator](../data/README.md).
+> **Historical technical proposal.** Retained as optional design background. Current work and task-specific acceptance follow [the team guide](TEAM_PROJECT_GUIDE.md) and [project instructions](../AGENTS.md). Start from [PROJECT_START.md](../PROJECT_START.md). Execution and source-use restrictions remain governed by [the execution boundary](LOCAL_SERVER_EXECUTION_BOUNDARY.md) and [execution policy](../config/execution_policy.json). This older proposal does not assign work, choose a platform, impose a project-wide gate or waive source restrictions. Data locations are in [the data locator](../data/README.md).
 
 本文件为v0.3技术设计及v0.3.2执行边界，不是已经存在或已经测试的组件。采用单进程模块化API服务、轻量Web界面、独立模型服务，避免多智能体/消息总线/微服务集群的初始成本。
 

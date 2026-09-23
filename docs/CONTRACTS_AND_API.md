@@ -1,6 +1,6 @@
 # 核心合同、API与最小持久化
 
-> **Historical technical proposal.** Retained as optional design background. Current responsibilities, sequencing and task-specific acceptance follow [the team guide](TEAM_PROJECT_GUIDE.md) and [project instructions](../AGENTS.md). Start from [PROJECT_START.md](../PROJECT_START.md). Execution and source-use restrictions remain governed by [the execution boundary](LOCAL_SERVER_EXECUTION_BOUNDARY.md) and [execution policy](../config/execution_policy.json). This older proposal does not assign work, choose a platform, impose a project-wide gate or waive source restrictions. Owner-specific locations are in [the data locator](../data/README.md).
+> **Historical technical proposal.** Retained as optional design background. Current work and task-specific acceptance follow [the team guide](TEAM_PROJECT_GUIDE.md) and [project instructions](../AGENTS.md). Start from [PROJECT_START.md](../PROJECT_START.md). Execution and source-use restrictions remain governed by [the execution boundary](LOCAL_SERVER_EXECUTION_BOUNDARY.md) and [execution policy](../config/execution_policy.json). This older proposal does not assign work, choose a platform, impose a project-wide gate or waive source restrictions. Data locations are in [the data locator](../data/README.md).
 
 该历史本地阶段只准备了本文件、Schema与实现草稿，未启动API、数据库或迁移，也未执行合同测试。本地文件存在不等于接口已实现。
 

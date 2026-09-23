@@ -4,11 +4,11 @@ Decision: ADR-EXEC-001, v0.3.4, with the 2026-09-23 collaboration clarification.
 
 ## Work in contributors' own checkouts
 
-Contributors may write and review English documents, test questions, reference answers, case inputs, implementation drafts, schemas, configuration examples and runner drafts within their assigned tasks. AI may perform detailed drafting; people review and accept the work.
+Assigned tasks may include writing and reviewing English documents, test questions, reference answers, case inputs, implementation drafts, schemas, configuration examples and runner drafts. Review evidence and results before acceptance.
 
-Test authors do not need the owner's drive, full source collection, running database or Qwen endpoint. Design cases around intended behaviour and identify fixtures/interfaces for the owner to provide later.
+Test drafting does not require a full source download, running database or Qwen endpoint. Design cases around intended behaviour and identify fixtures or interfaces needed later.
 
-The data/database workstream belongs to the project owner. Authorised work may include source inspection, extraction, cleaning, conversion, bounded experimental analysis and related checks. Existing source/version/action evidence governs use. Originals remain read-only; reuse manifests instead of repeating collection-wide inventories or hash audits.
+Within an agreed data/database task, authorised work may include source inspection, extraction, cleaning, conversion, bounded experimental analysis and related checks. Existing source/version/action evidence governs use. Originals remain read-only; reuse manifests instead of repeating collection-wide inventories or hash audits.
 
 Parsing/conversion tests, field-contract checks, numerical-consistency checks and queries against temporary files/databases may run when relevant to an authorised processing task. They establish only that scope, not deployment readiness, model scores, system acceptance or field safety.
 
@@ -22,7 +22,7 @@ Private GitHub collaboration includes the explicitly approved original collectio
 
 ## Before a runtime task
 
-The owner will scope the first database-plus-Qwen execution separately. Identify its environment/workspace, dependencies, actual model service, selected inputs, access and cost permissions, secrets and result location. Any source transfer uses a selected manifest rather than a whole-folder upload.
+Scope the first database-plus-Qwen execution as a separate task. Identify its environment/workspace, dependencies, actual model service, selected inputs, access and cost permissions, secrets and result location. Any source transfer uses a selected manifest rather than a whole-folder upload.
 
 These are operational prerequisites for execution, not a team-wide quality gate. Draft questions before the runtime is configured. Agree interfaces, measurements and acceptance criteria for each task; there is no requirement here to finish a universal checklist before any Qwen test.
 
@@ -34,12 +34,12 @@ The server remains the designated environment for authoritative system/model/dep
 - Keep evaluation material out of ordinary retrieval; keep held-out acceptance material out of debugging and training. Directory names alone do not provide access isolation.
 - Record actual inputs, configuration, outputs and failures when execution occurs. Planned tests remain unrun; mocks do not demonstrate Qwen performance.
 - Agree criteria before judging the relevant task's results. Leave unresolved criteria explicit; no shared passing score, fixed question count or global threshold is set now.
-- Training methods/exercises follow analysed test results. Training execution needs a defined method, permitted dataset, environment, budget, evaluation arrangement and owner authorisation.
+- Training methods/exercises follow analysed test results. Training execution needs a defined method, permitted dataset, environment, budget, evaluation arrangement and explicit authorisation.
 
 ## Paths and configuration
 
-Team paths are relative to each contributor's checkout. Shared raw-source roots are under `data/raw/`; owner-specific prepared-data paths belong in ignored local configuration. The layout is documented in `data/README.md`.
+Team paths are relative to each contributor's checkout. Shared raw-source roots are under `data/raw/`; machine-specific prepared-data paths belong in ignored local configuration. The layout is documented in `data/README.md`.
 
-`config/data_locations.example.json` is a path registry template, not an automatic resolver for historical scripts. Owner tasks using those scripts must check their explicit inputs/paths. Missing owner configuration does not block test drafting.
+`config/data_locations.example.json` is a path registry template, not an automatic resolver for historical scripts. Tasks using those scripts must check their explicit inputs/paths. Missing local configuration does not block test drafting.
 
 `config/execution_policy.json` retains the machine-readable restrictions. No server connection, deployment, system/model test or training run is claimed by this documentation update.
