@@ -1,0 +1,64 @@
+# Secrets and machine-local configuration
+.env
+.env.*
+!.env.example
+config/local.json
+config/server.json
+config/data_locations.json
+manifests/server_transfer.json
+
+# Environments, caches and model artifacts
+.venv/
+.mcos_venv/
+site-packages/
+dist-packages/
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+workspace/
+outputs/
+models/
+checkpoints/
+*.safetensors
+*.gguf
+
+# Private evaluation answers
+evals/private_expected/
+evaluation/private_expected/
+evaluation/private_oracle/
+
+# Local data mounts. Keep data/README.md and data/catalogue/*.jsonl in Git.
+data/raw/
+data/source_files/
+data/derived/
+data/local/
+data/cache/
+
+# Historical preparation runs are local payloads by default.
+# Re-open directories only so reviewed authored Python scripts remain eligible.
+data_preparation/**/*
+!data_preparation/**/
+!data_preparation/**/*.py
+
+# Hard exclusions after the Python exception: environments, caches, originals,
+# extracted/derived content, quarantine and temporary review material.
+data_preparation/**/.venv/
+data_preparation/**/.mcos_venv/
+data_preparation/**/site-packages/
+data_preparation/**/dist-packages/
+data_preparation/**/__pycache__/
+data_preparation/**/sources/
+data_preparation/**/quarantine/
+data_preparation/**/derived/
+data_preparation/**/tmp/
+data_preparation/**/temporary_checks/
+data_preparation/**/public_supplements/
+data_preparation/**/coverage/suppl/
+data_preparation/**/qa/
+
+# Report build intermediates; final reports under reports/**/output/pdf/ remain eligible.
+reports/**/tmp/
+reports/**/output/*
+!reports/**/output/pdf/
+!reports/**/output/pdf/**

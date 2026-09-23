@@ -1,0 +1,48 @@
+{
+  "created_utc": "2026-09-20T19:48:55.205286+00:00",
+  "artifact": "E:\\desn 2000\\bsc\\reports\\data_status_20260921\\output\\pdf\\BSC项目数据现状与覆盖范围汇报_20260921.pdf",
+  "sha256": "86731e6f2da96939824984a5e0222a0f996333484926f25f02fd68ade8a1e3fa",
+  "size_bytes": 402069,
+  "pages": 8,
+  "checks": {
+    "eight_A4_pages": true,
+    "chinese_text_extractable": true,
+    "no_replacement_glyph": true,
+    "primary_counts_present": true,
+    "eight_chapter_bookmarks": true,
+    "source_bindings_match": true,
+    "rendered_pages_present": true
+  },
+  "visual_review": {
+    "status": "PASS",
+    "pages_reviewed": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "method": "Poppler PNG at 110 dpi, every page visually inspected; changed pages rerendered and rechecked",
+    "result": "Chinese glyphs, margins, tables, section breaks and page numbers are legible and unclipped"
+  },
+  "independent_review": {
+    "agent": "/root/lithium_existing_sol",
+    "status": "PASS_AFTER_CORRECTION",
+    "resolved_findings": [
+      "66 container MATLAB members and 422 cells within batches labelled accurately",
+      "102 workbooks specified as 11 standalone XLSX plus 91 container members"
+    ]
+  },
+  "format_decision": "PDF delivered because Word/LibreOffice rendering was unavailable; user informed. No DOCX created.",
+  "execution_note": "Bundled Poppler cmd wrappers failed with path error; bundled Library/bin executables succeeded without installation or configuration change.",
+  "verification_commands": [
+    "python.exe -B build_report.py",
+    "Library/bin/pdfinfo.exe <PDF>",
+    "Library/bin/pdftoppm.exe -r 110 -png <PDF> <render-prefix>",
+    "Python/pypdf readback and source hash comparison"
+  ],
+  "scope": "Report preparation and verification only. No changes to frozen source packages and no RAG, target database, model or server work."
+}

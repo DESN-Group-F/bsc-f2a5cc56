@@ -1,0 +1,114 @@
+{
+  "timestamp_utc": "2026-09-20T20:07:23.599244+00:00",
+  "scope": "Translation and plain-language bilingual team report only; no re-audit of raw sources or data-building/system/model/server activity.",
+  "original_chinese_pdf_unchanged": true,
+  "source_bindings": [
+    {
+      "path": "E:\\desn 2000\\bsc\\reports\\data_status_20260921\\report_content.md",
+      "sha256": "d77040eb88749d19b0fe47af364b50589f7bebfb1c9dd3a814036cc7462a3f7d"
+    },
+    {
+      "path": "E:\\desn 2000\\bsc\\reports\\data_status_20260921\\REPORT_INPUTS.json",
+      "sha256": "b1ac97d93047ac5ee0db8dd09706799cb26367cbc8f35b548234f5189f8f6386"
+    },
+    {
+      "path": "E:\\desn 2000\\bsc\\reports\\data_status_20260921\\REPORT_QA.json",
+      "sha256": "c93ac554e969acf58d716b125c13e6bf4dddf46965f7b01bd4e746200948f662"
+    }
+  ],
+  "artifacts": [
+    {
+      "name": "full_en",
+      "path": "E:\\desn 2000\\bsc\\reports\\team_briefing_20260921\\output\\pdf\\BSC_Data_Status_Coverage_EN_20260921.pdf",
+      "pages": 8,
+      "bytes": 99049,
+      "sha256": "3c7085eeaa69a15fd674066244f73812e1feba45a5b3614c33b3e6ebbb0d0601",
+      "checks": {
+        "expected_page_count": true,
+        "one_section_per_page": true,
+        "bookmarks_present": true,
+        "text_extractable": true,
+        "no_replacement_glyph": true,
+        "key_counts_retained": true,
+        "final_file_matches_build": true,
+        "content_matches_build": true,
+        "rendered_pages_present": true,
+        "text_within_page_bounds": true
+      },
+      "visual_review": "PASS: every page inspected at 110 dpi; all changed pages re-rendered and rechecked"
+    },
+    {
+      "name": "team_zh",
+      "path": "E:\\desn 2000\\bsc\\reports\\team_briefing_20260921\\output\\pdf\\BSC_组员汇报_中文版_20260921.pdf",
+      "pages": 6,
+      "bytes": 366658,
+      "sha256": "36020c3ab5988a283a7e0dc6daaa3b1518f89234f3440bfc66520064d6b39f44",
+      "checks": {
+        "expected_page_count": true,
+        "one_section_per_page": true,
+        "bookmarks_present": true,
+        "text_extractable": true,
+        "no_replacement_glyph": true,
+        "key_counts_retained": true,
+        "final_file_matches_build": true,
+        "content_matches_build": true,
+        "rendered_pages_present": true,
+        "text_within_page_bounds": true
+      },
+      "visual_review": "PASS: every page inspected at 110 dpi; all changed pages re-rendered and rechecked"
+    },
+    {
+      "name": "team_en",
+      "path": "E:\\desn 2000\\bsc\\reports\\team_briefing_20260921\\output\\pdf\\BSC_Team_Briefing_EN_20260921.pdf",
+      "pages": 6,
+      "bytes": 91315,
+      "sha256": "57c57b2472b4e1074482be780f1ac751588d6704c884aceec14b5793c5db6b9a",
+      "checks": {
+        "expected_page_count": true,
+        "one_section_per_page": true,
+        "bookmarks_present": true,
+        "text_extractable": true,
+        "no_replacement_glyph": true,
+        "key_counts_retained": true,
+        "final_file_matches_build": true,
+        "content_matches_build": true,
+        "rendered_pages_present": true,
+        "text_within_page_bounds": true
+      },
+      "visual_review": "PASS: every page inspected at 110 dpi; all changed pages re-rendered and rechecked"
+    }
+  ],
+  "independent_review": [
+    {
+      "reviewer": "/root/lithium_existing_sol",
+      "scope": "Detailed English translation against approved Chinese text",
+      "status": "PASS_AFTER_CORRECTION",
+      "resolved": "Clarified that an HTML response was mistakenly treated as PDF, avoiding an allegation of a fabricated PDF."
+    },
+    {
+      "reviewer": "/root/lithium_scope_audit_sol",
+      "scope": "Bilingual team version: parity, lay understanding, counts, readiness, rights and example status",
+      "status": "PASS_AFTER_CORRECTION",
+      "resolved": [
+        "Broader model/scenario coverage remains incomplete despite the completed increment.",
+        "Copy-controlled summary is explicitly restricted, not merely a routine extraction task.",
+        "Valid manufacturer files do not imply unrestricted AI use."
+      ]
+    }
+  ],
+  "layout_corrections": [
+    "Condensed detailed English background table without removing material facts to retain eight pages.",
+    "Replaced a broken-word table heading with Files.",
+    "Added explicit line breaks in Chinese process and chemistry cells."
+  ],
+  "commands_run": [
+    "python.exe -B build_briefings.py",
+    "Library/bin/pdftoppm.exe -r 110 -png <each of 3 PDFs> <separate prefix>",
+    "Python pypdf/pdfplumber readback, page-bound and artifact hash checks"
+  ],
+  "not_run": [
+    "No RAG ingestion, target database work, Qwen/model inference, fine-tuning, server activity or raw-source audit."
+  ],
+  "blockers": [],
+  "next_use": "Share the appropriate Chinese or English team briefing with group members; use the full report for detailed counts and source conditions."
+}

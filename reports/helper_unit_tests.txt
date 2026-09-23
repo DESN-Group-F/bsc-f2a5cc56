@@ -1,0 +1,27 @@
+test_all_handoff_checks (test_handoff.ContractTests.test_all_handoff_checks) ... ok
+test_approval_field_rejected (test_handoff.ContractTests.test_approval_field_rejected) ... ok
+test_c4_retrieval_failure_rejected (test_handoff.ContractTests.test_c4_retrieval_failure_rejected) ... ok
+test_documented_claim_needs_reference (test_handoff.ContractTests.test_documented_claim_needs_reference) ... ok
+test_external_receipts_not_enabled (test_handoff.ContractTests.test_external_receipts_not_enabled) ... ok
+test_mock_label_required (test_handoff.ContractTests.test_mock_label_required) ... ok
+test_no_hidden_test_run_claim (test_handoff.ContractTests.test_no_hidden_test_run_claim) ... ok
+test_probability_requires_validated_method (test_handoff.ContractTests.test_probability_requires_validated_method) ... ok
+test_source_unknown_not_auto_allowed (test_handoff.ContractTests.test_source_unknown_not_auto_allowed) ... ok
+test_training_deferred (test_handoff.ContractTests.test_training_deferred) ... ok
+test_eval_directory_excluded (test_handoff.InventoryTests.test_eval_directory_excluded) ... ok
+test_file_limit_is_partial (test_handoff.InventoryTests.test_file_limit_is_partial) ... ok
+test_invalid_limits_rejected (test_handoff.InventoryTests.test_invalid_limits_rejected) ... ok
+test_metadata_only (test_handoff.InventoryTests.test_metadata_only) ... ok
+test_optional_hash (test_handoff.InventoryTests.test_optional_hash) ... ok
+test_output_inside_source_rejected (test_handoff.InventoryTests.test_output_inside_source_rejected) ... ok
+test_report_no_overwrite (test_handoff.InventoryTests.test_report_no_overwrite) ... ok
+test_root_must_exist (test_handoff.InventoryTests.test_root_must_exist) ... ok
+test_secret_file_excluded (test_handoff.InventoryTests.test_secret_file_excluded) ... ok
+test_size_limit (test_handoff.InventoryTests.test_size_limit) ... ok
+test_source_unchanged (test_handoff.InventoryTests.test_source_unchanged) ... ok
+test_symlink_not_followed (test_handoff.InventoryTests.test_symlink_not_followed) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.115s
+
+OK

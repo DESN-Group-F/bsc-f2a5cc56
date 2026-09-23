@@ -1,0 +1,122 @@
+[
+  {
+    "tool_id": "evidence.search",
+    "input_spec_summary": "query, filters, snapshot_id",
+    "side_effect_class": "read",
+    "implementation_status": "PLANNED",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  },
+  {
+    "tool_id": "evidence.read",
+    "input_spec_summary": "evidence_id, revision",
+    "side_effect_class": "read",
+    "implementation_status": "PLANNED",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  },
+  {
+    "tool_id": "state.read_case",
+    "input_spec_summary": "case_id, revision",
+    "side_effect_class": "read",
+    "implementation_status": "PLANNED",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  },
+  {
+    "tool_id": "state.read_assets",
+    "input_spec_summary": "asset_ids or allowed site/project/state filter, page, as_of",
+    "side_effect_class": "read",
+    "implementation_status": "PLANNED",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  },
+  {
+    "tool_id": "units.convert",
+    "input_spec_summary": "value, from_unit, to_unit, quantity_kind",
+    "side_effect_class": "compute",
+    "implementation_status": "PLANNED",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  },
+  {
+    "tool_id": "math.calculate",
+    "input_spec_summary": "expression_ast, variables, assumptions",
+    "side_effect_class": "compute",
+    "implementation_status": "PLANNED",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  },
+  {
+    "tool_id": "electric.ohmic_power",
+    "input_spec_summary": "current, resistance, units, assumptions",
+    "side_effect_class": "compute",
+    "implementation_status": "PLANNED",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  },
+  {
+    "tool_id": "series.validate",
+    "input_spec_summary": "object_id, column_map, units, clock",
+    "side_effect_class": "compute",
+    "implementation_status": "PLANNED",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  },
+  {
+    "tool_id": "series.integrate",
+    "input_spec_summary": "validated_object_id, sign_convention, gap_policy",
+    "side_effect_class": "compute",
+    "implementation_status": "PLANNED",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  },
+  {
+    "tool_id": "spec.compare",
+    "input_spec_summary": "evidence_bound_fields, requirement_refs",
+    "side_effect_class": "compute",
+    "implementation_status": "PLANNED",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  },
+  {
+    "tool_id": "predictor.run",
+    "input_spec_summary": "registered_method_id, revision, inputs, horizon",
+    "side_effect_class": "compute_optional",
+    "implementation_status": "PORT_ONLY",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  },
+  {
+    "tool_id": "validation.checklist",
+    "input_spec_summary": "plan_snapshot, applicable_requirements",
+    "side_effect_class": "read",
+    "implementation_status": "PLANNED",
+    "file_access": "REGISTERED_OBJECT_IDS_ONLY",
+    "may_approve_real_work": false,
+    "may_control_hardware": false,
+    "may_execute_arbitrary_code": false
+  }
+]

@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:bsc:0.3:analysis_request",
+  "title": "analysis_request",
+  "type": "object",
+  "properties": {
+    "user_message": {
+      "type": "string",
+      "minLength": 1
+    },
+    "case_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "expected_case_revision": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "attachment_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "persona": {
+      "enum": [
+        "STUDENT",
+        "TECHNICAL",
+        "COLLECTION_WORKER",
+        "INVENTORY_MANAGER"
+      ]
+    },
+    "run_profile_id": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "user_message",
+    "case_id",
+    "expected_case_revision",
+    "attachment_ids",
+    "persona",
+    "run_profile_id"
+  ],
+  "additionalProperties": false
+}

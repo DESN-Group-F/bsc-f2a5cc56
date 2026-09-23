@@ -1,0 +1,74 @@
+{
+  "version": "0.3.3",
+  "decision_id": "ADR-EXEC-001",
+  "current_stage": "LOCAL_CONTROLLED_DATA_PROCESSING",
+  "t00_enabled": false,
+  "authoritative_test_environment": "SERVER_ONLY_FOR_SYSTEM_MODEL_AND_DEPLOYMENT_ACCEPTANCE",
+  "authoritative_fine_tuning_environment": "SERVER_ONLY",
+  "local": {
+    "allowed": [
+      "DOCUMENT_EDITING",
+      "SOURCE_CODE_AUTHORING",
+      "CONFIG_TEMPLATE_AUTHORING",
+      "MANIFEST_TEMPLATE_AUTHORING",
+      "TEST_DEFINITION_AUTHORING",
+      "SERVER_HANDOFF_PREPARATION",
+      "EXPLICIT_SOURCE_WORKSPACE_METADATA_ROUTING",
+      "PURPOSE_GATED_PORTABLE_DATA_PREPARATION",
+      "DETERMINISTIC_PREPARATION_SCRIPT_EXECUTION",
+      "PURPOSE_SUPPORTED_CONTENT_EXTRACTION",
+      "DATA_CLEANING_AND_FORMAT_CONVERSION",
+      "BOUNDED_EXPERIMENT_SUBSET_PROCESSING",
+      "PARSING_AND_CONVERSION_UNIT_TESTS",
+      "FIELD_CONTRACT_CHECKS",
+      "NUMERIC_CONSISTENCY_CHECKS",
+      "TEMP_FILE_OR_DATABASE_QUERY_VALIDATION",
+      "PROJECT_ISOLATED_LIGHTWEIGHT_CPU_DEPENDENCY_INSTALLATION",
+      "MANUAL_DIFF_REVIEW",
+      "CHANGED_OR_ANOMALOUS_OBJECT_HASH_CHECK"
+    ],
+    "prohibited": [
+      "T00_EXECUTION",
+      "MODEL_INFERENCE",
+      "MODEL_PROBE",
+      "MODEL_PERFORMANCE_EVALUATION",
+      "TARGET_RAG_OR_DATABASE_INGESTION",
+      "PRODUCTION_APPLICATION_START",
+      "AUTHORITATIVE_DATABASE_MIGRATION_EXECUTION",
+      "LARGE_SCALE_EMBEDDING_OR_RERANKER",
+      "SYSTEM_ENVIRONMENT_MODIFICATION",
+      "BROAD_UNTARGETED_DOWNLOAD",
+      "FULL_EXPERIMENT_ARCHIVE_UNPACK",
+      "SERVER_CONNECTION",
+      "SOURCE_UPLOAD",
+      "FINE_TUNING"
+    ],
+    "source_workspace": "E:/desn 2000/data/battery_data_workspace_v0_3",
+    "source_workspace_access": "READ_ONLY_INPUT",
+    "derived_output_root": "data_preparation",
+    "artifact_status": "PREPARED_OR_LOCALLY_CHECKED_WITH_SCOPE",
+    "query_verification_status": "LOCAL_TEMP_QUERY_ALLOWED_SERVER_ACCEPTANCE_PENDING"
+  },
+  "server": {
+    "connection_configured": false,
+    "data_transfer_approved": false,
+    "test_execution_enabled": false,
+    "fine_tuning_enabled": false,
+    "required_result_artifacts": [
+      "RUN_MANIFEST",
+      "ENVIRONMENT_SNAPSHOT",
+      "RAW_STDOUT_STDERR",
+      "INPUT_OUTPUT_HASHES",
+      "TEST_RESULTS",
+      "FAILURE_RECORDS"
+    ]
+  },
+  "status_rules": {
+    "not_executed_check": "DEFINED_NOT_RUN",
+    "local_data_processing_check": "PASSED_OR_FAILED_WITH_EXACT_SCOPE_AND_EVIDENCE",
+    "local_code": "PREPARED_LOCALLY_UNVERIFIED_UNLESS_THE_RELEVANT_LOCAL_CHECK_WAS_EXECUTED",
+    "server_acceptance_requires_server_run": true,
+    "model_score_requires_real_qwen_server_run": true,
+    "training_requires_explicit_user_approval": true
+  }
+}

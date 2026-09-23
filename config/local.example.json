@@ -1,0 +1,87 @@
+{
+  "version": "0.3",
+  "profile": "LOCAL_DATA_PREPARATION_ONLY",
+  "execution_policy_ref": "config/execution_policy.json",
+  "current_stage": "LOCAL_DATA_PREPARATION_ONLY",
+  "t00_enabled": false,
+  "project_test_execution_enabled": false,
+  "model_inference_enabled": false,
+  "server_connection_enabled": false,
+  "source_transfer_enabled": false,
+  "application_home": "E:\\desn 2000\\bsc",
+  "source_roots": [
+    "E:\\desn 2000\\data"
+  ],
+  "evaluation_roots": [
+    "E:\\desn 2000\\Qwen original physics and chem ability test"
+  ],
+  "source_allowlist_manifest": null,
+  "workspace_path": "workspace",
+  "database_url": "sqlite:///workspace/db/bsc.sqlite3",
+  "provider": {
+    "type": "UNCONFIGURED",
+    "base_url": null,
+    "api_key_env": "BSC_MODEL_API_KEY",
+    "requested_model_id": "Qwen/Qwen3.8-27B",
+    "served_model_id": null,
+    "profile_id": "server-qwen-pending",
+    "external_transmission_approved": false
+  },
+  "server": {
+    "host": "127.0.0.1",
+    "port": 8765,
+    "allowed_origins": [
+      "http://127.0.0.1:5173"
+    ],
+    "session_token_env": "BSC_SESSION_TOKEN"
+  },
+  "retrieval": {
+    "sparse": "sqlite_fts5",
+    "dense": "numpy_exact",
+    "embedding_model_candidate": "Qwen/Qwen3-Embedding-0.6B",
+    "embedding_revision": null,
+    "embedding_enabled": false,
+    "reranker_model_candidate": "Qwen/Qwen3-Reranker-0.6B",
+    "reranker_enabled": false,
+    "rrf_k": 60,
+    "sparse_top_k": 20,
+    "dense_top_k": 20,
+    "rerank_top_k": 12,
+    "max_evidence_chunks": 6,
+    "chunk_target_tokens": [
+      400,
+      800
+    ]
+  },
+  "harness": {
+    "max_tool_rounds": 8,
+    "max_structure_repairs": 1,
+    "context_tokens_limit": null,
+    "generation_overrides": {},
+    "raw_reasoning_persistence": false,
+    "model_timeout_seconds_initial": 120,
+    "ordinary_tool_timeout_seconds_initial": 15,
+    "stream_final_high_consequence_before_validation": false
+  },
+  "ingest": {
+    "scan_root_implicitly": false,
+    "follow_symlinks": false,
+    "auto_extract_archives": false,
+    "remote_url_fetch": false,
+    "auto_run_document_code": false,
+    "source_text_external_upload": false,
+    "initial_max_document_mib": 32,
+    "initial_max_pages": 200,
+    "all_limits_are_resource_limits_not_battery_safety_limits": true
+  },
+  "emergency": {
+    "approved_site_card_path": null,
+    "site_id": null,
+    "live_site_use_enabled": false
+  },
+  "external_business_writes_enabled": false,
+  "device_control_enabled": false,
+  "training_enabled": false,
+  "automatic_seed_generation_enabled": false,
+  "online_feedback_training_enabled": false
+}

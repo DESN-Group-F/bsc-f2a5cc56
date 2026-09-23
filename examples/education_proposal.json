@@ -1,0 +1,40 @@
+{
+  "schema_version": "0.3",
+  "intent": "EDUCATION",
+  "module_ids": [
+    "M04"
+  ],
+  "capabilities": [
+    "PHYS_CHEM",
+    "ENGINEERING"
+  ],
+  "scope": {
+    "scope_class": "NOT_APPLICABLE",
+    "rationale": "题设中的离线数学问题，不申请作业许可。",
+    "search_run_refs": [],
+    "deviations": [],
+    "evidence_sufficiency": "SUFFICIENT_FOR_TASK"
+  },
+  "urgency_assessment": "ROUTINE",
+  "answer_markdown": "在题设I=2 A、R=0.5 Ω及P=I²R下，P=2 W。这一算式不能单独推出温度或电池是否安全。",
+  "claims": [
+    {
+      "claim_id": "DEMO-C1",
+      "text": "题设算式结果为2 W。",
+      "basis": "PROVIDED_ASSUMPTION",
+      "evidence_refs": [],
+      "assumptions": [
+        "I固定为2 A",
+        "R为0.5 Ω",
+        "仅评估P=I²R项"
+      ]
+    }
+  ],
+  "hypotheses": [],
+  "predictions": [],
+  "recommendations": [],
+  "questions": [],
+  "limitations": [
+    "合成合同示例，不是已运行模型输出或操作指南。"
+  ]
+}

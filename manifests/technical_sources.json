@@ -1,0 +1,114 @@
+[
+  {
+    "id": "W1",
+    "title": "Qwen3.8-27B official repository file page",
+    "url": "https://huggingface.co/Qwen/Qwen3.8-27B/tree/main",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "官方仓库文件页可核查标识；模型卡主入口本次首次读取cache miss，未读取本地权重或验证runtime。",
+    "content_bundled": false
+  },
+  {
+    "id": "W2",
+    "title": "vLLM OpenAI-compatible serving",
+    "url": "https://docs.vllm.ai/en/latest/serving/online_serving/openai_compatible_server/",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "HTTP协议和generation_config行为参考；不保证本机所有功能已兼容。",
+    "content_bundled": false
+  },
+  {
+    "id": "W3",
+    "title": "SQLite FTS5",
+    "url": "https://www.sqlite.org/fts5.html",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "全文检索、bm25与trigram；运行环境须probe编译支持与中文行为。",
+    "content_bundled": false
+  },
+  {
+    "id": "W4",
+    "title": "Qwen3-Embedding-0.6B",
+    "url": "https://huggingface.co/Qwen/Qwen3-Embedding-0.6B",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "候选embedding身份与使用说明；未下载未实测。",
+    "content_bundled": false
+  },
+  {
+    "id": "W5",
+    "title": "Qwen3-Reranker-0.6B",
+    "url": "https://huggingface.co/Qwen/Qwen3-Reranker-0.6B",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "候选重排模型；默认不启用。",
+    "content_bundled": false
+  },
+  {
+    "id": "W6",
+    "title": "FastAPI manual server",
+    "url": "https://fastapi.tiangolo.com/deployment/manually/",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "应用服务候选；依赖版本需锁定。",
+    "content_bundled": false
+  },
+  {
+    "id": "W7",
+    "title": "Pint documentation",
+    "url": "https://pint.readthedocs.io/en/stable/",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "单位工具参考；单位正确不证明物理模型正确。",
+    "content_bundled": false
+  },
+  {
+    "id": "W8",
+    "title": "pypdf text extraction",
+    "url": "https://pypdf.readthedocs.io/en/stable/user/extract-text.html",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "原生PDF提取与局限；不是扫描页/表格自动正确的保证。",
+    "content_bundled": false
+  },
+  {
+    "id": "W9",
+    "title": "PyBaMM thermal models",
+    "url": "https://docs.pybamm.org/en/stable/source/examples/notebooks/models/thermal-models.html",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "专用热模型候选及假设；本轮不安装，不作为通用风险预测器。",
+    "content_bundled": false
+  },
+  {
+    "id": "W10",
+    "title": "Proximal Policy Optimization Algorithms",
+    "url": "https://arxiv.org/abs/1707.06347",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "未来PPO方法背景，未选定或实现训练。",
+    "content_bundled": false
+  },
+  {
+    "id": "W11",
+    "title": "SimPO",
+    "url": "https://arxiv.org/abs/2405.14734",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "未来偏好优化候选，未选定。",
+    "content_bundled": false
+  },
+  {
+    "id": "W12",
+    "title": "CPPO Completion Pruning Policy Optimization",
+    "url": "https://arxiv.org/abs/2503.22342",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "说明CPPO存在该具体用法；不假设就是用户所指方法。",
+    "content_bundled": false
+  },
+  {
+    "id": "W13",
+    "title": "NumPy load",
+    "url": "https://numpy.org/doc/stable/reference/generated/numpy.load.html",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "安全读取向量文件；明确allow_pickle=False。",
+    "content_bundled": false
+  },
+  {
+    "id": "W14",
+    "title": "OpenAI Codex AGENTS.md",
+    "url": "https://developers.openai.com/codex/guides/agents-md/",
+    "checked_on": "2026-09-19",
+    "scope_and_limit": "项目级指导文件读取参考；不更改用户全局配置。",
+    "content_bundled": false
+  }
+]

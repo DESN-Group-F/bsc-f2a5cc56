@@ -1,0 +1,173 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:bsc:0.3:case_snapshot",
+  "title": "case_snapshot",
+  "type": "object",
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1
+    },
+    "asset_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "site_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "observations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "observation_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "asset_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "field": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {},
+          "unit": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "basis": {
+            "enum": [
+              "REPORTED",
+              "OBSERVED",
+              "MEASURED",
+              "DOCUMENTED",
+              "DERIVED",
+              "HYPOTHESIS",
+              "MODEL_KNOWLEDGE",
+              "PROVIDED_ASSUMPTION"
+            ]
+          },
+          "source_refs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "revision": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "locator": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "id",
+                "revision",
+                "locator"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "observed_at": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "recorded_at": {
+            "type": "string",
+            "minLength": 1
+          },
+          "quality": {
+            "enum": [
+              "UNKNOWN",
+              "USER_REPORTED",
+              "CHECKED",
+              "MISSING",
+              "CONFLICTED"
+            ]
+          },
+          "supersedes": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "required": [
+          "observation_id",
+          "asset_id",
+          "field",
+          "value",
+          "unit",
+          "basis",
+          "source_refs",
+          "observed_at",
+          "recorded_at",
+          "quality",
+          "supersedes"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "unknowns": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "conflicts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "is_synthetic": {
+      "type": "boolean"
+    },
+    "as_of": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "case_id",
+    "revision",
+    "goal",
+    "asset_refs",
+    "site_id",
+    "observations",
+    "unknowns",
+    "conflicts",
+    "is_synthetic",
+    "as_of"
+  ],
+  "additionalProperties": false
+}

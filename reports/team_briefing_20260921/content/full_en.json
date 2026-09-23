@@ -1,0 +1,618 @@
+{
+  "language": "en",
+  "title": "BSC Project: Data Status and Coverage",
+  "short_title": "BSC | Data status and coverage",
+  "pages": [
+    {
+      "title": "BSC Project:\nData Status and Coverage",
+      "blocks": [
+        {
+          "type": "note",
+          "text": "Report date: 21 September 2026    Audience: Product owner and project team"
+        },
+        {
+          "type": "p",
+          "text": "The agreed data preparation, read-access setup and independent review are complete, with an additional set of manufacturer lithium-battery sources. The project now has traceable inputs and source evidence for the next build stage. Clear gaps remain in lithium-battery models, application scenarios and complete operating conditions, so the full external-data requirement cannot yet be considered satisfied."
+        },
+        {
+          "type": "h",
+          "text": "Problem the project is intended to solve"
+        },
+        {
+          "type": "p",
+          "text": "The planned system will combine a user's description of site conditions, product and site documents uploaded for the case, queryable records and analysis tools to produce evidence-backed assessments. It should distinguish known facts, inference and unknowns, then use applicable UNSW procedures to suggest actions, further checks and escalation. The first version will use general analysis plus case-specific inputs rather than assume prior knowledge of every device."
+        },
+        {
+          "type": "h",
+          "text": "Status at a glance"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Measure",
+            "Current result",
+            "How to interpret it"
+          ],
+          "rows": [
+            [
+              "Original sources",
+              "300 files\nabout 112.42 GB",
+              "70 documents and 230 experimental or data files; experimental data account for most of the volume."
+            ],
+            [
+              "Effective additions in the latest preparation batch",
+              "15 manufacturer sources\n1 DOE background report",
+              "Manufacturer material totals about 55.78 MB. Additions are registered separately from the original 300 files."
+            ],
+            [
+              "Specific products identified",
+              "66 complete product labels",
+              "Includes cells, modules, racks and kits; 65 have an identified manufacturer."
+            ],
+            [
+              "New product query preparation",
+              "40 records\n164 fact fields",
+              "32 exact product labels and 8 family records, prepared with source conditions; not yet ingested."
+            ],
+            [
+              "Coverage review",
+              "29 requirements",
+              "Covers chemistry, form, system level, scenario and lifecycle; not all 29 are sufficiently covered."
+            ]
+          ],
+          "widths": [
+            103,
+            136,
+            262
+          ],
+          "center": []
+        },
+        {
+          "type": "h",
+          "text": "Current stage"
+        },
+        {
+          "type": "p",
+          "text": "Completed work is limited to data preparation and bounded review. RAG retrieval, the target database, Qwen integration, and system or model performance testing were not carried out in these preparation runs. [1][2][3]"
+        },
+        {
+          "type": "note",
+          "text": "Reading guide: page 2 covers data types; pages 3–6 cover breadth; page 7 explains usability and progress; page 8 lists gaps and reference locations."
+        }
+      ]
+    },
+    {
+      "title": "Data scale and file types",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The 300 original sources total 112,415,624,680 bytes, or about 112.42 GB. One archive may contain many experimental members, and one battery sample may generate millions of time points. Data volume therefore cannot be judged by dividing gigabytes by the number of index entries. [1]"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Data type",
+            "Verified scale",
+            "Preparation status"
+          ],
+          "rows": [
+            [
+              "Explanatory and knowledge documents",
+              "70 originals\ncontent extracted from 69",
+              "PDF, web and Markdown material. Full text or bounded extracted information is available for review; one copy-controlled test summary has not been text-extracted."
+            ],
+            [
+              "CSV measurements",
+              "140 standalone CSV files\n125,792,633 rows",
+              "A complete file-level quality scan was previously completed. Original voltage, current, temperature and other fields, quality flags and read-access paths are retained."
+            ],
+            [
+              "Segmented CSV inside archives",
+              "182 members\n6,297,413 measurement rows",
+              "Descriptions, headers and measurement regions are distinguished. Total CSV records are 6,307,995 when descriptions and headers are included."
+            ],
+            [
+              "JSON and compressed data",
+              "48 ZIP or TAR containers\n2,271 members registered",
+              "Complete structure scans cover 229 ZIP JSON and 264 TAR gzip JSON members, retaining field names, types and anomaly information."
+            ],
+            [
+              "MATLAB numeric objects",
+              "13 standalone MAT files\n66 additional MATLAB members in containers",
+              "Ten HDF5 MAT files register 422 within-batch cell objects. Three special MAT files yielded 11 numeric tables; some units remain unknown."
+            ],
+            [
+              "Workbooks and R data",
+              "102 workbooks\n482 worksheets; 28 RDA members",
+              "Includes 11 standalone XLSX files and 91 workbook members in containers. Table structures and bounded read access are prepared; macros and external links are not executed."
+            ],
+            [
+              "Scientific images",
+              "62 TIFF or PNG members\nmetadata for 31,187 frames",
+              "184 frames were decoded. The scientific meaning, spatial scale and applicability of every frame or voxel have not been established."
+            ]
+          ],
+          "widths": [
+            103,
+            136,
+            262
+          ],
+          "center": []
+        },
+        {
+          "type": "note",
+          "text": "Originals, archive members, worksheets, objects and rows are different nested levels and must not be added together as a total sample count. 112.42 GB is about 104.70 GiB; the difference is only the display unit."
+        },
+        {
+          "type": "p",
+          "text": "Large data remain in their native formats with traceable read methods so that specific fields or slices can be loaded when needed. A small index may therefore point to a very large measurement set. Passing format checks also does not make every experiment applicable to the current device."
+        }
+      ]
+    },
+    {
+      "title": "Background knowledge and source coverage",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Material spans eight knowledge domains, plus comparative references from other laboratories, universities and industry. It supports explanation and analysis; product parameters, site procedures and test conditions still require case-specific matching. [1][4]"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Knowledge domain",
+            "Available material and use",
+            "Main boundary"
+          ],
+          "rows": [
+            [
+              "Physics and chemistry foundations",
+              "DOE, NASA and others: charge, power, energy, heat, capacity and battery health.",
+              "Does not establish every battery's reaction kinetics, thermal parameters or lifetime model."
+            ],
+            [
+              "Battery and system engineering",
+              "Manufacturer data and foxBMS examples: cells, modules, protection and chargers.",
+              "Match the exact model, version and system configuration."
+            ],
+            [
+              "Measurement and analysis methods",
+              "NASA, CALCE and TRI data; NIST measurement principles.",
+              "Units, signs, sampling, missing values and calibration may differ by dataset."
+            ],
+            [
+              "Anomaly and failure evidence",
+              "UNSW, SafeWork NSW and experimental failure evidence: signs and observations.",
+              "Observations do not prove cause, probability or time to failure."
+            ],
+            [
+              "Lifecycle practice",
+              "MIT, UNSW and NSW EPA: charging, discharging, storage, checks, maintenance and disposal.",
+              "General practice cannot replace manufacturer limits, safety information or site controls."
+            ],
+            [
+              "Institutional procedures and applicable rules",
+              "UNSW risk and safe-work procedures; transport and standards references.",
+              "The site supplies activity-specific procedures and approvals; check applicable versions."
+            ],
+            [
+              "Emergency and escalation paths",
+              "Public UNSW and SafeWork NSW guidance.",
+              "Confirm this lab's responsible people, phone numbers, emergency cards and routes at use."
+            ],
+            [
+              "Experimental and method validation",
+              "NASA, CALCE and TRI protocols, field/read conventions and validation inputs.",
+              "Inputs do not prove that a tool is implemented or a model is effective."
+            ]
+          ],
+          "widths": [
+            104,
+            218,
+            179
+          ],
+          "center": []
+        },
+        {
+          "type": "h",
+          "text": "How authority should be judged"
+        },
+        {
+          "type": "p",
+          "text": "Manufacturer evidence supports its named products; UNSW and local institutions explain relevant procedures; research datasets support analysis under stated test conditions. These roles are not interchangeable. Even authoritative sources require version, permission and applicability checks."
+        },
+        {
+          "type": "p",
+          "text": "Other universities and laboratories offer comparisons where local procedures lack detail. State their original context; do not present them as UNSW-approved. Some DOE battery-management material concerns storage or lead-acid batteries and cannot apply directly to every lithium battery."
+        }
+      ]
+    },
+    {
+      "title": "Lithium chemistry and form coverage",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Lithium batteries are the primary application focus. After the latest preparation batch, mainstream lithium-ion chemistries have clearer background and product evidence, although depth varies by chemistry. “Available” below means relevant evidence exists; it does not mean complete operating parameters or a complete market catalogue. [3][5]"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Chemistry or category",
+            "Evidence available",
+            "What remains missing"
+          ],
+          "rows": [
+            [
+              "LCO — lithium cobalt oxide",
+              "One exact Saft protected battery-pack model with a chemistry declaration and some operating parameters.",
+              "The document is historical and cannot establish chemistry or operating conditions for other cells."
+            ],
+            [
+              "NMC or NCM — nickel manganese cobalt",
+              "Exact LG Energy Solution pouch models and related research data.",
+              "Complete charge/discharge conditions and approved specifications for target models."
+            ],
+            [
+              "NCA — nickel cobalt aluminium",
+              "Murata cylindrical models with explicit manufacturer-catalogue chemistry and basic parameters.",
+              "Current availability and complete model operating conditions."
+            ],
+            [
+              "LFP — lithium iron phosphate",
+              "Exact LG and Lishen cells, plus CATL, EVE and BYD material at different product levels.",
+              "Information from one family or system cannot be applied to every LFP battery."
+            ],
+            [
+              "LMO — lithium manganese oxide",
+              "DOE overview, research material and product-family background.",
+              "No verified chemistry binding to an exact commercial model."
+            ],
+            [
+              "LTO — lithium titanate anode",
+              "Toshiba SCiB family declaration and exact module records.",
+              "Exact cell models and corresponding cathode information; LTO identifies the anode material."
+            ],
+            [
+              "Primary lithium",
+              "One specific Murata CR2032 coin-cell example.",
+              "A broader primary-lithium overview and more models; rechargeable-battery charging conditions do not apply."
+            ],
+            [
+              "Special or emerging chemistries",
+              "Tracked as a separate scope, with no specific chemistry selected yet.",
+              "Solid-state, rechargeable lithium-metal and other systems should be added only for an identified use case."
+            ]
+          ],
+          "widths": [
+            117,
+            206,
+            178
+          ],
+          "center": []
+        },
+        {
+          "type": "h",
+          "text": "Forms and system levels"
+        },
+        {
+          "type": "p",
+          "text": "Manufacturer evidence now contains exact labels for cylindrical, prismatic and pouch forms. The model names and dimensions of the added Panasonic prismatic cells are confirmed, but their catalogue does not declare model-level chemistry, so it remains unknown."
+        },
+        {
+          "type": "p",
+          "text": "Coverage also reaches modules, battery packs, racks, protection/BMS functions, and one manufacturer-defined battery-pack and charger combination. Knowing that a device has protection does not establish its thresholds, firmware logic or cause of failure."
+        },
+        {
+          "type": "note",
+          "text": "The LG catalogue also contains NCMA material labels. They are preserved as stated by the source and are not automatically merged into NMC or NCA."
+        }
+      ]
+    },
+    {
+      "title": "Specific product coverage",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The project currently identifies 66 exact product labels, 65 with an identified manufacturer. These products include cells, modules, racks and kits. Brand names, dimensions, family names and experimental sample IDs are not counted as exact commercial product labels. [3][6]"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Manufacturer or source label",
+            "Labels",
+            "Main evidence depth"
+          ],
+          "rows": [
+            [
+              "Molicel",
+              "32",
+              "Mostly model identities and basic ratings from safety data sheets; source use is restricted."
+            ],
+            [
+              "LG Energy Solution",
+              "9",
+              "Comparative specifications for pouch and cylindrical cells, including stated material systems."
+            ],
+            [
+              "Toshiba",
+              "5",
+              "Exact module numbers; capacity-named cells remain separate family records."
+            ],
+            [
+              "Murata",
+              "4",
+              "Cylindrical cells and one primary-lithium coin cell, supported by a datasheet or catalogue."
+            ],
+            [
+              "CATL",
+              "4",
+              "Module and rack records; the 280 Ah family row is not treated as a complete cell model."
+            ],
+            [
+              "Panasonic Energy",
+              "3",
+              "One cylindrical model and two prismatic cell models."
+            ],
+            [
+              "Samsung SDI",
+              "2",
+              "Module and BMS-related material; complete internal cell models remain insufficient."
+            ],
+            [
+              "Lishen",
+              "1",
+              "Exact LFP cylindrical model and page-level parameters."
+            ],
+            [
+              "EVE Energy",
+              "1",
+              "LF280K appears in an official application case; complete operating specifications are missing."
+            ],
+            [
+              "Saft",
+              "1",
+              "Historical datasheet for a protected battery pack."
+            ],
+            [
+              "GS Yuasa",
+              "1",
+              "Exact module parameters; chemistry remains unknown because the composition link is not evidenced."
+            ],
+            [
+              "Bosch Professional",
+              "1",
+              "Manufacturer battery-pack and charger kit."
+            ],
+            [
+              "Kokam",
+              "1",
+              "Model in a third-party modelling parameter set; parameters are not product guarantee values."
+            ],
+            [
+              "Manufacturer not established",
+              "1",
+              "CALCE records a complete label; the manufacturer was not filled from general knowledge."
+            ]
+          ],
+          "widths": [
+            128,
+            48,
+            325
+          ],
+          "center": [
+            1
+          ]
+        },
+        {
+          "type": "p",
+          "text": "The 66 labels comprise 34 existing labels plus 32 non-duplicate labels from the latest preparation batch. A further 10 families, 13 series and 248 research-sample identity groups are stored separately and are not included in the 66."
+        },
+        {
+          "type": "note",
+          "text": "Manufacturer count is not a coverage percentage. BYD Blade Battery remains family-level material and is not included among the exact labels above. Historical catalogues prove information only for their documented versions, not current sale status or procurement interchangeability."
+        }
+      ]
+    },
+    {
+      "title": "Application scenarios and lifecycle coverage",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "Support varies substantially by scenario. The table shows what current evidence can support and what is still needed before handling a real case; it does not indicate that a model has been tested in these scenarios. [4][5]"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Application scenario",
+            "Current support",
+            "Key gap or case-specific input"
+          ],
+          "rows": [
+            [
+              "UNSW teaching and laboratories",
+              "Public safety, risk-planning and escalation references; experimental data and product examples.",
+              "Risk assessment, safe-work procedure, assets and current emergency contacts for the activity."
+            ],
+            [
+              "Portable devices",
+              "Model identities and basic parameters for cylindrical, pouch and prismatic cells.",
+              "The actual device's battery pack, BMS, charger and user manual."
+            ],
+            [
+              "Power tools",
+              "One Bosch manufacturer-defined battery-pack and charger combination.",
+              "Target tool code, site temperature and mode; evidence cannot be extended to other brands."
+            ],
+            [
+              "Light mobility",
+              "General guidance on charging location and anomaly recognition.",
+              "Named battery-pack and charger system documentation is still missing."
+            ],
+            [
+              "Energy storage systems",
+              "Module or rack examples from Samsung, CATL, GS Yuasa and others.",
+              "Complete system design, wiring, cooling, and site electrical and fire conditions."
+            ]
+          ],
+          "widths": [
+            107,
+            193,
+            201
+          ],
+          "center": []
+        },
+        {
+          "type": "h",
+          "text": "Coverage from procurement to end of life"
+        },
+        {
+          "type": "p",
+          "text": "Procurement and identity checks now record manufacturer, model, version and source, but authenticity, current availability and compatibility still need confirmation. Some charging and discharging sources provide voltage, current, temperature or time conditions. Charge conditions used in a capacity test must remain experimental context and must not automatically become recommended operating limits."
+        },
+        {
+          "type": "p",
+          "text": "General principles exist for storage, use and maintenance, but most models still lack complete state-of-charge, temperature, duration and maintenance requirements. Conditioned ageing data can support future method development; a general battery-health estimation tool has not been implemented or validated."
+        },
+        {
+          "type": "p",
+          "text": "Transport, disposal and anomaly escalation have branching guidance. Actual transport still requires the applicable rule version, battery condition, quantity and packaging to be checked. Disposal and emergency response must follow current campus or jurisdictional routes. Existing material cannot determine the cause, probability or time to failure for a new incident."
+        },
+        {
+          "type": "note",
+          "text": "Case-specific input is a normal part of the product workflow. Gaps in public evidence require later source work. The two should be managed separately."
+        }
+      ]
+    },
+    {
+      "title": "Processing status and usable material",
+      "blocks": [
+        {
+          "type": "h",
+          "text": "Original-file processing and use"
+        },
+        {
+          "type": "p",
+          "text": "All 300 original files have a registration and disposition result. The previously unresolved groups of 60 and 7 files now each have a processing or restriction decision. A recorded outcome does not mean every full text was extracted or may be placed in a knowledge base. The 300 originals are classified as follows. [1]"
+        },
+        {
+          "type": "table",
+          "headers": [
+            "Current use status",
+            "Files",
+            "Meaning"
+          ],
+          "rows": [
+            [
+              "Conditionally usable",
+              "214",
+              "Select under each source's permission, attribution, version and use conditions."
+            ],
+            [
+              "Split by specific action",
+              "2",
+              "For example, numerical analysis and placing explanatory source text into a model have different conditions."
+            ],
+            [
+              "Local LLM or RAG use not allowed",
+              "6",
+              "Registration and review records are retained, but the files cannot be directly imported for that use."
+            ],
+            [
+              "Not selected for the current minimal build set",
+              "78",
+              "Not selected does not mean invalid or permanently prohibited."
+            ]
+          ],
+          "widths": [
+            164,
+            52,
+            285
+          ],
+          "center": [
+            1
+          ]
+        },
+        {
+          "type": "h",
+          "text": "All 207 candidates have semantic clarification"
+        },
+        {
+          "type": "p",
+          "text": "Earlier document processing extracted 673 numerically related records, of which 207 required additional context review. All 207 now have semantic clarification: 92 are source-bounded parameters, experimental conditions or rules, and 115 serve other roles such as identifiers, references or layout. The previous unresolved count is now zero. The remaining 466 retain prior review results and were not comprehensively re-reviewed in that pass. [2]"
+        },
+        {
+          "type": "p",
+          "text": "Use status for the same 207 records is separately classified as 65 conditionally allowed, 84 not selected for the minimal set, and 58 not allowed for local RAG. This classification counts records, while the table above counts original files; the figures cannot be subtracted or combined. Semantic clarification does not upgrade permissions, and the 92 records are not automatically device operating instructions."
+        },
+        {
+          "type": "h",
+          "text": "How the lithium-product increment can be used"
+        },
+        {
+          "type": "p",
+          "text": "The added product batch contains 42 records and 174 fact fields, each checked against its source, unit and condition. Fact fields are specific items such as model, capacity and voltage. Of these, 40 records and 164 fields were selected as the incremental preparation set for later internal queries; two restricted reused Molicel records were not selected. The 40 comprise 32 exact product labels and 8 family records. They do not represent all usable project data. [3]"
+        },
+        {
+          "type": "p",
+          "text": "Current deliverables include actual document content, sourced facts, read-access paths for experimental data and validation material. RAG ingestion of source text, model training, external redistribution and server transfer are separate uses and cannot be inferred as permitted merely because material was parsed or publicly accessible."
+        },
+        {
+          "type": "note",
+          "text": "Items still incomplete or not safe to guess include the full text of one copy-controlled summary, units for some special MAT fields, and product- and site-specific applicability conditions."
+        }
+      ]
+    },
+    {
+      "title": "Conclusions and next priorities",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "The data-preparation deliverables can be accepted within their stated scope. Traceable entry points now exist for mainstream lithium-battery foundations, several product levels and large experimental datasets. Broader model and scenario coverage remains incomplete. Passing data-preparation checks does not mean that the analysis tools, database, RAG or Qwen performance have been accepted."
+        },
+        {
+          "type": "h",
+          "text": "Public material still needed"
+        },
+        {
+          "type": "p",
+          "text": "Priorities are an exact LMO product, a named light-mobility battery-pack and charger combination, a broader primary-lithium overview, and complete charge, discharge, storage and maintenance conditions for target products. Gaps remain in A123 manufacturer material, specific Samsung cells, a complete BYD cell model and the full EVE LF280K specification. Special chemistries should be scoped only after the intended use is identified."
+        },
+        {
+          "type": "h",
+          "text": "Three decisions for the next stage"
+        },
+        {
+          "type": "p",
+          "text": "First, select the initial representative tasks and their input requirements, and turn “what the evidence is sufficient to answer” into testable criteria. Second, organise knowledge text, product facts and native experimental data through a use-specific manifest that preserves source, conditions, knowns and unknowns; do not bulk-import whole folders. Third, once system construction starts, validate retrieval, numerical tools and model answers separately rather than use data-preparation checks as a proxy for system performance."
+        },
+        {
+          "type": "h",
+          "text": "Review and execution record"
+        },
+        {
+          "type": "p",
+          "text": "The latest lithium preparation batch received author processing, independent item-by-item audit and coordinator review. The 297 existing identity records, 42 product records and 40 query-preparation records each have corresponding checks. All 16 final handover checks passed, but they do not constitute a physical experiment or a site-safety conclusion."
+        },
+        {
+          "type": "note",
+          "text": "Disclosed execution issues include a historical mistaken RData dependency installation with limited recovery evidence, and correction of restricted-page rendering. The latest preparation batch also involved quarantine after discovering ULRI automated-access restrictions, withdrawal of an HTML response mistakenly treated as a PDF, and a policy rejection of temporary render cleanup. Detailed records are retained; these events must not be described as never having occurred. [1][3]"
+        },
+        {
+          "type": "h",
+          "text": "Reference locations"
+        },
+        {
+          "type": "p",
+          "text": "[1] Original-data preparation package and coordinator decision: CR-DATA-READY-001/20260920T012405_AEST.\n[2] Corrections for the 207 candidates: CR-DATA-CANDIDATE-001/20260920T045258_AEST.\n[3] Lithium coverage increment and coordinator decision: CR-LITHIUM-COVERAGE-001/20260921T043456_AEST."
+        },
+        {
+          "type": "note",
+          "text": "All directories are under E:/desn 2000/bsc/data_preparation/. In each directory, read README.md first, then ROOT_DECISION.json. [4] is coverage/DOMAIN_COVERAGE.jsonl under [1]; [5] is scope/REPORT.md and REQUIREMENT_STATUS_MATRIX.jsonl under [3]; [6] is CURRENT_COVERAGE_COUNTS.json under [3]."
+        },
+        {
+          "type": "note",
+          "text": "Terms: RAG means retrieval-augmented generation; BMS means battery management system; SOC means state of charge; SOH means state of health. Every use of “conditionally usable” must be read together with the original source conditions."
+        }
+      ]
+    }
+  ]
+}

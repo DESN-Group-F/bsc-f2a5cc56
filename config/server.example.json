@@ -1,0 +1,47 @@
+{
+  "version": "0.3.2",
+  "profile": "SERVER_EXECUTION_PENDING",
+  "server": {
+    "host_alias": null,
+    "operating_system": null,
+    "workspace_root": null,
+    "python_version": null,
+    "node_version": null,
+    "gpu_model": null,
+    "gpu_count": null,
+    "cuda_version": null,
+    "storage_budget_gib": null,
+    "network_policy": "UNKNOWN",
+    "secrets_delivery": "UNCONFIGURED"
+  },
+  "model": {
+    "requested_model_id": "Qwen/Qwen3.8-27B",
+    "served_model_id": null,
+    "provider_type": "UNCONFIGURED",
+    "base_url": null,
+    "weight_path_or_registry_ref": null,
+    "revision": null,
+    "quantization": null,
+    "template_ref": null,
+    "effective_generation": {},
+    "probe_status": "NOT_RUN"
+  },
+  "transfer": {
+    "approved": false,
+    "code_manifest": null,
+    "rag_source_manifest": null,
+    "eval_public_manifest": null,
+    "eval_private_oracle_manifest": null,
+    "training_candidate_manifest": null,
+    "raw_local_root_upload_forbidden": true
+  },
+  "execution": {
+    "t00_enabled": false,
+    "tests_enabled": false,
+    "fine_tuning_enabled": false,
+    "result_export_root": "outputs/server_runs",
+    "capture_raw_stdout_stderr": true,
+    "capture_environment_snapshot": true,
+    "capture_input_output_hashes": true
+  }
+}

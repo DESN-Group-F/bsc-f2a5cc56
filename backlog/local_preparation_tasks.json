@@ -1,0 +1,87 @@
+[
+  {
+    "task_id": "LP00",
+    "title": "确认本地准备／服务器执行边界",
+    "deliverables": "ADR-EXEC-001、执行策略、服务器配置样例",
+    "acceptance": "明确本阶段不启动T00；测试和微调仅服务器执行",
+    "status": "COMPLETED"
+  },
+  {
+    "task_id": "LP01",
+    "title": "服务器交接目录与manifest模板",
+    "depends_on": [
+      "LP00"
+    ],
+    "deliverables": "code/RAG/eval public/eval private/training candidate分离模板",
+    "acceptance": "无本地原件自动上传；权限、用途和hash字段明确",
+    "status": "COMPLETED"
+  },
+  {
+    "task_id": "LP02",
+    "title": "T00–T06服务器执行矩阵",
+    "depends_on": [
+      "LP00"
+    ],
+    "deliverables": "每项任务的服务器命令草稿、依赖、输入、输出和证据要求",
+    "acceptance": "本地不运行；没有服务器日志不标PASS",
+    "status": "COMPLETED"
+  },
+  {
+    "task_id": "LP03",
+    "title": "CR-DATA-ROUTE-001 Phase A元数据分流准备",
+    "depends_on": [
+      "LP01",
+      "LP02"
+    ],
+    "deliverables": "current-state视图、300份原件逻辑路由、用途权限sidecar、pilot候选矩阵、portable schema与服务器测试定义",
+    "acceptance": "只读源工作区；未知权限不升级；无本地测试/查询验证；按执行覆盖说明交付",
+    "status": "COMPLETED_LOCAL_ROUTING_PREPARED",
+    "completion": {
+      "run_id": "20260919T185236_AEST_phase_a",
+      "completed_at": "2026-09-19T19:11:00.227+10:00",
+      "static_validation": "32_CHECKS_SATISFIED_0_ISSUES_STATIC_ONLY",
+      "project_tests_run": 0,
+      "server_test_definitions": "18_DEFINED_NOT_RUN",
+      "t00_started": false,
+      "phase_b": "GATED_PER_ACTION_AND_OUTPUT_PURPOSE",
+      "real_data_transfer": "NOT_READY"
+    }
+  },
+  {
+    "task_id": "LP04",
+    "title": "按处理类型校准后的本地批量实际加工",
+    "depends_on": [
+      "LP03"
+    ],
+    "deliverables": "真实文档正文/表格/片段、真实规格参数、选定实验记录、实际运行程序及限定本地检查结果",
+    "acceptance": "复用Phase A；按具体动作与输出用途核对既有依据；每种新结构先小样校准再继续合格批次；原件不变；结果可追溯；不冒充服务器验收",
+    "status": "IN_PROGRESS_FIRST_CALIBRATED_BATCH_COMPLETED",
+    "progress": {
+      "current_run": "20260919T200403_local_processing_05",
+      "selected_objects_processed": 24,
+      "manifest_objects_dispositioned": 300,
+      "document_records": 375,
+      "specification_parameters": 36,
+      "experiment_files_streamed": 5,
+      "experiment_rows_streamed": 1867719,
+      "experiment_records_retained": 5000,
+      "local_checks": "17_PASSED_0_FAILED",
+      "focused_unit_tests": "7_PASSED_0_FAILED",
+      "data_quality_follow_up": "FILE-017-52b8706c7e1f-d201dd has 2213 Internal_Resistance blanks and 1 Temperature blank; preserved as null with source-row examples",
+      "remaining_eligible_experiment_objects": 189,
+      "server_acceptance": "NOT_RUN",
+      "t00_started": false
+    }
+  },
+  {
+    "task_id": "LP05",
+    "title": "服务器交接就绪复核",
+    "depends_on": [
+      "LP03",
+      "LP04"
+    ],
+    "deliverables": "批准bundle、未知项、传输许可、计算预算和启动门禁清单",
+    "acceptance": "仅标READY_FOR_SERVER_HANDOFF_REVIEW；T00仍NOT_STARTED",
+    "status": "NOT_STARTED"
+  }
+]

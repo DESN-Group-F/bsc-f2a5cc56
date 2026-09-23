@@ -1,0 +1,16 @@
+{
+  "release": "BSC Model Core v0.3",
+  "date": "2026-09-19",
+  "python_for_handoff_checks": "3.13.5",
+  "jsonschema_for_handoff_checks": "4.26.0",
+  "helper_unit_tests_passed": 22,
+  "json_schemas_checked": 8,
+  "example_records_checked": 7,
+  "backlog_tasks_all_not_started": 22,
+  "application_scenario_specs_not_executed": 26,
+  "E_drive_accessed": false,
+  "Qwen_inference_executed": false,
+  "application_implemented": false,
+  "training_executed": false,
+  "expert_domain_validation": false
+}

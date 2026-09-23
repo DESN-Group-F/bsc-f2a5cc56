@@ -1,0 +1,30 @@
+{
+  "case_id": "DEMO-CASE1",
+  "revision": 1,
+  "goal": "核对已有测量记录的时间与来源",
+  "asset_refs": [
+    "DEMO-ASSET"
+  ],
+  "site_id": null,
+  "observations": [
+    {
+      "observation_id": "DEMO-OBS1",
+      "asset_id": "DEMO-ASSET",
+      "field": "temperature",
+      "value": 25,
+      "unit": "degC",
+      "basis": "REPORTED",
+      "source_refs": [],
+      "observed_at": null,
+      "recorded_at": "2026-09-19T00:00:00Z",
+      "quality": "USER_REPORTED",
+      "supersedes": null
+    }
+  ],
+  "unknowns": [
+    "测量时刻和方法尚未确认"
+  ],
+  "conflicts": [],
+  "is_synthetic": true,
+  "as_of": "2026-09-19T00:00:00Z"
+}

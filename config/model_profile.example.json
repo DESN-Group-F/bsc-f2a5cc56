@@ -1,0 +1,15 @@
+{
+  "profile_id": "server-qwen-pending",
+  "requested_model_id": "Qwen/Qwen3.8-27B",
+  "served_model_id": null,
+  "provider_type": "UNCONFIGURED",
+  "base_revision": null,
+  "quantization": null,
+  "template_ref": null,
+  "processor_ref": null,
+  "verified_context_tokens": null,
+  "tool_calling": "UNVERIFIED",
+  "vision": "UNVERIFIED",
+  "effective_generation": {},
+  "probe_status": "NOT_RUN"
+}

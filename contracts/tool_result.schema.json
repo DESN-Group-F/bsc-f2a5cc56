@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:bsc:0.3:tool_result",
+  "title": "tool_result",
+  "type": "object",
+  "properties": {
+    "execution_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tool_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "input_hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "status": {
+      "enum": [
+        "SUCCEEDED",
+        "FAILED",
+        "UNKNOWN",
+        "CANCELLED",
+        "NOT_AVAILABLE"
+      ]
+    },
+    "output": {},
+    "units": {
+      "type": "object"
+    },
+    "assumptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "started_at": {
+      "type": "string",
+      "minLength": 1
+    },
+    "finished_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "is_synthetic": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "execution_id",
+    "tool_id",
+    "tool_version",
+    "input_hash",
+    "status",
+    "output",
+    "units",
+    "assumptions",
+    "warnings",
+    "started_at",
+    "finished_at",
+    "is_synthetic"
+  ],
+  "additionalProperties": false
+}

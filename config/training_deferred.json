@@ -1,0 +1,33 @@
+{
+  "version": "0.3",
+  "state": "DEFERRED_PENDING_BASELINE_FAILURE_ANALYSIS",
+  "execution_environment_if_future_approved": "SERVER_ONLY",
+  "current_server_training_authorized": false,
+  "fixed_seed_count": null,
+  "legacy_seed_counts_have_no_current_execution_authority": true,
+  "algorithms": {
+    "SFT": {
+      "enabled": false
+    },
+    "CPPO": {
+      "enabled": false,
+      "exact_method": null,
+      "paper_ref": null,
+      "requires_user_clarification": true
+    },
+    "PPO": {
+      "enabled": false
+    },
+    "SimPO": {
+      "enabled": false
+    }
+  },
+  "preconditions": [
+    "B3 baseline archived",
+    "failure attribution supports model change",
+    "verified target behavior and allowed data",
+    "frozen evaluation protocol",
+    "compute budget and explicit user approval"
+  ],
+  "automatic_feedback_ingestion": false
+}

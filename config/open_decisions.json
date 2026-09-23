@@ -1,0 +1,86 @@
+[
+  {
+    "id": "O01",
+    "subject": "服务器Qwen端点/权重、served_id、模板、量化和有效参数",
+    "state": "UNKNOWN",
+    "resolution_gate": "服务器T01真实运行前；本地仅准备adapter"
+  },
+  {
+    "id": "O02",
+    "subject": "源工作区数量、现有manifest/索引、用途允许与传输情况",
+    "state": "EXT_AUDIT_METADATA_INSPECTED_CONTENT_NOT_REVIEWED",
+    "resolution_gate": "本地Phase A复用审计；正文加工和传输仍逐用途门禁"
+  },
+  {
+    "id": "O03",
+    "subject": "服务器访问、OS、GPU/显存/CUDA、Python/Node、存储及联网限制",
+    "state": "UNKNOWN",
+    "resolution_gate": "T00启动门禁，禁止擅自连接或安装"
+  },
+  {
+    "id": "O04",
+    "subject": "旧初测的具体题目、输出和判分",
+    "state": "USER_REPORTED_GOOD_RESULT",
+    "resolution_gate": "评测归档；不得补分数"
+  },
+  {
+    "id": "O05",
+    "subject": "embedding是否已有、CPU/GPU资源",
+    "state": "UNCONFIRMED",
+    "resolution_gate": "P2 dense前；稀疏检索可先行"
+  },
+  {
+    "id": "O06",
+    "subject": "本地场所/人员/应急卡",
+    "state": "NOT_CONFIRMED",
+    "resolution_gate": "真实现场使用前；研究模式不强制虚构"
+  },
+  {
+    "id": "O07",
+    "subject": "CPPO全称、论文与实现",
+    "state": "UNRESOLVED",
+    "resolution_gate": "仅未来训练研究，不阻塞当前架构"
+  },
+  {
+    "id": "O08",
+    "subject": "最终评测指标、样本量和非退化门槛",
+    "state": "TO_DEFINE_FROM_BASELINE",
+    "resolution_gate": "正式比较前冻结，不用旧配额凑数"
+  },
+  {
+    "id": "O09",
+    "subject": "资料与日志保留/删除及隐私条件",
+    "state": "TO_CONFIRM",
+    "resolution_gate": "真实敏感内容接入前"
+  },
+  {
+    "id": "O10",
+    "subject": "本地到服务器的数据传输方式、允许范围和审批人",
+    "state": "NOT_APPROVED",
+    "resolution_gate": "T00前；禁止上传整个data目录"
+  },
+  {
+    "id": "O11",
+    "subject": "服务器secret注入、日志脱敏和回传方式",
+    "state": "UNCONFIGURED",
+    "resolution_gate": "任何服务器连接前"
+  },
+  {
+    "id": "O12",
+    "subject": "服务器依赖安装、模型下载和计算预算",
+    "state": "NOT_APPROVED",
+    "resolution_gate": "安装或昂贵作业前"
+  },
+  {
+    "id": "O13",
+    "subject": "服务器运行产物、原始日志和hash的保留位置",
+    "state": "TO_CONFIRM",
+    "resolution_gate": "首次服务器执行前"
+  },
+  {
+    "id": "O14",
+    "subject": "文档、规格、实验三条pilot的精确样本及解析/派生许可",
+    "state": "BLOCKED_PENDING_PURPOSE_DECISION",
+    "resolution_gate": "CR-DATA-ROUTE-001 Phase B前；Phase A可继续"
+  }
+]

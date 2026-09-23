@@ -1,0 +1,21 @@
+{
+  "schema_version": "0.1",
+  "source_workspace": "D:/replace-with-local-path/battery_data_workspace_v0_3",
+  "prepared_data_root": "D:/replace-with-local-path/bsc/data_preparation",
+  "accepted_runs": {
+    "data_ready": "CR-DATA-READY-001/20260920T012405_AEST",
+    "candidate_review": "CR-DATA-CANDIDATE-001/20260920T045258_AEST",
+    "lithium_coverage": "CR-LITHIUM-COVERAGE-001/20260921T043456_AEST"
+  },
+  "access": {
+    "source_workspace": "read_only",
+    "prepared_data": "local_only_until_purpose_approved",
+    "server_transfer": "not_configured"
+  },
+  "notes": [
+    "Copy this file to config/data_locations.json and replace paths locally.",
+    "This is a path registry template; historical processing scripts do not automatically read it and still contain their original machine/run paths.",
+    "Do not add credentials, tokens, source content or private evaluation answers.",
+    "A configured path does not grant RAG, training, redistribution or transfer permission."
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "schema_version": "0.3",
+  "run_id": "DEMO-RUN-1",
+  "generated_by": "TRUSTED_APPLICATION",
+  "provider_type": "MOCK",
+  "model_profile_id": "DEMO-PROFILE",
+  "case_revision": null,
+  "status": "COMPLETED",
+  "retrieval_status": "NOT_REQUESTED",
+  "retrieval_snapshot_id": null,
+  "proposal": {
+    "schema_version": "0.3",
+    "intent": "EDUCATION",
+    "module_ids": [
+      "M04"
+    ],
+    "capabilities": [
+      "PHYS_CHEM",
+      "ENGINEERING"
+    ],
+    "scope": {
+      "scope_class": "NOT_APPLICABLE",
+      "rationale": "题设中的离线数学问题，不申请作业许可。",
+      "search_run_refs": [],
+      "deviations": [],
+      "evidence_sufficiency": "SUFFICIENT_FOR_TASK"
+    },
+    "urgency_assessment": "ROUTINE",
+    "answer_markdown": "在题设I=2 A、R=0.5 Ω及P=I²R下，P=2 W。这一算式不能单独推出温度或电池是否安全。",
+    "claims": [
+      {
+        "claim_id": "DEMO-C1",
+        "text": "题设算式结果为2 W。",
+        "basis": "PROVIDED_ASSUMPTION",
+        "evidence_refs": [],
+        "assumptions": [
+          "I固定为2 A",
+          "R为0.5 Ω",
+          "仅评估P=I²R项"
+        ]
+      }
+    ],
+    "hypotheses": [],
+    "predictions": [],
+    "recommendations": [],
+    "questions": [],
+    "limitations": [
+      "合成合同示例，不是已运行模型输出或操作指南。"
+    ]
+  },
+  "tool_executions": [
+    {
+      "execution_id": "DEMO-EXEC1",
+      "tool_id": "electric.ohmic_power",
+      "tool_version": "fixture-v1",
+      "input_hash": "0a16af6ef996b5ade8ed6121782fcb20ec408cc503dafedcd4927dfadfc25a19",
+      "status": "SUCCEEDED",
+      "output": {
+        "power": 2
+      },
+      "units": {
+        "power": "W"
+      },
+      "assumptions": [
+        "I=2 A",
+        "R=0.5 ohm"
+      ],
+      "warnings": [
+        "这是手写fixture，不是实际工具运行日志。"
+      ],
+      "started_at": "2026-09-19T00:00:00Z",
+      "finished_at": "2026-09-19T00:00:00Z",
+      "is_synthetic": true
+    }
+  ],
+  "validation_issues": [
+    "本例由作者手写，仅作合同测试。"
+  ],
+  "is_demo": true,
+  "external_business_actions_enabled": false,
+  "actual_business_receipts": [],
+  "saved_at": null
+}

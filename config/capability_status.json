@@ -1,0 +1,33 @@
+{
+  "version": "0.3",
+  "current_stage": "LOCAL_DATA_PREPARATION_ONLY",
+  "authoritative_test_environment": "SERVER_ONLY",
+  "server_status": "NOT_CONFIGURED",
+  "t00_status": "NOT_STARTED",
+  "global_domain_verified": false,
+  "local_qwen_test": {
+    "status": "USER_REPORTED_INITIAL_RESULT",
+    "reported_summary": "基本完美通过，效果还行",
+    "raw_results_inspected_in_this_handoff": false,
+    "score": null
+  },
+  "capabilities": [
+    {
+      "id": "PHYS_CHEM",
+      "implementation": "PLANNED",
+      "validated_scope": []
+    },
+    {
+      "id": "ENGINEERING",
+      "implementation": "PLANNED",
+      "validated_scope": []
+    },
+    {
+      "id": "GOVERNANCE",
+      "implementation": "PLANNED",
+      "validated_scope": []
+    }
+  ],
+  "predictor_p3": "NOT_AVAILABLE",
+  "emergency_site_card": "NOT_CONFIGURED"
+}

@@ -1,0 +1,254 @@
+from pathlib import Path
+import json
+import hashlib
+from xml.sax.saxutils import escape
+from reportlab.pdfgen import canvas
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, PageBreak
+from reportlab.lib import colors
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.enums import TA_LEFT, TA_CENTER
+from reportlab.lib.pagesizes import A4
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+
+ROOT = Path(__file__).resolve().parent
+OUT = ROOT / 'output/pdf/BSC项目数据现状与覆盖范围汇报_20260921.pdf'
+DATA = Path('E:/desn 2000/bsc/data_preparation')
+READY = DATA / 'CR-DATA-READY-001/20260920T012405_AEST'
+CAND = DATA / 'CR-DATA-CANDIDATE-001/20260920T045258_AEST'
+LITH = DATA / 'CR-LITHIUM-COVERAGE-001/20260921T043456_AEST'
+
+def rows(p):
+    return [json.loads(s) for s in p.read_text(encoding='utf-8-sig').splitlines() if s.strip()]
+
+originals = rows(READY / 'SOURCE_OBJECTS.jsonl')
+counts = json.loads((LITH / 'CURRENT_COVERAGE_COUNTS.json').read_text(encoding='utf-8-sig'))
+selected = json.loads((LITH / 'PRODUCT_FACT_SELECTION.json').read_text(encoding='utf-8-sig'))
+assert len(originals) == 300
+assert counts['exact_product_labels_total'] == 66
+assert selected['selected_records'] == 40 and selected['selected_fact_fields'] == 164
+
+pages = []
+def page(title, *blocks):
+    pages.append({'title': title, 'blocks': list(blocks)})
+def p(t): return {'type': 'p', 'text': t}
+def h(t): return {'type': 'h', 'text': t}
+def note(t): return {'type': 'note', 'text': t}
+def table(headers, body, widths, center=()):
+    return {'type': 'table', 'headers': headers, 'rows': body, 'widths': widths, 'center': list(center)}
+
+page('BSC 项目数据现状与覆盖范围汇报',
+    note('汇报日期 2026年9月21日　　适用读者 产品负责人和项目组成员'),
+    p('项目已完成约定范围内的数据整理、读取准备和独立核查，并增加了一批锂电池原厂资料。现在具备后续搭建的数据输入和来源依据；锂电池型号、应用场景及完整运行条件仍有明确缺口，尚不能宣布全部外部数据需求已经满足。'),
+    h('项目要解决什么问题'),
+    p('系统计划结合用户对现场情况的描述、当次上传的产品与现场资料、可查询记录和分析工具，形成有证据支持的状态判断；区分已知、推断和未知，并结合适用的 UNSW 程序提出处理建议、补充核验和升级路径。首版采用通用分析加当次资料，不预设已掌握所有设备。'),
+    h('现状概览'),
+    table(['统计项目', '当前结果', '应该怎样理解'], [
+        ['原始资料', '300 份\n约112.42 GB', '70份文档、230份实验或数据文件；体积主要来自实验数据。'],
+        ['本轮有效新增', '15 份厂家资料\n1份DOE背景报告', '厂家资料约55.78 MB；补充件与原始300份分别登记。'],
+        ['已识别的具体产品', '66 个完整标签', '含电芯、模组、机架和套装等层级；65个已明确厂家。'],
+        ['新增产品查询准备件', '40 条记录\n164个事实字段', '32个精确产品标签和8个家族记录，按来源条件准备，尚未入库。'],
+        ['覆盖核查范围', '29 项需求', '覆盖体系、形态、系统层级、场景和生命周期；并非29项全部充分。'],
+    ], [112, 108, 281], center=(1,)),
+    h('当前阶段'),
+    p('已完成的是资料准备和限定范围核查。RAG知识检索、目标数据库、Qwen接入以及系统或模型效果测试均未在这些准备运行中开展。[1][2][3]'),
+    note('阅读顺序：第2页看数据种类，第3至6页看覆盖面，第7页看可用性与进度，第8页看缺口及查阅入口。'),
+)
+
+page('一 数据规模与实际种类',
+    p('原始300份资料合计112,415,624,680字节，约112.42 GB。一个压缩文件可以包含大量实验成员，一个电池样本可以产生数百万个时间点，因此不能用“GB ÷ 索引条数”判断数据是否稀少。[1]'),
+    table(['资料种类', '已核对的规模', '已经准备到哪一步'], [
+        ['说明与知识文档', '70份原件\n其中69份已提取内容', '包含PDF、网页、Markdown等。可查阅正文或已提取的限定信息；1份受复制控制的测试摘要尚未提取正文。'],
+        ['CSV测量数据', '140个独立CSV\n125,792,633行', '已完成过全文件质量扫描，保留电压、电流、温度等原字段及质量标记，提供读取入口。'],
+        ['压缩包内分段CSV', '182个成员\n6,297,413行测量数据', '已分开说明、表头与测量区。\nCSV总记录为6,307,995条，包含说明与表头。'],
+        ['JSON与压缩数据', '48个ZIP或TAR容器\n2,271个成员登记', '容器内229个ZIP JSON和264个TAR gzip JSON已作完整结构扫描；保留字段、类型及异常值信息。'],
+        ['MATLAB数值对象', '13份独立MAT\n另有66个容器内MATLAB成员', '10份HDF5 MAT共登记422个批次内电芯对象；3份特殊MAT已解出11张数值表，部分单位仍未知。'],
+        ['工作簿与R数据', '102个工作簿\n482张工作表；28个RDA成员', '工作簿含11份独立XLSX及91个容器内成员。已准备表结构和受限读取入口，不执行宏或外部链接。'],
+        ['科学图像', '62个TIFF或PNG成员\n31,187帧元数据', '184帧做过实际解码。尚未证明所有帧或体素的科学含义、空间尺度和适用性。'],
+    ], [103, 136, 262]),
+    note('表中原件、包内成员、工作表、对象和行数是不同层级，存在包含关系，不能相加为“总样本数”。112.42 GB约为104.70 GiB；这是显示单位差异。'),
+    p('大型数据保留原始格式和可追溯的读取方法，后续按需要读取具体字段或片段。因此，索引可以很少，索引所指向的实际测量数据却很多。格式检查通过也不代表每个实验都适用于当前设备。'),
+)
+
+page('二 背景知识与资料来源覆盖',
+    p('项目的背景资料覆盖八个知识领域，另外保留其他实验室、院校和行业的比较参考。已有资料能提供基础解释和分析依据，但产品参数、现场程序与实验条件仍需逐项匹配。[1][4]'),
+    table(['知识领域', '已有资料与用途', '主要边界'], [
+        ['物理与化学基础', 'DOE、NASA等资料；电荷、功率、能量、热、容量及电池健康概念。', '不能据此给出所有电池的反应动力学、热参数或寿命模型。'],
+        ['电池与系统工程', '原厂规格、foxBMS等系统例子；电芯、模组、保护、充电器关系。', '必须匹配具体型号、版本及系统配置。'],
+        ['测量与分析方法', 'NASA、CALCE、TRI实验数据及NIST测量原则。', '单位、正负号、采样、缺失值和校准情况不能跨数据集默认统一。'],
+        ['异常与失效证据', 'UNSW、SafeWork NSW及实验失效资料；异常征兆和观察记录。', '观察到异常不等于已证明原因、风险概率或失效时间。'],
+        ['全生命周期实践', 'MIT、UNSW、NSW EPA等；充放电、存放、检查、维护和处置参考。', '通用实践不能替代厂家限值、材料安全资料和现场控制。'],
+        ['机构程序与适用规范', 'UNSW风险管理和安全工作程序入口，运输及标准参考。', '具体活动程序和批准仍需现场提供；规则需核对适用版本。'],
+        ['应急与升级路径', 'UNSW和SafeWork NSW公开指导。', '本实验室的负责人、电话、应急卡和路线要在实际使用时确认。'],
+        ['实验与方法验证', 'NASA、CALCE、TRI等实验协议、字段与读取约定、验证输入。', '已有验证材料不代表分析工具已实现或模型已经有效。'],
+    ], [104, 218, 179]),
+    h('权威性应怎样判断'),
+    p('原厂资料适合证明其具体产品的规格；UNSW和本地机构资料适合说明相关程序；研究机构的数据适合支撑对应实验条件下的分析。三类证据作用不同，不能互相替代。资料来自权威机构，也仍需检查版本、许可和适用对象。'),
+    p('其他高校和实验室的流程可以提供比较方案，帮助分析本地程序未明确展开的问题。引用时应说明原场景，不能把外部流程写成已被UNSW批准的程序；例如部分DOE电池管理资料偏向储能或铅酸场景，不能直接套到所有锂电池。'),
+)
+
+page('三 锂电池体系与形态覆盖',
+    p('锂电池是主要应用对象。本轮扩充后，主流锂离子体系有了更清楚的背景和产品证据，但各体系达到的资料深度不同。下表的“已有”只指能找到对应证据，不代表完整操作参数或市场全集。[3][5]'),
+    table(['体系或类别', '目前有什么证据', '还缺什么'], [
+        ['LCO 钴酸锂', 'Saft一个精确型号的带保护电池包，有化学声明和部分运行参数。', '资料为历史版本；不能转作其他电芯的化学或运行依据。'],
+        ['NMC或NCM 镍锰钴', 'LG Energy Solution精确软包型号，以及相关研究数据。', '目标型号的完整充放电条件与批准规格。'],
+        ['NCA 镍钴铝', 'Murata圆柱型号有明确的原厂目录化学与基础参数。', '当前供货状态及完整型号运行条件。'],
+        ['LFP 磷酸铁锂', 'LG、Lishen精确单体，另有CATL、EVE、BYD等不同层级资料。', '不能把一个家族或系统的信息套到所有LFP电池。'],
+        ['LMO 锰酸锂', '有DOE概述、研究或产品家族背景。', '尚无被核实的精确商品型号化学绑定。'],
+        ['LTO 钛酸锂负极', 'Toshiba SCiB家族声明及精确模组记录。', '精确电芯型号和对应正极信息；LTO是负极维度。'],
+        ['一次锂电池', 'Murata CR2032扣式电池一个具体例子。', '更广的一次锂总览与型号；不能套用可充电电池的充电条件。'],
+        ['特殊或新型体系', '单独登记范围，尚未选定具体体系。', '固态、可充锂金属等仍需按实际任务补充。'],
+    ], [117, 206, 178]),
+    h('形态和系统层级'),
+    p('圆柱、方形和软包三种形态，均已有明确型号的原厂证据。Panasonic新增方形单体的型号与尺寸已确认，但原目录没有明确声明其型号级化学体系，所以仍保留未知。'),
+    p('资料也延伸到模组、电池包、机架、保护/BMS功能，以及一组原厂电池包与充电器的配套关系。知道设备“有保护功能”，并不等于已掌握其阈值、固件逻辑或故障原因。'),
+    note('LG目录另含NCMA材料记录，按来源原称保存；不自动并入NMC或NCA。'),
+)
+
+page('四 具体产品型号覆盖',
+    p('当前共识别66个精确产品标签，其中65个有明确厂家。这里的产品包括电芯、模组、机架和套装；品牌名、尺寸、家族名和实验样本编号没有被当作具体商品型号。[3][6]'),
+    table(['厂家或来源标识', '标签数', '主要资料深度'], [
+        ['Molicel', '32', '多为安全数据表中的型号与基础额定值；来源用途受限。'],
+        ['LG Energy Solution', '9', '软包与圆柱单体的比较规格表，含明确材料体系。'],
+        ['Toshiba', '5', '精确模组编号；容量命名的电芯仍另列为家族。'],
+        ['Murata', '4', '圆柱单体和一次锂扣式电池，有数据表或目录依据。'],
+        ['CATL', '4', '模组与机架记录；未把280 Ah家族行当作完整电芯型号。'],
+        ['Panasonic Energy', '3', '一个圆柱型号和两个方形单体型号。'],
+        ['Samsung SDI', '2', '模组及BMS相关资料，内部电芯完整型号仍不足。'],
+        ['Lishen', '1', '精确LFP圆柱型号及页面参数。'],
+        ['EVE Energy', '1', 'LF280K在官方应用案例中出现，完整运行规格不足。'],
+        ['Saft', '1', '带保护电路电池包的历史数据表。'],
+        ['GS Yuasa', '1', '精确模组参数；化学体系因缺乏组成关系证据而保留未知。'],
+        ['Bosch Professional', '1', '原厂电池包与充电器套装。'],
+        ['Kokam', '1', '第三方建模参数集中的型号；参数不作为真实产品保证值。'],
+        ['厂家尚未明确', '1', 'CALCE资料记录了完整标签，未据常识补写厂家。'],
+    ], [128, 48, 325], center=(1,)),
+    p('这66个标签来自既有34个标签加本轮32个不重复的新标签。另有10个家族、13个系列和248个研究样本身份组，单独保存，未计入66个标签。'),
+    note('品牌数量不能表示覆盖率。BYD Blade Battery目前仍为家族资料，未计入上表的精确标签。历史目录只能证明相应文件版本中的信息，不能证明当前在售或可替代采购。'),
+)
+
+page('五 应用场景与生命周期覆盖',
+    p('资料对不同场景的支持程度并不均衡。下表说明能从现有证据得到什么，以及实际处理一个案例之前仍需要什么；它不表示模型已经通过这些场景的测试。[4][5]'),
+    table(['应用场景', '已有支持', '关键缺口或当次输入'], [
+        ['UNSW课程与实验室', '公开安全、风险计划与升级路径参考；实验数据和产品例子。', '本活动的风险评估、安全工作程序、资产和当前应急联系人。'],
+        ['便携设备', '圆柱、软包、方形电芯的型号与基础参数。', '实际设备电池包、BMS、充电器和使用手册。'],
+        ['电动工具', '一组Bosch原厂电池包与充电器配套证据。', '目标工具代号、现场温度及模式；不能外推到其他品牌。'],
+        ['轻型交通工具', '充电地点、异常识别等通用指导。', '尚缺明确型号的电池包与充电器系统资料。'],
+        ['储能系统', 'Samsung、CATL、GS Yuasa等模组或机架例子。', '完整系统设计、接线、冷却和现场电气消防条件。'],
+    ], [107, 193, 201]),
+    h('从采购到报废的覆盖情况'),
+    p('采购和身份核对已有厂家、型号、版本及出处记录，但采购真伪、在售状态和兼容性仍需核实。充放电方面，部分资料有电压、电流、温度或时间条件；容量试验采用的充电条件应作为试验背景保存，不能自动变成推荐操作上限。'),
+    p('储存、使用和维护已有一般原则，但多数型号还缺完整的荷电状态、温度、时长和维护要求。老化分析已有条件化实验数据，可用于后续方法开发；尚未实现或验证通用的电池健康估计工具。'),
+    p('运输、处置和异常升级已有分支指引。实际运输仍要核对规则版本及电池状态、数量、包装；处置和应急仍要匹配当前校园或辖区路线。对于新故障，现有材料不能直接给出确定的事故原因、风险概率或失效时间。'),
+    note('“当次输入”是产品路线中的正常组成部分；“公开资料缺口”则需要后续继续补充，二者应分别管理。'),
+)
+
+page('六 已处理到哪里以及哪些可以使用',
+    h('原始文件的处理与用途'),
+    p('300份原件均有登记和处置结果；原先未处理的60加7份也已逐件给出处理或限制结论。记录有结果，不代表每份正文都已提取，或都可以放入知识库。300份原件的用途分类如下。[1]'),
+    table(['现有用途状态', '原件数', '实际含义'], [
+        ['有条件可用', '214', '按各自许可、署名、版本与用途条件选取。'],
+        ['按具体动作拆分', '2', '例如数值分析和把说明原文放入模型，适用条件不同。'],
+        ['不允许本地LLM或RAG用途', '6', '保留登记和审查记录，不能按该用途直接导入。'],
+        ['未选入当前最小构建集合', '78', '没有被选用，不等于无效或永久禁止。'],
+    ], [164, 52, 285], center=(1,)),
+    h('207条候选已经核清'),
+    p('既有文档曾抽出673条数值相关记录，其中207条需要补查上下文。目前这207条均已完成语义核查：92条是来源限定的参数、实验条件或规则，115条是编号、参考或排版等其他角色，原有未解决项为0。其余466条沿用前轮检查结果，没有在该轮全面重审。[2]'),
+    p('这207条的用途另分为65条有条件允许、84条未选入最小集合、58条不允许本地RAG。这个分类的单位是“记录”，上表的单位是“原始文件”，两者不能相减或混加。92条也不等于92条都能直接用于设备操作。'),
+    h('本轮锂电产品增量可以怎样用'),
+    p('新增产品批次共42条记录、174个事实字段，已逐条核对出处、单位和条件。事实字段指型号、容量、电压等具体信息项。其中40条、164个字段已整理为后续内部查询的数据；两条受限Molicel复用记录未选入。这40条包含32个精确产品标签与8个家族记录，并不是全项目仅剩40条有效数据。[3]'),
+    p('当前成果包括实际文档内容、带出处的事实、实验数据读取入口及验证材料。原文进入RAG、模型训练、对外分发和服务器传输是不同用途，不能由“已解析”或“来源公开”直接推定允许。'),
+    note('仍未完成或不能补猜的内容包括：1份受复制控制摘要的正文、部分特殊MAT字段单位，以及具体产品和现场适用条件。'),
+)
+
+page('七 结论与接续重点',
+    p('当前可接收的是已经列明范围的数据准备成果。主流锂电基础、多个产品层级和大量实验资料已经具备可追溯入口；扩大后的全部型号与场景覆盖仍未完成。数据层准备通过，不等于分析工具、数据库、RAG或Qwen效果已经验收。'),
+    h('仍需继续补充的公开资料'),
+    p('优先补充精确LMO产品、轻型交通电池包与充电器组合、一次锂总览，以及目标产品完整充放电、存放和维护条件。A123原厂材料、Samsung具体电芯、BYD完整电芯型号和EVE LF280K完整规格仍有缺口。特殊体系需先确定实际用途，再决定收录范围。'),
+    h('接续时建议明确的三件事'),
+    p('第一，选定首批需要支持的典型任务及输入要求，把“资料足以回答什么”写成可检查的标准。第二，按用途清单组织知识文本、产品事实和原生实验数据，保留来源、条件、已知与未知；不批量导入整个文件夹。第三，在实际进入系统建设后，分别验证检索、数值工具和模型回答，不以数据整理检查代替系统效果测试。'),
+    h('核查与执行记录'),
+    p('最新锂电批次经过作者处理、非作者逐条审计及总控复核；297条既有身份记录、42条产品记录和40条查询准备记录均有对应检查。最终16项交接检查通过，但不构成物理实验或现场安全结论。'),
+    note('已披露的执行问题包括：历史RData依赖误装及有限复原证据、受限页面渲染纠正；本轮ULRI自动访问限制发现后的隔离、错误PDF响应的撤销，以及临时渲染清理被策略拒绝。详细记录保留，不能表述为从未发生。[1][3]'),
+    h('查阅入口'),
+    p('[1] 原始数据准备包及总控决定：CR-DATA-READY-001／20260920T012405_AEST。\n[2] 207条候选修正：CR-DATA-CANDIDATE-001／20260920T045258_AEST。\n[3] 锂电覆盖增量及总控决定：CR-LITHIUM-COVERAGE-001／20260921T043456_AEST。'),
+    note('以上目录均位于 E:/desn 2000/bsc/data_preparation/。每个目录先读README.md，再查ROOT_DECISION.json。[4] 位于[1]的coverage/DOMAIN_COVERAGE.jsonl；[5] 位于[3]的scope/REPORT.md和REQUIREMENT_STATUS_MATRIX.jsonl；[6] 位于[3]的CURRENT_COVERAGE_COUNTS.json。'),
+    note('术语：RAG为结合资料检索的生成式问答；BMS为电池管理系统；SOC为荷电状态；SOH为健康状态。正文的“有条件可用”均须连同原来源条件理解。'),
+)
+
+pdfmetrics.registerFont(TTFont('YaHei', 'C:/Windows/Fonts/msyh.ttc', subfontIndex=0))
+pdfmetrics.registerFont(TTFont('YaHeiBold', 'C:/Windows/Fonts/msyhbd.ttc', subfontIndex=0))
+pdfmetrics.registerFontFamily('YaHei', normal='YaHei', bold='YaHeiBold', italic='YaHei', boldItalic='YaHeiBold')
+styles = {
+    'title': ParagraphStyle('ReportTitle', fontName='YaHeiBold', fontSize=23, leading=32, spaceAfter=14, textColor=colors.black, wordWrap='CJK'),
+    'section': ParagraphStyle('Section', fontName='YaHeiBold', fontSize=19, leading=27, spaceAfter=16, textColor=colors.black, wordWrap='CJK'),
+    'h': ParagraphStyle('Subhead', fontName='YaHeiBold', fontSize=12.2, leading=18, spaceBefore=10, spaceAfter=6, textColor=colors.black, keepWithNext=True, wordWrap='CJK'),
+    'p': ParagraphStyle('Body', fontName='YaHei', fontSize=10.8, leading=17.2, spaceAfter=9, textColor=colors.HexColor('#111111'), wordWrap='CJK'),
+    'note': ParagraphStyle('Note', fontName='YaHei', fontSize=9.1, leading=14.2, spaceAfter=9, textColor=colors.HexColor('#454545'), wordWrap='CJK'),
+    'cell': ParagraphStyle('Cell', fontName='YaHei', fontSize=9.7, leading=14.5, textColor=colors.HexColor('#111111'), wordWrap='CJK'),
+    'cellcenter': ParagraphStyle('CellCenter', fontName='YaHei', fontSize=9.7, leading=14.5, textColor=colors.HexColor('#111111'), wordWrap='CJK', alignment=TA_CENTER),
+    'th': ParagraphStyle('TableHead', fontName='YaHeiBold', fontSize=10, leading=15, textColor=colors.white, wordWrap='CJK'),
+}
+
+def para(text, style):
+    return Paragraph(escape(text).replace('\n', '<br/>'), styles[style])
+
+def page_chrome(c, doc):
+    c.saveState()
+    w, ht = A4
+    c.setFont('YaHei', 8)
+    c.setFillColor(colors.HexColor('#5A5A5A'))
+    c.drawString(47, ht-28, 'BSC 项目资料汇报')
+    c.drawRightString(w-47, ht-28, '截至 2026年9月21日')
+    c.drawString(47, 26, '数据现状  /  资料种类  /  覆盖范围')
+    c.drawRightString(w-47, 26, str(doc.page))
+    c.restoreState()
+
+class ReportDoc(SimpleDocTemplate):
+    def afterFlowable(self, flowable):
+        if isinstance(flowable, Paragraph) and flowable.style.name in ('ReportTitle', 'Section'):
+            key = 'chapter' + str(len(self._entries))
+            self.canv.bookmarkPage(key)
+            self.canv.addOutlineEntry(flowable.getPlainText(), key, 0)
+            self._entries.append((flowable.getPlainText(), self.page))
+
+doc = ReportDoc(str(OUT), pagesize=A4, leftMargin=47, rightMargin=47, topMargin=53, bottomMargin=48,
+                title='BSC 项目数据现状与覆盖范围汇报', author='BSC 项目资料整理', subject='数据规模 资料种类 覆盖范围和准备状态')
+doc._entries = []
+story = []
+text_pages = []
+for idx, pg in enumerate(pages):
+    if idx:
+        story.append(PageBreak())
+    story.append(para(pg['title'], 'title' if idx == 0 else 'section'))
+    text_lines = [pg['title']]
+    for block in pg['blocks']:
+        if block['type'] != 'table':
+            story.append(para(block['text'], block['type']))
+            text_lines.append(block['text'])
+        else:
+            cells = [[para(t, 'th') for t in block['headers']]]
+            cells += [[para(t, 'cellcenter' if j in block['center'] else 'cell') for j, t in enumerate(rr)] for rr in block['rows']]
+            tt = Table(cells, colWidths=block['widths'], repeatRows=1, hAlign='LEFT')
+            tt.setStyle(TableStyle([
+                ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#29485C')),
+                ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.white, colors.HexColor('#F2F5F7')]),
+                ('GRID', (0,0), (-1,-1), 0.45, colors.HexColor('#D9D9D9')),
+                ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+                ('LEFTPADDING', (0,0), (-1,-1), 8), ('RIGHTPADDING', (0,0), (-1,-1), 8),
+                ('TOPPADDING', (0,0), (-1,-1), 6.5), ('BOTTOMPADDING', (0,0), (-1,-1), 6.5),
+            ]))
+            story.append(tt)
+            story.append(Spacer(1, 11))
+            text_lines.append(' | '.join(block['headers']))
+            text_lines.extend(' | '.join(rr) for rr in block['rows'])
+    text_pages.append('\n\n'.join(text_lines))
+
+doc.build(story, onFirstPage=page_chrome, onLaterPages=page_chrome)
+(ROOT / 'report_content.md').write_text('\n\n---\n\n'.join(text_pages), encoding='utf-8')
+(ROOT / 'outline.json').write_text(json.dumps(doc._entries, ensure_ascii=False, indent=2), encoding='utf-8')
+bindings = []
+for file in [READY/'SOURCE_OBJECTS.jsonl', READY/'README.md', READY/'coverage/DOMAIN_COVERAGE.jsonl', CAND/'README.md', LITH/'ROOT_DECISION.json', LITH/'CURRENT_COVERAGE_COUNTS.json', LITH/'scope/REPORT.md', LITH/'PRODUCT_FACT_SELECTION.json']:
+    bindings.append({'path': str(file), 'sha256': hashlib.sha256(file.read_bytes()).hexdigest()})
+(ROOT/'REPORT_INPUTS.json').write_text(json.dumps(bindings, ensure_ascii=False, indent=2), encoding='utf-8')
+print(json.dumps({'output': str(OUT), 'planned_pages': len(pages), 'chapters': doc._entries, 'bytes': OUT.stat().st_size}, ensure_ascii=False))

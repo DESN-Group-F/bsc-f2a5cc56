@@ -1,0 +1,31 @@
+{
+  "version": "0.3",
+  "raw_files_default_read_only": true,
+  "server_transfer_requires_explicit_manifest": true,
+  "raw_source_root_upload_forbidden": true,
+  "server_transfer_currently_enabled": false,
+  "local_source_workspace": "E:/desn 2000/data/battery_data_workspace_v0_3",
+  "local_source_workspace_read_only": true,
+  "local_metadata_routing_enabled": true,
+  "local_content_preparation_requires_explicit_purpose_evidence": true,
+  "local_query_verification_enabled": false,
+  "automatic_admission": false,
+  "deny_context_roles": [
+    "PROJECT_META",
+    "EVAL_ONLY"
+  ],
+  "candidate_context_roles": [
+    "LOCAL_POLICY",
+    "MANUFACTURER",
+    "REGULATORY_GUIDANCE",
+    "EXTERNAL_REFERENCE",
+    "SCIENTIFIC",
+    "INCIDENT"
+  ],
+  "requires_ai_context_allow": true,
+  "requires_indexing_allow_for_persistent_index": true,
+  "withdrawal_blocks_context_immediately": true,
+  "incident_actions_are_not_procedures": true,
+  "research_use_is_not_local_approval": true,
+  "test_inputs_and_answers_must_never_be_indexed": true
+}

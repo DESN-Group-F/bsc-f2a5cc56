@@ -1,0 +1,133 @@
+{
+  "task_id": "CR-DATA-ROUTE-001",
+  "source_task_card": "C:/Users/S.W/Downloads/CR_DATA_ROUTE_001_Codex_Task_Card.md",
+  "source_task_card_sha256": "ee02ef6bca54132791bdc0a56e14ef187922038666cf7c97963d5755234b1723",
+  "review_status": "REVIEWED_WITH_EXECUTION_OVERLAY",
+  "direct_assignment": {
+    "original_card": "NOT_SAFE_TO_ASSIGN_AS_IS",
+    "phase_a_overlay": "COMPLETED_LOCAL_ROUTING_PREPARED",
+    "phase_b_local_content_processing": "IN_PROGRESS_FIRST_CALIBRATED_BATCH_COMPLETED",
+    "server_validation": "NOT_CONFIGURED_DEFINITIONS_ONLY"
+  },
+  "input_workspace": {
+    "path": "E:/desn 2000/data/battery_data_workspace_v0_3",
+    "access": "READ_ONLY",
+    "required_audit_inputs_found": 8,
+    "optional_audit_inputs_found": 3
+  },
+  "output_root": "data_preparation/CR-DATA-ROUTE-001",
+  "phase_a_rights_field_snapshot": {
+    "originals": 300,
+    "parsing_right_unknown": 300,
+    "external_service_transfer_right_unknown": 300,
+    "rag_admitted": 0,
+    "human_reviewed": 0,
+    "missing_direct_rights_binding": 101,
+    "interpretation": "Historical Phase A field mapping only; not a claim that all 300 objects lack an existing basis for local AI processing."
+  },
+  "phase_a_completion": {
+    "run_id": "20260919T185236_AEST_phase_a",
+    "output_path": "data_preparation/CR-DATA-ROUTE-001/20260919T185236_AEST_phase_a",
+    "completed_at": "2026-09-19T19:11:00.227+10:00",
+    "status": "LOCAL_ROUTING_PREPARED",
+    "static_validation": {
+      "classification": "STATIC_VALIDATION_ONLY",
+      "checks_satisfied": 32,
+      "issues_found": 0,
+      "project_test_result": "NOT_APPLICABLE_NOT_RUN"
+    },
+    "server_test_definitions": {
+      "count": 18,
+      "status": "DEFINED_NOT_RUN",
+      "server_configured": false,
+      "server_executed": false
+    }
+  },
+  "phase_a_closeout": {
+    "run_id": "20260919T192120_AEST_phase_a_closeout",
+    "control_plane_updated_at": "2026-09-19T19:23:15.030+10:00",
+    "portable_transform_old_sha256": "27a415db0b5dcbe1c2ed0e26e3ebfa35bdea46a30a5112839e15d3a25ccd35cf",
+    "portable_transform_new_sha256": "c318a1d931316ecae062e8a13003764777c941c496b7c8fd5c16e5f317002522",
+    "gate_order": "VERIFY_TRUSTED_EXACT_GATE_BEFORE_INPUT_OPEN_OR_HASH",
+    "exact_action": "reuse_existing_derivative"
+  },
+  "execution_adjustment": {
+    "effective_date": "2026-09-19",
+    "policy_version": "0.3.3",
+    "current_stage": "LOCAL_CONTROLLED_DATA_PROCESSING",
+    "phase_a_reused_not_rebuilt": true,
+    "full_rescan_or_rights_rebuild": false,
+    "local_processing_checks_allowed": true,
+    "batch_rule": "CALIBRATE_NEW_STRUCTURE_THEN_CONTINUE_ELIGIBLE_BATCH",
+    "rights_interpretation": "RESOLVE_UNMAPPED_BINDING_AMBIGUOUS_AND_RESTRICTED_STATES_SEPARATELY",
+    "t00_started": false
+  },
+  "local_evidence_reconciliation": {
+    "basis_file": "E:/desn 2000/data/battery_data_workspace_v0_3/reports/current_data_status.json",
+    "existing_ai_processing_allowed_objects": 233,
+    "decomposition": {
+      "processed_in_current_run": 24,
+      "eligible_experiment_objects_deferred_outside_selected_analysis": 189,
+      "allowed_development_knowledge_objects_retained_separate": 20
+    },
+    "current_batch_candidate_blocks": {
+      "ai_processing_purpose_decision_pending": 56,
+      "explicit_ai_processing_restriction": 7
+    },
+    "independent_governance_or_training_eval_routes_not_assessed_for_this_batch": 4,
+    "rag_external_transfer_training_and_publication_remain_separate": true
+  },
+  "current_local_processing_run": {
+    "run_id": "20260919T200403_local_processing_05",
+    "output_path": "data_preparation/CR-DATA-ROUTE-001/20260919T200403_local_processing_05",
+    "completed_at": "2026-09-19T20:05:08.239+10:00",
+    "selected_objects": 24,
+    "processing_manifest_objects": 300,
+    "document_files": 4,
+    "document_records": 375,
+    "specification_parameters": 36,
+    "experiment_files": 5,
+    "experiment_rows_streamed": 1867719,
+    "experiment_records_retained": 5000,
+    "source_missing_values_preserved": 2214,
+    "test_time_resets_recorded": 8,
+    "local_check_results": "17_PASSED_0_FAILED_0_NOT_RUN",
+    "focused_unit_tests": "7_PASSED_0_FAILED",
+    "post_run_integrity_verification": {
+      "json_files_parsed": 7,
+      "jsonl_files_parsed": 14,
+      "indexed_artifacts_verified": 26,
+      "parse_or_hash_errors": 0,
+      "sqlite_integrity_check": "ok",
+      "sqlite_spec_rows": 36,
+      "sqlite_experiment_summary_rows": 5
+    },
+    "server_acceptance": "NOT_RUN",
+    "model_evaluation": "NOT_RUN",
+    "t00_started": false
+  },
+  "superseded_local_processing_runs": [
+    {
+      "run_id": "20260919T195326_local_processing_01",
+      "reason": "Initial MPPT blank-value/category handling was corrected after direct source review."
+    },
+    {
+      "run_id": "20260919T195641_local_processing_02",
+      "reason": "Replaced by a run whose existing PROCESSING_MANIFEST covers all 300 Phase A routes."
+    },
+    {
+      "run_id": "20260919T195934_local_processing_03",
+      "reason": "Replaced by expanded experiment anomaly checks and a consolidated decision request."
+    },
+    {
+      "run_id": "20260919T200120_local_processing_04",
+      "reason": "Its zero-missing-value check failed on 2214 real source blanks; run 05 preserves and profiles them instead of coercing them."
+    }
+  ],
+  "data_transfer_readiness": "NOT_READY_FOR_DATA_TRANSFER",
+  "project_tests_run_for_this_review": 0,
+  "local_data_processing_unit_tests_run": 7,
+  "local_integrated_data_processing_checks_run": 17,
+  "t00_started": false,
+  "status": "PHASE_A_COMPLETED_FIRST_LOCAL_BATCH_COMPLETED_LP04_IN_PROGRESS"
+}

@@ -1,0 +1,65 @@
+{
+  "schema_version": "0.3.2-draft",
+  "manifest_id": "PENDING",
+  "created_at": null,
+  "created_by": null,
+  "approval": {
+    "status": "NOT_APPROVED",
+    "approved_by": null,
+    "approved_at": null,
+    "scope_note": null
+  },
+  "source_workspace_alias": "LOCAL_BSC_WORKSPACE",
+  "destination_server_profile_id": null,
+  "hash_algorithm": "SHA-256",
+  "bundles": {
+    "code_bundle": {
+      "purpose": "SERVER_BUILD_AND_TEST",
+      "files": []
+    },
+    "rag_source_bundle": {
+      "purpose": "AUTHORIZED_RAG_CONTEXT_AND_INDEXING",
+      "files": []
+    },
+    "eval_public_inputs": {
+      "purpose": "MODEL_VISIBLE_EVALUATION_INPUT",
+      "files": []
+    },
+    "eval_private_oracle": {
+      "purpose": "GRADER_ONLY_MODEL_DENIED",
+      "files": []
+    },
+    "training_candidate_bundle": {
+      "purpose": "FUTURE_TRAINING_ONLY",
+      "enabled": false,
+      "files": []
+    }
+  },
+  "file_record_template": {
+    "bundle_relative_path": "example/path.ext",
+    "source_id": null,
+    "source_revision": null,
+    "sha256": null,
+    "size_bytes": null,
+    "document_role": null,
+    "allowed_uses": {
+      "human_reference": "UNKNOWN",
+      "ai_context": "UNKNOWN",
+      "indexing": "UNKNOWN",
+      "evaluation": "UNKNOWN",
+      "training": "UNKNOWN",
+      "redistribution": "UNKNOWN"
+    },
+    "sensitivity": "UNKNOWN",
+    "permission_evidence_ref": null,
+    "notes": null
+  },
+  "separation_assertions": {
+    "eval_private_oracle_denied_to_model": true,
+    "eval_private_oracle_denied_to_rag": true,
+    "training_not_inferred_from_other_permissions": true,
+    "raw_local_root_upload_forbidden": true,
+    "secrets_in_bundle_forbidden": true
+  },
+  "status": "TEMPLATE_NOT_FOR_EXECUTION"
+}

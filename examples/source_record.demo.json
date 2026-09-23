@@ -1,0 +1,26 @@
+{
+  "source_id": "DEMO-SRC1",
+  "revision": "1",
+  "title": "虚构规格说明",
+  "original_relative_path": "demo/fictional_spec.txt",
+  "sha256": null,
+  "document_role": "MANUFACTURER",
+  "acquisition": "PRESENT",
+  "parse_status": "TEXT_OK",
+  "allowed_uses": {
+    "ai_context": "ALLOW",
+    "indexing": "ALLOW",
+    "training": "DENY"
+  },
+  "permission_evidence_ref": "DEMO-PERMISSION-NOT-REAL",
+  "technical_review": "UNREVIEWED",
+  "local_status": "NOT_LOCAL",
+  "scope_tags": [
+    "DEMO_ONLY"
+  ],
+  "access_scope": [
+    "DEMO_PROJECT"
+  ],
+  "effective_at": null,
+  "withdrawn_at": null
+}

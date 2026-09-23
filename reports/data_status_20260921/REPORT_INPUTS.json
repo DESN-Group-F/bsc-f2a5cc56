@@ -1,0 +1,34 @@
+[
+  {
+    "path": "E:\\desn 2000\\bsc\\data_preparation\\CR-DATA-READY-001\\20260920T012405_AEST\\SOURCE_OBJECTS.jsonl",
+    "sha256": "69a568a3674a63c70ceea9224297088ba6676fb41a2e4e41d2d5679a1eb667c8"
+  },
+  {
+    "path": "E:\\desn 2000\\bsc\\data_preparation\\CR-DATA-READY-001\\20260920T012405_AEST\\README.md",
+    "sha256": "6944eb48a5d109fc2a1fe729626c9a60511111f5cbef3686d7f2fb398f724d53"
+  },
+  {
+    "path": "E:\\desn 2000\\bsc\\data_preparation\\CR-DATA-READY-001\\20260920T012405_AEST\\coverage\\DOMAIN_COVERAGE.jsonl",
+    "sha256": "5a4ac00d87fe4bb83cef11348ad79c457b1c0fa999eb2aaea09cc3795bd9dcb2"
+  },
+  {
+    "path": "E:\\desn 2000\\bsc\\data_preparation\\CR-DATA-CANDIDATE-001\\20260920T045258_AEST\\README.md",
+    "sha256": "45cc1b06cb4dab592f967c6c93a2ddebd45419dd6cf155fd7bdfdee292b85394"
+  },
+  {
+    "path": "E:\\desn 2000\\bsc\\data_preparation\\CR-LITHIUM-COVERAGE-001\\20260921T043456_AEST\\ROOT_DECISION.json",
+    "sha256": "d30c1333f5a9db56f2086cf41abe017dbddc48333a5f7844e0064d51db819b8b"
+  },
+  {
+    "path": "E:\\desn 2000\\bsc\\data_preparation\\CR-LITHIUM-COVERAGE-001\\20260921T043456_AEST\\CURRENT_COVERAGE_COUNTS.json",
+    "sha256": "1f4ad3dacf9562f19e7d29a869644c6c3224a3decc1ea3ae4c9ed62c510f671a"
+  },
+  {
+    "path": "E:\\desn 2000\\bsc\\data_preparation\\CR-LITHIUM-COVERAGE-001\\20260921T043456_AEST\\scope\\REPORT.md",
+    "sha256": "08cfee5452cc5f92bd9ed3bff60aad304456b2f129471af16b0e219676d2ad7b"
+  },
+  {
+    "path": "E:\\desn 2000\\bsc\\data_preparation\\CR-LITHIUM-COVERAGE-001\\20260921T043456_AEST\\PRODUCT_FACT_SELECTION.json",
+    "sha256": "70084a6b9b114b612915fffe1566c60f66646b9ced6ba9dd523e8bbb067f25c4"
+  }
+]

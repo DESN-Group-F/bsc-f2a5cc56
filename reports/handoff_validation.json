@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "scope": "HANDOFF_STRUCTURE_AND_CONSISTENCY_ONLY",
+  "schemas": 8,
+  "example_records_checked": 7,
+  "planned_tasks": 22,
+  "scenario_designs_not_executed": 26,
+  "modules_in_design": [
+    "M01",
+    "M02",
+    "M03",
+    "M04",
+    "M05",
+    "M06",
+    "M07",
+    "M08",
+    "M09"
+  ],
+  "errors": [],
+  "qwen_executed": false,
+  "local_E_drive_accessed": false,
+  "domain_expert_review_performed": false
+}

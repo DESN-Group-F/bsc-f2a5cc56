@@ -1,0 +1,23 @@
+{
+  "execution_id": "DEMO-EXEC1",
+  "tool_id": "electric.ohmic_power",
+  "tool_version": "fixture-v1",
+  "input_hash": "0a16af6ef996b5ade8ed6121782fcb20ec408cc503dafedcd4927dfadfc25a19",
+  "status": "SUCCEEDED",
+  "output": {
+    "power": 2
+  },
+  "units": {
+    "power": "W"
+  },
+  "assumptions": [
+    "I=2 A",
+    "R=0.5 ohm"
+  ],
+  "warnings": [
+    "这是手写fixture，不是实际工具运行日志。"
+  ],
+  "started_at": "2026-09-19T00:00:00Z",
+  "finished_at": "2026-09-19T00:00:00Z",
+  "is_synthetic": true
+}

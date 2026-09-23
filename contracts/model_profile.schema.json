@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:bsc:0.3:model_profile",
+  "title": "model_profile",
+  "type": "object",
+  "properties": {
+    "profile_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "requested_model_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "served_model_id": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provider_type": {
+      "enum": [
+        "UNCONFIGURED",
+        "MOCK",
+        "QWEN_HTTP",
+        "OTHER_EXPLICITLY_APPROVED"
+      ]
+    },
+    "base_revision": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "quantization": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "template_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "processor_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "verified_context_tokens": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1
+    },
+    "tool_calling": {
+      "enum": [
+        "UNVERIFIED",
+        "NATIVE",
+        "STRUCTURED_PLAN",
+        "UNAVAILABLE"
+      ]
+    },
+    "vision": {
+      "enum": [
+        "UNVERIFIED",
+        "VERIFIED",
+        "UNAVAILABLE"
+      ]
+    },
+    "effective_generation": {
+      "type": "object"
+    },
+    "probe_status": {
+      "enum": [
+        "NOT_RUN",
+        "PASSED",
+        "FAILED",
+        "BLOCKED"
+      ]
+    }
+  },
+  "required": [
+    "profile_id",
+    "requested_model_id",
+    "served_model_id",
+    "provider_type",
+    "base_revision",
+    "quantization",
+    "template_ref",
+    "processor_ref",
+    "verified_context_tokens",
+    "tool_calling",
+    "vision",
+    "effective_generation",
+    "probe_status"
+  ],
+  "additionalProperties": false
+}

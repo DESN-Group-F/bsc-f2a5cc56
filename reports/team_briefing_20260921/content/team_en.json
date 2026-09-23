@@ -1,0 +1,122 @@
+{
+  "language": "en",
+  "title": "BSC Battery Project: A Team Introduction",
+  "short_title": "BSC battery project | Team introduction",
+  "filename": "BSC_Team_Briefing_EN_20260921.pdf",
+  "pages": [
+    {
+      "title": "What are we building?",
+      "blocks": [
+        {"type":"kicker","text":"For teammates with no AI or computing background | 21 September 2026"},
+        {"type":"lead","text":"We plan to build a battery analysis assistant. It will bring together the user's description, product documents and experimental records to help find evidence, analyse a problem and explain what needs checking next. Lithium batteries are the main focus."},
+        {"type":"h","text":"Why this is useful"},
+        {"type":"p","text":"Investigating a battery issue often means reading a manual, checking test records, consulting university procedures and deciding whether each source applies to the battery in front of us. This project aims to connect those tasks so people can trace the reasoning and see where evidence is missing."},
+        {"type":"h","text":"An example of the answer we want"},
+        {"type":"callout","text":"Imagine someone says: 'The same device now runs out of battery sooner.' The example below illustrates the intended design. It is not an actual system response or a diagnosis."},
+        {"type":"table","headers":["Part of the answer","What it should make clear"],"widths":[123,378],"rows":[
+          ["Information received","The user reports shorter runtime. That report has not been independently checked by measurement."],
+          ["Available evidence","Find the matching manufacturer's information and any relevant earlier test or usage records."],
+          ["Possible explanations","Load, temperature, usage or ageing could contribute. Evidence is needed to distinguish them."],
+          ["Still unknown","The exact battery model, operating conditions and whether the earlier and current records are comparable."],
+          ["Next steps","Explain which existing records or suitable checks are needed, and identify an applicable contact or escalation route."]
+        ]},
+        {"type":"h","text":"The most important status message"},
+        {"type":"p","text":"Data preparation and checking are complete within the stated scope, and lithium coverage has been expanded. Gaps remain. This preparation work has not yet been integrated into an accepted question-answering system. Passing data checks does not validate model answers, a physical battery or a site operation."},
+        {"type":"note","text":"Intended context: UNSW coursework or noncommercial research. The first version combines general analysis with product and site information supplied for each case. Advice must still be checked against relevant university procedures and local conditions. [1][3]"}
+      ]
+    },
+    {
+      "title": "How would it work?",
+      "blocks": [
+        {"type":"p","text":"Think of four things working together. Each has a distinct job. The answer should let a person check the sources, the basis of any calculation and the questions that remain open."},
+        {"type":"flow","steps":[["1 Describe","Provide the issue, product details and existing records"],["2 Find","Find relevant evidence and check the model and conditions"],["3 Analyse","Use suitable calculations and comparisons; flag missing inputs"],["4 Explain","Separate facts, inferences and unknowns; suggest next steps"]]},
+        {"type":"table","headers":["A familiar comparison","Its job"],"widths":[143,358],"rows":[
+          ["A reference library","Keep usable knowledge and documents, then find relevant passages before answering. This approach is commonly called RAG: retrieval-augmented generation."],
+          ["An organised record book","Keep models, specifications, test records and sources in distinct, searchable entries. In computing, this collection is a database."],
+          ["A calculator with stated limits","Apply defined methods, such as comparing measurements when the conditions match. Inputs, units and methods must be suitable, and results must be checkable."],
+          ["An AI writing assistant","Organise an explanation from the evidence found and the actual tool results. It can still make mistakes; fluent wording does not prove accuracy. Qwen is the name of the AI model planned for this role."]
+        ]},
+        {"type":"h","text":"Looking things up is different from training"},
+        {"type":"p","text":"Looking things up supplies relevant material for the current question. Training adjusts the model itself using training material; fine-tuning is one form of this. The current work prepares information and data for later construction. No fine-tuning or model performance testing was performed in this preparation work."},
+        {"type":"h","text":"What should a reader be able to check?"},
+        {"type":"p","text":"Does the source match this battery? Do numbers have units and applicable conditions? What came from a user report, a measurement or a calculation? What is still uncertain? An emergency must follow the applicable site procedure; waiting for an AI answer must not be a prerequisite."},
+        {"type":"note","text":"This page describes the intended design. The combined performance of retrieval, the database, calculation tools and the model still needs to be demonstrated during later construction and testing. [1][3]"}
+      ]
+    },
+    {
+      "title": "What material do we have?",
+      "blocks": [
+        {"type":"metrics","items":[["300","Original files"],["112.42 GB","Original file size"],["66","Exact product labels"]]},
+        {"type":"p","text":"The original collection contains 70 documents and 230 experimental or data files. The latest batch added 15 manufacturer documents checked for file and source validity, plus one US Department of Energy (DOE) background report, registered separately from the original 300. Permitted uses still depend on each source. The 66 product labels include cells, modules, racks and kits; they are not all cell models. [1][3]"},
+        {"type":"table","headers":["Material","What it contains and why it matters"],"widths":[123,378],"rows":[
+          ["Guides and reference material","University procedures, laboratory practices, manufacturer information and background knowledge. Text or selected information has been extracted from 69 of the 70 original documents."],
+          ["Product information","Model, capacity, voltage and other facts, with sources and conditions. The latest product batch selected 40 records containing 164 information fields for future internal queries."],
+          ["Experimental measurements","Measurements over time or under test conditions. The 140 standalone measurement tables alone contain 125,792,633 rows; archives and specialist numerical files hold further data."],
+          ["Spreadsheets and other research data","102 workbooks containing 482 worksheets, plus files used by research software. Their table structures and reading methods have been prepared."],
+          ["Scientific images","62 image file members with basic information recorded for 31,187 frames; 184 frames were actually decoded. This does not verify the scientific meaning of every image."]
+        ]},
+        {"type":"h","text":"Why 112 GB is not a count of useful facts"},
+        {"type":"p","text":"One long experiment can generate a large volume of voltage, current and temperature measurements. A short product manual uses little storage but may contain a crucial limit. File size, measurement rows and product counts measure different things. They cannot replace one another or simply be added together."},
+        {"type":"note","text":"Analogy: one library catalogue entry can point to a very long book. Our index similarly points to the real data; its length is not the amount of data available. The 40 new product records are also not the project's only valid data."}
+      ]
+    },
+    {
+      "title": "What knowledge and batteries are covered?",
+      "blocks": [
+        {"type":"h","text":"Eight knowledge areas, grouped into four questions"},
+        {"type":"table","headers":["Question","Areas represented in the material"],"widths":[151,350],"rows":[
+          ["Why does a battery behave this way?","Physics and chemistry; battery and system engineering."],
+          ["How do we measure and check a method?","Measurement and analysis; experiments and method validation."],
+          ["What can happen during its working life?","Abnormality and failure evidence; practices from procurement and use to end of life."],
+          ["Which procedures and contacts apply?","Institutional procedures and relevant rules; emergency and escalation references."]
+        ]},
+        {"type":"p","text":"Manufacturer material helps check its products. UNSW and local agencies inform relevant procedures. Other universities and laboratories offer useful comparisons. An external laboratory's practice does not automatically become an approved UNSW procedure. [1]"},
+        {"type":"h","text":"Battery examples do not mean complete coverage"},
+        {"type":"table","headers":["Category","Current depth of evidence"],"widths":[151,350],"rows":[
+          ["LCO, NMC/NCM, NCA and LFP","These refer to lithium cobalt oxide, nickel manganese cobalt, nickel cobalt aluminium and lithium iron phosphate chemistries. Exact product examples exist, but operating information is uneven."],
+          ["Lithium titanate (LTO)","Product-family information and exact module records exist. LTO describes the negative electrode; exact cell models and corresponding positive-electrode details remain incomplete."],
+          ["Lithium manganese oxide (LMO)","Background or research material exists. An exact commercial product with a verified chemistry link is still missing."],
+          ["Primary lithium and new chemistries","There is one CR2032 example for primary lithium batteries, which are not rechargeable. Wider coverage is incomplete. A scope for solid-state, rechargeable lithium-metal and other special systems has not been selected."]
+        ]},
+        {"type":"p","text":"Cylindrical, prismatic and pouch shapes each have exact manufacturer-backed examples. Material also reaches modules, packs, racks and some protection functions. Knowing that protection exists does not establish its trigger settings or complete control logic."},
+        {"type":"note","text":"Of the 66 exact product labels, 65 have a known manufacturer. This counts products identified in the current material; it is neither market coverage nor 66 complete manuals ready for operational use. [3]"}
+      ]
+    },
+    {
+      "title": "Which situations have support, and what is missing?",
+      "blocks": [
+        {"type":"p","text":"Whether advice applies depends on the actual equipment and site. The table separates existing public evidence from information still needed for a real case. Material coverage does not mean the system has passed tests for these situations. [1][3]"},
+        {"type":"table","headers":["Situation","Available now","Still needed or supplied per case"],"widths":[96,192,213],"rows":[
+          ["UNSW classes and laboratories","Public safety procedures, experimental data and product examples.","The activity's risk assessment, work procedure, actual equipment and current emergency contacts."],
+          ["Portable devices","Cell models and basic specifications across several shapes.","The actual pack, protection system, charger and device manual."],
+          ["Power tools","One Bosch manufacturer's pack-and-charger pairing.","The exact tool and operating mode; the pairing cannot be generalised to other brands."],
+          ["Light mobility","General guidance on charging locations and recognising abnormalities.","A named battery-pack and charger system. This remains a public-source coverage gap."],
+          ["Energy storage","Some manufacturers' module and rack information.","Complete wiring, cooling, system design and site electrical and fire conditions."]
+        ]},
+        {"type":"h","text":"The whole battery life cycle also matters"},
+        {"type":"p","text":"The material addresses identity checks, charging and discharging, storage, maintenance, ageing, transport, disposal and escalation. Most models still lack complete operating conditions, storage charge level, temperature, duration and maintenance requirements. Conditions used in an experiment cannot automatically become everyday operating advice."},
+        {"type":"h","text":"There are two different kinds of missing information"},
+        {"type":"p","text":"Public-source gaps require continued collection and checking, such as light-mobility systems, exact LMO products and complete operating conditions. Site information must be supplied for each case, such as today's equipment, wiring, environment and university activity procedure. More general documents cannot replace those inputs."},
+        {"type":"note","text":"A historical manufacturer catalogue supports information in that version. It does not prove that a product is still sold, is a suitable replacement purchase or matches the equipment on site. The source, version and conditions must be considered together."}
+      ]
+    },
+    {
+      "title": "What is done, and how can teammates help?",
+      "blocks": [
+        {"type":"table","headers":["Status","An accurate description"],"widths":[109,392],"rows":[
+          ["Completed","All 300 original files have a registration and a processing or restriction outcome. Usable content, product facts and experimental reading methods have been prepared, with independent checks within the stated scope."],
+          ["Gaps or restrictions","Broader lithium model and scenario coverage, complete operating conditions and some specialist numerical units remain incomplete. One summary was not text-extracted because of copy controls and remains subject to its source restrictions."],
+          ["Later construction","Connect reference search, record queries, calculation tools and the AI model, then test the actual results. This data preparation work did not perform system acceptance testing or fine-tuning."]
+        ]},
+        {"type":"h","text":"What were the 207 items awaiting review?"},
+        {"type":"p","text":"They were numeric-related records extracted from documents, not 207 files. Each has now been clarified: 92 are source-specific parameters, experimental conditions or rules; 115 have other roles, such as identifiers, references or layout content. No semantic review items remain unresolved, but the 92 are not all directly usable operating parameters. [2]"},
+        {"type":"h","text":"Why can we not put every document into the system?"},
+        {"type":"p","text":"Some sources permit use under conditions, some are outside the selected scope, and some do not permit the project's local AI retrieval use. Reading, organising, using material in an AI answer and sharing it are separate purposes. Coursework or noncommercial research does not automatically remove source restrictions."},
+        {"type":"h","text":"Three useful contributions from teammates"},
+        {"type":"p","text":"List the first real questions to support and what a user can provide. Check the actual equipment models, manuals and university procedures. Agree what makes an answer useful: finding the right evidence, separating facts from inferences and acknowledging unknowns. These criteria can guide tests of the completed system later."},
+        {"type":"callout","text":"A useful message for the team: We have organised a traceable set of material that supports further construction. We still need to close priority gaps, connect reference lookup, calculation and explanation, and test how well the system works."},
+        {"type":"note","text":"Evidence snapshot, 21 September 2026: [1] Original preparation, CR-DATA-READY-001 / 20260920T012405_AEST; [2] 207-item review, CR-DATA-CANDIDATE-001 / 20260920T045258_AEST; [3] Lithium expansion, CR-LITHIUM-COVERAGE-001 / 20260921T043456_AEST. Project location: E:/desn 2000/bsc/data_preparation/. The detailed report contains counting definitions, source restrictions and disclosed execution issues. This introduction does not constitute a new audit of the raw data."}
+      ]
+    }
+  ]
+}

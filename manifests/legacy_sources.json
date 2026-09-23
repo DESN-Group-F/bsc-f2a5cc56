@@ -1,0 +1,23 @@
+[
+  {
+    "id": "L1",
+    "filename": "PROJECT_PLAN(1).md",
+    "sha256": "b8f082ab6b17ac3918f5b485545ebe8b7516a7022750e73be5fc18d2062cebe8",
+    "use": "保留九模块、证据与回执分层，变更当前范围和训练优先级",
+    "content_redistributed": false
+  },
+  {
+    "id": "L2",
+    "filename": "DATA_BLUEPRINT(1).md",
+    "sha256": "ba03f76303e29eaacf365456c2b203c883f58db28585336343a2dc57e056cda0",
+    "use": "保留六类数据通道；旧包数量不代表当前data状态",
+    "content_redistributed": false
+  },
+  {
+    "id": "L3",
+    "filename": "CR_PCENG_001_Codex_Task_Card.md",
+    "sha256": "1953cfd225584a770f203810f6fc81ae31f7623b071de5783c1147ce492157ae",
+    "use": "吸收物化/工程能力；种子数量及仅文档同步阶段被v0.3替代",
+    "content_redistributed": false
+  }
+]

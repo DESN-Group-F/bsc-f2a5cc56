@@ -1,0 +1,112 @@
+[
+  {
+    "content": "E:\\desn 2000\\bsc\\reports\\team_briefing_20260921\\content\\full_en.json",
+    "pdf": "E:\\desn 2000\\bsc\\reports\\team_briefing_20260921\\output\\pdf\\BSC_Data_Status_Coverage_EN_20260921.pdf",
+    "bytes": 99049,
+    "sha256": "3c7085eeaa69a15fd674066244f73812e1feba45a5b3614c33b3e6ebbb0d0601",
+    "content_sha256": "fa50a747ac7b265948e7d03ee3bbb9b6bfe29a4a9552b26f63e805e62a749efb",
+    "expected_sections": 8,
+    "section_pages": [
+      [
+        "BSC Project:Data Status and Coverage",
+        1
+      ],
+      [
+        "Data scale and file types",
+        2
+      ],
+      [
+        "Background knowledge and source coverage",
+        3
+      ],
+      [
+        "Lithium chemistry and form coverage",
+        4
+      ],
+      [
+        "Specific product coverage",
+        5
+      ],
+      [
+        "Application scenarios and lifecycle coverage",
+        6
+      ],
+      [
+        "Processing status and usable material",
+        7
+      ],
+      [
+        "Conclusions and next priorities",
+        8
+      ]
+    ]
+  },
+  {
+    "content": "E:\\desn 2000\\bsc\\reports\\team_briefing_20260921\\content\\team_zh.json",
+    "pdf": "E:\\desn 2000\\bsc\\reports\\team_briefing_20260921\\output\\pdf\\BSC_组员汇报_中文版_20260921.pdf",
+    "bytes": 366658,
+    "sha256": "36020c3ab5988a283a7e0dc6daaa3b1518f89234f3440bfc66520064d6b39f44",
+    "content_sha256": "f95d4d75d8a75d80f6b09b487f213efa468cb4961fef8846caf01cd46374e3f0",
+    "expected_sections": 6,
+    "section_pages": [
+      [
+        "我们在做什么？",
+        1
+      ],
+      [
+        "它计划怎样工作？",
+        2
+      ],
+      [
+        "现在手里有哪些资料？",
+        3
+      ],
+      [
+        "知识和电池种类覆盖到哪里？",
+        4
+      ],
+      [
+        "哪些场景有支持，哪些还需补充？",
+        5
+      ],
+      [
+        "完成了什么，组员接下来能做什么？",
+        6
+      ]
+    ]
+  },
+  {
+    "content": "E:\\desn 2000\\bsc\\reports\\team_briefing_20260921\\content\\team_en.json",
+    "pdf": "E:\\desn 2000\\bsc\\reports\\team_briefing_20260921\\output\\pdf\\BSC_Team_Briefing_EN_20260921.pdf",
+    "bytes": 91315,
+    "sha256": "57c57b2472b4e1074482be780f1ac751588d6704c884aceec14b5793c5db6b9a",
+    "content_sha256": "ed9796a9b5c682e01f4a84eb7301a59dbf15f2eae22769030494e1729a6f35bf",
+    "expected_sections": 6,
+    "section_pages": [
+      [
+        "What are we building?",
+        1
+      ],
+      [
+        "How would it work?",
+        2
+      ],
+      [
+        "What material do we have?",
+        3
+      ],
+      [
+        "What knowledge and batteries are covered?",
+        4
+      ],
+      [
+        "Which situations have support, and what is missing?",
+        5
+      ],
+      [
+        "What is done, and how can teammates help?",
+        6
+      ]
+    ]
+  }
+]

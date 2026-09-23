@@ -1,0 +1,157 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:bsc:0.3:source_record",
+  "title": "source_record",
+  "type": "object",
+  "properties": {
+    "source_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "revision": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "original_relative_path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "document_role": {
+      "enum": [
+        "LOCAL_POLICY",
+        "MANUFACTURER",
+        "REGULATORY_GUIDANCE",
+        "EXTERNAL_REFERENCE",
+        "SCIENTIFIC",
+        "INCIDENT",
+        "PROJECT_META",
+        "EVAL_ONLY"
+      ]
+    },
+    "acquisition": {
+      "enum": [
+        "DISCOVERED",
+        "PRESENT",
+        "FETCH_FAILED"
+      ]
+    },
+    "parse_status": {
+      "enum": [
+        "NOT_PARSED",
+        "TEXT_OK",
+        "NEEDS_VISUAL_REVIEW",
+        "FAILED"
+      ]
+    },
+    "allowed_uses": {
+      "type": "object",
+      "properties": {
+        "ai_context": {
+          "enum": [
+            "ALLOW",
+            "DENY",
+            "UNKNOWN"
+          ]
+        },
+        "indexing": {
+          "enum": [
+            "ALLOW",
+            "DENY",
+            "UNKNOWN"
+          ]
+        },
+        "training": {
+          "enum": [
+            "ALLOW",
+            "DENY",
+            "UNKNOWN"
+          ]
+        }
+      },
+      "required": [
+        "ai_context",
+        "indexing",
+        "training"
+      ],
+      "additionalProperties": false
+    },
+    "permission_evidence_ref": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "technical_review": {
+      "enum": [
+        "UNREVIEWED",
+        "CHECKED_FOR_SCOPE",
+        "CONFLICTED",
+        "WITHDRAWN"
+      ]
+    },
+    "local_status": {
+      "enum": [
+        "NOT_LOCAL",
+        "PUBLIC_LOCAL_GUIDANCE",
+        "LOCAL_APPROVED",
+        "UNKNOWN"
+      ]
+    },
+    "scope_tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "access_scope": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "effective_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "withdrawn_at": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "required": [
+    "source_id",
+    "revision",
+    "title",
+    "original_relative_path",
+    "sha256",
+    "document_role",
+    "acquisition",
+    "parse_status",
+    "allowed_uses",
+    "permission_evidence_ref",
+    "technical_review",
+    "local_status",
+    "scope_tags",
+    "access_scope",
+    "effective_at",
+    "withdrawn_at"
+  ],
+  "additionalProperties": false
+}

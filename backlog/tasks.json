@@ -1,0 +1,269 @@
+[
+  {
+    "task_id": "T00",
+    "phase": "P0",
+    "title": "只读盘点与当前事实登记",
+    "depends_on": [],
+    "deliverables": "清单、环境/模型初测状态、路径与未决事项",
+    "acceptance": "原件未改；不扫描整个E盘；不伪造已有模型成绩",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T01",
+    "phase": "P1",
+    "title": "工程骨架与模型probe",
+    "depends_on": [
+      "T00"
+    ],
+    "deliverables": "隔离依赖、HTTP/Mock adapter、model profile、实际端点probe",
+    "acceptance": "真实Qwen与Mock分列；不静默替换；图像/工具/模板未知显式",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T02",
+    "phase": "P1",
+    "title": "合同与SQLite最小持久化",
+    "depends_on": [
+      "T00"
+    ],
+    "deliverables": "schema到类型、来源/case/run/tool/feedback表与迁移",
+    "acceptance": "模型无批准字段；revision冲突；来源和eval隔离",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T03",
+    "phase": "P1",
+    "title": "少量资料准入与原生解析",
+    "depends_on": [
+      "T02"
+    ],
+    "deliverables": "源登记、只读原件、页/节定位、session附件",
+    "acceptance": "排除规划/测试角色；缺解析不当无内容；关键表格待核",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T04",
+    "phase": "P1",
+    "title": "精确与稀疏检索",
+    "depends_on": [
+      "T03"
+    ],
+    "deliverables": "FTS5、型号ID、中文检索、引用读取与trace",
+    "acceptance": "前后权限检查；错误/无结果可区分；可打开原文",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T05",
+    "phase": "P1",
+    "title": "单位与确定性数值工具",
+    "depends_on": [
+      "T02"
+    ],
+    "deliverables": "单位转换、受限表达式、I²R工具与独立参考测试",
+    "acceptance": "禁止eval/任意代码；单位和假设完整；不存在的工具不调用",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T06",
+    "phase": "P1",
+    "title": "首条真实专业闭环与薄UI",
+    "depends_on": [
+      "T01",
+      "T02",
+      "T04",
+      "T05"
+    ],
+    "deliverables": "一次真实Qwen+引用+工具+持久化run，基础对话/证据UI",
+    "acceptance": "普通问题可完成；结果非Mock；缺模型明确BLOCKED",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T07",
+    "phase": "P2",
+    "title": "真实embedding、dense、融合及可选重排",
+    "depends_on": [
+      "T04",
+      "T06"
+    ],
+    "deliverables": "版本化向量/映射/manifest、RRF与检索对照",
+    "acceptance": "模型/维度一致；无权片段不进生成器；故障不随机向量替代",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T08",
+    "phase": "P2",
+    "title": "案例观察、时间与多轮更新",
+    "depends_on": [
+      "T02",
+      "T06"
+    ],
+    "deliverables": "REPORTED/MEASURED/DERIVED分层、冲突/替代、摘要血缘",
+    "acceptance": "旧值不能自动变新事实；撤回/过期使依赖结论失效",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T09",
+    "phase": "P2",
+    "title": "四类适用性与独立紧迫性",
+    "depends_on": [
+      "T07",
+      "T08"
+    ],
+    "deliverables": "C1–C4/UNDETERMINED与urgency、独立应急卡入口",
+    "acceptance": "检索失败不叫C4；教学不误触长流程；模型断开卡片可读",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T10",
+    "phase": "P2",
+    "title": "候选诊断与有价值追问",
+    "depends_on": [
+      "T08",
+      "T09"
+    ],
+    "deliverables": "支持/反证、可辨识边界、最少关键追问、persona适配",
+    "acceptance": "不强猜唯一根因；信息补齐能继续；不要求危险取证",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T11",
+    "phase": "P2",
+    "title": "方案匹配、适配与未知情景推演",
+    "depends_on": [
+      "T09",
+      "T10"
+    ],
+    "deliverables": "MATCHED/ADAPTED/HYPOTHESIS方案及条件/冲突/复评触发",
+    "acceptance": "有技术帮助，不伪造新SOP；无依据精确概率被拒",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T12",
+    "phase": "P2",
+    "title": "图像与复杂文档适配",
+    "depends_on": [
+      "T01",
+      "T03",
+      "T06"
+    ],
+    "deliverables": "经probe的图片输入、页/框引用、不可读处理",
+    "acceptance": "无视觉支持不得拿文字摘要冒充视觉验证；没有图片真值不报分",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T13",
+    "phase": "P2",
+    "title": "时序分析与PredictorPort",
+    "depends_on": [
+      "T05",
+      "T08"
+    ],
+    "deliverables": "CSV列/单位/时间质量、积分与缺口处理、预测接口",
+    "acceptance": "返回假设/时域/域外状态；未接预测器不能生成成功预测",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T14",
+    "phase": "P2",
+    "title": "专业工作台完善",
+    "depends_on": [
+      "T07",
+      "T10",
+      "T11",
+      "T13"
+    ],
+    "deliverables": "案例面板、假设、工具结果、证据、运行与反馈视图",
+    "acceptance": "不做完整ERP；伪角色不授予权限；按任务展示必要内容",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T15",
+    "phase": "P3",
+    "title": "评测回放与初测归档",
+    "depends_on": [
+      "T06",
+      "T08"
+    ],
+    "deliverables": "run version snapshot、private oracle隔离、旧成绩原样登记",
+    "acceptance": "工具条件可重放；原始/最终输出分列；Mock不计模型分",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T16",
+    "phase": "P3",
+    "title": "实现验收情景fixture与判据",
+    "depends_on": [
+      "T09",
+      "T11",
+      "T13",
+      "T15"
+    ],
+    "deliverables": "scenario_specs实现、参考计算、故障与权限用例",
+    "acceptance": "实际执行结果与NOT_RUN区别；初级情景不是锁定gold",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T17",
+    "phase": "P3",
+    "title": "B0–B3及oracle诊断对比",
+    "depends_on": [
+      "T07",
+      "T14",
+      "T15",
+      "T16"
+    ],
+    "deliverables": "同底座多配置结果、按模块能力分层、失败归因和成本",
+    "acceptance": "保留正常任务成功与过度拒绝；不隐藏失败或无证据结果",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T18",
+    "phase": "P3",
+    "title": "安全、失败恢复和备份演练",
+    "depends_on": [
+      "T06",
+      "T09",
+      "T15"
+    ],
+    "deliverables": "注入/文件/接口/索引撤回/断网/取消/恢复测试",
+    "acceptance": "核心防护早期已做，此处综合验收；真实外部写入仍禁用",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T19",
+    "phase": "P2",
+    "title": "未来业务只读/禁用Ports",
+    "depends_on": [
+      "T02",
+      "T08"
+    ],
+    "deliverables": "资产/场所/资格/telemetry mock读接口、禁用BusinessActionPort",
+    "acceptance": "不造UNSW连接；模拟内容标DEMO；不因接口存在写真实系统",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T20",
+    "phase": "P4",
+    "title": "训练必要性决策记录",
+    "depends_on": [
+      "T17",
+      "T18"
+    ],
+    "deliverables": "修数据/检索/工具/模型的分工；未来训练候选与收益目标",
+    "acceptance": "训练仍关闭；CPPO未确认不选实现；无固定种子配额",
+    "status": "NOT_STARTED"
+  },
+  {
+    "task_id": "T21",
+    "phase": "P3",
+    "title": "本地验收与交接报告",
+    "depends_on": [
+      "T17",
+      "T18",
+      "T19"
+    ],
+    "deliverables": "真实启动方式、锁定依赖、已验证范围、缺项与回滚",
+    "acceptance": "源码实际可运行且有证据；没有现场认证声明",
+    "status": "NOT_STARTED"
+  }
+]
