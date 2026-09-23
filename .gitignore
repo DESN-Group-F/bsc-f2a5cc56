@@ -29,7 +29,9 @@ evaluation/private_expected/
 evaluation/private_oracle/
 
 # Local data mounts. Keep data/README.md and data/catalogue/*.jsonl in Git.
-data/raw/
+data/raw/*
+!data/raw/original_sources/
+!data/raw/lithium_supplement/
 data/source_files/
 data/derived/
 data/local/

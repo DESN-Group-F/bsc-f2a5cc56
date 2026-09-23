@@ -1,5 +1,5 @@
 {
-  "version": "0.3.3",
+  "version": "0.3.4",
   "decision_id": "ADR-EXEC-001",
   "current_stage": "LOCAL_CONTROLLED_DATA_PROCESSING",
   "t00_enabled": false,
@@ -40,10 +40,12 @@
       "BROAD_UNTARGETED_DOWNLOAD",
       "FULL_EXPERIMENT_ARCHIVE_UNPACK",
       "SERVER_CONNECTION",
-      "SOURCE_UPLOAD",
+      "SOURCE_UPLOAD_EXCEPT_EXPLICITLY_APPROVED_PRIVATE_REPOSITORY_ARCHIVE",
       "FINE_TUNING"
     ],
     "source_workspace": null,
+    "raw_archive_roots": ["data/raw/original_sources", "data/raw/lithium_supplement"],
+    "raw_archive_manifest": "data/catalogue/raw_source_transfer.jsonl",
     "source_workspace_access": "READ_ONLY_INPUT",
     "derived_output_root": "data_preparation",
     "artifact_status": "PREPARED_OR_LOCALLY_CHECKED_WITH_SCOPE",
@@ -81,6 +83,15 @@
     "human_review_and_acceptance": true,
     "acceptance_criteria": "AGREED_PER_TASK",
     "legacy_backlog_is_current_queue": false,
-    "private_github_code_and_metadata_only": true
+    "approved_private_repository_raw_archive": {
+      "url": "https://github.com/DESN-Group-F/bsc-f2a5cc56",
+      "private": true,
+      "manifest": "data/catalogue/raw_source_transfer.jsonl",
+      "source_roots": ["data/raw/original_sources", "data/raw/lithium_supplement"],
+      "registered_original_count": 300,
+      "registered_supplement_count": 18,
+      "purpose": "PRIVATE_INTERNAL_COURSE_GROUP_SOURCE_ARCHIVE_ONLY"
+    },
+    "private_github_other_source_uploads_require_separate_approval": true
   }
 }

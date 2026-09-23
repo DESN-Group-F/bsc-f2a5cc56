@@ -1,0 +1,2 @@
+data/raw/original_sources/** filter=lfs diff=lfs merge=lfs -text
+data/raw/lithium_supplement/** filter=lfs diff=lfs merge=lfs -text

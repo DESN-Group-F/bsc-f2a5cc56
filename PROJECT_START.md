@@ -12,6 +12,8 @@ Read [the team guide](docs/TEAM_PROJECT_GUIDE.md) and [the project instructions]
 
 Use relative paths and submit reviewable changes through the repository. No task requires access to the project owner's computer. Describe missing fixtures or evidence so the owner can provide the relevant inputs or interface later.
 
+Original source files are available in the approved private raw-source archive and can be retrieved selectively through Git LFS under `data/raw/`; no task requires downloading the full collection. See [the data guide](data/README.md). Repository access alone does not approve a source for retrieval context, training or server transfer.
+
 AI can draft and implement most of a task. A human reviews evidence, resolves uncertain answers and accepts results. Agree task-specific criteria during collaboration; no universal threshold or predefined kickoff checklist applies.
 
 For test work, continue with [the evaluation guide](evaluation/README.md). For code/data execution, check [the execution scope](docs/LOCAL_SERVER_EXECUTION_BOUNDARY.md). Drafting a test is different from running a model, database or server job.

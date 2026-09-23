@@ -1,33 +1,27 @@
-# Data locator for the project owner
+# Source data and prepared-data locator
 
-The data payload remains with the project owner, outside Git. This directory contains documentation and lean catalogues only. Teammates preparing tests do not need to configure these locations, obtain the whole collection or examine its records individually. Request only the fixtures or evidence needed for an agreed test task.
+The explicitly approved original collection and lithium supplement are stored in this private repository under `data/raw/` using Git LFS. The transfer manifest is `data/catalogue/raw_source_transfer.jsonl`. It records source set, original relative path, registered bytes and SHA-256, status, and ordered stored parts. A repository checkout can hold LFS pointers without downloading source content. Test authors can retrieve relevant raw sources; a full collection download is not required.
 
-## Original source workspace
+## Raw-source layout
 
-The owner's original collection is at the following local reference location. It is not a required path for other contributors:
+- `data/raw/original_sources/<original relative path>` holds the 300 registered original objects, except the three oversized originals. Each oversized original is stored as adjacent `<filename>.parts/part-00001`, `part-00002`, and so on; use the manifest's ordered part list and the transfer utility to reconstruct it for an authorised task.
+- `data/raw/lithium_supplement/<supplement relative path>` holds 18 supplement records, including status-marked failed or quarantined captures. Reused sources from the original collection are not duplicated.
 
-`E:/desn 2000/data/battery_data_workspace_v0_3`
+The registered total is 112,476,007,760 bytes across both sets. The source catalogues under `data/catalogue/` retain registered identity, location, hash, size, URL and status. Archival presence does not make a source usable evidence: preserve the ULRI exclusion and failed-response exclusion, and apply the recorded source/version/action decisions before indexing, model-context use, training, redistribution or server transfer. See [source-use notes](catalogue/SOURCE_USE_NOTES.md) for the key recorded restrictions and uncertainties.
 
-It contains 300 registered original objects totalling about 112.42 GB and remains read-only input. `catalogue/source_objects.jsonl` is a reduced view produced from the accepted `CR-DATA-READY-001/20260920T012405_AEST/SOURCE_OBJECTS.jsonl`; the original workspace was not rescanned or rehashed for Git preparation.
+For a new checkout, install Git LFS, then use a skip-smudge clone to avoid a collection-wide download. In PowerShell:
 
-Each catalogue row contains only `file_id`, `source_id`, source-relative path, registered SHA-256, registered bytes and original URL. It contains no source text or derived facts.
+```powershell
+git lfs install
+$env:GIT_LFS_SKIP_SMUDGE = '1'
+git clone https://github.com/DESN-Group-F/bsc-f2a5cc56.git
+Remove-Item Env:\GIT_LFS_SKIP_SMUDGE
+```
 
-## Lithium supplement locations
-
-The accepted local coverage run is:
-
-`data_preparation/CR-LITHIUM-COVERAGE-001/20260921T043456_AEST`
-
-Source payload locations within that local run are:
-
-- `products/sources/` — manufacturer pages and PDFs; includes one failed HTML response explicitly excluded by status;
-- `background/sources/` — the accepted DOE background PDF;
-- `audits/quarantine/` — the excluded ULRI capture, retained only for incident evidence.
-
-These directories are ignored and are not pushed. `catalogue/lithium_supplement_sources.jsonl` records the local run-relative location, registered hash, byte count, source URL and status for the locally held supplement captures. Reused sources that already belong to the original workspace are represented by the original catalogue instead of duplicated.
+Fetch only paths needed for an assigned task. From the clone root, use `python scripts/raw_source_transfer.py verify-pointer --source-set original_sources --relative-path "<original relative path>"` to see the exact stored LFS path or ordered part paths. For a direct file, run `git lfs pull --include='data/raw/original_sources/<exact path>' --exclude=''`. For an oversized object, include its `.parts/*` paths, then run `python scripts/raw_source_transfer.py reassemble --source-set original_sources --relative-path "<original relative path>" --output "<chosen output path>"`. The utility checks the ordered parts and reconstructed original against the manifest; keep the reconstructed copy outside the repository. Do not run an unrestricted `git lfs pull` merely to draft tests.
 
 ## Prepared and derived data
 
-Processed content, experimental profiles, extracted full text and other derived artifacts remain under local `data_preparation/` run directories. Authored processing scripts remain eligible for Git, but payloads must be connected later through a purpose-specific manifest. Their existence does not grant RAG, training, redistribution or server-transfer permission.
+Accepted local preparation runs remain under `data_preparation/`, including `CR-LITHIUM-COVERAGE-001/20260921T043456_AEST`. Processed content, experimental profiles, extracted full text and other derived artifacts remain outside Git. Authored processing scripts may be shared, but a prepared payload requires a separate purpose-specific selection and permission decision. Neither a raw-source checkout nor a local extraction grants RAG, training, redistribution or server-transfer approval.
 
-For owner-scoped database work, copy `config/data_locations.example.json` to the ignored `config/data_locations.json` and configure the needed paths. Test authors can leave these settings unconfigured. The registry is not an implemented runtime configuration interface: historical scripts retain original machine/run paths and do not automatically read it. Keep personal settings and credentials out of shared examples. Submit team work through the repository rather than writing onto the owner's disk.
+For owner-scoped database work, copy `config/data_locations.example.json` to ignored `config/data_locations.json` and configure only the needed paths. Its repository-relative raw roots are archive locators, not processing inputs: a skip-smudge checkout holds LFS pointers, and three oversized originals exist only as parts. Fetch and verify selected files, reassemble a split original when needed, then set `source_workspace` to a materialized read-only input location for that task. A full download is unnecessary. Historical scripts retain original run paths and do not automatically read the registry. Test authors can leave local settings unconfigured. Keep personal settings and credentials out of shared examples.

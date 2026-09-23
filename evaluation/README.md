@@ -27,4 +27,4 @@ Real Qwen runs must record the actual model identity and configuration. Mock or 
 
 Keep final acceptance prompts, expected answers, scoring notes and private evidence held out from ordinary retrieval and training inputs. Public test schemas and non-secret fixtures may live in the repository. If failures later motivate practice or training material, prepare that material separately and do not copy held-out final answers into it.
 
-No access to the owner's raw corpus is required for test drafting. Evidence needed for a particular test can be supplied as a reviewed fixture or through the future documented interface.
+No raw-source download is required for test drafting, even though originals are available through selective Git LFS retrieval. Evidence needed for a particular test can be supplied as a reviewed fixture or through the future documented interface.

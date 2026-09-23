@@ -1,6 +1,6 @@
 # Preparation and runtime execution scope
 
-Decision: ADR-EXEC-001, v0.3.3, with the 2026-09-23 collaboration clarification. The execution stage remains `LOCAL_CONTROLLED_DATA_PROCESSING`. This document governs execution environments; it sets no universal acceptance threshold and does not prevent parallel test preparation.
+Decision: ADR-EXEC-001, v0.3.4, with the 2026-09-23 collaboration clarification. The execution stage remains `LOCAL_CONTROLLED_DATA_PROCESSING`. This document governs execution environments; it sets no universal acceptance threshold and does not prevent parallel test preparation.
 
 ## Work in contributors' own checkouts
 
@@ -16,9 +16,9 @@ Parsing/conversion tests, field-contract checks, numerical-consistency checks an
 
 T00, production/target database or RAG deployment, Qwen inference, model-performance evaluation, large embedding/reranking jobs, production services, server access and fine-tuning do not start automatically. Do not run inherited handoff/system-test commands merely because they occur in an older plan.
 
-Do not scan unspecified directories, inspect historical private answer keys, unpack all archives, execute source-document code/macros, download models, alter system environments or upload the source collection as part of preparation.
+Do not scan unspecified directories, inspect historical private answer keys, unpack all archives, execute source-document code/macros, download models or alter system environments. The separately approved private-repository raw-source archive does not authorise runtime/server transfer.
 
-Private GitHub collaboration is authorised for reviewed code, authored documents/reports, configuration examples and metadata-only catalogues. Raw sources, extracted text, experimental/derived payloads, private keys/answers and machine secrets remain excluded. Git permission does not authorise transfer of data to a runtime or model service.
+Private GitHub collaboration includes the explicitly approved original collection and lithium supplement under `data/raw/` using Git LFS, as well as reviewed code, authored documents/reports, configuration examples and source catalogues. Extracted text, experimental/derived payloads, private keys/answers and machine secrets remain excluded. Git permission does not authorise transfer of data to a runtime or model service.
 
 ## Before a runtime task
 
@@ -38,7 +38,7 @@ The server remains the designated environment for authoritative system/model/dep
 
 ## Paths and configuration
 
-Team paths are relative to each contributor's checkout. Owner-specific source paths belong in ignored local configuration; the physical locator is documented once in `data/README.md`. Shared examples have no active source or private-evaluation path by default.
+Team paths are relative to each contributor's checkout. Shared raw-source roots are under `data/raw/`; owner-specific prepared-data paths belong in ignored local configuration. The layout is documented in `data/README.md`.
 
 `config/data_locations.example.json` is a path registry template, not an automatic resolver for historical scripts. Owner tasks using those scripts must check their explicit inputs/paths. Missing owner configuration does not block test drafting.
 

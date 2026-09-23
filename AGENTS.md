@@ -17,11 +17,11 @@ Processing-method research belongs to the owner. The future information-type by 
 ## Portable collaboration
 
 - Use each contributor's own checkout and repository-relative paths. Share reviewable changes through the private GitHub repository, not by requiring teammates to write onto the owner's computer.
-- Test authors do not need the owner's disk, raw collection or private evaluation directory. Use product requirements and supplied case inputs; record missing fixtures for the owner to resolve.
-- `data/README.md` holds the owner-specific data locator. `config/data_locations.example.json` is an optional registry for database work; actual paths belong in the ignored `config/data_locations.json`.
+- Test authors do not need the owner's disk, a full raw-source download or private evaluation directory. Use product requirements and supplied case inputs; record missing fixtures for the owner to resolve.
+- `data/README.md` holds the portable raw-source layout and prepared-data locator. `config/data_locations.example.json` is an optional registry for database work; machine-specific paths belong in the ignored `config/data_locations.json`.
 - Historical processing scripts retain some original run paths and do not automatically load the registry. Check scope and inputs before executing any of them.
 - Keep originals read-only and frozen runs unchanged. Do not scan unspecified directories, follow junctions/symlinks or repeat a full inventory/hash audit. Write new derived outputs to the configured project workspace.
-- Git may contain reviewed code, authored documents/reports, configuration examples and metadata-only catalogues. Keep raw sources, extracted text, experimental/derived payloads, secrets, machine settings and hidden final-acceptance answers out of Git.
+- The private repository includes the explicitly approved original source collection and lithium supplement under `data/raw/` via Git LFS. Fetch only files needed for an assigned task. Keep extracted text, experimental/derived payloads, secrets, machine settings and hidden final-acceptance answers out of Git. Repository presence grants no RAG, training, redistribution or server-transfer approval.
 
 ## Execution and source-use scope
 

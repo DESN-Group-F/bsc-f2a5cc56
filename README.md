@@ -1,6 +1,6 @@
 # BSC Model Core
 
-Private collaboration repository: https://github.com/qwerty1218171-creator/bsc
+Private collaboration repository: https://github.com/DESN-Group-F/bsc-f2a5cc56
 
 BSC is preparing an evidence-based battery and engineering analysis system. The project owner leads data preparation, processing-method selection and the future database, retrieval, tools and Qwen integration. Other team members develop the test suite in parallel from user requirements and observable behaviour, then review expected answers, evidence and results.
 
@@ -20,9 +20,9 @@ The prepared coverage includes a large experimental corpus and a lithium-product
 
 ## Repository contents
 
-A clone contains authored code, processing scripts, contracts, configuration examples, plans, reports and lean source catalogues. It does not contain the raw corpus, lithium-source captures, extracted full text, large experimental derivatives, quarantined material, secrets or private evaluation answers.
+A clone contains authored code, processing scripts, contracts, configuration examples, plans, reports and source catalogues. The original source collection and lithium supplement are stored under `data/raw/` using Git LFS. A skip-smudge clone holds pointers until a contributor explicitly fetches selected files; test authors need not download the collection. The repository still excludes extracted full text, prepared/experimental derivatives, secrets and private evaluation answers. See [the data guide](data/README.md) for the source layout and selective retrieval.
 
-The owner/build stream may use [the local data map](data/README.md) and the path registry as build background. They are not required for test drafting, are not a portable runtime interface, and do not provide the local data.
+The owner/build stream may use [the data map](data/README.md) and the path registry as build background. They are not required for test drafting or an automatic runtime interface.
 
 `IMPLEMENTATION_PLAN.md`, detailed technical documents, historical preparation runs and reports are background references. They preserve design ideas and evidence, but they are not the current team allocation, a fixed implementation choice or proof that the planned system has been built. Current team instructions are in English; historical material is not promised to be translated.
 
