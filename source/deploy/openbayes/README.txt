@@ -1,8 +1,20 @@
 OpenBayes CPU demonstration
 
+Current operating request
+On 2026-10-01 the operator explicitly cancelled the CNY 2 spending cap and the
+planned 03:00 automatic shutdown. Keep the service running until the operator
+stops its execution manually the next day. No scheduled shutdown is requested.
+CPU execution continues to cost CNY 0.30 per hour while the job runs.
+Manual operation requires INVENTORY_MANUAL_STOP=1 in both the supervisor and
+runtime, and an execution command without an outer shell timeout. The saved
+runtime must include this support; the original offline archive does not.
+The default launchers continue to use bounded two-hour demonstration settings.
+See deployment-2026-10-01-manual.json for the active execution and the manual
+shutdown link. Earlier deployment records describe their historical settings.
+
 Scope
 This adapter runs the existing production Worker bundle on a Linux CPU container.
-It is a bounded demonstration, using Miniflare/workerd as a portable runtime.
+It is a demonstration, using Miniflare/workerd as a portable runtime.
 It has not been assessed as a permanent, high-availability production deployment.
 The existing hosted application and its database are independent of this adapter.
 
@@ -75,15 +87,16 @@ command above. The application listens on 0.0.0.0 at that port; the underlying
 Worker runtime is loopback-only. Use the address displayed by the running platform.
 
 Cost and lifecycle
-This demonstration is authorized up to CNY 1, without topping up the account.
+The initial demonstration was authorized up to CNY 1, without topping up the account.
 Two hours of CPU execution is approximately CNY 0.60 before any platform storage fees.
 The first two stopped debugging executions settled at CNY 0.05 and CNY 0.02.
 The active two-hour demonstration therefore has an estimated total CPU cost of
 CNY 0.67 including those attempts. Its final charge is not yet settled.
 The shell timeout, Python supervisor and application timer all bound the execution.
-The application must stop approximately two hours after task execution begins.
+The default demonstration stops approximately two hours after task execution begins.
 There is no automatic restart or recurring job.
-Do not start another execution without checking the remaining authorized budget.
+The current manual-operation authorization above supersedes that original time
+and spending limit. It does not authorize account top-ups or other subscriptions.
 
 Database
 The independent database is stored below /openbayes/home/battery-inventory/data/d1.

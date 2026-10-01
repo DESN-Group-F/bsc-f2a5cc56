@@ -6,6 +6,8 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {Readable} from 'node:stream';
 
+const manualStop=process.env.INVENTORY_MANUAL_STOP==='1';
+
 const root=process.env.INVENTORY_BUNDLE_ROOT || fileURLToPath(new URL('./',import.meta.url));
 const dataRoot=path.resolve(process.env.INVENTORY_DATA_ROOT || path.join(root,'data'));
 const config=JSON.parse(await readFile(path.join(root,'bootstrap.json'),'utf8'));
@@ -127,9 +129,9 @@ const server=http.createServer(async(req,res)=>{
 });
 server.requestTimeout=30000;server.headersTimeout=15000;
 await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(Number(process.env.PORT||8080),process.env.INVENTORY_LISTEN_HOST||'0.0.0.0',resolve);});
-console.log(JSON.stringify({event:'inventory_ready',port:server.address().port,migrations:journal.entries.length,dataDirectory:dataRoot}));
+console.log(JSON.stringify({event:'inventory_ready',port:server.address().port,migrations:journal.entries.length,dataDirectory:dataRoot,automaticStop:manualStop?false:true}));
 let closing=false;
 async function shutdown(){if(closing)return;closing=true;console.log('Stopping inventory and preserving database.');server.close();server.closeIdleConnections();await runtime.dispose();process.exit(0);}
 process.on('SIGTERM',shutdown);process.on('SIGINT',shutdown);
-// This limit complements the outer task supervisor. It cannot be disabled for the demo.
-setTimeout(shutdown,Math.min(Number(process.env.INVENTORY_MAX_SECONDS||7200),7200)*1000);
+// Manual operation is an explicit operator choice; bounded demonstrations remain the default.
+if(!manualStop)setTimeout(shutdown,Math.min(Number(process.env.INVENTORY_MAX_SECONDS||7200),7200)*1000);

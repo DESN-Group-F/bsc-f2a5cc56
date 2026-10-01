@@ -7,7 +7,6 @@ import subprocess
 import sys
 import time
 
-STARTED=time.monotonic()
 LIMIT_SECONDS=7200
 
 def verify_saved_database(data):
@@ -23,6 +22,8 @@ def verify_saved_database(data):
         connection.close()
 
 def main():
+    started=time.monotonic()
+    manual_stop=os.environ.get('INVENTORY_MANUAL_STOP')=='1'
     port=int(os.environ.get('INVENTORY_PORT','8080'))
     if not 1<=port<=65535:
         raise RuntimeError('The inventory port must be between 1 and 65535.')
@@ -37,7 +38,9 @@ def main():
     verify_saved_database(data)
     environment=dict(os.environ)
     environment.update({'PORT':str(port),'INVENTORY_BUNDLE_ROOT':str(release),'INVENTORY_DATA_ROOT':str(data),
-                        'NODE_ENV':'production','INVENTORY_MAX_SECONDS':str(LIMIT_SECONDS)})
+                        'NODE_ENV':'production','INVENTORY_MAX_SECONDS':str(LIMIT_SECONDS),
+                        'INVENTORY_MANUAL_STOP':'1' if manual_stop else '0'})
+    print('Automatic stop disabled; stop this execution manually in OpenBayes.' if manual_stop else 'Automatic stop after two hours.',flush=True)
     child=subprocess.Popen([str(node),str(release/'runtime.mjs')],cwd=release,env=environment,start_new_session=True)
     def stop(_signum=None,_frame=None):
         if child.poll() is None:
@@ -46,7 +49,7 @@ def main():
             except subprocess.TimeoutExpired:
                 os.killpg(child.pid,signal.SIGKILL);child.wait()
     signal.signal(signal.SIGTERM,stop);signal.signal(signal.SIGINT,stop)
-    try:child.wait(timeout=max(1,LIMIT_SECONDS-(time.monotonic()-STARTED)))
+    try:child.wait(timeout=None if manual_stop else max(0,LIMIT_SECONDS-(time.monotonic()-started)))
     except subprocess.TimeoutExpired:stop()
     finally:stop()
     return child.returncode if child.returncode is not None and child.returncode>=0 else 0
