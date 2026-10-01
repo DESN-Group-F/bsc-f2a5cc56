@@ -1,0 +1,2 @@
+id,name,chemistry,model,capacity_mah,nominal_voltage,owner_id,storage_room_id,rfid_tag_id
+BAT-NEW,Example battery,Li-ion,Example model,,,STAFF-001,ROOM-001,

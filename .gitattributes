@@ -1,0 +1,2 @@
+artifacts/bundle.part* -text -filter -diff
+source/deploy/openbayes/** text eol=lf

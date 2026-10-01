@@ -1,0 +1,16 @@
+{
+  "bundleSha256": "5c02c61b47021bdc1e70db0b46f406cbf54788a416860d8da17e9a5fdd13e4f7",
+  "parts": [
+    {
+      "name": "bundle.part00",
+      "size": 67108864,
+      "sha256": "03c3693c7a502940649b29b339feb3f987d7d7d82faf82653c2244ae3aeae318"
+    },
+    {
+      "name": "bundle.part01",
+      "size": 40743515,
+      "sha256": "f44c4a417e9f7c07f391ccf23dd0575ec93ceab419c9e9d92ee92038e52d421c"
+    }
+  ],
+  "sourceCommit": "6a0d80dccf6cf7f6a33f0b1b71368701a871b4e3"
+}

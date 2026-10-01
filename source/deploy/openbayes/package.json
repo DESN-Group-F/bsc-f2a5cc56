@@ -1,0 +1,9 @@
+{
+  "name": "battery-inventory-portable-runtime",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {"node": ">=22.13.0"},
+  "dependencies": {"miniflare": "4.20260515.0"},
+  "overrides": {"miniflare": {"sharp": "0.35.4"}}
+}

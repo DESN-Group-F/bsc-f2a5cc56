@@ -1,0 +1,114 @@
+import { z } from "zod";
+export const datasetSchema = z.enum(["demo", "live"]);
+export type Dataset = z.infer<typeof datasetSchema>;
+export const identifier = z.string().trim().min(1).max(64).regex(/^[A-Za-z0-9][A-Za-z0-9._-]*$/, "Use letters, numbers, dots, underscores or hyphens.");
+const expectedVersion = z.number().int().positive().max(Number.MAX_SAFE_INTEGER).optional();
+export const personSchema = z.object({ id: identifier, name: z.string().trim().min(2).max(120), reference: z.string().trim().max(80).default(""), role: z.enum(["staff", "borrower"]), expectedVersion });
+export const roomSchema = z.object({ id: identifier, name: z.string().trim().min(2).max(120), building: z.string().trim().max(100).default(""), expectedVersion });
+export const batterySchema = z.object({
+    id: identifier, name: z.string().trim().min(2).max(120), chemistry: z.string().trim().max(40).default(""), model: z.string().trim().max(120).default(""),
+    capacityMah: z.number().finite().positive().max(1000000).nullable().default(null), voltage: z.number().finite().positive().max(1000).nullable().default(null),
+    tagId: z.string().trim().min(1).max(128).nullable().default(null), ownerId: identifier, homeRoomId: identifier, expectedVersion,
+});
+export const movementSchema = z.object({
+    requestId: z.string().uuid(), kind: z.enum(["checkout", "return"]), batteryIds: z.array(identifier).min(1).max(100), borrowerId: identifier.optional(),
+});
+export const chargeSchema = z.object({ requestId: z.string().uuid(), batteryId: identifier, completedAt: z.string().datetime({ offset: true }), percentage: z.number().finite().min(0).max(100).nullable().default(null) });
+export const observationSchema = z.object({ requestId: z.string().uuid(), batteryId: identifier, roomId: identifier, observedAt: z.string().datetime({ offset: true }) });
+export const correctionSchema = z.object({ requestId: z.string().uuid(), loanId: z.string().uuid(), reason: z.string().trim().min(5).max(500) });
+export class DomainError extends Error {
+    constructor(public status: number, message: string, public code?: string) { super(message); this.name = "DomainError"; }
+}
+export function uniqueIds(ids: string[]) { return [...new Set(ids)].sort(); }
+export function recordKey(scope: string, id: string) { return `${scope}/${id}`; }
+export function validatePastTime(value: string, now: Date) {
+    const parsed = Date.parse(value);
+    if (!Number.isFinite(parsed) || parsed > now.getTime() + 60000)
+        throw new DomainError(400, "Record a valid time that is not in the future.");
+    return new Date(parsed).toISOString();
+}
+export type Person = {
+    version: number;
+    id: string;
+    name: string;
+    reference: string;
+    role: string;
+};
+export type Room = {
+    version: number;
+    id: string;
+    name: string;
+    building: string;
+};
+export type BatteryRecord = {
+    version: number;
+    id: string;
+    name: string;
+    chemistry: string;
+    model: string;
+    capacityMah: number | null;
+    voltage: number | null;
+    tagId: string | null;
+    ownerId: string;
+    ownerName: string;
+    homeRoomId: string;
+    homeRoomName: string;
+    loanId: string | null;
+    borrowerId: string | null;
+    borrowerName: string | null;
+    checkedOutAt: string | null;
+    observedRoom: string | null;
+    observedBuilding: string | null;
+    observationRoomSnapshot: "recorded" | "unavailable" | null;
+    observedAt: string | null;
+    observationSource: string | null;
+    chargedAt: string | null;
+    chargePercentage: number | null;
+};
+export type InventorySnapshot = {
+    dataset: Dataset;
+    batteries: BatteryRecord[];
+    people: Person[];
+    rooms: Room[];
+    events: AuditEvent[];
+    actor: string;
+    hardwareConnected: false;
+};
+export type AuditEvent = {
+    id: string;
+    action: string;
+    batteryId: string | null;
+    actorName: string;
+    at: string;
+    details: Record<string, unknown>;
+};
+export type LoanRecord = {
+    id: string;
+    borrowerName: string;
+    checkedOutAt: string;
+    returnedAt: string | null;
+    cancelledAt: string | null;
+    checkoutActorName: string;
+    returnActorName: string | null;
+    correctionReason: string | null;
+};
+export type BatteryDetail = {
+    loans: LoanRecord[];
+    charges: {
+        id: string;
+        completedAt: string;
+        percentage: number | null;
+        actorName: string;
+        recordedAt: string;
+    }[];
+    observations: {
+        id: string;
+        roomName: string;
+        roomBuilding: string | null;
+        roomSnapshot: "recorded" | "unavailable";
+        observedAt: string;
+        receivedAt: string;
+        source: string;
+    }[];
+    events: AuditEvent[];
+};
