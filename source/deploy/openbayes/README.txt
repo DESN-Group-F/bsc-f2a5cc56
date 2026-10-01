@@ -36,6 +36,21 @@ password hash. The GitHub account credential is never sent to OpenBayes.
 Upload deploy-from-github.py promptly and use it in the same bounded task command.
 The server verifies each artifact hash, reconstructs the bundle and starts it.
 
+Account prerequisite and continuation
+The inspected account displayed an unverified real-name status on 2026-10-01.
+The platform documentation requires real-name verification for public port mapping.
+The server started successfully, but its public browser workflow remains unverified.
+The account holder must complete the platform's identity-verification flow personally.
+After verification, bind the saved execution home directory and upload resume.py.
+Use the bounded command:
+timeout --signal=TERM --kill-after=20s 7200s python3 resume.py
+The resume launcher requires the saved release, administrator configuration and
+one saved inventory database with migration receipts. It will not silently replace
+a missing or uninitialized database. Its preflight checks passed locally, but the
+resume launcher has not yet been executed on OpenBayes.
+Verify the actual public URL, sign-in and movement workflow after restarting.
+See deployment-2026-10-01.json for the observed execution and billing results.
+
 OpenBayes configuration
 Create a separate container named DESN2000-battery-inventory.
 Use the cpu resource (2 CPU cores, 4 GB RAM) billed at CNY 0.30 per hour.
@@ -60,7 +75,8 @@ Migration names and SHA-256 hashes are tracked and committed with each migration
 Changed, already-applied migration files are rejected.
 Runtime restart tests confirm record and audit-history persistence on local disk.
 OpenBayes saves /openbayes/home after a task stops; that remote snapshot behavior
-must be distinguished from local restart verification until actually observed.
+was observed in this execution's stopped-job file browser: the inventory SQLite
+file was retained. Restoring that snapshot in another execution remains untested.
 A future execution must bind or copy the saved home directory to retain its database.
 The default dataset contains fictional batteries; the working dataset starts empty.
 RFID ingestion and school identity integration remain outside this release.
