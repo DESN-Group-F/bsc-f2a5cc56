@@ -1,0 +1,105 @@
+{
+  "schemaVersion": 1,
+  "observationDate": "2026-10-01",
+  "status": "public_demonstration_verified_running",
+  "previousAttemptRecord": "deployment-2026-10-01.json",
+  "provider": "OpenBayes",
+  "container": {
+    "name": "DESN2000-battery-inventory",
+    "id": "CzzAylJROBl",
+    "resource": "cpu",
+    "cpuCores": 2,
+    "memoryGiB": 4,
+    "image": "PyTorch 2.8-2204-cpu"
+  },
+  "restoreVerification": {
+    "executionId": "kfcor562879f",
+    "copiedHomeFromExecutionId": "52ef72aly5s5",
+    "savedDatabasePreflightPassed": true,
+    "readyLogPort": 8080,
+    "readyLogMigrations": 3,
+    "finalState": "closed",
+    "displayedDuration": "00:03:54",
+    "stopReason": "Stopped to configure the named public mapping before resuming."
+  },
+  "publicExecution": {
+    "id": "dydzv3qgzv5c",
+    "url": "https://openbayes.com/console/zztv/jobs/dydzv3qgzv5c",
+    "observedState": "running",
+    "copiedHomeFromExecutionId": "kfcor562879f",
+    "maximumSeconds": 7200,
+    "estimatedStopTimeSydney": "2026-10-01T23:09:00+10:00",
+    "estimatedStopTimePrecision": "Approximately one minute, inferred from displayed elapsed time.",
+    "automaticStopObserved": false,
+    "readyLog": {
+      "event": "inventory_ready",
+      "port": 8081,
+      "migrations": 3,
+      "dataDirectory": "/openbayes/home/battery-inventory/data"
+    }
+  },
+  "publicAccess": {
+    "verified": true,
+    "confirmedPublicUrl": "https://zztv-desn2000-demo.gear-c1.openbayes.net/",
+    "urlSource": "The running job's public port mapping table.",
+    "port": 8081,
+    "mappingName": "desn2000-demo",
+    "observedRealNameStatus": "verified",
+    "healthProbeStatus": 200,
+    "unauthenticatedInventoryStatus": 401,
+    "unauthenticatedHomeStatus": 303,
+    "unauthenticatedHomeRedirect": "/login?return_to=%2F",
+    "remoteSignInVerified": true,
+    "remoteCheckoutReturnVerified": true,
+    "remoteAuditHistoryVerified": true,
+    "activeLoanSurvivedBrowserRefresh": true,
+    "workingInventoryBatteryCount": 0,
+    "demonstrationInventoryBatteryCount": 6
+  },
+  "workflowEvidence": {
+    "dataset": "demo",
+    "batteryId": "BAT-002",
+    "borrower": "Demo Student 01",
+    "operator": "admin",
+    "checkoutDisplayedAtSydney": "2026-10-01 21:10",
+    "returnDisplayedAtSydney": "2026-10-01 21:11",
+    "finalBatteryStatus": "in_store",
+    "checkoutAndReturnRetainedInHistory": true,
+    "realStudentDataUsed": false,
+    "hardwareConnected": false
+  },
+  "namingObservation": {
+    "closedJobSavedMapping": {"port": 8081, "name": "desn2000"},
+    "continuationWithOriginalName": "No new execution or explicit error was observed.",
+    "continuationWithDistinctName": "A new execution was created and its public endpoint worked.",
+    "cause": "Unknown. A name conflict is possible but was not confirmed by the platform."
+  },
+  "billing": {
+    "currency": "CNY",
+    "authorizedMaximum": 1,
+    "cpuHourlyRate": 0.30,
+    "settledDebuggingCharges": [0.05, 0.02],
+    "settledDebuggingTotal": 0.07,
+    "estimatedActiveDemoCharge": 0.60,
+    "estimatedTotalCpuCharge": 0.67,
+    "activeExecutionFinalCharge": null,
+    "accountTopUpPerformed": false,
+    "existingStorageSubscriptionChanged": false
+  },
+  "transfer": {
+    "repository": "https://github.com/DESN-Group-F/bsc-f2a5cc56",
+    "branch": "battery-inventory-openbayes-20261001",
+    "deployedArchiveCommit": "8efd15db436df670ba1c9df5addf18795b7e5695",
+    "bundleSha256": "5c02c61b47021bdc1e70db0b46f406cbf54788a416860d8da17e9a5fdd13e4f7",
+    "continuationMethod": "Existing saved release and database, with the updated resume launcher supplied inline.",
+    "credentialsOrExistingDatabasesCommitted": false,
+    "mainBranchChanged": false
+  },
+  "limitations": [
+    "This is a bounded demonstration using a portable Worker runtime, not an assessed permanent deployment.",
+    "The automatic shutdown and active execution's final charge are future results, not yet observed.",
+    "Saved migration receipts were restored remotely; restoration of newly created remote loans after task shutdown was not tested.",
+    "The original hosted application has an independent database.",
+    "RFID hardware ingestion and school identity integration remain unavailable."
+  ]
+}

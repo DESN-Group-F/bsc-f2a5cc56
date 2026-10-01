@@ -23,6 +23,9 @@ def verify_saved_database(data):
         connection.close()
 
 def main():
+    port=int(os.environ.get('INVENTORY_PORT','8080'))
+    if not 1<=port<=65535:
+        raise RuntimeError('The inventory port must be between 1 and 65535.')
     project=Path('/openbayes/home/battery-inventory')
     release,data=project/'release',project/'data'
     node=release/'runtime-node'/'bin'/'node'
@@ -33,7 +36,7 @@ def main():
         raise RuntimeError('The saved database directory is unavailable; refusing to create a replacement.')
     verify_saved_database(data)
     environment=dict(os.environ)
-    environment.update({'PORT':'8080','INVENTORY_BUNDLE_ROOT':str(release),'INVENTORY_DATA_ROOT':str(data),
+    environment.update({'PORT':str(port),'INVENTORY_BUNDLE_ROOT':str(release),'INVENTORY_DATA_ROOT':str(data),
                         'NODE_ENV':'production','INVENTORY_MAX_SECONDS':str(LIMIT_SECONDS)})
     child=subprocess.Popen([str(node),str(release/'runtime.mjs')],cwd=release,env=environment,start_new_session=True)
     def stop(_signum=None,_frame=None):
