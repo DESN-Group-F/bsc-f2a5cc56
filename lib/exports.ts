@@ -6,7 +6,7 @@ import type { InventoryStore } from "./store";
 type Row = Record<string, unknown>;
 export type ExportDocument = { metadata: Record<string, unknown>; tables: Record<string, Row[]> };
 const sectionIds = exportSections.map(section => section.id) as [ExportSection, ...ExportSection[]];
-const requestSchema = z.object({ dataset: datasetSchema, mode: z.enum(["summary", "detail", "records", "activity"]), range: z.enum(["filtered", "page", "selected"]).default("filtered"), batteryIds: z.array(identifier).optional(), filter: inventoryFilterSchema.default({}), page: z.number().int().nonnegative().default(0), pageSize: z.enum(["10", "25", "50", "100"]).default("25"), batteryId: identifier.optional(), sections: z.array(z.enum(sectionIds)).default(sectionIds), kind: z.enum(["people", "buildings", "rooms", "batteries"]).optional(), search: z.string().max(200).default("") });
+const requestSchema = z.object({ dataset: datasetSchema, mode: z.enum(["summary", "detail", "records", "activity"]), activityScope: z.enum(["all", "mine"]).default("all"), range: z.enum(["filtered", "page", "selected"]).default("filtered"), batteryIds: z.array(identifier).optional(), filter: inventoryFilterSchema.default({}), page: z.number().int().nonnegative().default(0), pageSize: z.enum(["10", "25", "50", "100"]).default("25"), batteryId: identifier.optional(), sections: z.array(z.enum(sectionIds)).default(sectionIds), kind: z.enum(["people", "buildings", "rooms", "batteries"]).optional(), search: z.string().max(200).default("") });
 const pick = (row: Row, columns: string[]) => Object.fromEntries(columns.map(column => [column, row[column] ?? null]));
 export async function createExport(store: InventoryStore, input: unknown): Promise<ExportDocument> {
     const exportedAt = new Date(), ageAsOfDate = currentSydneyDate(exportedAt);
@@ -19,25 +19,34 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
         throw new DomainError(400, "Choose the selected-batteries range when supplying battery IDs.");
     }
     const source = await store.exportData(), raw = source.raw;
+    const currentPeople = new Map(source.snapshot.people.map(person => [person.id, person]));
+    const directoryPerson = (stored: Row) => {
+        const current = currentPeople.get(stored.id);
+        return current?.accountId ? { ...stored, name: current.name } : stored;
+    };
     const all = source.snapshot.batteries as unknown as BatteryRecord[];
     const selected = new Set(selectedIds);
     const personalBase = filterBatteries(all, { personalScope: request.filter.personalScope }, ageAsOfDate, store.viewerAccountId);
-    let matching = request.batteryId ? all.filter(battery => battery.id === request.batteryId) : request.range === "selected" ? personalBase.filter(battery => selected.has(battery.id)) : filterBatteries(all, request.filter, ageAsOfDate, store.viewerAccountId);
+    let matching = request.batteryId ? personalBase.filter(battery => battery.id === request.batteryId) : request.range === "selected" ? personalBase.filter(battery => selected.has(battery.id)) : filterBatteries(all, request.filter, ageAsOfDate, store.viewerAccountId);
     if (request.range === "selected" && matching.length !== selectedIds.length)
         throw new DomainError(409, "One or more selected batteries are no longer available in this inventory or personal view. Refresh and review your selection. No partial download was prepared.");
-    if (request.batteryId && !matching.length) throw new DomainError(404, "Battery not found in this inventory.");
+    if (request.batteryId && !matching.length) throw new DomainError(404, "Battery not found in this inventory or personal view. Refresh and review its current responsibility or loan.");
     const matchingCount = matching.length;
-    if (request.range === "page") matching = matching.slice(request.page * Number(request.pageSize), (request.page + 1) * Number(request.pageSize));
-    const metadata = { exported_at_utc: exportedAt.toISOString(), age_as_of_date: ageAsOfDate, age_date_timezone: "Australia/Sydney", dataset: request.dataset, operator: source.snapshot.actor, mode: request.mode, range: request.batteryId ? "single" : request.range, filters: request.range === "selected" ? null : request.filter, selected_battery_ids: request.range === "selected" ? selectedIds : null, selection_filter_context: request.range === "selected" ? request.filter : null, page: request.range === "page" ? request.page + 1 : null, page_size: request.range === "page" ? Number(request.pageSize) : null, matching_batteries: matchingCount, exported_batteries: matching.length, selected_sections: request.mode === "detail" ? request.sections : null, timestamps: "UTC ISO 8601; battery lifecycle dates are YYYY-MM-DD", location_meaning: "Registered storage is the home; observations are dated evidence with their recorded source.", unknown_values: "Null or blank means not recorded; no history is inferred.", consistency: "All inventory and history tables read in one D1 batch." };
+    const pageRange = !request.batteryId && request.range === "page";
+    if (pageRange) matching = matching.slice(request.page * Number(request.pageSize), (request.page + 1) * Number(request.pageSize));
+    const metadata = { exported_at_utc: exportedAt.toISOString(), age_as_of_date: ageAsOfDate, age_date_timezone: "Australia/Sydney", dataset: request.dataset, operator: source.snapshot.actor, mode: request.mode, range: request.batteryId ? "single" : request.range, filters: request.range === "selected" ? null : request.filter, selected_battery_ids: request.range === "selected" ? selectedIds : null, selection_filter_context: request.range === "selected" ? request.filter : null, page: pageRange ? request.page + 1 : null, page_size: pageRange ? Number(request.pageSize) : null, matching_batteries: matchingCount, exported_batteries: matching.length, selected_sections: request.mode === "detail" ? request.sections : null, timestamps: "UTC ISO 8601; battery lifecycle dates are YYYY-MM-DD", location_meaning: "Registered storage is the home; observations are dated evidence with their recorded source.", unknown_values: "Null or blank means not recorded; no history is inferred.", consistency: "All inventory and history tables read in one D1 batch." };
     if (request.mode === "activity") {
         const query = request.search.toLowerCase();
-        const events = raw.audit_events.filter(row => `${row.action} ${row.battery_id ?? ""} ${row.actor_name} ${row.details_json} ${row.at}`.toLowerCase().includes(query));
-        return { metadata: { ...metadata, search: request.search, exported_records: events.length }, tables: { Activity: events } };
+        const events = raw.audit_events.filter(row => (request.activityScope === "all" || row.actor_id === store.viewerAccountId) && `${row.action} ${row.battery_id ?? ""} ${row.actor_name} ${row.details_json} ${row.at}`.toLowerCase().includes(query));
+        return { metadata: { ...metadata, activity_scope: request.activityScope, search: request.search, exported_records: events.length }, tables: { Activity: events } };
     }
     if (request.mode === "records") {
         if (!request.kind) throw new DomainError(400, "Select the directory to export.");
         const query = request.search.toLowerCase(), visible = source.snapshot[request.kind].filter(row => (request.kind !== "people" || !!row.accountId) && Object.values(row).join(" ").toLowerCase().includes(query));
-        const records = visible.map(row => raw[request.kind!].find(item => item.id === row.id)!);
+        const records = visible.map(row => {
+            const stored = raw[request.kind!].find(item => item.id === row.id)!;
+            return request.kind === "people" ? directoryPerson(stored) : stored;
+        });
         return { metadata: { ...metadata, search: request.search, exported_records: records.length }, tables: { [request.kind]: records } };
     }
     if (!matching.length) throw new DomainError(400, "No batteries match this export. Review the filters or page.");
@@ -61,11 +70,20 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
     if (request.sections.includes("loans")) tables.Loans = linked(loans);
     if (request.sections.includes("observations")) tables.Observations = linked(observations);
     if (request.sections.includes("charges")) tables.Charges = linked(charges);
-    if (request.sections.includes("audit")) tables.Operations = raw.audit_events.filter(row => ids.has(String(row.battery_id)) || (row.battery_id === null && ["records_imported", "demo_initialized"].includes(String(row.action))));
+    if (request.sections.includes("audit")) {
+        const related = raw.audit_events.filter(row => ids.has(String(row.battery_id)));
+        const importRequests = new Set(related.filter(row => row.action === "battery_registered").map(row => JSON.parse(String(row.details_json)).importRequestId).filter(value => typeof value === "string" && value.length > 0));
+        tables.Operations = raw.audit_events.filter(row => {
+            if (ids.has(String(row.battery_id))) return true;
+            if (row.battery_id !== null || row.action !== "records_imported") return false;
+            const details = JSON.parse(String(row.details_json));
+            return details.kind === "batteries" && importRequests.has(details.requestId);
+        });
+    }
     if (request.sections.includes("directories")) {
         const personKeys = new Set([...batteries.map(row => row.owner_key), ...loans.map(row => row.borrower_key)]), roomKeys = new Set([...batteries.map(row => row.home_room_key), ...observations.map(row => row.room_key)]);
         const rooms = raw.rooms.filter(row => roomKeys.has(row.key)), buildingKeys = new Set([...batteries.map(row => row.home_building_key), ...rooms.map(row => row.building_key)]);
-        tables.People = raw.people.filter(row => personKeys.has(row.key)); tables.Rooms = rooms; tables.Buildings = raw.buildings.filter(row => buildingKeys.has(row.key));
+        tables.People = raw.people.filter(row => personKeys.has(row.key)).map(directoryPerson); tables.Rooms = rooms; tables.Buildings = raw.buildings.filter(row => buildingKeys.has(row.key));
     }
     return { metadata, tables };
 }

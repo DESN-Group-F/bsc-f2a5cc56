@@ -8,3 +8,5 @@ drizzle/0004_staff_accounts_shared_inventory.sql text eol=lf
 drizzle/0005_battery_age_dates.sql text eol=lf
 drizzle/0006_staff_self_checkout.sql text eol=lf
 drizzle/0007_room_availability.sql text eol=lf
+drizzle/0008_periodic_tasks_messages.sql text eol=lf
+drizzle/0009_optional_task_completion_notes.sql text eol=lf

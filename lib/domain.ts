@@ -15,10 +15,20 @@ export const batterySchema = z.object({
     tagId: z.string().trim().min(1).max(128).nullable().default(null), ownerId: identifier, homeBuildingId: identifier.nullable().default(null), homeRoomId: identifier.nullable().default(null), expectedVersion,
     manufacturedOn: batteryDate, firstUsedOn: batteryDate,
 });
-const movementFields = { requestId: z.string().uuid(), batteryIds: z.array(identifier).min(1).max(100) };
+const recordVersion = z.number().int().positive().max(Number.MAX_SAFE_INTEGER);
+const tagIdentifier = z.string().trim().min(1).max(128);
+export const scanSourceSchema = z.enum(["simulated", "manual"]);
+export const scanLookupSchema = z.object({ tagIds: z.array(tagIdentifier).min(1).max(100), source: scanSourceSchema }).strict();
+export const scanContextSchema = z.object({ sessionId: z.string().uuid(), source: scanSourceSchema, bindings: z.array(z.object({ batteryId: identifier, tagId: tagIdentifier, version: recordVersion }).strict()).min(1).max(100) }).strict();
+export type ScanSource = z.infer<typeof scanSourceSchema>;
+export type ScanContext = z.infer<typeof scanContextSchema>;
+export type ScanBinding = ScanContext["bindings"][number];
+export type ScanLookupResult = { source: ScanSource; results: { tagId: string; battery: BatteryRecord | null }[] };
+export type ReturnPlacement = { roomId: string; roomName: string; building: string; buildingId: string; isPlaceholder: boolean; source: "Staff return confirmation" | "Simulated return confirmation"; observedAt: string; roomVersion: number; buildingVersion: number };
+const movementFields = { requestId: z.string().uuid(), batteryIds: z.array(identifier).min(1).max(100), scan: scanContextSchema.optional() };
 export const movementSchema = z.discriminatedUnion("kind", [
     z.object({ ...movementFields, kind: z.literal("checkout") }).strict(),
-    z.object({ ...movementFields, kind: z.literal("return"), expectedLoans: z.array(z.object({ batteryId: identifier, loanId: z.string().uuid() }).strict()).min(1).max(100) }).strict(),
+    z.object({ ...movementFields, kind: z.literal("return"), expectedLoans: z.array(z.object({ batteryId: identifier, loanId: z.string().uuid() }).strict()).min(1).max(100), returnRoom: z.object({ roomId: identifier, version: recordVersion }).strict().optional() }).strict(),
 ]);
 export const chargeSchema = z.object({ requestId: z.string().uuid(), batteryId: identifier, completedAt: z.string().datetime({ offset: true }), durationMinutes: z.number().finite().positive().max(525600) }).strict();
 export const observationSchema = z.object({ requestId: z.string().uuid(), batteryId: identifier, roomId: identifier, observedAt: z.string().datetime({ offset: true }) });
@@ -131,6 +141,7 @@ export type LoanRecord = {
     correctionReason: string | null;
 };
 export type BatteryDetail = {
+    battery: BatteryRecord;
     loans: LoanRecord[];
     charges: {
         id: string;

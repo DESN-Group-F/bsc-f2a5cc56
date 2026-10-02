@@ -1,2 +1,2 @@
 id,name,chemistry,model,capacity_mah,nominal_voltage,owner_id,storage_building_id,storage_room_id,rfid_tag_id,manufactured_on,first_used_on
-BAT-NEW,Example battery,Li-ion,Example model,,,STAFF-001,J18,,,,
+BAT-NEW,Example battery,Li-ion,Example model,,,REPLACE_WITH_OWNER_ID,J18,,,,

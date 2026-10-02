@@ -23,8 +23,9 @@ function fail(error: unknown) {
 export async function GET(request: Request) {
     try {
         const url = new URL(request.url), { store, actor } = await context(request, url.searchParams.get("dataset"));
+        const activityScope = z.enum(["all", "mine"]).parse(url.searchParams.get("activityScope") ?? "all");
         const id = url.searchParams.get("batteryId");
-        if (url.searchParams.get("activity") === "all") return json({ events: await store.fullActivity() });
+        if (url.searchParams.get("activity") === "all") return json({ events: await store.fullActivity(activityScope), activityScope });
         return json(id ? await store.detail(identifier.parse(id)) : { ...await store.snapshot(), user: actor });
     }
     catch (e) {
@@ -57,6 +58,9 @@ export async function POST(request: Request) {
                 break;
             case "movement":
                 result = await store.movement(payload);
+                break;
+            case "scan_lookup":
+                result = await store.scanLookup(payload);
                 break;
             case "person":
                 result = await store.savePerson(payload, body.update === true);

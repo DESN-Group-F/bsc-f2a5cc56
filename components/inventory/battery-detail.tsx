@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import type { InventorySnapshot, BatteryRecord, BatteryDetail } from "@/lib/domain";
-import { actionNames, formatTime, formatDateOnly, formatBatteryAge, sydneyInput, fromSydneyInput, numberOrNull, buildingLabel, storageRoomLabel, durationLabel } from "@/lib/client-utils";
+import { actionNames, formatTime, formatDateOnly, formatBatteryAge, sydneyInput, fromSydneyInput, numberOrNull, buildingLabel, storageRoomLabel, durationLabel, reloadSessionPage } from "@/lib/client-utils";
 import { currentSydneyDate } from "@/lib/battery-age";
 import { buildingPickerOptions, isSupportedBuilding, roomPickerOptions } from "@/lib/location-catalog";
 import { RecordPicker } from "./record-picker";
@@ -21,24 +21,25 @@ type DetailDraft = { kind: "charge" } | { kind: "observation" } | {
     action: "checkout_voided" | "return_reopened";
     expectedReturnedAt: string | null;
 };
-export function BatteryDetails({ battery, data, revision, onClose, onEdit, onExport, write }: {
+export function BatteryDetails({ battery: initialBattery, data, revision, onClose, onEdit, onExport, write }: {
     battery: BatteryRecord;
     data: InventorySnapshot;
     revision: number;
     onClose: () => void;
-    onEdit: () => void;
+    onEdit: (battery: BatteryRecord) => void;
     onExport: () => void;
     write: WriteAction;
 }) {
     const [detail, setDetail] = useState<BatteryDetail | null>(null), [error, setError] = useState(""), [retry, setRetry] = useState(0), [form, setForm] = useState<DetailDraft | null>(null);
-    useEffect(() => { const abort = new AbortController(); fetch(`/api/inventory?dataset=${data.dataset}&batteryId=${encodeURIComponent(battery.id)}`, { signal: abort.signal }).then(async (r) => { const body = await r.json() as BatteryDetail & {
+    const battery = detail?.battery ?? initialBattery;
+    useEffect(() => { const abort = new AbortController(); fetch(`/api/inventory?dataset=${data.dataset}&batteryId=${encodeURIComponent(initialBattery.id)}`, { signal: abort.signal, cache: "no-store" }).then(async (r) => { if (r.status === 401) reloadSessionPage("/signin"); const body = await r.json() as BatteryDetail & {
         error?: string;
     }; if (!r.ok)
-        throw new Error(body.error); setError(""); setDetail(body); }).catch(e => { if (e.name !== "AbortError")
-        setError(e.message); }); return () => abort.abort(); }, [battery.id, data.dataset, revision, retry]);
+        throw new Error(body.error); if (abort.signal.aborted) return; if (body.battery?.id !== initialBattery.id) throw new Error("The battery details response was incomplete. Refresh before using this record."); setError(""); setDetail(body); }).catch(e => { if (e.name !== "AbortError" && !abort.signal.aborted)
+        setError(e.message); }); return () => abort.abort(); }, [initialBattery.id, data.dataset, revision, retry]);
     const ageAsOfOn = currentSydneyDate();
     return <><Sheet open onOpenChange={o => !o && onClose()}><SheetContent className="battery-detail-sheet"><SheetHeader><SheetTitle><span className="detail-title-icon"><Battery size={20}/></span>{battery.id}</SheetTitle><SheetDescription>{battery.name}</SheetDescription></SheetHeader><div className="detail-body">
-    <div className="detail-action-row"><span className={`status-badge ${battery.loanId ? "out" : "in"}`}>{battery.loanId ? "On loan" : "In store"}</span><div className="detail-button-group"><Button variant="outline" size="sm" onClick={() => setRetry(value => value + 1)} disabled={!!form}><RefreshCw size={16}/>Refresh history</Button><Button variant="outline" size="sm" onClick={onExport}><Download size={16}/>Download details</Button>{data.user.role === "admin" && <Button variant="outline" size="sm" onClick={onEdit}><Pencil />Edit asset</Button>}</div></div>
+    <div className="detail-action-row"><span className={`status-badge ${battery.loanId ? "out" : "in"}`}>{battery.loanId ? "On loan" : "In store"}</span><div className="detail-button-group"><Button variant="outline" size="sm" onClick={() => setRetry(value => value + 1)} disabled={!!form}><RefreshCw size={16}/>Refresh details</Button><Button variant="outline" size="sm" onClick={onExport}><Download size={16}/>Download details</Button>{data.user.role === "admin" && <Button variant="outline" size="sm" onClick={() => onEdit(battery)}><Pencil />Edit asset</Button>}</div></div>
     <dl className="spec-grid">{[["Chemistry", battery.chemistry || "Not recorded"], ["Model", battery.model || "Not recorded"], ["Rated capacity", battery.capacityMah == null ? "Not recorded" : `${battery.capacityMah.toLocaleString()} mAh`], ["Nominal voltage", battery.voltage == null ? "Not recorded" : `${battery.voltage} V`], ["RFID identifier", battery.tagId || "Not assigned"], ["Storage building", battery.homeBuildingId ? buildingLabel({ id: battery.homeBuildingId, name: battery.homeBuildingName! }) : "Building not assigned"], ["Storage room", storageRoomLabel(battery)]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
     <div className="detail-card"><h3><Clock3 size={17}/>Battery age</h3><dl className="spec-grid">{[["Manufactured on", formatDateOnly(battery.manufacturedOn)], ["First used on", formatDateOnly(battery.firstUsedOn)], ["Age since manufacture", formatBatteryAge(battery.manufacturedOn, ageAsOfOn)], ["Time in service", formatBatteryAge(battery.firstUsedOn, ageAsOfOn)]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p>Calculated as of {formatDateOnly(ageAsOfOn)} (Sydney).</p></div>
     <div className="detail-card"><h3><UserRound size={17}/>Responsibility</h3><div className="key-value"><span>Responsible owner</span><strong>{battery.ownerName}</strong></div><div className="key-value"><span>Current holder</span><strong>{battery.borrowerName || "No active holder"}</strong></div>{battery.checkedOutAt && <div className="key-value"><span>Checked out</span><strong>{formatTime(battery.checkedOutAt)}</strong></div>}</div>
@@ -75,7 +76,7 @@ function DetailForm({ form, battery, data, onClose, write }: {
             onClose();
         }
         catch (e) {
-            setError(`${(e as Error).message}${form.kind === "correction" && (e as { status?: number }).status === 409 ? " Your reason and intended action are preserved. Close this dialog, choose Refresh history and review a new correction before saving." : ""}`);
+            setError(`${(e as Error).message}${form.kind === "correction" && (e as { status?: number }).status === 409 ? " Your reason and intended action are preserved. Close this dialog, choose Refresh details and review a new correction before saving." : ""}`);
         }
         finally {
             setBusy(false);

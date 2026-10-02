@@ -39,6 +39,53 @@ function beforeCommit(intervene) {
     } };
 }
 
+test("detail refresh includes current responsibility, metadata and loan state from one D1 read", async () => {
+    const scope = "refreshed-details:demo", store = await fixture(scope), self = inventory(scope, staff), receiver = inventory(scope, otherStaff);
+    const before = (await store.snapshot()).batteries.find(row => row.id === "BAT-001");
+    await store.saveBattery({ id: before.id, expectedVersion: before.version, name: "Updated battery details", chemistry: before.chemistry, model: before.model, capacityMah: before.capacityMah, voltage: before.voltage, ownerId: `staff-${otherStaff.id}`, homeBuildingId: before.homeBuildingId, homeRoomId: before.homeRoomId, tagId: before.tagId }, true);
+    const received = await checkout(self, [before.id]);
+    assert.equal(received.requestId.length, 36);
+    let detail = await store.detail(before.id);
+    assert.equal(detail.battery.name, "Updated battery details");
+    assert.equal(detail.battery.version, before.version + 1);
+    assert.equal(detail.battery.ownerAccountId, otherStaff.id);
+    assert.equal(detail.battery.borrowerAccountId, staff.id);
+    assert.equal(detail.battery.loanId, detail.loans[0].id);
+    assert.equal(detail.battery.checkedOutAt, detail.loans[0].checkedOutAt);
+    const input = await reviewedReturn(receiver, [before.id]);
+    const returned = await receiver.movement(input);
+    assert.equal(returned.requestId, input.requestId);
+    detail = await store.detail(before.id);
+    assert.equal(detail.battery.loanId, null);
+    assert.equal(detail.battery.borrowerAccountId, null);
+    assert.equal(detail.loans[0].returnedAt, returned.at);
+    assert.equal(detail.events[0].details.requestId, input.requestId);
+    await assert.rejects(inventory("different-detail-scope:demo").detail(before.id), status(404));
+});
+
+test("a competing checkout before the detail read cannot split header and history snapshots", async () => {
+    const scope = "detail-read-race:demo";
+    await fixture(scope);
+    const self = inventory(scope, staff);
+    let changed = false;
+    const sqlByStatement = new WeakMap();
+    const database = { prepare: sql => {
+        const prepared = db.prepare(sql);
+        return { bind: (...values) => { const bound = prepared.bind(...values); sqlByStatement.set(bound, sql); return bound; } };
+    }, batch: async statements => {
+        if (!changed && statements.some(statement => /^SELECT b.id,b.version/.test(sqlByStatement.get(statement) ?? ""))) {
+            changed = true;
+            await checkout(self, ["BAT-002"]);
+        }
+        return db.batch(statements);
+    } };
+    const detail = await inventory(scope, admin, database).detail("BAT-002");
+    assert.equal(changed, true);
+    assert.equal(detail.battery.loanId, detail.loans[0].id);
+    assert.equal(detail.battery.borrowerAccountId, staff.id);
+    assert.equal(detail.loans[0].returnedAt, null);
+});
+
 test("self checkout uses a stable account ID; same-name people are never adopted; another staff receives the return", async () => {
     const scope = "self-responsibility:demo", store = await fixture(scope), self = inventory(scope, staff), receiver = inventory(scope, otherStaff);
     await store.savePerson({ id: "same-name-legacy", name: staff.displayName, role: "staff" });
@@ -123,9 +170,16 @@ test("reviewed return maps must match the entire batch and remain part of idempo
     await checkout(self, ["BAT-001", "BAT-002"]);
     const input = await reviewedReturn(self, ["BAT-001", "BAT-002"]);
     for (const expectedLoans of [input.expectedLoans.slice(0, 1), [input.expectedLoans[0], input.expectedLoans[0]], input.expectedLoans.map(row => ({ ...row, loanId: input.expectedLoans[0].loanId }))])
-        await assert.rejects(self.movement({ ...input, expectedLoans }), status(400));
-    await assert.rejects(self.movement({ ...input, expectedLoans: input.expectedLoans.map((row, index) => ({ ...row, loanId: input.expectedLoans[1 - index].loanId })) }), status(409));
-    await self.movement(input);
+        await assert.rejects(self.movement({ ...input, requestId: uuid(), expectedLoans }), status(400));
+    const incorrect = { ...input, requestId: uuid(), expectedLoans: input.expectedLoans.map((row, index) => ({ ...row, loanId: input.expectedLoans[1 - index].loanId })) };
+    const finalRejected = error => error.status === 409 && error.code === "movement_rejected_final" && /A reviewed loan changed/.test(error.message);
+    await assert.rejects(self.movement(incorrect), finalRejected);
+    await assert.rejects(self.movement(incorrect), finalRejected);
+    await assert.rejects(self.movement({ ...input, requestId: incorrect.requestId }), error => error.status === 409 && error.code !== "movement_rejected_final" && /different operation/.test(error.message));
+    assert.ok((await self.snapshot()).batteries.filter(row => input.batteryIds.includes(row.id)).every(row => row.loanId !== null));
+    const receipt = await self.movement(input);
+    assert.equal(receipt.requestId, input.requestId);
+    assert.equal((await self.movement(input)).replayed, true);
     await assert.rejects(self.movement({ ...input, expectedLoans: input.expectedLoans.map(row => ({ ...row, loanId: uuid() })) }), status(409));
     assert.equal((await store.detail("BAT-001")).events.filter(row => row.action === "return").length, 1);
 });
@@ -240,4 +294,154 @@ test("the additive account-link migration preserves legacy rows and existing int
         assert.ok(triggers.every(name => retained.includes(name)));
         assert.deepEqual((await database.prepare("PRAGMA foreign_key_check").all()).results, []);
     } finally { await legacy.dispose(); }
+});
+
+function afterMissingMovementReplay(intervene) {
+    let intercepted = false;
+    return { get intercepted() { return intercepted; }, prepare: sql => {
+        const prepared = db.prepare(sql);
+        return { bind: (...values) => {
+            const bound = prepared.bind(...values);
+            if (!/^SELECT \* FROM operations WHERE id=/.test(sql)) return bound;
+            return { first: async (...args) => {
+                const before = await bound.first(...args);
+                if (!intercepted && before === null) { intercepted = true; await intervene(); }
+                return before;
+            } };
+        } };
+    }, batch: statements => db.batch(statements) };
+}
+
+test("same-ID ordinary return retry recovers a concurrent saved receipt after its initial replay read missed the commit", async () => {
+    const scope = "ordinary-return-replay-read-race:demo", store = await fixture(scope), self = inventory(scope, staff), receiver = inventory(scope, otherStaff);
+    await checkout(self, ["BAT-001"]);
+    const input = await reviewedReturn(receiver, ["BAT-001"]), originalLoan = (await store.detail("BAT-001")).loans[0];
+    let originalReceipt;
+    const database = afterMissingMovementReplay(async () => { originalReceipt = await receiver.movement(input); });
+    const retry = new InventoryStore(database, scope, "demo", actor(otherStaff), () => new Date(now.getTime() + 60000));
+    const replay = await retry.movement(input);
+    assert.equal(database.intercepted, true);
+    assert.deepEqual(replay, { ...originalReceipt, replayed: true });
+    assert.equal(replay.requestId, input.requestId);
+    assert.equal(replay.at, originalReceipt.at);
+    const detail = await store.detail("BAT-001");
+    assert.equal(detail.loans.length, 1);
+    assert.equal(detail.loans[0].id, originalLoan.id);
+    assert.equal(detail.loans[0].returnedAt, originalReceipt.at);
+    assert.equal(detail.events.filter(event => event.action === "return").length, 1);
+    assert.equal(await db.prepare("SELECT COUNT(*) FROM operations WHERE scope=? AND kind='return'").bind(scope).first("COUNT(*)"), 1);
+});
+
+test("same-ID scanned return retry recovers the saved room receipt despite a concurrent commit and subsequent binding edits", async () => {
+    const scope = "scanned-return-replay-read-race:demo", store = await fixture(scope), self = inventory(scope, staff), receiver = inventory(scope, otherStaff);
+    await checkout(self, ["BAT-002"]);
+    const snapshot = await receiver.snapshot(), battery = snapshot.batteries.find(row => row.id === "BAT-002"), room = snapshot.rooms.find(row => row.id === "J18-DEMO-WORKSPACE");
+    const input = { ...await reviewedReturn(receiver, [battery.id]), scan: { sessionId: uuid(), source: "simulated", bindings: [{ batteryId: battery.id, tagId: battery.tagId, version: battery.version }] }, returnRoom: { roomId: room.id, version: room.version } };
+    let originalReceipt;
+    const database = afterMissingMovementReplay(async () => {
+        originalReceipt = await receiver.movement(input);
+        await store.saveBattery({ ...battery, name: "Metadata changed after the saved return", tagId: "AFTER-RETURN-TAG", expectedVersion: battery.version }, true);
+        await store.saveRoom({ ...room, name: "Room renamed after the saved return", expectedVersion: room.version }, true);
+    });
+    const retry = new InventoryStore(database, scope, "demo", actor(otherStaff), () => new Date(now.getTime() + 60000));
+    const replay = await retry.movement(input);
+    assert.equal(database.intercepted, true);
+    assert.deepEqual(replay, { ...originalReceipt, replayed: true });
+    assert.equal(replay.requestId, input.requestId);
+    assert.equal(replay.at, originalReceipt.at);
+    assert.equal(replay.returnPlacement.observedAt, originalReceipt.at);
+    assert.equal(replay.returnPlacement.roomName, originalReceipt.returnPlacement.roomName);
+    const detail = await store.detail(battery.id);
+    assert.equal(detail.loans.length, 1);
+    assert.equal(detail.loans[0].returnedAt, originalReceipt.at);
+    assert.equal(detail.events.filter(event => event.action === "return").length, 1);
+    assert.equal(detail.observations.length, 1);
+    assert.equal(detail.observations[0].roomName, originalReceipt.returnPlacement.roomName);
+    assert.equal(await db.prepare("SELECT COUNT(*) FROM operations WHERE scope=? AND kind='return'").bind(scope).first("COUNT(*)"), 1);
+});
+
+for (const scanned of [false, true]) test(`a final rejected ${scanned ? "scanned" : "ordinary"} return prevents a paused original from closing a reopened same-ID loan`, { timeout: 20000 }, async () => {
+    const scope = `final-rejected-return-${scanned ? "scan" : "ordinary"}:demo`, store = await fixture(scope), self = inventory(scope, staff), receiver = inventory(scope, otherStaff);
+    const batteryId = "BAT-001";
+    await checkout(self, [batteryId]);
+    const initialDetail = await store.detail(batteryId), loanId = initialDetail.loans[0].id;
+    let input = await reviewedReturn(self, [batteryId]);
+    if (scanned) {
+        const snapshot = await self.snapshot(), battery = snapshot.batteries.find(row => row.id === batteryId), room = snapshot.rooms.find(row => row.id === "J18-DEMO-WORKSPACE");
+        input = { ...input, scan: { sessionId: uuid(), source: "simulated", bindings: [{ batteryId, tagId: battery.tagId, version: battery.version }] }, returnRoom: { roomId: room.id, version: room.version } };
+    }
+    let release, entered;
+    const gate = new Promise(resolve => { release = resolve; }), paused = new Promise(resolve => { entered = resolve; });
+    const delayed = inventory(scope, staff, beforeCommit(async () => { entered(); await gate; }));
+    // Capture the delayed result immediately so a rejection cannot become an unhandled promise while the peer and correction run.
+    const original = delayed.movement(input).then(value => ({ value }), error => ({ error }));
+    let retry, peerReceipt, reopened, originalOutcome;
+    try {
+        await paused;
+        peerReceipt = await receiver.movement(await reviewedReturn(receiver, [batteryId]));
+        retry = await self.movement(input).then(value => ({ value }), error => ({ error }));
+        const returnedLoan = (await store.detail(batteryId)).loans[0];
+        await store.correctLoan(correction(returnedLoan, "return_reopened"));
+        reopened = (await store.detail(batteryId)).loans[0];
+    } finally {
+        release();
+        originalOutcome = await original;
+    }
+    assert.equal(reopened.id, loanId);
+    assert.equal(reopened.returnedAt, null);
+    assert.equal(retry.value, undefined, "The same-ID retry must establish a final rejection after the peer return");
+    assert.equal(retry.error.status, 409);
+    assert.equal(originalOutcome.value, undefined, "The already-paused original must not succeed after staff have cleared its final rejection");
+    assert.equal(originalOutcome.error.status, 409);
+    assert.equal(originalOutcome.error.code, "movement_rejected_final");
+    assert.equal(retry.error.code, "movement_rejected_final");
+
+    const finalRejected = error => error.status === 409 && error.code === "movement_rejected_final";
+    await assert.rejects(self.movement(input), finalRejected);
+    await assert.rejects(receiver.movement(input), error => error.status === 409 && error.code !== "movement_rejected_final");
+    await assert.rejects(self.movement({ ...input, expectedLoans: [{ batteryId, loanId: uuid() }] }), error => error.status === 409 && error.code !== "movement_rejected_final");
+
+    const detail = await store.detail(batteryId);
+    assert.equal(detail.loans.length, 1);
+    assert.equal(detail.loans[0].id, loanId);
+    assert.equal(detail.loans[0].returnedAt, null);
+    assert.equal(detail.battery.loanId, loanId);
+    assert.equal(detail.battery.borrowerAccountId, staff.id);
+    assert.equal(detail.observations.length, initialDetail.observations.length, "A rejected scanned return must not append a room placement");
+    const returns = detail.events.filter(event => event.action === "return"), reopens = detail.events.filter(event => event.action === "return_reopened");
+    assert.equal(returns.length, 1);
+    assert.equal(returns[0].details.requestId, peerReceipt.requestId);
+    assert.equal(returns[0].actorName, otherStaff.displayName);
+    assert.equal(await db.prepare("SELECT actor_id FROM audit_events WHERE scope=? AND battery_id=? AND action='return'").bind(scope, batteryId).first("actor_id"), otherStaff.id);
+    assert.equal(reopens.length, 1);
+    assert.equal(reopens[0].actorName, admin.displayName);
+    assert.equal(await db.prepare("SELECT actor_id FROM audit_events WHERE scope=? AND battery_id=? AND action='return_reopened'").bind(scope, batteryId).first("actor_id"), admin.id);
+    assert.equal(detail.events.filter(event => event.details.requestId === input.requestId).length, 0);
+    const rows = (await db.prepare("SELECT kind,result_json FROM operations WHERE id=? AND scope=?").bind(`${scope}/${input.requestId}`, scope).all()).results;
+    assert.equal(rows.length, 1);
+    assert.equal(rows[0].kind, "movement_rejected");
+    const rejection = JSON.parse(rows[0].result_json);
+    assert.equal(rejection.kind, "return");
+    assert.equal(rejection.rejected, true);
+    assert.equal(rejection.status, 409);
+
+    // A fresh review and request may operate on the corrected loan; the final outcome reserves only the rejected request identity.
+    let freshInput = await reviewedReturn(self, [batteryId]);
+    if (scanned) {
+        const snapshot = await self.snapshot(), battery = snapshot.batteries.find(row => row.id === batteryId), room = snapshot.rooms.find(row => row.id === input.returnRoom.roomId);
+        freshInput = { ...freshInput, scan: { sessionId: uuid(), source: "simulated", bindings: [{ batteryId, tagId: battery.tagId, version: battery.version }] }, returnRoom: { roomId: room.id, version: room.version } };
+    }
+    const fresh = await self.movement(freshInput);
+    assert.notEqual(fresh.requestId, input.requestId);
+    assert.equal(fresh.count, 1);
+    const afterFresh = await store.detail(batteryId);
+    assert.equal(afterFresh.loans.length, 1);
+    assert.equal(afterFresh.loans[0].id, loanId);
+    assert.equal(afterFresh.loans[0].returnedAt, fresh.at);
+    assert.equal(afterFresh.battery.loanId, null);
+    assert.equal(afterFresh.events.filter(event => event.action === "return").length, 2);
+    assert.equal(afterFresh.events.filter(event => event.action === "return_reopened").length, 1);
+    assert.equal(afterFresh.observations.length, initialDetail.observations.length + Number(scanned));
+    await assert.rejects(self.movement(input), finalRejected);
+    assert.equal(await db.prepare("SELECT COUNT(*) FROM operations WHERE id=? AND scope=? AND kind='movement_rejected'").bind(`${scope}/${input.requestId}`, scope).first("COUNT(*)"), 1);
 });

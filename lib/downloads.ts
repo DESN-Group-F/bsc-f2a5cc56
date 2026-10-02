@@ -5,12 +5,14 @@ type Row = Record<string, unknown>;
 const cell = (value: unknown): string | number | boolean => value == null ? "" : typeof value === "string" || typeof value === "number" || typeof value === "boolean" ? value : JSON.stringify(value);
 export function summaryCsv(document: ExportDocument) {
     const records = Object.values(document.tables)[0] ?? [];
-    const rows = records.map(row => ({ ...row, exported_at_utc: document.metadata.exported_at_utc, export_record_count: records.length, filters_json: JSON.stringify(document.metadata.filters ?? {}), ...(document.metadata.search !== undefined ? { search_query: document.metadata.search } : {}) }));
+    const rows = records.map(row => ({ ...row, exported_at_utc: document.metadata.exported_at_utc, export_record_count: records.length, filters_json: JSON.stringify(document.metadata.filters ?? {}), ...(document.metadata.search !== undefined ? { search_query: document.metadata.search } : {}), ...(document.metadata.activity_scope !== undefined ? { activity_scope: document.metadata.activity_scope } : {}) }));
     const fields = [...new Set(rows.flatMap(row => Object.keys(row)))];
     return "\uFEFF" + [fields, ...rows.map(row => fields.map(field => cell((row as Row)[field])))].map(row => row.map(csvCell).join(",")).join("\r\n");
 }
 export async function excelBuffer(document: ExportDocument) {
-    const ExcelJS = (await import("exceljs")).default;
+    // The published browser writer encodes complete XML strings before ZIP chunking, preserving surrogate pairs without global patches.
+    // @ts-expect-error ExcelJS supplies types only for its root entry; the bare bundle implements the same Workbook API used here.
+    const ExcelJS = (await import("exceljs/dist/exceljs.bare.js")).default as typeof import("exceljs");
     const workbook = new ExcelJS.Workbook();
     workbook.creator = String(document.metadata.operator ?? "admin"); workbook.created = new Date(String(document.metadata.exported_at_utc));
     const longValues: Row[] = [];

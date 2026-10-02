@@ -94,7 +94,7 @@ test("invalid, nonfinite and contradictory ranges are rejected instead of silent
 
 test("filtered summary counts and page scope use the same query while selected export preserves IDs outside the filters", async () => {
     const batteries = Array.from({ length: 25 }, (_, index) => asset(`BAT-${String(index).padStart(2, "0")}`, { chemistry: index < 23 ? "LiPo" : "Li-ion", capacityMah: 2200, manufacturedOn: "2020-01-01" }));
-    const store = { exportData: async () => ({ snapshot: { batteries, actor: "Review staff" }, raw: { audit_events: [], batteries: [], loans: [], observations: [], charges: [], people: [], buildings: [], rooms: [] } }) };
+    const store = { exportData: async () => ({ snapshot: { batteries, actor: "Review staff", people: [], buildings: [], rooms: [] }, raw: { audit_events: [], batteries: [], loans: [], observations: [], charges: [], people: [], buildings: [], rooms: [] } }) };
     const filter = inventoryFilterSchema.parse({ chemistry: "LiPo", capacityMinMah: 2200 });
     const matching = filterBatteries(batteries, filter), visible = matching.slice(10, 20);
     const summary = await createExport(store, { dataset: "demo", mode: "summary", filter });

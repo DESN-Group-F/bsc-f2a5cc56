@@ -57,6 +57,20 @@
       "when": 1790934504273,
       "tag": "0007_room_availability",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1790941106923,
+      "tag": "0008_periodic_tasks_messages",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1790947155735,
+      "tag": "0009_optional_task_completion_notes",
+      "breakpoints": true
     }
   ]
 }

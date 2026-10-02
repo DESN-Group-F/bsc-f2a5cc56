@@ -102,6 +102,43 @@ test("selected personal downloads reject returned loans, changed responsibility 
     await assert.rejects(createExport(self, { dataset: "demo", mode: "detail", filter: { personalScope: "borrowed" }, viewerAccountId: other.id, range: "selected", batteryIds: ["MINE"] }), status(409));
 });
 
+test("single battery downloads preserve native personal scope without applying ordinary list filters or pagination", async () => {
+    const scope = "personal-single-export:demo"; await fixture(scope); const self = inventory(scope, staff);
+    await self.saveBattery(asset("MINE")); await self.saveBattery(asset("OTHER", other));
+    await checkout(self, ["BAT-001", "MINE"]); await checkout(inventory(scope, other), ["OTHER"]);
+    for (const mode of ["summary", "detail"]) {
+        for (const personalScope of ["responsible", "borrowed"]) {
+            const input = { dataset: "demo", mode, filter: { personalScope, search: "No ordinary filter match", status: "in" }, range: "page", page: 9, pageSize: "10", sections: ["responsibility"] };
+            const document = await createExport(self, { ...input, batteryId: "MINE", viewerAccountId: other.id, actorId: other.id });
+            const rows = document.tables.Inventory ?? document.tables.Batteries;
+            assert.deepEqual(rows.map(row => row.battery_id), ["MINE"]);
+            assert.equal(document.metadata.range, "single"); assert.equal(document.metadata.page, null); assert.equal(document.metadata.page_size, null);
+            assert.equal(document.metadata.filters.personalScope, personalScope);
+            await assert.rejects(createExport(self, { ...input, batteryId: "OTHER", viewerAccountId: other.id }), status(404));
+        }
+        const borrowed = await createExport(self, { dataset: "demo", mode, batteryId: "BAT-001", filter: { personalScope: "borrowed" }, sections: ["responsibility"] });
+        assert.deepEqual((borrowed.tables.Inventory ?? borrowed.tables.Batteries).map(row => row.battery_id), ["BAT-001"]);
+        await assert.rejects(createExport(self, { dataset: "demo", mode, batteryId: "BAT-001", filter: { personalScope: "responsible" } }), status(404));
+        const shared = await createExport(self, { dataset: "demo", mode, batteryId: "OTHER", sections: ["responsibility"] });
+        assert.deepEqual((shared.tables.Inventory ?? shared.tables.Batteries).map(row => row.battery_id), ["OTHER"]);
+    }
+});
+
+test("single personal downloads reject a returned or reassigned battery instead of widening the captured scope", async () => {
+    const scope = "personal-single-race:demo", store = await fixture(scope), self = inventory(scope, staff);
+    await self.saveBattery(asset("MINE")); await checkout(self, ["MINE"]);
+    const captured = (await self.snapshot()).batteries.find(row => row.id === "MINE");
+    await inventory(scope, other).movement({ requestId: uuid(), kind: "return", batteryIds: ["MINE"], expectedLoans: [{ batteryId: "MINE", loanId: captured.loanId }] });
+    await assert.rejects(createExport(self, { dataset: "demo", mode: "detail", batteryId: "MINE", filter: { personalScope: "borrowed" } }), status(404));
+    const returned = (await store.snapshot()).batteries.find(row => row.id === "MINE");
+    await store.saveBattery({ ...returned, ownerId: ownerId(other), expectedVersion: returned.version }, true);
+    await assert.rejects(createExport(self, { dataset: "demo", mode: "detail", batteryId: "MINE", filter: { personalScope: "responsible" } }), status(404));
+    await checkout(inventory(scope, other), ["MINE"]);
+    await assert.rejects(createExport(self, { dataset: "demo", mode: "summary", batteryId: "MINE", filter: { personalScope: "borrowed" }, viewerAccountId: other.id }), status(404));
+    const shared = await createExport(self, { dataset: "demo", mode: "detail", batteryId: "MINE", sections: ["responsibility"] });
+    assert.equal(shared.tables.Batteries[0].owner_account_id, other.id); assert.equal(shared.tables.Batteries[0].current_borrower_account_id, other.id);
+});
+
 test("matching names and unlinked directory rows cannot assign a new responsible owner", async () => {
     const scope = "no-name-association:demo", store = await fixture(scope);
     await store.savePerson({ id: "unlinked-name", name: staff.displayName, role: "staff" });

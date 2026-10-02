@@ -1,4 +1,4 @@
-import { batterySchema, personSchema, buildingSchema, roomSchema, movementSchema, chargeSchema, observationSchema, correctionSchema, DomainError, recordKey, uniqueIds, validatePastTime, validateBatteryDates, type Dataset } from "./domain";
+import { batterySchema, personSchema, buildingSchema, roomSchema, movementSchema, scanLookupSchema, chargeSchema, observationSchema, correctionSchema, DomainError, recordKey, uniqueIds, validatePastTime, validateBatteryDates, type Dataset, type BatteryRecord, type ScanLookupResult, type ReturnPlacement } from "./domain";
 import { demoBatteries } from "./fixtures";
 import { PLACEHOLDER_ROOMS, REFERENCE_BUILDINGS, isSupportedBuilding } from "./location-catalog";
 import type { StaffRole } from "./accounts";
@@ -44,9 +44,29 @@ export class InventoryStore {
         const old = await this.first("SELECT * FROM operations WHERE id=? AND scope=?", this.key(requestId), this.scope);
         if (!old)
             return null;
-        if (old.kind !== kind || old.fingerprint !== fingerprint)
+        const result = JSON.parse(String(old.result_json));
+        const rejectedMovement = old.kind === "movement_rejected" && result.rejected === true && result.kind === kind;
+        if ((!rejectedMovement && old.kind !== kind) || old.fingerprint !== fingerprint)
             throw new DomainError(409, "This request identifier was already used for a different operation.");
-        return { ...JSON.parse(String(old.result_json)), replayed: true };
+        if (rejectedMovement)
+            throw new DomainError(Number(result.status), String(result.error), "movement_rejected_final");
+        return { ...result, replayed: true };
+    }
+    private async rejectMovement(requestId: string, kind: "checkout" | "return", fingerprint: string, rejection: DomainError) {
+        const result = { kind, rejected: true, status: rejection.status, error: rejection.message };
+        const authorization = "EXISTS(SELECT 1 FROM staff_accounts WHERE id=? AND active=1 AND auth_version=? AND role=?)";
+        try {
+            // Success and final rejection compete for the same immutable request key.
+            await this.db.batch([this.statement(`INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) SELECT ?,?,'movement_rejected',?,?,?, CASE WHEN (${authorization}) THEN 1 ELSE 0 END`, this.key(requestId), this.scope, fingerprint, JSON.stringify(result), this.clock().toISOString(), this.actor.id, this.actor.authVersion, this.actor.role)]);
+        } catch (error) {
+            const committed = await this.replay(requestId, kind, fingerprint);
+            if (committed) return { ...committed, requestId };
+            const authorized = await this.first("SELECT id FROM staff_accounts WHERE id=? AND active=1 AND auth_version=? AND role=?", this.actor.id, this.actor.authVersion, this.actor.role);
+            if (!authorized) throw rejection;
+            // A failed reservation does not establish an in-flight request's final outcome.
+            throw error;
+        }
+        throw new DomainError(rejection.status, rejection.message, "movement_rejected_final");
     }
     private async atomic(requestId: string, kind: string, fingerprint: string, result: unknown, at: string, guardSql: string, guardValues: unknown[], writes: D1PreparedStatement[], conflictMessage = "The records changed or conflict with this operation. Refresh and review the batteries again. Nothing in this batch was saved.", conflictCode?: string) {
         if (this.actor.authVersion !== undefined) {
@@ -112,7 +132,7 @@ export class InventoryStore {
         }
         return { initialized: true };
     }
-    private snapshotStatements() {
+    private snapshotStatements(tagIds?: string[], batteryId?: string) {
         return [
             this.statement(`SELECT b.id,b.version,b.name,b.chemistry,b.model,b.capacity_mah AS capacityMah,b.voltage,b.tag_id AS tagId,
         b.manufactured_on AS manufacturedOn,b.first_used_on AS firstUsedOn,
@@ -135,7 +155,7 @@ export class InventoryStore {
         LEFT JOIN observations o ON o.id=(SELECT id FROM observations WHERE battery_key=b.key AND scope=b.scope ORDER BY observed_at DESC,received_at DESC,rowid DESC LIMIT 1)
         LEFT JOIN rooms observedRoom ON observedRoom.key=o.room_key
         LEFT JOIN charges c ON c.id=(SELECT id FROM charges WHERE battery_key=b.key AND scope=b.scope ORDER BY completed_at DESC,recorded_at DESC,rowid DESC LIMIT 1)
-        WHERE b.scope=? ORDER BY b.id`, this.scope),
+        WHERE b.scope=?${tagIds ? " AND b.tag_id IN (SELECT value FROM json_each(?))" : ""}${batteryId ? " AND b.id=?" : ""} ORDER BY b.id`, this.scope, ...(tagIds ? [JSON.stringify(tagIds)] : []), ...(batteryId ? [batteryId] : [])),
             this.statement("SELECT p.id,p.version,COALESCE(a.display_name,p.name) AS name,p.reference,p.role,p.account_id AS accountId FROM people p LEFT JOIN staff_accounts a ON a.id=p.account_id WHERE p.scope=? ORDER BY name", this.scope),
             this.statement("SELECT id,version,name FROM buildings WHERE scope=? ORDER BY id", this.scope),
             this.statement("SELECT r.id,r.version,r.name,r.number,r.is_placeholder AS isPlaceholder,r.selectable,b.id AS buildingId,COALESCE(b.id || ' - ' || b.name,r.building) AS building FROM rooms r LEFT JOIN buildings b ON b.key=r.building_key WHERE r.scope=? ORDER BY b.id,r.number,r.name", this.scope),
@@ -163,67 +183,120 @@ export class InventoryStore {
         const result = (await this.db.batch<Row>([...this.snapshotStatements(), ...["batteries", "people", "buildings", "rooms", "loans", "charges", "observations", "audit_events"].map(table => this.statement(`SELECT * FROM ${table} WHERE scope=? ORDER BY rowid`, this.scope))])).map(item => item.results);
         return { snapshot: this.snapshotResult(result), raw: Object.fromEntries(["batteries", "people", "buildings", "rooms", "loans", "charges", "observations", "audit_events"].map((name, index) => [name, result[index + 6]])) };
     }
-    async fullActivity() {
-        return (await this.rows("SELECT id,action,battery_id AS batteryId,actor_id AS actorId,actor_name AS actorName,at,details_json FROM audit_events WHERE scope=? ORDER BY at DESC,rowid DESC", this.scope)).map(({ details_json, ...event }) => ({ ...event, details: JSON.parse(String(details_json)) }));
+    async fullActivity(activityScope: "all" | "mine" = "all") {
+        if (activityScope !== "all" && activityScope !== "mine")
+            throw new DomainError(400, "Choose all activity or your own activity.");
+        const mine = activityScope === "mine";
+        return (await this.rows(`SELECT id,action,battery_id AS batteryId,actor_id AS actorId,actor_name AS actorName,at,details_json FROM audit_events WHERE scope=?${mine ? " AND actor_id=?" : ""} ORDER BY at DESC,rowid DESC`, this.scope, ...(mine ? [this.actor.id] : []))).map(({ details_json, ...event }) => ({ ...event, details: JSON.parse(String(details_json)) }));
     }
     async detail(id: string) {
-        await this.battery(id);
+        await this.ensureReferenceData();
         const key = this.key(id);
-        const [loans, charges, observations, events] = await Promise.all([
-            this.rows("SELECT id,borrower_name AS borrowerName,borrower_account_id AS borrowerAccountId,CASE WHEN borrower_account_id IS NULL THEN 'legacy' ELSE 'staff' END AS borrowerKind,checked_out_at AS checkedOutAt,returned_at AS returnedAt,cancelled_at AS cancelledAt,checkout_actor_name AS checkoutActorName,return_actor_name AS returnActorName,correction_reason AS correctionReason FROM loans WHERE scope=? AND battery_key=? ORDER BY checked_out_at DESC,rowid DESC LIMIT 200", this.scope, key),
-            this.rows("SELECT id,completed_at AS completedAt,duration_minutes AS durationMinutes,percentage,actor_name AS actorName,recorded_at AS recordedAt FROM charges WHERE scope=? AND battery_key=? ORDER BY completed_at DESC,recorded_at DESC,rowid DESC LIMIT 200", this.scope, key),
-            this.rows("SELECT o.id,COALESCE(o.room_name,'Room ID: ' || r.id) AS roomName,o.room_building AS roomBuilding,CASE WHEN o.room_name IS NULL THEN 'unavailable' ELSE 'recorded' END AS roomSnapshot,o.observed_at AS observedAt,o.received_at AS receivedAt,o.source FROM observations o JOIN rooms r ON r.key=o.room_key WHERE o.scope=? AND o.battery_key=? ORDER BY o.observed_at DESC,o.received_at DESC,o.rowid DESC LIMIT 200", this.scope, key),
-            this.rows("SELECT id,action,battery_id AS batteryId,actor_name AS actorName,at,details_json FROM audit_events WHERE scope=? AND battery_id=? ORDER BY at DESC,rowid DESC LIMIT 200", this.scope, id),
-        ]);
-        return { loans, charges, observations, events: events.map(({ details_json, ...e }) => ({ ...e, details: JSON.parse(String(details_json)) })) };
+        const [batteries, loans, charges, observations, events] = (await this.db.batch<Row>([
+            this.snapshotStatements(undefined, id)[0],
+            this.statement("SELECT id,borrower_name AS borrowerName,borrower_account_id AS borrowerAccountId,CASE WHEN borrower_account_id IS NULL THEN 'legacy' ELSE 'staff' END AS borrowerKind,checked_out_at AS checkedOutAt,returned_at AS returnedAt,cancelled_at AS cancelledAt,checkout_actor_name AS checkoutActorName,return_actor_name AS returnActorName,correction_reason AS correctionReason FROM loans WHERE scope=? AND battery_key=? ORDER BY checked_out_at DESC,rowid DESC LIMIT 200", this.scope, key),
+            this.statement("SELECT id,completed_at AS completedAt,duration_minutes AS durationMinutes,percentage,actor_name AS actorName,recorded_at AS recordedAt FROM charges WHERE scope=? AND battery_key=? ORDER BY completed_at DESC,recorded_at DESC,rowid DESC LIMIT 200", this.scope, key),
+            this.statement("SELECT o.id,COALESCE(o.room_name,'Room ID: ' || r.id) AS roomName,o.room_building AS roomBuilding,CASE WHEN o.room_name IS NULL THEN 'unavailable' ELSE 'recorded' END AS roomSnapshot,o.observed_at AS observedAt,o.received_at AS receivedAt,o.source FROM observations o JOIN rooms r ON r.key=o.room_key WHERE o.scope=? AND o.battery_key=? ORDER BY o.observed_at DESC,o.received_at DESC,o.rowid DESC LIMIT 200", this.scope, key),
+            this.statement("SELECT e.id,e.action,e.battery_id AS batteryId,e.actor_name AS actorName,e.at,e.details_json FROM audit_events e WHERE e.scope=? AND (e.battery_id=? OR (e.battery_id IS NULL AND e.action='records_imported' AND json_extract(e.details_json,'$.kind')='batteries' AND EXISTS(SELECT 1 FROM audit_events registration WHERE registration.scope=e.scope AND registration.battery_id=? AND registration.action='battery_registered' AND json_extract(registration.details_json,'$.importRequestId')=json_extract(e.details_json,'$.requestId')))) ORDER BY e.at DESC,e.rowid DESC LIMIT 200", this.scope, id, id),
+        ])).map(result => result.results);
+        if (!batteries.length) throw new DomainError(404, "Battery not found in this inventory.");
+        const battery = this.snapshotResult([batteries, [], [], [], [], []]).batteries[0];
+        return { battery, loans, charges, observations, events: events.map(({ details_json, ...e }) => ({ ...e, details: JSON.parse(String(details_json)) })) };
+    }
+    async scanLookup(input: unknown): Promise<ScanLookupResult> {
+        const value = scanLookupSchema.parse(input);
+        if (value.source === "simulated" && this.dataset !== "demo") throw new DomainError(400, "Simulated scans are available only in the demonstration inventory.");
+        const tagIds = [...new Set(value.tagIds)];
+        // Lookup has no initialization, observation or movement side effects.
+        const rows = (await this.snapshotStatements(tagIds)[0].all<Row>()).results;
+        const batteries = this.snapshotResult([rows, [], [], [], [], []]).batteries as unknown as BatteryRecord[];
+        return { source: value.source, results: tagIds.map(tagId => ({ tagId, battery: batteries.find(battery => battery.tagId === tagId) ?? null })) };
     }
     async movement(input: unknown) {
         const v = movementSchema.parse(input), ids = uniqueIds(v.batteryIds);
+        const scan = v.scan ? { ...v.scan, bindings: [...v.scan.bindings].sort((a, b) => a.batteryId.localeCompare(b.batteryId)) } : null;
+        const returnRoom = v.kind === "return" ? v.returnRoom : undefined;
+        if (scan?.source === "simulated" && this.dataset !== "demo") throw new DomainError(400, "Simulated scans are available only in the demonstration inventory.");
+        if (scan && this.actor.authVersion === undefined) throw new DomainError(401, "Sign in with a staff account before confirming scanned batteries.");
+        if (scan && (scan.bindings.length !== ids.length || new Set(scan.bindings.map(binding => binding.batteryId)).size !== ids.length || new Set(scan.bindings.map(binding => binding.tagId)).size !== ids.length || scan.bindings.some(binding => !ids.includes(binding.batteryId)))) throw new DomainError(400, "The reviewed tag bindings must match every selected battery exactly once.");
+        if (returnRoom && !scan) throw new DomainError(400, "A return-room confirmation requires a reviewed scan session.");
         const expected = v.kind === "return" ? [...v.expectedLoans].sort((a, b) => a.batteryId.localeCompare(b.batteryId)) : [];
         if (v.kind === "return" && (expected.length !== ids.length || new Set(expected.map(item => item.batteryId)).size !== ids.length || new Set(expected.map(item => item.loanId)).size !== ids.length || expected.some(item => !ids.includes(item.batteryId))))
             throw new DomainError(400, "The reviewed loan IDs must match every selected battery exactly once.");
-        const fingerprint = JSON.stringify({ kind: v.kind, ids, actorId: this.actor.id, borrowerAccountId: v.kind === "checkout" ? this.actor.id : null, expectedLoans: expected });
+        const fingerprint = JSON.stringify({ kind: v.kind, ids, actorId: this.actor.id, borrowerAccountId: v.kind === "checkout" ? this.actor.id : null, expectedLoans: expected, ...(scan ? { scan, ...(returnRoom ? { returnRoom } : {}) } : {}) });
         const old = await this.replay(v.requestId, v.kind, fingerprint);
         if (old)
-            return old;
-        const at = this.clock().toISOString(), keysJson = JSON.stringify(ids.map(id => this.key(id)));
-        // JSON carries the batch as one bound parameter, including 100-battery batches.
-        const bs = await this.rows("SELECT key,id FROM batteries WHERE scope=? AND key IN (SELECT value FROM json_each(?))", this.scope, keysJson);
-        if (bs.length !== ids.length)
-            throw new DomainError(404, "One or more batteries are not registered in this inventory.");
-        const writes: D1PreparedStatement[] = [];
-        if (v.kind === "checkout") {
-            if (this.actor.authVersion === undefined)
-                throw new DomainError(401, "Sign in with a staff account before checking out batteries.");
-            const account = await this.first("SELECT id,display_name,version FROM staff_accounts WHERE id=? AND active=1 AND auth_version=? AND role=?", this.actor.id, this.actor.authVersion, this.actor.role);
-            if (!account) throw new DomainError(409, "Your account access changed. Sign in again before checking out batteries.");
-            this.actor = { ...this.actor, name: String(account.display_name) };
-            const personId = `staff-${this.actor.id}`, personKey = this.key(personId);
-            const linked = await this.first("SELECT key,id FROM people WHERE scope=? AND account_id=?", this.scope, this.actor.id);
-            if (linked && (linked.key !== personKey || linked.id !== personId))
-                throw new DomainError(409, "This account's directory association requires administrator review.");
-            // Provision an explicit account-ID association in the movement transaction.
-            // A same-name or colliding legacy person is never adopted or rewritten.
-            writes.push(this.statement("INSERT INTO people(key,scope,id,name,reference,role,account_id) SELECT ?,?,?,?,'','staff',? WHERE NOT EXISTS(SELECT 1 FROM people WHERE scope=? AND account_id=?)", personKey, this.scope, personId, account.display_name, this.actor.id, this.scope, this.actor.id));
-            writes.push(this.statement("INSERT INTO audit_events(id,scope,action,battery_id,actor_id,actor_name,at,details_json) SELECT ?,?,'staff_directory_linked',NULL,?,?,?,? WHERE changes()=1", crypto.randomUUID(), this.scope, this.actor.id, this.actor.name, at, JSON.stringify({ personId, accountId: this.actor.id })));
-            for (const id of ids) {
-                const loanId = crypto.randomUUID();
-                writes.push(this.statement("INSERT INTO loans(id,scope,battery_key,borrower_key,borrower_name,borrower_account_id,checked_out_at,checkout_actor_id,checkout_actor_name) VALUES(?,?,?,?,?,?,?,?,?)", loanId, this.scope, this.key(id), personKey, account.display_name, this.actor.id, at, this.actor.id, account.display_name), this.event("checkout", id, { loanId, borrower: account.display_name, borrowerId: personId, borrowerAccountId: this.actor.id, borrowerKind: "staff" }, at));
+            return { ...old, requestId: v.requestId };
+        try {
+            const at = this.clock().toISOString(), keysJson = JSON.stringify(ids.map(id => this.key(id)));
+            // JSON carries the batch as one bound parameter, including 100-battery batches.
+            const bs = await this.rows("SELECT key,id,tag_id,version FROM batteries WHERE scope=? AND key IN (SELECT value FROM json_each(?))", this.scope, keysJson);
+            if (bs.length !== ids.length)
+                throw new DomainError(404, "One or more batteries are not registered in this inventory.");
+            let evidenceGuard = "1";
+            const evidenceValues: unknown[] = [];
+            if (scan) {
+                if (scan.bindings.some(binding => !bs.some(battery => battery.id === binding.batteryId && battery.tag_id === binding.tagId && battery.version === binding.version))) throw new DomainError(409, "A scanned tag binding or battery record changed. Nothing was saved. Review the latest records before confirming.", "scan_conflict");
+                evidenceGuard = "(SELECT COUNT(*) FROM batteries b JOIN json_each(?) reviewed ON b.id=json_extract(reviewed.value,'$.batteryId') AND b.tag_id=json_extract(reviewed.value,'$.tagId') AND b.version=json_extract(reviewed.value,'$.version') WHERE b.scope=?)=?";
+                evidenceValues.push(JSON.stringify(scan.bindings), this.scope, ids.length);
             }
-            return this.atomic(v.requestId, v.kind, fingerprint, { kind: v.kind, batteryIds: ids, count: ids.length, borrower: account.display_name, borrowerAccountId: this.actor.id, at }, at,
-                "NOT EXISTS(SELECT 1 FROM loans WHERE scope=? AND battery_key IN (SELECT value FROM json_each(?)) AND returned_at IS NULL AND cancelled_at IS NULL) AND EXISTS(SELECT 1 FROM staff_accounts WHERE id=? AND version=? AND display_name=?)",
-                [this.scope, keysJson, this.actor.id, account.version, account.display_name], writes);
+            let returnPlacement: ReturnPlacement | undefined, placementRoomKey: string | undefined;
+            if (returnRoom) {
+                const room = await this.first("SELECT r.*,building.id AS building_id,building.version AS building_version,COALESCE(building.id || ' - ' || building.name,r.building) AS building_label,CASE WHEN r.is_placeholder=1 THEN r.name || ' — Placeholder' WHEN r.number IS NULL THEN r.name ELSE r.number || ' - ' || r.name END AS room_label FROM rooms r LEFT JOIN buildings building ON building.key=r.building_key WHERE r.scope=? AND r.id=?", this.scope, returnRoom.roomId);
+                if (!room || !isSupportedBuilding(String(room.building_id)) || room.selectable !== 1) throw new DomainError(400, "Select an available J18 room, or leave the return location unspecified.");
+                if (this.dataset === "live" && room.is_placeholder === 1) throw new DomainError(400, "Confirm a verified room for working-inventory returns. Placeholder rooms are provisional; the location can stay unspecified.");
+                if (room.version !== returnRoom.version) throw new DomainError(409, "This return room changed. Nothing was saved. Review the latest room before confirming.", "scan_conflict");
+                placementRoomKey = String(room.key);
+                returnPlacement = { roomId: String(room.id), roomName: String(room.room_label), building: String(room.building_label), buildingId: String(room.building_id), isPlaceholder: room.is_placeholder === 1, source: scan!.source === "simulated" ? "Simulated return confirmation" : "Staff return confirmation", observedAt: at, roomVersion: Number(room.version), buildingVersion: Number(room.building_version) };
+                evidenceGuard += " AND EXISTS(SELECT 1 FROM rooms r JOIN buildings building ON building.key=r.building_key WHERE r.key=? AND r.scope=? AND r.version=? AND r.selectable=1 AND building.id='J18' AND building.version=? AND (?=0 OR r.is_placeholder=0))";
+                evidenceValues.push(room.key, this.scope, returnRoom.version, room.building_version, Number(this.dataset === "live"));
+            }
+            const scanDetails = (batteryId: string) => ({ requestId: v.requestId, ...(scan ? { scan: { ...scan, bindings: scan.bindings.filter(binding => binding.batteryId === batteryId) } } : {}) });
+            const receiptDetails = { requestId: v.requestId, ...(scan ? { scan, ...(returnPlacement ? { returnPlacement } : {}) } : {}) };
+            const writes: D1PreparedStatement[] = [];
+            if (v.kind === "checkout") {
+                if (this.actor.authVersion === undefined)
+                    throw new DomainError(401, "Sign in with a staff account before checking out batteries.");
+                const account = await this.first("SELECT id,display_name,version FROM staff_accounts WHERE id=? AND active=1 AND auth_version=? AND role=?", this.actor.id, this.actor.authVersion, this.actor.role);
+                if (!account) throw new DomainError(409, "Your account access changed. Sign in again before checking out batteries.");
+                this.actor = { ...this.actor, name: String(account.display_name) };
+                const personId = `staff-${this.actor.id}`, personKey = this.key(personId);
+                const linked = await this.first("SELECT key,id FROM people WHERE scope=? AND account_id=?", this.scope, this.actor.id);
+                if (linked && (linked.key !== personKey || linked.id !== personId))
+                    throw new DomainError(409, "This account's directory association requires administrator review.");
+                // Provision an explicit account-ID association in the movement transaction.
+                // A same-name or colliding legacy person is never adopted or rewritten.
+                writes.push(this.statement("INSERT INTO people(key,scope,id,name,reference,role,account_id) SELECT ?,?,?,?,'','staff',? WHERE NOT EXISTS(SELECT 1 FROM people WHERE scope=? AND account_id=?)", personKey, this.scope, personId, account.display_name, this.actor.id, this.scope, this.actor.id));
+                writes.push(this.statement("INSERT INTO audit_events(id,scope,action,battery_id,actor_id,actor_name,at,details_json) SELECT ?,?,'staff_directory_linked',NULL,?,?,?,? WHERE changes()=1", crypto.randomUUID(), this.scope, this.actor.id, this.actor.name, at, JSON.stringify({ personId, accountId: this.actor.id })));
+                for (const id of ids) {
+                    const loanId = crypto.randomUUID();
+                    writes.push(this.statement("INSERT INTO loans(id,scope,battery_key,borrower_key,borrower_name,borrower_account_id,checked_out_at,checkout_actor_id,checkout_actor_name) VALUES(?,?,?,?,?,?,?,?,?)", loanId, this.scope, this.key(id), personKey, account.display_name, this.actor.id, at, this.actor.id, account.display_name), this.event("checkout", id, { loanId, borrower: account.display_name, borrowerId: personId, borrowerAccountId: this.actor.id, borrowerKind: "staff", ...scanDetails(id) }, at));
+                }
+                return await this.atomic(v.requestId, v.kind, fingerprint, { kind: v.kind, batteryIds: ids, count: ids.length, borrower: account.display_name, borrowerAccountId: this.actor.id, at, ...receiptDetails }, at,
+                    "NOT EXISTS(SELECT 1 FROM loans WHERE scope=? AND battery_key IN (SELECT value FROM json_each(?)) AND returned_at IS NULL AND cancelled_at IS NULL) AND EXISTS(SELECT 1 FROM staff_accounts WHERE id=? AND version=? AND display_name=?) AND (" + evidenceGuard + ")",
+                    [this.scope, keysJson, this.actor.id, account.version, account.display_name, ...evidenceValues], writes, scan ? "The scanned battery bindings, loan state or account access changed. Nothing in this batch was saved. Review the latest records before confirming." : undefined, scan ? "scan_conflict" : undefined);
+            }
+            const expectedJson = JSON.stringify(expected.map(item => ({ key: this.key(item.batteryId), loanId: item.loanId })));
+            const reviewedSql = "SELECT l.id,l.battery_key,l.borrower_name,l.borrower_account_id FROM loans l JOIN json_each(?) reviewed ON l.id=json_extract(reviewed.value,'$.loanId') AND l.battery_key=json_extract(reviewed.value,'$.key') WHERE l.scope=? AND l.returned_at IS NULL AND l.cancelled_at IS NULL";
+            const open = await this.rows(reviewedSql, expectedJson, this.scope);
+            if (open.length !== ids.length)
+                throw new DomainError(409, "A reviewed loan changed. Nothing was returned. Refresh and review the current loans before confirming.");
+            for (const l of open) {
+                const b = bs.find(b => b.key === l.battery_key)!;
+                const observationId = returnPlacement ? crypto.randomUUID() : undefined;
+                writes.push(this.statement("UPDATE loans SET returned_at=?,return_actor_id=?,return_actor_name=? WHERE id=? AND scope=?", at, this.actor.id, this.actor.name, l.id, this.scope));
+                if (returnPlacement) writes.push(this.statement("INSERT INTO observations(id,scope,battery_key,room_key,observed_at,received_at,source,room_name,room_building) VALUES(?,?,?,?,?,?,?,?,?)", observationId, this.scope, b.key, placementRoomKey, at, at, returnPlacement.source, returnPlacement.roomName, returnPlacement.building));
+                writes.push(this.event("return", String(b.id), { loanId: l.id, borrower: l.borrower_name, borrowerAccountId: l.borrower_account_id, receivedByAccountId: this.actor.id, ...scanDetails(String(b.id)), ...(returnPlacement ? { observationId, returnPlacement } : {}) }, at));
+            }
+            return await this.atomic(v.requestId, v.kind, fingerprint, { kind: v.kind, batteryIds: ids, count: ids.length, at, ...receiptDetails }, at, `(SELECT COUNT(*) FROM (${reviewedSql}))=? AND (${evidenceGuard})`, [expectedJson, this.scope, ids.length, ...evidenceValues], writes, scan ? "The reviewed loan, scanned binding, return room or account access changed. Nothing in this batch was saved. Review the latest records before confirming." : undefined, scan ? "scan_conflict" : undefined);
+        } catch (error) {
+            // Another execution of this exact request may commit after the first receipt read.
+            const committed = await this.replay(v.requestId, v.kind, fingerprint);
+            if (committed) return { ...committed, requestId: v.requestId };
+            if (error instanceof DomainError && error.status >= 400 && error.status < 500 && this.actor.authVersion !== undefined)
+                return await this.rejectMovement(v.requestId, v.kind, fingerprint, error);
+            throw error;
         }
-        const expectedJson = JSON.stringify(expected.map(item => ({ key: this.key(item.batteryId), loanId: item.loanId })));
-        const reviewedSql = "SELECT l.id,l.battery_key,l.borrower_name,l.borrower_account_id FROM loans l JOIN json_each(?) reviewed ON l.id=json_extract(reviewed.value,'$.loanId') AND l.battery_key=json_extract(reviewed.value,'$.key') WHERE l.scope=? AND l.returned_at IS NULL AND l.cancelled_at IS NULL";
-        const open = await this.rows(reviewedSql, expectedJson, this.scope);
-        if (open.length !== ids.length)
-            throw new DomainError(409, "A reviewed loan changed. Nothing was returned. Refresh and review the current loans before confirming.");
-        for (const l of open) {
-            const b = bs.find(b => b.key === l.battery_key)!;
-            writes.push(this.statement("UPDATE loans SET returned_at=?,return_actor_id=?,return_actor_name=? WHERE id=? AND scope=?", at, this.actor.id, this.actor.name, l.id, this.scope), this.event("return", String(b.id), { loanId: l.id, borrower: l.borrower_name, borrowerAccountId: l.borrower_account_id, receivedByAccountId: this.actor.id }, at));
-        }
-        return this.atomic(v.requestId, v.kind, fingerprint, { kind: v.kind, batteryIds: ids, count: ids.length, at }, at, `(SELECT COUNT(*) FROM (${reviewedSql}))=?`, [expectedJson, this.scope, ids.length], writes);
     }
     async savePerson(input: unknown, update = false) {
         this.requireAdmin();
@@ -348,7 +421,7 @@ export class InventoryStore {
         if (kind !== "batteries") this.requireAdmin();
         if (!Array.isArray(records) || !records.length || records.length > 200)
             throw new DomainError(400, "Import between 1 and 200 records at a time.");
-        const at = this.clock().toISOString(), writes: D1PreparedStatement[] = [];
+        const at = this.clock().toISOString(), requestId = crypto.randomUUID(), writes: D1PreparedStatement[] = [], batteryIds: string[] = [];
         let guard = "1", guardValues: unknown[] = [];
         if (kind === "batteries" || kind === "rooms") await this.ensureReferenceData();
         if (kind === "people")
@@ -382,15 +455,17 @@ export class InventoryStore {
                 ownerKeys.add(String(owner.key));
                 if (room) roomKeys.add(String(room.key));
                 writes.push(this.statement("INSERT INTO batteries(key,scope,id,name,chemistry,model,capacity_mah,voltage,tag_id,owner_key,home_building_key,home_room_key,manufactured_on,first_used_on,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", this.key(b.id), this.scope, b.id, b.name, b.chemistry, b.model, b.capacityMah, b.voltage, b.tagId, this.key(b.ownerId), this.key(b.homeBuildingId!), b.homeRoomId ? this.key(b.homeRoomId) : null, b.manufacturedOn, b.firstUsedOn, at));
+                batteryIds.push(b.id);
+                writes.push(this.event("battery_registered", b.id, { before: null, after: { ...b, version: 1 }, registrationSource: "csv", importRequestId: requestId }, at));
             }
             guard = "(SELECT COUNT(*) FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.scope=? AND p.role='staff' AND a.active=1 AND p.key IN (SELECT value FROM json_each(?)))=? AND (SELECT COUNT(*) FROM rooms WHERE scope=? AND selectable=1 AND building_key=? AND key IN (SELECT value FROM json_each(?)))=?";
             guardValues = [this.scope, JSON.stringify([...ownerKeys]), ownerKeys.size, this.scope, this.key("J18"), JSON.stringify([...roomKeys]), roomKeys.size];
         }
         else
             throw new DomainError(400, "Choose people, buildings, rooms or batteries for import.");
-        writes.push(this.event("records_imported", null, { kind, count: records.length }, at));
+        writes.push(this.event("records_imported", null, { kind, count: records.length, requestId, ...(kind === "batteries" ? { batteryIds } : {}) }, at));
         try {
-            return await this.atomic(crypto.randomUUID(), "records_imported", JSON.stringify({ kind, records }), { kind, count: records.length }, at, guard, guardValues, writes,
+            return await this.atomic(requestId, "records_imported", JSON.stringify({ kind, records }), { kind, count: records.length, requestId }, at, guard, guardValues, writes,
                 "Your account access or a related record changed. No rows were imported.");
         }
         catch (e) {

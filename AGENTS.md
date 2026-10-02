@@ -3,6 +3,7 @@
 - Keep all interface text, documentation and validation records in English.
 - Be explicit about uncertainty and unverified work. Never conceal a limitation.
 - The primary success criterion is reducing staff workload.
+- Supply usable default plans, workflows, routing and settings. Staff may customize them, but must not be asked to design the basic system. Research and propose domain-specific templates; distinguish product defaults from verified operating or safety requirements.
 - Authenticated staff check out batteries to themselves; never accept a substitute holder from a client or match an account by display name. Responsible owners are active native staff accounts with explicit inventory projections. Do not add legacy-borrower UI categories or compatibility machinery to retain disposable preview data.
 - Maintain one battery register; derive in-store/on-loan views from active loans.
 - Keep responsible ownership, borrowing, storage home and observed location distinct.
@@ -12,6 +13,8 @@
 - Use separate building and room records. Reference names are J18 Willis Annexe, E10 Hilmer Building and G17 Electrical Engineering Building; only J18 is currently selectable. Demo room and Demo workspace are explicit J18 placeholders, not verified storage evidence. Do not import the entire makerspace list as inventory.
 - New batteries require J18 and can leave the room null. Room choices must be selectable and belong to that building. Renaming a placeholder must not automatically mark it verified.
 - Do not enable real RFID ingestion until its model, output and room mapping are validated.
+- Keep the staff scan station open after each saved result until explicit exit. Continuous mode processes individual deliberate inputs; Batch mode requires final confirmation. Passive location detection cannot change loans. Simulated scan inputs are demo-only and must retain their source in saved evidence.
+- Scan commits must guard the reviewed battery/tag/version bindings and exact return loan IDs. Keep unresolved writes with their original request ID and payload; never show success before a server result or silently discard an uncertain transaction. Return placement is optional dated confirmation, separate from registered home; live placeholders cannot be treated as verified rooms.
 - All active staff accounts share the same working inventory and a separate shared demonstration inventory. Do not scope business records to individual accounts.
 - Administrators manage accounts, directories, saved metadata, corrections, charge records and demo observations. Staff may view/export all business data, register new batteries, and check out/return existing batteries. Enforce permissions on the server and preserve individual actor attribution.
 - Keep school SSO, JAGGAER, email and safety agents outside the current release.
@@ -28,6 +31,7 @@
 - Metadata edits must carry the loaded version and reject stale writes atomically with their audit events.
 - Returns must carry the reviewed battery/loan ID pairs. Corrections must carry the reviewed action and return state. Reject stale responsibility/state without switching the draft to a later loan or a different correction action.
 - Common and advanced filters must use one shared query model for counts, pagination and exports. Unknown values remain selectable and are not inferred.
+- Every search/filter area needs Clear filters, including option-search popups. Reset criteria and page without clearing chosen records, fixed personal scope, dataset or unrelated form values. Message unread indicators and task completion are separate states; filtering must not reduce the global own unread count.
 - Keep the three status tabs; put all other criteria under one Filter panel and show removable Applied filters above results. My batteries uses owner account identity; My loans uses active holder identity. Both are views of shared data, with downloads constrained to the authenticated personal scope.
 - The user has designated current development business data as disposable. Rebuild isolated local test state when useful instead of designing compatibility features for it. Do not erase subsequent normal transaction history or touch remote state without the task requiring it.
 - Preserve database identity, staff-owner and same-inventory trigger constraints in future migrations, including table rebuilds.
