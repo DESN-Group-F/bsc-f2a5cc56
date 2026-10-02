@@ -3,6 +3,26 @@ import { sql } from "drizzle-orm";
 // Version advancement, stable identities, staff ownership and same-inventory
 // references are also enforced by triggers in the versioned SQL migrations.
 export const workspaces = sqliteTable("workspaces", { scope: text("scope").primaryKey(), createdAt: text("created_at").notNull() });
+export const sharedInventories = sqliteTable("shared_inventories", {
+    dataset: text("dataset").primaryKey(), scope: text("scope").notNull().unique(),
+}, () => [check("shared_dataset", sql`dataset IN ('demo','live')`)]);
+export const staffAccounts = sqliteTable("staff_accounts", {
+    id: text("id").primaryKey(), username: text("username").notNull().unique(), displayName: text("display_name").notNull(), email: text("email").notNull().default(""),
+    role: text("role").notNull(), active: integer("active").notNull().default(1), version: integer("version").notNull().default(1), authVersion: integer("auth_version").notNull().default(1),
+    passwordHash: text("password_hash").notNull(), passwordSalt: text("password_salt").notNull(), hashIterations: integer("hash_iterations").notNull(),
+    defaultDataset: text("default_dataset").notNull().default("demo"), createdAt: text("created_at").notNull(), updatedAt: text("updated_at").notNull(),
+}, () => [check("account_role", sql`role IN ('admin','staff')`), check("account_active", sql`active IN (0,1)`), check("account_dataset", sql`default_dataset IN ('demo','live')`)]);
+export const staffSessions = sqliteTable("staff_sessions", {
+    tokenHash: text("token_hash").primaryKey(), accountId: text("account_id").notNull().references(() => staffAccounts.id), authVersion: integer("auth_version").notNull(),
+    createdAt: text("created_at").notNull(), expiresAt: text("expires_at").notNull(),
+}, t => [index("idx_sessions_account").on(t.accountId)]);
+export const staffAccountEvents = sqliteTable("staff_account_events", {
+    id: text("id").primaryKey(), action: text("action").notNull(), actorId: text("actor_id").notNull(), actorName: text("actor_name").notNull(), targetId: text("target_id").notNull(),
+    at: text("at").notNull(), detailsJson: text("details_json").notNull(), guard: integer("guard").notNull().default(1),
+}, () => [check("account_event_guard", sql`guard = 1`)]);
+export const signInAttempts = sqliteTable("sign_in_attempts", {
+    key: text("key").primaryKey(), failures: integer("failures").notNull(), windowStartedAt: text("window_started_at").notNull(),
+});
 export const people = sqliteTable("people", {
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), name: text("name").notNull(), reference: text("reference").notNull().default(""), role: text("role").notNull(), version: integer("version").notNull().default(1),
 }, t => [uniqueIndex("idx_people_scope_id").on(t.scope, t.id), check("people_role", sql `${t.role} IN ('staff','borrower')`)]);

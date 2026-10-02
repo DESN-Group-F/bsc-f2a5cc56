@@ -1,16 +1,16 @@
-import { getAuthenticatedUser } from "@/lib/auth";
+import { requestUser } from "@/lib/api";
+import { sharedInventoryScope } from "@/lib/shared-inventory";
 import { getD1Database } from "@/db";
 import { InventoryStore } from "@/lib/store";
 import { datasetSchema, identifier, DomainError } from "@/lib/domain";
 import { z } from "zod";
 export const dynamic = "force-dynamic";
 function json(value: unknown, status = 200) { return Response.json(value, { status, headers: { "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" } }); }
-async function context(dataset: unknown) {
-    const actor = await getAuthenticatedUser();
-    if (!actor)
-        throw new DomainError(401, "Sign in to access the inventory.");
+async function context(request: Request, dataset: unknown) {
+    const actor = await requestUser(request);
     const mode = datasetSchema.parse(dataset ?? "demo");
-    return new InventoryStore(getD1Database(), `${actor.userId}:${mode}`, mode, { id: actor.userId, name: actor.displayName });
+    const db = getD1Database();
+    return { actor, store: new InventoryStore(db, await sharedInventoryScope(db, mode), mode, { id: actor.id, name: actor.displayName, role: actor.role, authVersion: actor.authVersion }) };
 }
 function fail(error: unknown) {
     if (error instanceof DomainError)
@@ -22,9 +22,10 @@ function fail(error: unknown) {
 }
 export async function GET(request: Request) {
     try {
-        const url = new URL(request.url), store = await context(url.searchParams.get("dataset"));
+        const url = new URL(request.url), { store, actor } = await context(request, url.searchParams.get("dataset"));
         const id = url.searchParams.get("batteryId");
-        return json(id ? await store.detail(identifier.parse(id)) : await store.snapshot());
+        if (url.searchParams.get("activity") === "all") return json({ events: await store.fullActivity() });
+        return json(id ? await store.detail(identifier.parse(id)) : { ...await store.snapshot(), user: actor });
     }
     catch (e) {
         return fail(e);
@@ -48,7 +49,7 @@ export async function POST(request: Request) {
             throw new DomainError(400, "The request is not valid JSON.");
         }
         const body = z.object({ dataset: datasetSchema.default("demo"), action: z.string(), payload: z.unknown().optional(), update: z.boolean().optional(), kind: z.string().optional(), records: z.array(z.unknown()).optional() }).parse(raw);
-        const store = await context(body.dataset), payload = body.payload;
+        const { store } = await context(request, body.dataset), payload = body.payload;
         let result;
         switch (body.action) {
             case "initialize_demo":

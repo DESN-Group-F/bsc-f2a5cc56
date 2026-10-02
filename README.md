@@ -1,46 +1,71 @@
 # Battery Inventory
 
-A teacher-operated battery inventory and loan prototype for DESN2000. The governing aim is to reduce the teacher's workload while making each battery's responsibility and movements traceable.
+A staff work platform for the DESN2000 battery-management design project. Its primary aim is to reduce routine staff work while keeping responsibility, lending and dated location evidence traceable.
 
-## Use the prototype
+Release **0.2.0** implements the approved shared staff platform. The earlier prototype is preserved at Git tag `battery-inventory-v0.1.0-freeze-20261002`; subsequent work uses a separate branch.
 
-Open the private application and sign in with your authorized account. Start in **Demonstration inventory**, whose batteries, people, rooms and sample histories are fictional.
+## Use the local prototype
 
-1. Select batteries in the table or open **Check out batteries**.
-2. Choose a registered borrower, add batteries and review the list.
-3. Confirm the checkout. Return batteries through the equivalent review.
-4. Open a battery ID to inspect responsibility, observations, historical charging and loan history.
-5. Use **Manage records** to register or import people, buildings, rooms and batteries.
+Open http://127.0.0.1:5173/ and sign in with an account provided by an administrator. The current local review has fictional **admin** and **staff-demo** accounts; their credentials are in ignored `work/local-access.txt`. These are local test accounts, not production defaults.
 
-**Working inventory** starts with the reference building **J18 - Willis Annexe**, and no batteries, people or rooms. Register a staff owner, then choose a building for each battery. Leave its room unspecified until confirmed; J18 115 is the project-space reference, not a verified battery store. Buildings and rooms are configurable, and room choices belong to the selected building. Unknown specifications and RFID identifiers may stay blank. CSV templates are available inside the import dialog.
+All active staff see the same **Working inventory** and the same separate **Demonstration inventory**. Accounts have individual profiles and a preferred starting inventory. Demonstration batteries, people, rooms and histories are fictional.
+
+| Action | Staff | Administrator |
+| --- | --- | --- |
+| View, filter and download all business records | Yes | Yes |
+| Register new batteries, including reviewed CSV creation | Yes | Yes |
+| Confirm checkouts and returns | Yes | Yes |
+| Edit saved battery metadata; maintain people, buildings and rooms | No | Yes |
+| Record historical charging and demo observations; correct eligible loan history | No | Yes |
+| Create, disable or change staff accounts | No | Yes |
+| Edit own profile/preferences and change own password | Yes | Yes |
+
+1. Select batteries or open **Check out batteries**, choose one registered borrower and review the batch before confirmation. Returns use an equivalent review.
+2. Open a battery ID to inspect specifications, its responsible owner, current borrower and recorded histories.
+3. Filter the inventory by status, storage building, storage room, responsible owner or search text. Pagination offers 10, 25, 50 or 100 batteries per page.
+4. Choose **Download** for all filtered results or the current page as a summary. Choose **Detailed battery records** for all filtered batteries, or **Download details** on one battery. Select information sections or use **Select all information**.
+5. Use **My account** for personal preferences. Administrators use **Staff accounts** and **Manage records** for initial setup and maintenance.
+
+Working inventory begins with **J18 - Willis Annexe**, and no batteries, people or rooms. An administrator registers responsible owners and borrowers. Each new battery requires a building; its room, specifications and RFID identifier may remain unknown. J18 115 is a project-space reference, not a verified battery store. Room choices belong to the selected building.
+
+## Download behavior
+
+Summary downloads support Excel, CSV and JSON. Single and bulk details support Excel workbooks with separate worksheets or structured JSON with separate tables. Nine selectable sections cover specifications, current responsibility, registered storage, latest evidence, complete loans, complete observations, complete charges, complete operations and related directory records. Selection is by information section, not by individual scalar field.
+
+Selected histories include every stored record, including records older than the 200 shown in battery details. UTC timestamps, sources, corrections, operator attribution and preserved legacy charging percentages travel with their relevant records. Export metadata identifies filters, dataset, operator, scope and counts. Account credentials and sessions are never part of inventory exports.
+
+The server reads the selected inventory and history in one D1 batch for each file. It rechecks the filters when generating the download; data may have changed since the screen or validation request. The file's metadata and counts describe the downloaded state. Excel cell text longer than the supported limit is preserved in a **Complete text** worksheet. An export exceeding Excel's row limit is rejected with a JSON alternative, rather than silently shortened.
+
+## Concurrent operation
+
+The interface refreshes shared data every ten seconds while visible and idle, and on focus. Draft forms are preserved while open. Another operator's confirmed change may take up to the next refresh to appear; server checks apply immediately. Conflicting movements cannot partially save a batch. Versioned metadata/account edits reject stale writes, and histories retain the individual operator.
 
 ## Current limits
 
-- No real RFID device has been connected or tested. Manual tag entry and record selection allow software review. Demo observations are explicitly simulated.
-- An RFID observation does not change loan status. A last observed room is dated evidence, not a continuous location guarantee.
-- New observations retain room labels at receipt. Older observations without saved labels show their room ID and an unavailable-label note; historical names are not guessed.
-- Storage building and optional room record the registered home. This prototype does not infer where a returned battery was physically placed. Legacy unmapped building labels stay unconfirmed until reviewed.
-- New charging records contain duration in minutes and completion time. Old percentages remain preserved in the database, and unknown historic durations stay null. There is no live battery-level measurement.
-- Access uses hosting-managed authentication. Each operator has a separate inventory; a shared departmental workspace and UNSW SSO are pending institutional decisions.
-- JAGGAER integration, automatic email alerts and an AI safety agent are deferred.
-- Efficiency improvement has not yet been measured with teachers. See the proposed experiment before making such a claim.
+- No real RFID reader, tag or verified reader-to-room mapping has been connected. Demo observations remain explicitly simulated. An observation never checks an asset in or out.
+- **In store** means no active loan is recorded. Registered storage is the home; last observed location is dated evidence, not continuous tracking or proof of physical presence.
+- New charging records contain duration and completion time. Unknown historic durations and specifications stay null; legacy percentages remain available in detailed exports. There is no live charge measurement.
+- Native staff accounts are implemented. UNSW SSO, institutional access approval, backup/retention policy and JAGGAER integration remain future decisions.
+- One existing legacy inventory per dataset can be adopted without rewriting keys or history. Multiple legacy private inventories require reviewed collision handling before shared access is enabled; none are silently merged.
+- Tests cover independent accounts and contested transactions, not departmental-scale load. Staff efficiency has not been measured; see the proposed study.
+- Automatic email, student self-service and safety agents remain deferred. This release runs locally; it has not been deployed to the earlier Site or OpenBayes. No model training is needed.
 
 ## Project map
 
 | Directory | Purpose |
 | --- | --- |
-| app | Application shell and authenticated inventory API |
-| components/inventory | Teacher forms, tables, history and import UI |
+| app | Staff application, sign-in and authenticated APIs |
+| components/inventory | Staff forms, tables, accounts, imports and downloads |
 | components/ui | Bundled Shadcn primitives |
-| lib | Authentication, validation, inventory domain, fixtures and client utilities |
-| lib/platform | External authentication protocol identifiers |
+| lib | Accounts, validation, inventory domain, export and client utilities |
+| lib/platform | Retained external protocol identifiers |
 | db / drizzle | Database schema and versioned migrations |
-| tests | Domain and D1 invariant checks |
+| tests | Domain, account, export and D1 invariant checks |
 | scripts | Local runtime, checks and build helpers |
-| docs | Requirements, decisions, experiment and verification |
-| work | Ignored local references, test builds and QA scratch files |
+| docs | Requirements, design decisions, experiment and actual verification |
+| work | Ignored local credentials, database backups and QA evidence |
 
-Start with [requirements](docs/requirements.md), [architecture](docs/architecture.md), [validation](docs/validation.md), [experiment protocol](docs/experiment-protocol.md) and [open questions](docs/open-questions.md).
+Read [requirements](docs/requirements.md), [architecture](docs/architecture.md), [validation](docs/validation.md), [experiment protocol](docs/experiment-protocol.md) and [open questions](docs/open-questions.md).
 
 ## Local development
 
@@ -48,27 +73,35 @@ Requires Node.js 22.13 or newer. Preserve the supplied lockfile and runtime conf
 
 ```sh
 npm run install:ci
-node scripts/run-framework.mjs build
+npm run build
+```
+
+On a fresh database, apply migrations `0000` through `0004` once in journal order, using each SQL file's exact name:
+
+```sh
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_military_warstar.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0001_inventory_integrity.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0002_prevent_record_replacement.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0003_building_rooms_charge_duration.sql
-node scripts/run-framework.mjs dev
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0004_staff_accounts_shared_inventory.sql
+npm run dev
 ```
 
-On a fresh local database, apply each migration once in journal order. On an existing database, apply only migrations not yet installed; never rerun the initial migration. Hosted deployment tracks applied migrations. The preview normally opens at http://127.0.0.1:5173/. The local sign-in helper uses the fictional account **admin**; it is absent from production builds. Keep local preview on loopback.
+On existing databases, apply only pending migrations; never rerun the initial migration. Back up existing state first. Keep local preview on loopback.
 
-For isolated UI testing, set `INVENTORY_DEV_STATE_DIR` to a separate project-local directory and use that same directory for Wrangler's `--persist-to` migration commands. The default remains `.wrangler/state`. The 2 October location/charging changes have been checked locally; they have not been published to the earlier hosted Site or OpenBayes. OpenBayes execution was stopped for this phase. No model training is required by these inventory functions.
+The local launcher stores a random installation setup key in ignored `work/local-access.json`, without creating a default account. On a fresh installation, use that key in the visible setup form to create the first administrator with your own password. Administrators then create staff accounts. An environment `INVENTORY_SETUP_KEY` takes precedence; a deployment must configure its own secret and HTTPS before real use. The old hosting identity headers and mock cookie do not grant application access.
+
+Set `INVENTORY_DEV_STATE_DIR` for isolated test state, or record a project-local `stateDirectory` in `work/local-access.json`. Use the same path for Wrangler `--persist-to`. The current review uses `work/qa/staff-preview-state` and retains the original local state separately. Dev file watching excludes temporary state and backup directories.
 
 ```sh
-node node_modules/typescript/bin/tsc --noEmit
-node scripts/test-domain.mjs
-node scripts/test-api.mjs
-node scripts/run-framework.mjs build
+npm run typecheck
+npm test
+npm run test:api
+npm run build
 ```
 
-The domain tests use an isolated Miniflare D1 database. API checks require the local dev preview and never target a hosted Site. If a Windows npm shim fails, invoke the installed npm CLI with Node rather than changing global configuration.
+Domain tests use isolated Miniflare D1 databases. API checks require the local preview and fictional credentials in ignored `work/local-access.json`; they never target a hosted site. If a Windows npm shim fails, invoke the installed npm CLI with Node rather than changing global configuration.
 
 ## Design reference
 
-The restrained blue controls, grey navigation and structured inventory tables draw from the public [UNSW JAGGAER guidance](https://www.unsw.edu.au/assurance-integrity/safety/systems/Jaggaer/qrg). The protected live system was not accessed. This prototype is a student project, with no institutional endorsement or JAGGAER connection.
+The restrained blue controls, grey navigation and structured tables draw from the public [UNSW JAGGAER guidance](https://www.unsw.edu.au/assurance-integrity/safety/systems/Jaggaer/qrg). The protected live system was not accessed. This is a student project, with no institutional endorsement or JAGGAER connection.

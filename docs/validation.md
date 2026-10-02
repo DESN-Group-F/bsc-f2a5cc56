@@ -2,6 +2,54 @@
 
 1 October 2026 · Windows portable development preview.
 
+## Shared staff platform release
+
+2 October 2026 · Release 0.2.0 · Windows local preview and isolated Miniflare D1. Earlier dated sections describe their own releases; private per-operator access is superseded by the shared staff platform.
+
+| Check | Actual result |
+| --- | --- |
+| Domain/account/export/D1 tests | 30 passed, 0 failed |
+| Local API checks | 44 passed, including native HTTP file downloads |
+| TypeScript | Passed on final source |
+| Scoped application/test ESLint | Passed with 0 errors and 0 warnings |
+| Production build | Passed for client, server and Worker bundles |
+| Legacy preview retention | All original values across ten business tables preserved; zero foreign-key violations; SQLite integrity check returned ok |
+| Actual browser file downloads | Current-page Excel, filtered detailed Excel, selected single-battery JSON, directory CSV and admin account CSV downloaded and read back |
+
+The migration review used a backup of the earlier isolated preview, leaving the separately retained original local state untouched. Its baseline held 7 batteries, 4 people, 3 buildings, 4 rooms, 2 loans, 4 charges, 1 observation, 7 audit events, 6 operations and 1 initialization marker. Migration 0004 and the shared mapping retained every original row and value, including old scope keys and actor/history evidence. Five fictional QA batteries and subsequent QA movements were added in the copied preview. The resulting preview contains 12 batteries; that is test stock, not a confirmed university inventory.
+
+### Automated boundary evidence
+
+- Independent accounts resolve to the same dataset while demo/working data stay separate. Staff can register a new battery and move shared assets, but cannot edit saved metadata, maintain directories/evidence, correct loans or administer accounts.
+- Concurrent checkout has one winner and no partial batch. Account disabling or role changes after movement validation reject the write at its commit guard. Original ownership and individual checkout/return operators remain traceable.
+- Setup requires an installation secret and can create only one initial administrator. Passwords have distinct salts; persisted session tokens are hashes. Self-profile inputs cannot elevate roles or alter another account. Disabled/reset accounts lose previous sessions; stale account updates and removal of the last active administrator are blocked.
+- Anonymous downloads and spoofed old hosting identity headers/cookies cannot grant access. Cross-origin writes and malformed inputs are rejected. URL-normalized sign-in return paths stay on the application origin.
+- Detail exports retain 206 charging records while the detail view displays only 200. A 72,001-code-unit Unicode audit value is preserved across Excel text parts. Selected sections exclude unselected tables; detailed CSV requests are rejected to avoid losing related tables.
+- Business and account histories resist replacement/upsert bypasses. Multiple legacy scopes return a review requirement and leave their records intact rather than silently selecting or merging them.
+
+### Visible workflow evidence
+
+Administrator and regular staff sign-in, personal profiles, shared inventory, permission-specific controls, filtering, pagination and export selections were reviewed in the local browser. Staff had no account administration or saved-metadata edit controls, while new-battery registration and lending remained available. The administrator account list showed the two fictional local accounts.
+
+The downloaded second-page workbook contained exactly QA-BULK-04 and QA-STAFF-001. A filtered detailed workbook contained six batteries and the selected evidence/directory worksheets. A single-battery JSON export with only loan history selected contained Batteries and Loans tables. The filtered directory CSV held one matching person; the admin account CSV held two accounts and no password, session or authorization-version fields. Empty detail selection disabled Download.
+
+A second authorized client changed the fictional staff profile while its administrator edit form was open. The stale save was rejected without saving the draft. Review latest account retained the edited display name, loaded the untouched changed email and showed the saved values for comparison. The draft was cancelled and the fictional account's original profile values restored; those test actions remain in account audit history.
+
+A separate staff client checked out a QA battery while the administrator's filtered inventory stayed open. The page automatically changed to On loan with the registered borrower, retaining its search text. An administrator return subsequently appeared as In store. The peer test session was revoked after verification. This establishes visible refresh in the tested case, not push delivery or a load capacity guarantee.
+
+Narrow-window navigation was checked and now closes after choosing a page. Desktop export layout and the current narrow account form were inspected. The local launcher was restarted successfully against the same isolated state and retains the preview at http://127.0.0.1:5173/.
+
+### Corrections during validation
+
+The first browser download approach used a temporary blob; the in-app browser did not reliably report or save it. Server-generated HTTP attachments replaced that approach, and the resulting files were actually downloaded and parsed. The dev server also exited once with Windows EBUSY while watching a temporary release backup. Work, database-state and build directories are now excluded from watching; the launcher was restarted successfully. A late account-message edit had a missing JSX brace, caught by static checking and repaired before the final type/lint/build passes.
+
+QA receipts, screenshots, credentials and private database backups stay in ignored work/qa/ or work/local-access files. They are not committed as project deliverables. During this work, a separate source-cleanup workflow replaced the published frozen tag with the neutral source snapshot 667de0c. Its changes from the original 9f76089 baseline are limited to publishing instructions, ignored tool state and the optional watch-polling environment setting; business source is unchanged. The original baseline remains in local refs. This staff release uses the reviewed frozen source as its publication base and does not modify its tag. The separate inspection workflow proposal stays a draft outside this implemented release.
+
+### Remaining limits
+
+No actual RFID hardware, school SSO, JAGGAER API, email or safety agent was tested. No departmental-scale load test, formal penetration test or stakeholder efficiency trial was performed. Institutional approval, production secret/HTTPS configuration, backup/retention policy and any multiple-register legacy migration remain release gates. This source was built locally; it was not deployed to OpenBayes or the earlier hosted Site. No model training was performed.
+
+
 ## Building, room and charging revision
 
 2 October 2026 · Local development and isolated D1 review. Earlier sections retain the results and limitations of their dated releases; percentage entry described in the initial release is superseded by this revision.

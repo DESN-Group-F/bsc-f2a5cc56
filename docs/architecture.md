@@ -2,11 +2,11 @@
 
 ## System boundary
 
-The browser presents the teacher's review workflow. The authenticated API validates inputs, resolves identity server-side and performs prepared SQL against Cloudflare D1. Drizzle defines a versioned schema; runtime domain operations use the D1 API directly so their transactional boundary is explicit.
+The browser presents the staff review workflow. The authenticated API validates inputs, resolves identity server-side and performs prepared SQL against Cloudflare D1. Drizzle defines a versioned schema; runtime domain operations use the D1 API directly so their transactional boundary is explicit.
 
 ```mermaid
 flowchart LR
-    Teacher --> UI[English web interface]
+    Staff --> UI[English web interface]
     UI --> API[Authenticated inventory API]
     API --> Store[Inventory domain]
     Store --> D1[(D1 database)]
@@ -29,8 +29,15 @@ flowchart LR
 | audit_events | Who did what, when, and relevant before/after details |
 | operations | Idempotency result and transaction guard |
 | workspaces | One-time demo initialization marker |
+| shared_inventories | Canonical scope for each shared working/demo dataset |
+| staff_accounts | Login identity, role, access, profile, password hash and versions |
+| staff_sessions | Hashed session tokens, account authorization version and expiry |
+| staff_account_events | Immutable account-management and profile/password audit |
+| sign_in_attempts | Failed sign-in window counters |
 
-All queries are scoped to the server-provided operator ID and dataset. Demonstration and working inventories cannot mix. This is an individual private prototype: sharing the Site does not create a shared departmental inventory.
+All business queries are scoped to the canonical inventory scope selected by dataset, never by the signed-in person's ID. Every active account resolves to the same working register and the same separate demonstration register. The server still attaches the individual authenticated actor to writes. A people record is an owner/borrower reference and is separate from a login account.
+
+Migration 0004 adds accounts and shared scope mapping without rebuilding existing business tables. On first use, a dataset with exactly one legacy inventory adopts its existing scope; keys, actor history and references stay intact. A fresh dataset receives a shared scope. Multiple legacy scopes return `legacy_inventory_review` and preserve all records until an explicit collision review and migration. This release does not claim to merge arbitrary private registers.
 
 ## Loan state
 
@@ -56,7 +63,7 @@ New charge records pair a positive finite duration in minutes with completion ti
 
 People, buildings, rooms and batteries have a version number. Edits must submit the version loaded by the form. A stale edit returns HTTP 409 with `record_conflict`; it changes neither the record nor its audit history. A transaction guard verifies the version again when the write commits, so a change between validation and persistence is also rejected.
 
-The form keeps the teacher's input after a conflict. Loading the latest record retains other users' changes to untouched fields and keeps the teacher's edited fields. If both changed the same field, the form shows the saved value alongside the current proposal. The teacher reviews and explicitly saves the result.
+The form keeps the staff member's input after a conflict. Loading the latest record retains other users' changes to untouched fields and keeps the staff member's edited fields. If both changed the same field, the form shows the saved value alongside the current proposal. The staff member reviews and explicitly saves the result.
 
 Versioned database triggers enforce record identity, version increments and same-inventory relationships even for direct SQL writes. A responsible battery owner must be a staff record and cannot be demoted while responsible for a battery. Battery storage rooms, loan borrowers, observations and charging records must belong to the same inventory as the battery. Future table rebuilds must recreate these trigger constraints.
 
@@ -66,19 +73,39 @@ Migrations 0001 and 0002 add integrity guards without rebuilding business tables
 
 ## Usability decisions
 
-- A teacher selects the borrower once for a batch.
+- A staff member selects the borrower once for a batch.
 - Unknown or duplicate tag identifiers produce visible messages before confirmation.
 - Searchable registered records reduce typing; CSV import supports initial setup.
 - Invalid input remains in the form for correction.
 - If a write succeeds but the following refresh fails, the message says the write succeeded and requests a refresh.
 - Base UI combobox popups render inside the form's container to cooperate with Radix dialog focus/dismissal.
-- Browser tools can read inventory or stage a review. They cannot commit a loan; the teacher confirms through the visible interface.
+- Browser tools can read inventory or stage a review. They cannot commit a loan; a staff member confirms through the visible interface.
 
 ## Access and operational limits
 
-Authentication is supplied by the hosting platform. Application code uses the provider-neutral helpers in `lib/auth.ts`; exact external header and route identifiers are isolated in `lib/platform/auth-contract.ts`. Those identifiers are required by the current hosting service and cannot be renamed as application branding. Local mock authentication uses the fictional account **admin**, is limited to loopback development and is not bundled for production. API writes validate origin and JSON content; SQL parameters are bound.
+Native application accounts are required for this release. Administrators create accounts; public sign-up and implicit first-visitor administration are absent. The initial administrator requires an installation setup secret and a newly chosen password. A local launcher generates an ignored development setup key; no production password or key is embedded in source.
 
-Institutional access approval, shared roles, authentication through UNSW, backup/restore policy, retention and administrative tamper protection are not delivered in this prototype. Audit history is application-preserved, not a cryptographically immutable compliance ledger.
+Passwords use independently salted PBKDF2-SHA-256 with 600,000 iterations. The installed local Worker runtime was checked with this setting; any future deployment needs runtime and security review. The choice follows [OWASP password-storage guidance](https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html). Only hashed random session tokens are stored in D1. Cookies use HttpOnly, SameSite=Strict, an eight-hour lifetime and Secure on HTTPS. Native session checks reject expired, disabled or superseded authorization versions on every API request. Password changes/reset, disabling and role changes revoke previous sessions. Failed sign-ins are throttled per username after ten failures in a fifteen-minute window; this is not a claim of comprehensive attack protection.
+
+Server role checks distinguish registration from editing. Staff may read/export all business records, create batteries and confirm checkout/return. Administrator maintenance includes saved metadata, people/buildings/rooms, charge/demo-observation evidence, reasoned history corrections and account management. Own-profile operations cannot change role/access or another person's account. Account lists/audit are administrator-only. Permission checks are independent of hidden buttons. Transaction guards recheck the authenticated account's active state and authorization version when business writes commit, alongside existing record/loan guards.
+
+Account edits use an expected version and atomic audit guard. Direct database triggers prevent deletion/replacement of account identities, account-audit rewrites and removal of the last active administrator. Disabled identities remain for attribution. Inventory history uses stable actor IDs and the name recorded at the time; later profile edits do not rewrite events.
+
+API writes validate origin, JSON content and request size. SQL parameters are bound. Downloads require native sessions and return no-store HTTP attachments; credentials and session rows are not exported. The old hosting contract remains isolated in `lib/platform/auth-contract.ts`, preserving external protocol identifiers. Its headers and old mock cookie no longer grant access, and mock authentication is disabled in local Vite configuration.
+
+## Shared refresh and exports
+
+Snapshots read their related view tables in one D1 batch. Each server-generated export similarly reads the inventory, complete evidence tables and directories together. Filtering uses the same rules in the browser and export service. Summary scopes cover all matching batteries or the requested page. Detail scopes cover one ID or all filtered batteries; nine section checkboxes determine the included fields and history tables. All relevant stored history columns are retained, including raw event details, received times, actors, correction values and legacy charging percentages. The export is a selected business report, not an authentication database backup.
+
+Detail screens show at most 200 recent entries per section for readability. Export reads have no such limit. Excel contains separate tables/worksheets and metadata; JSON preserves table structure. CSV supports flat reports and is rejected for detailed requests that would otherwise lose tables. CSV formula-like text is neutralized. Long Excel text is losslessly split into numbered parts in a Complete text worksheet. Worksheet row-limit overflow produces an explicit error and a JSON alternative.
+
+Downloads are generated on the server and delivered as HTTP attachments. A preparation POST validates the selection; the subsequent attachment GET performs its own consistent read. The screen/preparation counts can differ from the file if another staff member changes inventory meanwhile. Export metadata records the generated scope, counts, selected sections and UTC time; it does not claim a frozen snapshot of the earlier screen.
+
+The visible idle interface polls every ten seconds and on focus. Polling pauses around inventory draft dialogs, and changed data cannot silently discard selection or advance a form's loaded version. Stale requests cannot replace a newer loaded dataset. Personal profile conflicts preserve edited fields for a reviewed reload. This is eventual interface refresh; server state and conflict checks apply when each request commits.
+
+## Operational release limits
+
+Institutional identity/hosting approval, UNSW SSO, backup/restore and retention policy, large-load capacity and administrative tamper protection are not delivered by this prototype. Audit history is application-preserved, not a cryptographically immutable compliance ledger. Two-account shared behavior and contested D1 transactions have been tested; no departmental-scale traffic study or stakeholder efficiency experiment has been performed. This release stays local; old hosted environments were not updated.
 
 ## Visual reference
 

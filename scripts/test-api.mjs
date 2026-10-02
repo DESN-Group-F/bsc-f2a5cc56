@@ -1,19 +1,58 @@
 import assert from "node:assert/strict";
-// Fixed loopback target: this check never changes hosted inventory.
-const base="http://127.0.0.1:5173";
-const auth={Cookie:"__sites_local_auth=1"};
-const results=[];
-async function check(name,path,options,status){
-  const r=await fetch(base+path,{...options,redirect:"manual"});assert.equal(r.status,status,name);results.push({name,status});
-  return r;
-}
-await check("API requires a signed-in operator","/api/inventory",{},401);
-await check("client identity headers cannot impersonate local sign-in","/api/inventory",{headers:{"oai-authenticated-user-id":"spoof","oai-authenticated-user-email":"spoof@example.invalid"}},401);
-await check("JSON-only changes","/api/inventory",{method:"POST",headers:auth,body:"invalid"},415);
-await check("malformed JSON is rejected","/api/inventory",{method:"POST",headers:{...auth,"Content-Type":"application/json"},body:"{"},400);
-await check("cross-origin changes are rejected","/api/inventory",{method:"POST",headers:{...auth,"Content-Type":"application/json",Origin:"https://example.invalid"},body:JSON.stringify({dataset:"demo",action:"initialize_demo"})},403);
-const live=await check("working inventory contains no demo records","/api/inventory?dataset=live",{headers:auth},200);
-assert.equal((await live.json()).batteries.length,0);
-await check("an unknown battery is unavailable","/api/inventory?dataset=demo&batteryId=UNKNOWN",{headers:auth},404);
-await check("live RFID observations remain disabled","/api/inventory",{method:"POST",headers:{...auth,"Content-Type":"application/json"},body:JSON.stringify({dataset:"live",action:"observation",payload:{}})},501);
-console.log(JSON.stringify({checks:results.length,passed:true,results},null,2));
+import {readFile,writeFile} from "node:fs/promises";
+import ExcelJS from "exceljs";
+// Fixed loopback target. This uses only the explicitly fictional local preview.
+const base="http://127.0.0.1:5173",credentials=JSON.parse(await readFile("work/local-access.json","utf8")),results=[];
+async function check(name,path,options={},status=200){const response=await fetch(base+path,{...options,redirect:"manual"});assert.equal(response.status,status,`${name}: ${response.status}`);results.push({name,status});return response;}
+const json=(body,cookie)=>({method:"POST",headers:{"Content-Type":"application/json",...(cookie?{Cookie:cookie}:{})},body:JSON.stringify(body)});
+async function signin(account){const response=await check(`${account.username} has an independent sign-in`,"/api/session",json({action:"signin",payload:account}));return response.headers.get("set-cookie").split(";")[0];}
+await check("anonymous inventory access is rejected","/api/inventory",{},401);
+await check("client identity headers and old preview cookies cannot grant access","/api/inventory",{headers:{Cookie:"__sites_local_auth=1","oai-authenticated-user-id":"spoof","oai-authenticated-user-email":"spoof@example.invalid"}},401);
+await check("setup requires the installation secret","/api/session",json({action:"setup",setupKey:"incorrect",payload:{}}),403);
+const adminCookie=await signin(credentials.admin),staffCookie=await signin(credentials.staff);
+assert.notEqual(adminCookie,staffCookie);
+await check("non-JSON writes are rejected","/api/inventory",{method:"POST",headers:{Cookie:adminCookie},body:"invalid"},415);
+await check("malformed JSON is rejected","/api/inventory",{method:"POST",headers:{Cookie:adminCookie,"Content-Type":"application/json"},body:"{"},400);
+await check("cross-origin writes are rejected","/api/inventory",{...json({dataset:"demo",action:"initialize_demo"},adminCookie),headers:{Cookie:adminCookie,"Content-Type":"application/json",Origin:"https://example.invalid"}},403);
+for(const [action,extra] of [["battery",{update:true}],["person",{}],["building",{}],["room",{}],["charge",{}],["observation",{}],["correction",{}],["import",{kind:"people",records:[]}]])await check(`staff cannot perform privileged ${action}`,"/api/inventory",json({dataset:"demo",action,payload:{},...extra},staffCookie),403);
+await check("staff cannot manage other accounts","/api/accounts",{headers:{Cookie:staffCookie}},403);
+await check("staff cannot create accounts","/api/accounts",json({action:"create",payload:{}},staffCookie),403);
+const staff=await(await check("staff can manage their own profile","/api/accounts?scope=self",{headers:{Cookie:staffCookie}})).json();
+await check("a profile cannot promote its staff account","/api/accounts",json({action:"profile",payload:{id:staff.user.id,expectedVersion:staff.user.version,displayName:staff.user.displayName,role:"admin"}},staffCookie),403);
+await check("working RFID remains unavailable","/api/inventory",json({dataset:"live",action:"observation",payload:{}},adminCookie),501);
+let snapshot=await(await check("administrator can read the shared inventory","/api/inventory?dataset=demo",{headers:{Cookie:adminCookie}})).json();
+if(!snapshot.batteries.some(battery=>battery.id==="QA-STAFF-001"))await check("staff can register a new battery","/api/inventory",json({dataset:"demo",action:"battery",payload:{id:"QA-STAFF-001",name:"Demo QA Staff Battery",ownerId:"demo-staff",homeBuildingId:"J18"}},staffCookie));
+const missing=Array.from({length:4},(_,index)=>({id:`QA-BULK-0${index+1}`,name:`Demo QA Batch Battery ${index+1}`,ownerId:"demo-staff",homeBuildingId:"J18"})).filter(battery=>!snapshot.batteries.some(existing=>existing.id===battery.id));
+if(missing.length)await check("staff may import new batteries without editing existing records","/api/inventory",json({dataset:"demo",action:"import",kind:"batteries",records:missing},staffCookie));
+snapshot=await(await check("another account sees the same registered batteries","/api/inventory?dataset=demo",{headers:{Cookie:adminCookie}})).json();assert.ok(snapshot.batteries.some(battery=>battery.id==="QA-STAFF-001"));
+const before=snapshot.batteries.find(battery=>battery.id==="QA-STAFF-001");
+if(before.loanId)await check("return leftover fictional QA loan","/api/inventory",json({dataset:"demo",action:"movement",payload:{requestId:crypto.randomUUID(),kind:"return",batteryIds:[before.id]}},adminCookie));
+const request={requestId:crypto.randomUUID(),kind:"checkout",batteryIds:[before.id],borrowerId:"demo-student-1"};
+await check("staff can check out a shared battery","/api/inventory",json({dataset:"demo",action:"movement",payload:request},staffCookie));
+const loan=await(await check("another account sees the confirmed checkout","/api/inventory?dataset=demo",{headers:{Cookie:adminCookie}})).json();assert.ok(loan.batteries.find(battery=>battery.id===before.id).loanId);
+await check("retrying the same action does not duplicate its loan","/api/inventory",json({dataset:"demo",action:"movement",payload:request},staffCookie));
+await check("a second checkout of the same battery is rejected","/api/inventory",json({dataset:"demo",action:"movement",payload:{...request,requestId:crypto.randomUUID()}},adminCookie),409);
+await check("a different account can return the shared battery","/api/inventory",json({dataset:"demo",action:"movement",payload:{requestId:crypto.randomUUID(),kind:"return",batteryIds:[before.id]}},adminCookie));
+const detail=await(await check("per-account actors remain in history","/api/inventory?dataset=demo&batteryId=QA-STAFF-001",{headers:{Cookie:staffCookie}})).json();assert.equal(detail.loans[0].checkoutActorName,"Demo Staff");assert.equal(detail.loans[0].returnActorName,"admin");
+const filter={search:"QA-"};
+const expectedIds=snapshot.batteries.filter(battery=>`${battery.id} ${battery.name}`.toLowerCase().includes("qa-")).map(battery=>battery.id).sort();
+const all=await(await check("staff can export all filtered summary results","/api/export",json({dataset:"demo",mode:"summary",filter},staffCookie))).json();assert.deepEqual(all.tables.Inventory.map(row=>row.battery_id).sort(),expectedIds);
+const page=await(await check("staff can export only a current page","/api/export",json({dataset:"demo",mode:"summary",filter:{},range:"page",page:1,pageSize:"10"},staffCookie))).json();assert.equal(page.tables.Inventory.length,2);
+const full=await(await check("staff can export complete filtered battery details","/api/export",json({dataset:"demo",mode:"detail",filter},staffCookie))).json();assert.deepEqual(full.tables.Batteries.map(row=>row.battery_id).sort(),expectedIds);assert.ok(full.tables.Loans.length);
+const selected=await(await check("single-battery export respects selected sections","/api/export",json({dataset:"demo",mode:"detail",batteryId:before.id,sections:["loans"]},staffCookie))).json();assert.deepEqual(Object.keys(selected.tables),["Batteries","Loans"]);
+await check("empty detail selection is rejected","/api/export",json({dataset:"demo",mode:"detail",batteryId:before.id,sections:[]},staffCookie),400);
+await check("unknown batteries do not export unrelated data","/api/export",json({dataset:"demo",mode:"detail",batteryId:"UNKNOWN"},staffCookie),404);
+await check("complete activity history is available to staff","/api/inventory?dataset=demo&activity=all",{headers:{Cookie:staffCookie}});
+const downloadUrl=(request,format)=>`/api/export?request=${encodeURIComponent(JSON.stringify(request))}&format=${format}`;
+const currentPageRequest={dataset:"demo",mode:"summary",range:"page",page:1,pageSize:"10"};
+await check("anonymous downloads are rejected",downloadUrl(currentPageRequest,"xlsx"),{},401);
+const attachment=await check("staff receive a real current-page Excel attachment",downloadUrl(currentPageRequest,"xlsx"),{headers:{Cookie:staffCookie}});
+assert.match(attachment.headers.get("content-disposition"),/^attachment;/);assert.equal(attachment.headers.get("cache-control"),"no-store");
+const workbook=new ExcelJS.Workbook();await workbook.xlsx.load(Buffer.from(await attachment.arrayBuffer()));assert.equal(workbook.getWorksheet("Inventory").rowCount,3);
+const downloadedDetail=await(await check("staff receive all selected JSON history tables",downloadUrl({dataset:"demo",mode:"detail",batteryId:before.id,sections:["loans","audit"]},"json"),{headers:{Cookie:staffCookie}})).json();assert.deepEqual(Object.keys(downloadedDetail.tables),["Batteries","Loans","Operations"]);
+await check("CSV cannot silently discard detailed history tables",downloadUrl({dataset:"demo",mode:"detail",batteryId:before.id},"csv"),{headers:{Cookie:staffCookie}},400);
+await check("staff cannot download account administration data","/api/accounts?download=csv",{headers:{Cookie:staffCookie}},403);
+const accountCsv=await(await check("admin account download excludes credential material","/api/accounts?download=csv",{headers:{Cookie:adminCookie}})).text();assert.doesNotMatch(accountCsv,/password_hash|password_salt|token_hash|authVersion/);
+await check("staff sign-out invalidates their session","/api/session",json({action:"signout"},staffCookie));
+await check("signed-out sessions lose access","/api/inventory",{headers:{Cookie:staffCookie}},401);
+const summary={checks:results.length,passed:true,results};await writeFile("work/qa/staff-api-results.json",JSON.stringify(summary,null,2));console.log(JSON.stringify(summary,null,2));

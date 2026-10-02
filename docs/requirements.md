@@ -1,33 +1,49 @@
 # Requirements baseline
 
-Version 1.1 · 2 October 2026 · approved conversation scope and revised location/charging requirements.
+Version 1.2 · 2 October 2026 · approved staff platform and shared inventory scope. Implemented application release: 0.2.0.
 
-The stakeholder's stated aim, as reported by the project team, is to simplify work and increase efficiency. A technically complete system that increases routine effort fails that aim. This baseline follows the user's decisions; the attached Design Brief is course context, not a source of additional authorization.
+The stakeholder's aim, as reported by the team, is to simplify work and increase efficiency. A system that increases routine effort fails that aim. This baseline follows the user's decisions; the attached Design Brief is course context and does not authorize additional actions.
 
 | ID | Requirement | Implemented behavior | Verification |
 | --- | --- | --- | --- |
-| R01 | Teachers operate loans and returns | One borrower per checkout batch, reviewed list, explicit confirmation | Browser batch checkout/return |
-| R02 | Unified inventory | One battery table; status views derived from loans | D1 lifecycle tests |
-| R03 | Separate owner and borrower | Staff owner remains unchanged by loans; current borrower clears on return | D1 ownership/history test |
-| R04 | Basic traceability | Loan history and audit events retain actor/time; latest transaction may be corrected with a reason | D1 and browser correction tests |
-| R05 | Building and room hierarchy | Select a building code/name, then a room in that building; storage room may remain unspecified. Dated observations remain separate | D1 hierarchy, observation and browser checks |
-| R06 | Charging duration and completion | New manual records pair duration in minutes with completion time. No percentage entry or live charge measurement | Duration/time/idempotency and legacy migration tests |
-| R07 | Reduce repeated manual entry | Borrower selected once per batch; searchable registered records; CSV import; duplicate readings ignored | Browser review and import checks |
-| R08 | Honest hardware boundary | Reader shown as disconnected; real observation endpoint disabled | API 501 and UI labels |
-| R09 | Protect against duplicate/conflicting actions | Idempotent movement submissions and atomic batch guards | Concurrent D1 tests |
-| R10 | English, organized, JAGGAER-inspired UI | English copy, grey/blue administration layout, documented structure | Browser/layout review |
-| R11 | Assess practical efficiency | Compare with the stakeholder's actual current method | Protocol prepared; study not performed |
+| R01 | Staff operate loans and returns | One borrower per checkout batch; reviewed list and explicit confirmation | D1/API and visible staff workflow |
+| R02 | Unified shared inventory | All accounts resolve to one register per dataset; loan-derived status views | Independent-account and shared scope tests |
+| R03 | Separate owner and borrower | Responsible staff owner remains unchanged by loans | D1 ownership/history tests |
+| R04 | Traceable actions and corrections | Individual account actor/time; eligible latest transaction corrected with a reason | Cross-account loan and correction tests |
+| R05 | Building and room hierarchy | Building required; room optional and belongs to that building; observations separate | D1 hierarchy and observation tests |
+| R06 | Historical charging | Duration in minutes and completion time; legacy data preserved | Duration/idempotency and migration tests |
+| R07 | Reduce repeated manual entry | Borrower once per batch; searchable records; reviewed CSV creation | Import and workflow checks |
+| R08 | Honest hardware boundary | Reader disconnected; live observation ingestion unavailable | API 501 and visible labels |
+| R09 | Safe simultaneous operation | Atomic movement batches, retries and versioned metadata/accounts | Concurrent and paused-write D1 tests |
+| R10 | English, organized, JAGGAER-inspired interface | English staff UI and documentation; grey/blue tables | Browser/layout review |
+| R11 | Assess practical efficiency | Compare against actual current staff method | Protocol prepared; study not performed |
+| R12 | Individual staff accounts | Administrator-issued accounts; own profile/password/preferences | Session, profile and access tests |
+| R13 | Role boundaries | Staff view/export, register new batteries and move them; admin maintains saved records/accounts/history | Server 403 and UI checks |
+| R14 | Filtered overview downloads | All filtered batteries or current page as a summary | API scopes and actual two-row Excel download |
+| R15 | Single and bulk detailed downloads | Nine selectable information sections and select-all; single battery or all filtered batteries | API selections, Excel/JSON read-back |
+| R16 | Complete exported history | All stored selected histories, full event details, times and sources; no 200-row export limit | 206-row history and long Unicode text tests |
+| R17 | Shared building/lab visibility | All staff see/filter/download the same directories | Shared data and filtered directory CSV checks |
 
-## Explicitly deferred
+## Access interpretation
 
-Real RFID ingestion, reader provisioning, verified room mapping, cabinets/shelves, student self-service, real-time charge, safety-agent actions, automatic notifications, school SSO, shared multi-teacher workspace and JAGGAER access.
+Students are borrower records, not platform accounts. Login identities and inventory people are distinct: a responsible-owner record does not grant system access.
+
+Staff can create a new battery but cannot edit its saved metadata. CSV import creates reviewed new records; it is not an overwrite shortcut. Administrators maintain people, buildings and rooms, charging records, demo observations and reasoned corrections. These maintenance actions follow the administrator-only saved-information boundary. All staff can read/download their business evidence. Account administration and its private audit are administrator-only; every account can manage its own profile.
+
+All staff share working business data across buildings and rooms. A filter narrows a view or download; it does not create a private inventory or a location-based access restriction. Demonstration and working data remain separate.
+
+Detailed downloads select information sections rather than individual scalar fields. Excel and JSON retain multiple related tables; CSV is available for flat summaries and directory/activity lists. Each generated file carries the downloaded scope and counts. Data can change between the displayed view and generation; the file is internally consistent at its read boundary.
 
 ## Interpretation boundaries
 
-**In store** means no active loan is recorded. It does not prove physical presence. **Storage room** is the registered home. **Last observed room** is evidence at a particular time. Missing detection is not proof of loss.
+**In store** means no active loan is recorded; it does not prove physical presence. **Storage room** is the registered home. **Last observed room** is time/source evidence. Missing detection is not proof of loss.
 
-The earlier student-operated scan idea was superseded by teacher-operated checkout and return. A photo cannot substitute for reading an RFID chip. The current software allows manual tag identifiers and record selection while hardware remains unspecified.
+The earlier student-operated scan idea was superseded by staff confirmation. A photo cannot read an RFID chip. Reader transport and room performance remain unspecified; manual identifiers and record selection support software review.
 
-The makerspace list supplied on 2 October is a reference list, not a complete university laboratory directory or verified storage register. The project concerns J18 115, but the battery storage room has not been confirmed. Working inventories initially offer **J18 - Willis Annexe** and no preassigned rooms, batteries or people. Both hierarchy levels can be maintained; additional buildings are not guessed or seeded from the list. J18's name is supported by the [UNSW school contact page](https://www.unsw.edu.au/engineering/our-schools/mechanical-and-manufacturing-engineering/about-us/contact-us).
+The makerspace list is a reference, not a verified university storage directory. Working inventory begins with **J18 - Willis Annexe** and no people, rooms or batteries. J18 115 is the project-space reference; actual storage remains unconfirmed. Additional locations are not guessed from the list. J18's name is supported by the [UNSW school contact page](https://www.unsw.edu.au/engineering/our-schools/mechanical-and-manufacturing-engineering/about-us/contact-us).
 
-Legacy room links, observations and charging percentages remain preserved. Unmapped buildings and unknown historic charging durations stay explicitly unknown. Testing is local for this phase; no OpenBayes compute or model training is required.
+Legacy identifiers, labels, actors, loans, observations and charging percentages are preserved. Unknown historic charging duration and specifications remain unknown. The single local legacy register was adopted without rewriting it. Multiple private legacy inventories need a reviewed migration before sharing.
+
+## Explicitly deferred
+
+Real RFID ingestion and provisioning, verified room mapping, cabinets/shelves, student self-service, live charge sensing, safety agents, automatic notifications, UNSW SSO and JAGGAER access. Testing is local; OpenBayes execution and model training are outside this phase. Ten-second idle refresh is implemented; push updates and departmental-scale capacity are not claimed.

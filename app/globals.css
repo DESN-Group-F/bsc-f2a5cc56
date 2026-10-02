@@ -171,6 +171,24 @@ h1 { font-size:30px; font-weight:600; line-height:1.2; letter-spacing:-.025em; }
 .history-entry .correction-reason { color:#59626b; background:#f5f6f8; padding:9px; border-radius:3px; }
 .history-empty { padding:24px 0; color:#697a89; }
 .time-note { margin-top:20px; }
+.signin-page { min-height:100dvh; display:grid; place-items:center; padding:24px; background:#edf1f5; border-top:5px solid #234a69; }
+.signin-card { width:min(100%,440px); padding:32px; background:white; border:1px solid #d9e1e8; border-radius:6px; box-shadow:0 8px 26px #182f4910; }
+.signin-brand { display:flex; gap:13px; align-items:center; margin-bottom:32px; }
+.signin-brand strong { display:block; font-size:20px; }.signin-brand span:not(.brand-mark) { display:block; color:#657889; font-size:14px; }
+.signin-card h1 { font-size:24px; font-weight:600; margin-bottom:8px; }.signin-card>p { color:#657889; line-height:1.5; margin-bottom:24px; font-size:16px; }
+.signin-note { display:flex; gap:8px; align-items:flex-start; font-size:14px; color:#657889; border-top:1px solid #e1e7ec; padding-top:20px; margin-top:24px; }.signin-note svg { flex-shrink:0; margin-top:2px; }
+.topbar-account,.detail-button-group { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.role-badge { border:1px solid #cbd8e3; background:#edf3f8; color:#315673; border-radius:4px; padding:4px 8px; font-size:13px; white-space:nowrap; }
+.table-toolbar { flex-wrap:wrap; }.table-toolbar>input { flex:1; min-width:min(280px,100%); }
+.pagination-bar { display:flex; justify-content:space-between; gap:16px; align-items:center; padding:14px 20px; border-top:1px solid #dce3e9; color:#5a7081; font-size:14px; flex-wrap:wrap; }
+.pagination-bar>div { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }.pagination-bar [data-slot="select-trigger"] { width:140px; }
+.account-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }.account-card { padding:24px; }.account-card h2 { display:flex; align-items:center; gap:9px; font-size:18px; font-weight:600; margin-bottom:20px; }
+.account-identity { display:flex; align-items:center; justify-content:space-between; padding:12px 0 20px; }.account-audit { margin-top:24px; }
+.export-dialog { max-width:660px!important; }.export-count { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; background:#eef4f8; border:1px solid #d4e1eb; border-radius:4px; font-size:14px; }
+.export-count>span { color:#586f82; }.export-sections { border:1px solid #dce3e9; border-radius:4px; padding:0 14px 12px; }.export-sections legend { font-weight:600; font-size:14px; padding:0 5px; }
+.export-option { display:flex; gap:12px; align-items:flex-start; padding:11px 0; cursor:pointer; }.export-option [data-slot="checkbox"] { flex-shrink:0; margin-top:3px; }.export-option strong { display:block; font-size:14px; font-weight:500; }.export-option small { display:block; color:#657889; font-size:13px; line-height:1.5; margin-top:3px; }.export-all { border-bottom:1px solid #e1e7ec; }
+@media(max-width:800px) { .account-grid { grid-template-columns:1fr; }.topbar { height:auto; min-height:64px; flex-wrap:wrap; gap:8px; padding-block:12px; }.topbar-account { margin-left:auto; } }
+@media(max-width:480px) { .signin-card { padding:24px; }.detail-action-row { align-items:flex-start; gap:12px; flex-direction:column; }.export-count { align-items:flex-start; flex-direction:column; } }
 @media(max-width:1280px) { .table-toolbar { flex-wrap:wrap; } .table-toolbar .search-field { min-width:min(100%,300px); } }
 @media(max-width:640px) {
   .workspace-controls { align-items:flex-start; flex-direction:column; gap:8px; }

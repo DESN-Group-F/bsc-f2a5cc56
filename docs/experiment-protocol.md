@@ -1,10 +1,10 @@
 # Proposed evaluation protocol
 
-Prepared 1 October 2026. This is a proposed study, not measured evidence.
+Prepared 1 October 2026; updated for shared staff scope 2 October 2026. This is a proposed study, not measured evidence.
 
 ## Research question
 
-Does the teacher-operated prototype reduce routine battery-management effort while preserving correct responsibility and traceability?
+Does the staff-operated prototype reduce routine battery-management effort while preserving correct responsibility and traceability?
 
 Hypothesis H1: the prototype reduces completion time and repeated data entry for checkout, return and tracing tasks.
 
@@ -14,9 +14,9 @@ Software tests support H2 within their tested cases. H1 remains untested, and re
 
 ## Establish the baseline
 
-Observe the stakeholder's current method, including informal steps outside a spreadsheet or register. Record how a teacher identifies a battery, records responsibility, processes returns and investigates an unaccounted-for asset. Do not invent a baseline from assumptions.
+Observe the stakeholder's current method, including informal steps outside a spreadsheet or register. Record how a staff member identifies a battery, records responsibility, processes returns and investigates an unaccounted-for asset. Do not invent a baseline from assumptions.
 
-Use fictional people and batteries for the controlled study. Record participant consent and collect only task data needed for the comparison. Start with the stakeholder and, if available, a small group of other teachers; report the sample and its limits.
+Use fictional people and batteries for the controlled study. Record participant consent and collect only task data needed for the comparison. Start with the stakeholder and, if available, a small group of other staff; report the sample and its limits.
 
 ## Paired tasks
 
@@ -28,6 +28,8 @@ Use fictional people and batteries for the controlled study. Record participant 
 | T4 | Enter a duplicate and an unknown identifier | No duplicate loan; clear unresolved identifier |
 | T5 | Correct a mistaken return | Loan reopened with a recorded reason |
 | T6 | Add a battery with unknown specifications | Correct owner/home; no fabricated values |
+| T7 | Filter a location and download a summary, then selected detailed histories | Correct filter scope, counts, sections and complete stored evidence |
+| T8 | Two staff attempt to lend the same battery | One valid loan; losing attempt explains conflict without partial saving |
 
 Give a short consistent orientation. Counterbalance whether participants use the current method or prototype first. Use equivalent task sets, reset fictional state between trials and keep the same hardware/network conditions.
 

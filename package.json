@@ -1,13 +1,13 @@
 {
   "name": "desn2000-battery-inventory",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
   },
   "scripts": {
     "install:ci": "node scripts/install-ci.mjs",
-    "dev": "node scripts/run-framework.mjs dev",
+    "dev": "node scripts/dev-local.mjs",
     "build": "node scripts/run-framework.mjs build",
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 127.0.0.1 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
@@ -26,6 +26,7 @@
     "date-fns": "^4.4.0",
     "drizzle-orm": "0.45.2",
     "embla-carousel-react": "^8.6.0",
+    "exceljs": "4.4.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^1.31.0",
     "next": "16.3.4",

@@ -56,13 +56,14 @@ export default defineConfig(async ({ command }) => {
       ...(managedLinux
         ? { host: "0.0.0.0", allowedHosts: ["terminal.local"] }
         : {}),
-      ...(requiresPolling
-        ? { watch: { useFsEvents: false, usePolling: true } }
-        : {}),
+      watch: {
+        ignored: ["**/work/**", "**/.wrangler/**", "**/dist/**"],
+        ...(requiresPolling ? { useFsEvents: false, usePolling: true } : {}),
+      },
     },
     plugins: [
       vinext(),
-      hostingIntegration({ mockAuth: !managedLinux }),
+      hostingIntegration({ mockAuth: false }),
       connectorPreview(),
       cloudflare({
         ...(command === "serve" ? { persistState: { path: process.env.INVENTORY_DEV_STATE_DIR || ".wrangler/state" } } : {}),
@@ -70,6 +71,7 @@ export default defineConfig(async ({ command }) => {
         inspectorPort: false,
         config: {
           ...localBindingConfig,
+          ...(command === "serve" && process.env.INVENTORY_SETUP_KEY ? { vars: { INVENTORY_SETUP_KEY: process.env.INVENTORY_SETUP_KEY } } : {}),
           ...(command === "serve"
             ? {
                 services: [

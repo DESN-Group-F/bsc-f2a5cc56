@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { StaffUser } from "./accounts";
 export const datasetSchema = z.enum(["demo", "live"]);
 export type Dataset = z.infer<typeof datasetSchema>;
 export const identifier = z.string().trim().min(1).max(64).regex(/^[A-Za-z0-9][A-Za-z0-9._-]*$/, "Use letters, numbers, dots, underscores or hyphens.");
@@ -73,6 +74,7 @@ export type BatteryRecord = {
     chargeDurationMinutes: number | null;
 };
 export type InventorySnapshot = {
+    user: StaffUser;
     dataset: Dataset;
     batteries: BatteryRecord[];
     people: Person[];

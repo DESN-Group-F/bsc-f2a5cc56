@@ -1,14 +1,18 @@
 import { batterySchema, personSchema, buildingSchema, roomSchema, movementSchema, chargeSchema, observationSchema, correctionSchema, DomainError, recordKey, uniqueIds, validatePastTime, type Dataset } from "./domain";
 import { demoBatteries, demoPeople, demoRooms } from "./fixtures";
+import type { StaffRole } from "./accounts";
 export type Actor = {
     id: string;
     name: string;
+    role: StaffRole;
+    authVersion?: number;
 };
 type Row = Record<string, unknown>;
 /** All SQL is scoped and prepared. D1 batch is the atomic write boundary. */
 export class InventoryStore {
     constructor(private db: D1Database, readonly scope: string, readonly dataset: Dataset, private actor: Actor, private clock: () => Date = () => new Date()) { }
     private key(id: string) { return recordKey(this.scope, id); }
+    private requireAdmin() { if (this.actor.role !== "admin") throw new DomainError(403, "Only administrators can modify saved records or maintain directories."); }
     private statement(sql: string, ...values: unknown[]) { return this.db.prepare(sql).bind(...values); }
     private async rows(sql: string, ...values: unknown[]): Promise<Row[]> { return (await this.statement(sql, ...values).all<Row>()).results; }
     private async first(sql: string, ...values: unknown[]) { return this.statement(sql, ...values).first<Row>(); }
@@ -34,6 +38,10 @@ export class InventoryStore {
         return { ...JSON.parse(String(old.result_json)), replayed: true };
     }
     private async atomic(requestId: string, kind: string, fingerprint: string, result: unknown, at: string, guardSql: string, guardValues: unknown[], writes: D1PreparedStatement[], conflictMessage = "The records changed or conflict with this operation. Refresh and review the batteries again. Nothing in this batch was saved.", conflictCode?: string) {
+        if (this.actor.authVersion !== undefined) {
+            guardSql = `(${guardSql}) AND EXISTS(SELECT 1 FROM staff_accounts WHERE id=? AND active=1 AND auth_version=? AND role=?)`;
+            guardValues = [...guardValues, this.actor.id, this.actor.authVersion, this.actor.role];
+        }
         const old = await this.replay(requestId, kind, fingerprint);
         if (old)
             return old;
@@ -90,7 +98,8 @@ export class InventoryStore {
             writes.push(this.statement("INSERT INTO charges(id,scope,battery_key,completed_at,duration_minutes,recorded_at,actor_id,actor_name) VALUES(?,?,?,?,?,?,?,?)", crypto.randomUUID(), this.scope, this.key(batteryId), yesterday, durationMinutes, at, "demo-setup", "Demonstration setup"));
         writes.push(this.event("demo_initialized", null, { note: "Fictional batteries, people and rooms. No real RFID readings." }, at));
         try {
-            await this.db.batch(writes);
+            await this.atomic(crypto.randomUUID(), "demo_initialized", "demo-fixtures-v1", { initialized: true }, at,
+                "NOT EXISTS(SELECT 1 FROM workspaces WHERE scope=?)", [this.scope], writes);
         }
         catch (e) {
             if (!(await this.first("SELECT scope FROM workspaces WHERE scope=?", this.scope)))
@@ -98,10 +107,9 @@ export class InventoryStore {
         }
         return { initialized: true };
     }
-    async snapshot() {
-        await this.ensureTargetBuilding();
-        const [batteries, people, buildings, rooms, events] = await Promise.all([
-            this.rows(`SELECT b.id,b.version,b.name,b.chemistry,b.model,b.capacity_mah AS capacityMah,b.voltage,b.tag_id AS tagId,
+    private snapshotStatements() {
+        return [
+            this.statement(`SELECT b.id,b.version,b.name,b.chemistry,b.model,b.capacity_mah AS capacityMah,b.voltage,b.tag_id AS tagId,
         own.id AS ownerId,own.name AS ownerName,home.id AS homeRoomId,home.name AS homeRoomName,home.number AS homeRoomNumber,
         homeBuilding.id AS homeBuildingId,homeBuilding.name AS homeBuildingName,
         l.id AS loanId,p.id AS borrowerId,l.borrower_name AS borrowerName,l.checked_out_at AS checkedOutAt,
@@ -117,12 +125,26 @@ export class InventoryStore {
         LEFT JOIN rooms observedRoom ON observedRoom.key=o.room_key
         LEFT JOIN charges c ON c.id=(SELECT id FROM charges WHERE battery_key=b.key AND scope=b.scope ORDER BY completed_at DESC,recorded_at DESC,rowid DESC LIMIT 1)
         WHERE b.scope=? ORDER BY b.id`, this.scope),
-            this.rows("SELECT id,version,name,reference,role FROM people WHERE scope=? ORDER BY name", this.scope),
-            this.rows("SELECT id,version,name FROM buildings WHERE scope=? ORDER BY id", this.scope),
-            this.rows("SELECT r.id,r.version,r.name,r.number,b.id AS buildingId,COALESCE(b.id || ' - ' || b.name,r.building) AS building FROM rooms r LEFT JOIN buildings b ON b.key=r.building_key WHERE r.scope=? ORDER BY b.id,r.number,r.name", this.scope),
-            this.rows("SELECT id,action,battery_id AS batteryId,actor_name AS actorName,at,details_json FROM audit_events WHERE scope=? ORDER BY at DESC,rowid DESC LIMIT 200", this.scope),
-        ]);
+            this.statement("SELECT id,version,name,reference,role FROM people WHERE scope=? ORDER BY name", this.scope),
+            this.statement("SELECT id,version,name FROM buildings WHERE scope=? ORDER BY id", this.scope),
+            this.statement("SELECT r.id,r.version,r.name,r.number,b.id AS buildingId,COALESCE(b.id || ' - ' || b.name,r.building) AS building FROM rooms r LEFT JOIN buildings b ON b.key=r.building_key WHERE r.scope=? ORDER BY b.id,r.number,r.name", this.scope),
+            this.statement("SELECT id,action,battery_id AS batteryId,actor_name AS actorName,at,details_json FROM audit_events WHERE scope=? ORDER BY at DESC,rowid DESC LIMIT 200", this.scope),
+        ];
+    }
+    async snapshot() {
+        await this.ensureTargetBuilding();
+        const [batteries, people, buildings, rooms, events] = (await this.db.batch<Row>(this.snapshotStatements())).map(result => result.results);
+
         return { dataset: this.dataset, batteries, people, buildings, rooms, events: events.map(({ details_json, ...e }) => ({ ...e, details: JSON.parse(String(details_json)) })), actor: this.actor.name, hardwareConnected: false };
+    }
+    async exportData() {
+        await this.ensureTargetBuilding();
+        const result = (await this.db.batch<Row>([...this.snapshotStatements(), ...["batteries", "people", "buildings", "rooms", "loans", "charges", "observations", "audit_events"].map(table => this.statement(`SELECT * FROM ${table} WHERE scope=? ORDER BY rowid`, this.scope))])).map(item => item.results);
+        const [batteries, people, buildings, rooms, events] = result;
+        return { snapshot: { dataset: this.dataset, batteries, people, buildings, rooms, events: events.map(({ details_json, ...event }) => ({ ...event, details: JSON.parse(String(details_json)) })), actor: this.actor.name, hardwareConnected: false }, raw: Object.fromEntries(["batteries", "people", "buildings", "rooms", "loans", "charges", "observations", "audit_events"].map((name, index) => [name, result[index + 5]])) };
+    }
+    async fullActivity() {
+        return (await this.rows("SELECT id,action,battery_id AS batteryId,actor_id AS actorId,actor_name AS actorName,at,details_json FROM audit_events WHERE scope=? ORDER BY at DESC,rowid DESC", this.scope)).map(({ details_json, ...event }) => ({ ...event, details: JSON.parse(String(details_json)) }));
     }
     async detail(id: string) {
         await this.battery(id);
@@ -168,6 +190,7 @@ export class InventoryStore {
         return this.atomic(v.requestId, v.kind, fingerprint, { kind: v.kind, batteryIds: ids, count: ids.length, at }, at, `(SELECT COUNT(*) FROM loans WHERE scope=? AND id IN (${loanHoles}) AND returned_at IS NULL AND cancelled_at IS NULL)=?`, [this.scope, ...open.map(l => l.id), ids.length], writes);
     }
     async savePerson(input: unknown, update = false) {
+        this.requireAdmin();
         const p = personSchema.parse(input), at = this.clock().toISOString(), before = await this.first("SELECT * FROM people WHERE scope=? AND id=?", this.scope, p.id);
         if (update && !before)
             throw new DomainError(404, "Person not found.");
@@ -181,6 +204,7 @@ export class InventoryStore {
         return this.metadataWrite("people", kind, p.id, p, before, version, at, [write, this.event(kind, null, { before, after: { ...p, version } }, at)]);
     }
     async saveBuilding(input: unknown, update = false) {
+        this.requireAdmin();
         const b = buildingSchema.parse(input), at = this.clock().toISOString(), before = await this.first("SELECT * FROM buildings WHERE scope=? AND id=?", this.scope, b.id);
         if (update && !before) throw new DomainError(404, "Building not found.");
         if (!update && before) throw new DomainError(409, "That building code is already registered.");
@@ -189,6 +213,7 @@ export class InventoryStore {
         return this.metadataWrite("buildings", kind, b.id, b, before, version, at, [write, this.event(kind, null, { before, after: { ...b, version } }, at)]);
     }
     async saveRoom(input: unknown, update = false) {
+        this.requireAdmin();
         const r = roomSchema.parse(input), at = this.clock().toISOString(), before = await this.first("SELECT * FROM rooms WHERE scope=? AND id=?", this.scope, r.id);
         if (update && !before)
             throw new DomainError(404, "Room not found.");
@@ -201,6 +226,7 @@ export class InventoryStore {
         return this.metadataWrite("rooms", kind, r.id, r, before, version, at, [write, this.event(kind, null, { before, after: { ...r, version } }, at)]);
     }
     async saveBattery(input: unknown, update = false) {
+        if (update) this.requireAdmin();
         const b = batterySchema.parse(input), at = this.clock().toISOString();
         const [owner, building, room, before] = await Promise.all([
             this.first("SELECT key FROM people WHERE scope=? AND id=? AND role='staff'", this.scope, b.ownerId),
@@ -230,6 +256,7 @@ export class InventoryStore {
         }
     }
     async charge(input: unknown) {
+        this.requireAdmin();
         const v = chargeSchema.parse(input), fingerprint = JSON.stringify(v), old = await this.replay(v.requestId, "charge", fingerprint);
         if (old)
             return old;
@@ -240,6 +267,7 @@ export class InventoryStore {
         ]);
     }
     async observation(input: unknown) {
+        this.requireAdmin();
         if (this.dataset !== "demo")
             throw new DomainError(501, "Real RFID room observations are not enabled. Hardware and room mapping must be validated first.");
         const v = observationSchema.parse(input), fingerprint = JSON.stringify(v), old = await this.replay(v.requestId, "observation", fingerprint);
@@ -255,6 +283,7 @@ export class InventoryStore {
         ]);
     }
     async correctLoan(input: unknown) {
+        this.requireAdmin();
         const v = correctionSchema.parse(input), fingerprint = JSON.stringify(v), old = await this.replay(v.requestId, "correction", fingerprint);
         if (old)
             return old;
@@ -270,6 +299,7 @@ export class InventoryStore {
         return this.atomic(v.requestId, "correction", fingerprint, { id: l.id, action: reopen ? "return_reopened" : "checkout_voided" }, at, `(SELECT COUNT(*) FROM loans WHERE id=? AND scope=? AND ${condition})=1 AND (SELECT id FROM loans WHERE scope=? AND battery_key=? ORDER BY checked_out_at DESC,rowid DESC LIMIT 1)=?`, [l.id, this.scope, this.scope, l.battery_key, l.id], [write, this.event(reopen ? "return_reopened" : "checkout_voided", String(l.battery_id), { loanId: l.id, reason: v.reason, before: l }, at)]);
     }
     async importRecords(kind: string, records: unknown[]) {
+        if (kind !== "batteries") this.requireAdmin();
         if (!Array.isArray(records) || !records.length || records.length > 200)
             throw new DomainError(400, "Import between 1 and 200 records at a time.");
         const at = this.clock().toISOString(), writes: D1PreparedStatement[] = [];

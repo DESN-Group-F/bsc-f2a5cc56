@@ -85,6 +85,10 @@ export function parseCsv(text: string): Record<string, string>[] {
     return rows.map((r, i) => { if (r.length !== header.length)
         throw new Error(`Row ${i + 2} has ${r.length} columns; expected ${header.length}.`); return Object.fromEntries(header.map((h, j) => [h, r[j].trim()])); });
 }
+/** Reload the server-rendered identity after session creation or revocation. */
+export function reloadSessionPage(destination: string) {
+    window.location.assign(destination);
+}
 export function importPayload(kind: string, rows: Record<string, string>[]) {
     const required = kind === "people" ? ["id", "name", "role"] : kind === "buildings" ? ["id", "name"] : kind === "rooms" ? ["id", "name", "building_id", "number"] : ["id", "name", "owner_id", "storage_building_id", "storage_room_id"];
     if (!rows.length)

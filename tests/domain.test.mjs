@@ -18,7 +18,7 @@ await applyMigrations(db,journal.entries);
 after(()=>mf.dispose());
 let now=new Date("2026-10-01T02:00:00Z");
 const uuid=()=>crypto.randomUUID();
-function store(scope,dataset="demo"){return new InventoryStore(db,scope,dataset,{id:"test-teacher",name:"Test Teacher"},()=>now);}
+function store(scope,dataset="demo"){return new InventoryStore(db,scope,dataset,{id:"test-teacher",name:"Test Teacher",role:"admin"},()=>now);}
 async function demo(scope){const s=store(scope);await s.initializeDemo();return s;}
 const request=(kind,batteryIds,borrowerId="demo-student-1")=>({requestId:uuid(),kind,batteryIds,...(kind==="checkout"?{borrowerId}:{})});
 const battery=async(s,id)=>(await s.snapshot()).batteries.find(b=>b.id===id);
@@ -134,7 +134,7 @@ function pauseNextBatch(){
   const ready=new Promise(resolve=>{signal=resolve;}),gate=new Promise(resolve=>{resume=resolve;});
   return {ready,resume,db:{prepare:sql=>db.prepare(sql),async batch(statements){signal();await gate;return db.batch(statements);}}};
 }
-function pausedStore(scope,gate){return new InventoryStore(gate.db,scope,"demo",{id:"test-teacher",name:"Test Teacher"},()=>now);}
+function pausedStore(scope,gate){return new InventoryStore(gate.db,scope,"demo",{id:"test-teacher",name:"Test Teacher",role:"admin"},()=>now);}
 
 test("stale battery, person and room forms cannot overwrite newer data or append audit events",async()=>{
   const s=await demo("versions:demo"),initial=await s.snapshot();
@@ -258,7 +258,7 @@ test("migration preserves existing histories and marks missing original room lab
       ...[0,100,null].map(percentage=>legacyDb.prepare("INSERT INTO charges(id,scope,battery_key,completed_at,percentage,recorded_at,actor_id,actor_name) VALUES(?,?,?,?,?,?,?,?)").bind(uuid(),scope,`${scope}/BAT-001`,now.toISOString(),percentage,now.toISOString(),"legacy-teacher","Legacy Teacher")),
       legacyDb.prepare("INSERT INTO audit_events(id,scope,action,battery_id,actor_id,actor_name,at,details_json) VALUES(?,?,?,?,?,?,?,?)").bind(uuid(),scope,"charge_recorded","BAT-001","legacy-teacher","Legacy Teacher",now.toISOString(),JSON.stringify({percentage:0,completedAt:now.toISOString()})),
     ]);
-    const s=new InventoryStore(legacyDb,scope,"demo",{id:"legacy-teacher",name:"Legacy Teacher"},()=>now);
+    const s=new InventoryStore(legacyDb,scope,"demo",{id:"legacy-teacher",name:"Legacy Teacher",role:"admin"},()=>now);
     await legacyDb.prepare("INSERT INTO observations(id,scope,battery_key,room_key,observed_at,received_at,source) VALUES(?,?,?,?,?,?,?)").bind(uuid(),scope,`${scope}/BAT-001`,`${scope}/demo-store`,now.toISOString(),now.toISOString(),"Demo observation").run();
     const counts={};for(const table of ["batteries","people","rooms","loans","charges","observations","audit_events"])counts[table]=(await legacyDb.prepare(`SELECT COUNT(*) AS count FROM ${table}`).first()).count;
     await applyMigrations(legacyDb,journal.entries.slice(1));
