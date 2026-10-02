@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "observationDate": "2026-10-02",
+  "status": "closed",
+  "previousRecord": "deployment-2026-10-01-manual.json",
+  "containerId": "CzzAylJROBl",
+  "executionId": "d1jh04u8xzi3",
+  "executionUrl": "https://openbayes.com/console/zztv/jobs/d1jh04u8xzi3/overview",
+  "reason": "The project phase moved to local testing without OpenBayes execution or model training.",
+  "observedConsoleState": "closed",
+  "displayedExecutionDuration": "16:43:34",
+  "stopSubmittedAndConfirmedInConsole": true,
+  "continueExecutionButtonVisible": true,
+  "publicMapping": {
+    "port": 8081,
+    "name": "desn2000-demo",
+    "displayedAccessAddress": "-"
+  },
+  "savedHome": {
+    "platformRetentionConfirmedByStopDialog": true,
+    "displayedDirectorySizeMb": 315.28,
+    "path": "/openbayes/home",
+    "fileContentsReinspectedAfterThisShutdown": false
+  },
+  "restarted": false,
+  "newLocationChargingChangesDeployed": false,
+  "finalSettledCostInspected": false
+}
