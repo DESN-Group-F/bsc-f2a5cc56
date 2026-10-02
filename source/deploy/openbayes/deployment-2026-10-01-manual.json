@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "observationDate": "2026-10-01",
+  "status": "running_until_operator_stops_execution",
+  "previousRecord": "deployment-2026-10-01-public.json",
+  "authorization": {
+    "manualStopRequested": true,
+    "planned0300StopCancelled": true,
+    "previousCny2SpendingCapCancelled": true,
+    "expectedOperatorShutdownDateSydney": "2026-10-02",
+    "additionalFunctionalTestsDeclined": true,
+    "accountTopUpsAuthorized": false
+  },
+  "containerId": "CzzAylJROBl",
+  "execution": {
+    "id": "d1jh04u8xzi3",
+    "url": "https://openbayes.com/console/zztv/jobs/d1jh04u8xzi3/overview",
+    "observedState": "running",
+    "copiedHomeFromExecutionId": "dydzv3qgzv5c",
+    "resource": "cpu",
+    "cpuHourlyRateCny": 0.30,
+    "automaticStop": false,
+    "outerShellTimeout": false,
+    "scheduledShutdownCreated": false,
+    "manualStopMethod": "Use the Stop control in this execution's OpenBayes overview.",
+    "launchPolicy": "INVENTORY_MANUAL_STOP=1 INVENTORY_PORT=8081 python3 with the compressed source update supplied inline"
+  },
+  "runtimeUpdate": {
+    "oldRuntimeSha256": "1f4d6bb5bf87f181fc786beb0a6f57e3c222b0c6df37b87f24b1b67e3fc62c01",
+    "newRuntimeSha256": "d72288f674edd5f7af751c3bdb8c3d731c87c8bcc920345e0e9e0e4d2025457b",
+    "updatedChecksumObservedInRemoteLog": true,
+    "administratorCredentialsChanged": false,
+    "databaseMigrationFilesChanged": false
+  },
+  "readyLog": {
+    "event": "inventory_ready",
+    "port": 8081,
+    "migrations": 3,
+    "dataDirectory": "/openbayes/home/battery-inventory/data",
+    "automaticStop": false
+  },
+  "publicMapping": {
+    "name": "desn2000-demo",
+    "url": "https://zztv-desn2000-demo.gear-c1.openbayes.net/",
+    "urlUnchanged": true,
+    "oldExecutionMappingRemovedBeforeReuse": true,
+    "urlObservedInRunningExecution": true
+  },
+  "persistence": {
+    "savedDatabasePreflightPassed": true,
+    "savedDatabaseWasReplaced": false,
+    "restoredLoanHistoryInspectedAfterThisRestart": false
+  },
+  "previousExecution": {
+    "id": "dydzv3qgzv5c",
+    "finalState": "closed",
+    "displayedDuration": "00:55:09",
+    "reason": "One restart was necessary to replace the immutable two-hour timers with the requested manual-operation policy."
+  },
+  "verificationScope": "Only execution state, the saved-database startup guard, runtime checksum, ready log and retained public mapping were observed. No additional functional tests were run for the final manual-operation policy.",
+  "limitations": [
+    "Charges continue while the execution runs; its final charge is unknown until it stops.",
+    "Removing application timers does not guarantee uninterrupted platform availability.",
+    "The original offline archive retains the earlier bounded runtime; the saved remote runtime includes the recorded source update."
+  ]
+}

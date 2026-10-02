@@ -1,0 +1,76 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1790836715235,
+      "tag": "0000_military_warstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1790842950646,
+      "tag": "0001_inventory_integrity",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1790845729587,
+      "tag": "0002_prevent_record_replacement",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1790917177208,
+      "tag": "0003_building_rooms_charge_duration",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1790921106975,
+      "tag": "0004_staff_accounts_shared_inventory",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1790928039047,
+      "tag": "0005_battery_age_dates",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1790931164632,
+      "tag": "0006_staff_self_checkout",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1790934504273,
+      "tag": "0007_room_availability",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1790941106923,
+      "tag": "0008_periodic_tasks_messages",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1790947155735,
+      "tag": "0009_optional_task_completion_notes",
+      "breakpoints": true
+    }
+  ]
+}

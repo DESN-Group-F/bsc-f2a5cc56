@@ -1,0 +1,3 @@
+id,name,reference,role
+STAFF-001,Example staff member,EXAMPLE-STAFF,staff
+STUDENT-001,Example borrower,EXAMPLE-STUDENT,borrower

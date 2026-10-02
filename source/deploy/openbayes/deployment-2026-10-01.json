@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "observationDate": "2026-10-01",
+  "status": "server_started_public_access_not_verified",
+  "provider": "OpenBayes",
+  "container": {
+    "name": "DESN2000-battery-inventory",
+    "id": "CzzAylJROBl",
+    "url": "https://openbayes.com/console/zztv/containers/CzzAylJROBl",
+    "resource": "cpu",
+    "cpuCores": 2,
+    "memoryGiB": 4,
+    "image": "PyTorch 2.8-2204-cpu"
+  },
+  "execution": {
+    "id": "52ef72aly5s5",
+    "url": "https://openbayes.com/console/zztv/jobs/52ef72aly5s5",
+    "finalState": "closed",
+    "displayedDuration": "00:09:41",
+    "maximumSeconds": 7200,
+    "stopReason": "No usable public endpoint was obtained; stopped to avoid further CPU charges.",
+    "readyLog": {
+      "event": "inventory_ready",
+      "port": 8080,
+      "migrations": 3,
+      "dataDirectory": "/openbayes/home/battery-inventory/data"
+    }
+  },
+  "billing": {
+    "currency": "CNY",
+    "authorizedMaximum": 1,
+    "cpuHourlyRate": 0.30,
+    "observedCpuCharge": 0.05,
+    "evidence": "The transaction ledger showed a CPU debit of CNY 0.05 after this execution stopped.",
+    "accountTopUpPerformed": false,
+    "existingStorageSubscriptionChanged": false
+  },
+  "transfer": {
+    "method": "private_github_archive",
+    "directUpload": "Cancelled after the interface estimated more than one hour remaining.",
+    "repository": "https://github.com/DESN-Group-F/bsc-f2a5cc56",
+    "branch": "battery-inventory-openbayes-20261001",
+    "deployedArchiveCommit": "8efd15db436df670ba1c9df5addf18795b7e5695",
+    "adapterSourceCommit": "6a0d80dccf6cf7f6a33f0b1b71368701a871b4e3",
+    "applicationBuildBaseCommit": "a5591edf49ee6c01f926614e6fa5c5ccf6f03a45",
+    "bundleSha256": "5c02c61b47021bdc1e70db0b46f406cbf54788a416860d8da17e9a5fdd13e4f7",
+    "mainBranchChanged": false,
+    "githubCredentialSentToServer": false,
+    "credentialsOrExistingDatabasesCommitted": false
+  },
+  "publicAccess": {
+    "verified": false,
+    "confirmedPublicUrl": null,
+    "observedRealNameStatus": "unverified",
+    "documentationRequirement": "Real-name verification is required for public port mapping.",
+    "documentedPatternProbe": "One inferred endpoint returned HTTP 404. It was not an address supplied by the platform.",
+    "remoteSignInVerified": false,
+    "remoteCheckoutReturnVerified": false
+  },
+  "persistence": {
+    "savedHomeObservedAfterStop": true,
+    "savedInventorySqliteObserved": true,
+    "displayedInventorySqliteSize": "144 KB",
+    "databaseDirectory": "/openbayes/home/battery-inventory/data/d1",
+    "remoteDatabaseReadOrRestoreVerified": false,
+    "localRuntimeRestartVerified": true
+  },
+  "localVerification": {
+    "runtimeChecksPassed": 11,
+    "completedAt": "2026-10-01T10:02:06.812Z",
+    "coverage": [
+      "Authentication, protected cookies and rejected spoofed identity headers",
+      "Cross-origin write rejection",
+      "Production HTML, JavaScript assets and all committed database migrations",
+      "Checkout, idempotent replay, return and audit history",
+      "Automatic stop and database persistence across runtime restart",
+      "Separation of fictional demonstration and empty working inventories"
+    ],
+    "resumePreflightChecksPassed": 4,
+    "resumeCoverage": [
+      "Accept a saved real D1 database",
+      "Reject a missing database",
+      "Reject ambiguous database files",
+      "Reject an uninitialized database without migration receipts"
+    ],
+    "resumeExecutedOnServer": false
+  },
+  "nextSteps": [
+    "The account holder completes the platform's identity-verification flow personally.",
+    "Check the remaining authorized budget before starting another CPU execution.",
+    "Bind the saved execution home and upload resume.py; the expired archive link cannot be reused.",
+    "Use the bounded resume command recorded in README.txt.",
+    "Obtain the actual public URL and verify sign-in, checkout, return and restart persistence."
+  ],
+  "references": [
+    "https://openbayes.com/docs/gear/expose-service/",
+    "https://openbayes.com/docs/gear/output/",
+    "https://openbayes.com/docs/gear/storage-persistence/",
+    "https://docs.github.com/en/rest/repos/contents#download-a-repository-archive-tar"
+  ]
+}

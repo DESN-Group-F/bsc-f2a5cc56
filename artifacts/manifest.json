@@ -1,0 +1,18 @@
+{
+  "applicationVersion": "0.5.0",
+  "sourceCommit": "ddac6320daf36f677605667f329f031a10b1f813",
+  "bundleSha256": "02953c30ec2145c8e9316054e8cb83d230ece3193c740e3e9e502e1a6bc52c68",
+  "parts": [
+    {
+      "name": "bundle.part00",
+      "size": 67108864,
+      "sha256": "867c5df83a389962bd1e3937f746d8c67e71a6f0071b54a0ae0bb288c31d12ab"
+    },
+    {
+      "name": "bundle.part01",
+      "size": 41150952,
+      "sha256": "2feadcd8b53442133ac900493a8e0031ce60cb04f6607ea1349f880fe580e40f"
+    }
+  ],
+  "runtimeSha256": "02273793b0075bcb6a2e1f93e8a8225e425977693a0d045f274f9fb56d40a251"
+}
