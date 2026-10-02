@@ -36,6 +36,27 @@
       "when": 1790921106975,
       "tag": "0004_staff_accounts_shared_inventory",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1790928039047,
+      "tag": "0005_battery_age_dates",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1790931164632,
+      "tag": "0006_staff_self_checkout",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1790934504273,
+      "tag": "0007_room_availability",
+      "breakpoints": true
     }
   ]
 }

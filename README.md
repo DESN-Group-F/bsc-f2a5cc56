@@ -2,31 +2,35 @@
 
 A staff work platform for the DESN2000 battery-management design project. Its primary aim is to reduce routine staff work while keeping responsibility, lending and dated location evidence traceable.
 
-Release **0.2.0** implements the approved shared staff platform. The earlier prototype is preserved at Git tag `battery-inventory-v0.1.0-freeze-20261002`; subsequent work uses a separate branch.
+Release **0.3.0** freezes the approved shared staff platform at Git tag `battery-inventory-v0.3.0-freeze-20261002`. The earlier prototype remains preserved at `battery-inventory-v0.1.0-freeze-20261002`, and the preceding staff release remains on `battery-staff-platform-v0.2.0`.
+
+This release adds authenticated staff responsibility, a unified Filter panel, My batteries/My loans shortcuts, reviewed loan-state guards, battery age and selected-battery downloads. See [the release record](docs/releases/0.3.0.md) for its scope and verification. Source publication does not deploy the application or include any local database.
 
 ## Use the local prototype
 
 Open http://127.0.0.1:5173/ and sign in with an account provided by an administrator. The current local review has fictional **admin** and **staff-demo** accounts; their credentials are in ignored `work/local-access.txt`. These are local test accounts, not production defaults.
 
-All active staff see the same **Working inventory** and the same separate **Demonstration inventory**. Accounts have individual profiles and a preferred starting inventory. Demonstration batteries, people, rooms and histories are fictional.
+All active staff see the same **Working inventory** and the same separate **Demonstration inventory**. Accounts have individual profiles and a preferred starting inventory. Demonstration battery specifications and activity are fictional; its responsible owners and holders are explicitly linked local test accounts. J18 rooms are placeholders awaiting confirmation.
 
 | Action | Staff | Administrator |
 | --- | --- | --- |
 | View, filter and download all business records | Yes | Yes |
 | Register new batteries, including reviewed CSV creation | Yes | Yes |
 | Confirm checkouts and returns | Yes | Yes |
-| Edit saved battery metadata; maintain people, buildings and rooms | No | Yes |
+| Edit saved battery metadata; maintain buildings and rooms | No | Yes |
 | Record historical charging and demo observations; correct eligible loan history | No | Yes |
 | Create, disable or change staff accounts | No | Yes |
 | Edit own profile/preferences and change own password | Yes | Yes |
 
-1. Select batteries or open **Check out batteries**, choose one registered borrower and review the batch before confirmation. Returns use an equivalent review.
-2. Open a battery ID to inspect specifications, its responsible owner, current borrower and recorded histories.
-3. Filter the inventory by status, storage building, storage room, responsible owner or search text. Pagination offers 10, 25, 50 or 100 batteries per page.
-4. Choose **Download** for all filtered results or the current page as a summary. Choose **Detailed battery records** for all filtered batteries, or **Download details** on one battery. Select information sections or use **Select all information**.
-5. Use **My account** for personal preferences. Administrators use **Staff accounts** and **Manage records** for initial setup and maintenance.
+1. Select batteries or open **Check out batteries** and confirm the reviewed batch with your own signed-in staff account. The holder is read-only. Optional **Add more batteries** searches existing records or looks up a manually entered registered tag. **Return batteries** in the sidebar starts with your outstanding loans and can show all holders; **Return selected** retains the chosen list.
+2. Open a battery ID to inspect specifications, manufacture age/time in service, its responsible owner, current holder and recorded histories.
+3. Keep **All batteries / In store / On loan** as quick tabs. Open **Filter** for search, chemistry/model, building/room, owner/holder, capacity/voltage, age and activity dates. **Applied filters** above the results lists active conditions with individual removal and clear-all controls. Pagination offers 10, 25, 50 or 100 batteries per page. Counts, pages and filtered exports use the same query rules.
+4. Check rows and choose **Download selected** for their summary or complete selected details, including selections across filters/pages. The download dialog also offers all filtered results or the current page. **Download details** on one battery selects its information sections; **Select all information** includes all sections. A movement is limited to 100 batteries, while selected downloads do not inherit that limit.
+5. **My batteries** shows assets for which your account is the responsible owner, with in-store/on-loan counts. **My loans** shows your active borrowings. Filters and downloads work within either personal view. These shortcuts do not restrict shared access. Use **My account** for preferences; administrators maintain accounts and saved records. The staff directory is read-only and follows native accounts.
 
-Working inventory begins with **J18 - Willis Annexe**, and no batteries, people or rooms. An administrator registers responsible owners and borrowers. Each new battery requires a building; its room, specifications and RFID identifier may remain unknown. J18 115 is a project-space reference, not a verified battery store. Room choices belong to the selected building.
+Working inventory has no batteries until actual records are supplied. Both inventories contain reference building names **J18 - Willis Annexe**, **E10 - Hilmer Building** and **G17 - Electrical Engineering Building**, verified from [UNSW's makerspace directory](https://www.making.unsw.edu.au/makerspaces/about/). Only J18 is enabled; other buildings are greyed out and their room information is **Not available**. J18 contains **Demo room** and **Demo workspace**, explicitly marked **Placeholder**. These labels are not verified storage locations or RFID evidence. Room names can be updated later; renaming alone does not remove the placeholder flag.
+
+Responsible owners come from active native staff accounts. Each account has an explicit inventory directory projection; names are never used to infer identity. New batteries require J18 and may leave the room, specifications, dates and RFID identifier unknown. The local disposable test business database was rebuilt for this iteration instead of adding legacy-borrower compatibility features. Existing local test accounts remain usable, and subsequent operations retain normal history.
 
 ## Download behavior
 
@@ -34,11 +38,11 @@ Summary downloads support Excel, CSV and JSON. Single and bulk details support E
 
 Selected histories include every stored record, including records older than the 200 shown in battery details. UTC timestamps, sources, corrections, operator attribution and preserved legacy charging percentages travel with their relevant records. Export metadata identifies filters, dataset, operator, scope and counts. Account credentials and sessions are never part of inventory exports.
 
-The server reads the selected inventory and history in one D1 batch for each file. It rechecks the filters when generating the download; data may have changed since the screen or validation request. The file's metadata and counts describe the downloaded state. Excel cell text longer than the supported limit is preserved in a **Complete text** worksheet. An export exceeding Excel's row limit is rejected with a JSON alternative, rather than silently shortened.
+The server reads the selected inventory and history in one D1 batch for each file. It rechecks filters and the authenticated personal scope when generating downloads. Ordinary filter/page changes retain explicit selections; if selected assets leave a personal view after reassignment or return, the download requires review instead of silently widening its scope. Data may have changed since the screen or validation request. The file's metadata and counts describe the downloaded state. Excel cell text longer than the supported limit is preserved in a **Complete text** worksheet. An export exceeding Excel's row limit is rejected with a JSON alternative, rather than silently shortened.
 
 ## Concurrent operation
 
-The interface refreshes shared data every ten seconds while visible and idle, and on focus. Draft forms are preserved while open. Another operator's confirmed change may take up to the next refresh to appear; server checks apply immediately. Conflicting movements cannot partially save a batch. Versioned metadata/account edits reject stale writes, and histories retain the individual operator.
+The interface refreshes shared data every ten seconds while visible and idle, and on focus. Draft forms are preserved while open. Another operator's confirmed change may take up to the next refresh to appear; server checks apply immediately. Returns submit the exact reviewed loan IDs, and corrections submit the intended action and reviewed return state. Stale drafts are rejected; a return comparison requires explicit acceptance before its reviewed loans change. Movements up to 100 batteries remain one atomic batch. CSV imports recheck active account, role and authorization version at commit. Versioned metadata/account edits reject stale writes, and histories retain the individual operator.
 
 ## Current limits
 
@@ -67,6 +71,8 @@ The interface refreshes shared data every ten seconds while visible and idle, an
 
 Read [requirements](docs/requirements.md), [architecture](docs/architecture.md), [validation](docs/validation.md), [experiment protocol](docs/experiment-protocol.md) and [open questions](docs/open-questions.md).
 
+Inspection lists, periodic reminders, follow-up and hardware integration remain outside this implemented release. Separate local planning drafts are not included in the frozen source.
+
 ## Local development
 
 Requires Node.js 22.13 or newer. Preserve the supplied lockfile and runtime configuration.
@@ -76,7 +82,7 @@ npm run install:ci
 npm run build
 ```
 
-On a fresh database, apply migrations `0000` through `0004` once in journal order, using each SQL file's exact name:
+On a fresh database, apply migrations `0000` through `0007` once in journal order, using each SQL file's exact name:
 
 ```sh
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_military_warstar.sql
@@ -84,6 +90,9 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0002_prevent_record_replacement.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0003_building_rooms_charge_duration.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0004_staff_accounts_shared_inventory.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0005_battery_age_dates.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0006_staff_self_checkout.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0007_room_availability.sql
 npm run dev
 ```
 
@@ -91,7 +100,7 @@ On existing databases, apply only pending migrations; never rerun the initial mi
 
 The local launcher stores a random installation setup key in ignored `work/local-access.json`, without creating a default account. On a fresh installation, use that key in the visible setup form to create the first administrator with your own password. Administrators then create staff accounts. An environment `INVENTORY_SETUP_KEY` takes precedence; a deployment must configure its own secret and HTTPS before real use. The old hosting identity headers and mock cookie do not grant application access.
 
-Set `INVENTORY_DEV_STATE_DIR` for isolated test state, or record a project-local `stateDirectory` in `work/local-access.json`. Use the same path for Wrangler `--persist-to`. The current review uses `work/qa/staff-preview-state` and retains the original local state separately. Dev file watching excludes temporary state and backup directories.
+Set `INVENTORY_DEV_STATE_DIR` for isolated test state, or record a project-local `stateDirectory` in `work/local-access.json`. Use the same path for Wrangler `--persist-to`. The current review uses a fresh `work/qa/reference-preview-state-*` directory configured there. No hosted database was changed. Dev file watching excludes temporary state and backup directories.
 
 ```sh
 npm run typecheck

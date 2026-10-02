@@ -42,20 +42,21 @@ test("setup has one administrator; passwords and session tokens are hashed; prof
     await accounts.signOut(login.token); assert.equal(await accounts.authenticate(login.token), null);
 });
 
-test("all staff adopt the same legacy register; staff register and move batteries but cannot edit saved data", async () => {
-    const legacy = new InventoryStore(db, "local_seedy:demo", "demo", actor(admin));
-    await legacy.initializeDemo();
+test("all staff share one register; native staff owners register and move batteries without editing saved data", async () => {
+    const initial = new InventoryStore(db, "local_seedy:demo", "demo", actor(admin));
+    await initial.initializeDemo();
     scope = await sharedInventoryScope(db, "demo"); assert.equal(scope, "local_seedy:demo");
     const one = new InventoryStore(db, scope, "demo", actor(staff)), two = new InventoryStore(db, await sharedInventoryScope(db, "demo"), "demo", actor(secondStaff));
-    await one.saveBattery({ id: "STAFF-NEW", name: "New shared battery", ownerId: "demo-staff", homeBuildingId: "J18" });
+    await one.saveBattery({ id: "STAFF-NEW", name: "New shared battery", ownerId: `staff-${staff.id}`, homeBuildingId: "J18" });
     assert.ok((await two.snapshot()).batteries.some(battery => battery.id === "STAFF-NEW"));
     const saved = (await one.snapshot()).batteries.find(battery => battery.id === "STAFF-NEW");
+    assert.equal(saved.ownerAccountId, staff.id);
     for (const operation of [() => one.saveBattery({ ...saved, expectedVersion: saved.version, name: "Unauthorized edit" }, true), () => one.saveBuilding({ id: "NEW", name: "New building" }), () => one.saveRoom({ id: "ROOM", name: "New room", buildingId: "J18", number: "1" }), () => one.savePerson({ id: "PERSON", name: "New person", role: "staff" }), () => one.charge({}), () => one.observation({}), () => one.correctLoan({}), () => one.importRecords("people", [])]) await assert.rejects(operation, status(403));
-    await one.movement({ requestId: uuid(), kind: "checkout", batteryIds: ["STAFF-NEW"], borrowerId: "demo-student-1" });
-    await two.movement({ requestId: uuid(), kind: "return", batteryIds: ["STAFF-NEW"] });
+    await one.movement({ requestId: uuid(), kind: "checkout", batteryIds: ["STAFF-NEW"] });
+    await two.movement({ requestId: uuid(), kind: "return", batteryIds: ["STAFF-NEW"], expectedLoans: [{ batteryId: "STAFF-NEW", loanId: (await one.snapshot()).batteries.find(b => b.id === "STAFF-NEW").loanId }] });
     const loan = (await one.detail("STAFF-NEW")).loans[0];
     assert.equal(loan.checkoutActorName, staff.displayName); assert.equal(loan.returnActorName, secondStaff.displayName);
-    const results = await Promise.allSettled([one, two].map(store => store.movement({ requestId: uuid(), kind: "checkout", batteryIds: ["STAFF-NEW"], borrowerId: "demo-student-1" })));
+    const results = await Promise.allSettled([one, two].map(store => store.movement({ requestId: uuid(), kind: "checkout", batteryIds: ["STAFF-NEW"] })));
     assert.equal(results.filter(result => result.status === "fulfilled").length, 1);
     assert.equal((await one.detail("STAFF-NEW")).loans.length, 2);
     const live = await sharedInventoryScope(db, "live"); assert.notEqual(live, scope);
@@ -74,7 +75,7 @@ test("access changes between movement validation and commit cannot save a loan o
             },
         };
         const raced = new InventoryStore(delayedDb, scope, "demo", actor(user));
-        await assert.rejects(raced.movement({ requestId: uuid(), kind: "checkout", batteryIds: ["BAT-002"], borrowerId: "demo-student-1" }), status(409));
+        await assert.rejects(raced.movement({ requestId: uuid(), kind: "checkout", batteryIds: ["BAT-002"] }), status(409));
         const after = await verified.detail("BAT-002");
         assert.deepEqual(after.loans, before.loans); assert.deepEqual(after.events, before.events);
         user = await accounts.update({ ...user, active: true, role: "staff", expectedVersion: user.version }, admin);

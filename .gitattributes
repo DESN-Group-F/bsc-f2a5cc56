@@ -5,3 +5,6 @@ drizzle/0003_building_rooms_charge_duration.sql text eol=lf
 # Portable Linux launchers and configuration use LF on every checkout.
 deploy/openbayes/** text eol=lf
 drizzle/0004_staff_accounts_shared_inventory.sql text eol=lf
+drizzle/0005_battery_age_dates.sql text eol=lf
+drizzle/0006_staff_self_checkout.sql text eol=lf
+drizzle/0007_room_availability.sql text eol=lf

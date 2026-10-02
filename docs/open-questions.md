@@ -10,12 +10,12 @@ The items below distinguish confirmed scope from remaining evidence gaps. Empty 
 | Room discrimination | Room-level target approved | Test adjacent rooms, doors and real storage geometry |
 | Metal and packed batteries | Not tested | Read-rate and cross-room false-positive study |
 | Reader-to-room mapping | Unknown | Validated detector identity and installation map |
-| Target building and storage room | J18 confirmed as the target; J18 115 is the project-space reference, not a confirmed battery store | Teacher confirms actual storage room number/name before assigning assets; other locations remain unpopulated |
+| Target building and storage room | J18 is the enabled target; Demo room and Demo workspace are explicit placeholders; E10/G17 names are disabled references | Teacher confirms actual storage room number/name and placement before operational use; renaming alone does not verify a room |
 | Return placement | Registered home only | Decide whether room is inferred from a validated fixed reader or selected once per batch |
 | Existing records | Format/count unknown | Staff, borrower and room conventions; inventory sample without unnecessary personal data |
 | Teacher efficiency baseline | Stakeholder goal reported | Observe and time the actual existing workflow |
 | Shared access | Staff/admin roles and shared inventory implemented and tested locally | Confirm authorized staff membership and departmental access approval |
-| Existing private inventories | Single local legacy register adopted with original keys/history | Review duplicate IDs and history ownership before merging any multiple legacy registers |
+| Existing operational records | Real battery data remains pending; disposable local preview business data was rebuilt | Review actual source records and stable identities before any operational import |
 | Concurrent capacity | Independent-account access and contested transactions tested | Actual staff count, inventory/history size, network conditions and load testing |
 | Backup and retention | Local pre-change backups and immutable application history | Institution-approved backup/restore, retention and administrator policy |
 | School SSO and hosting | No school integration | Institutional ownership, security/IT review and permitted hosting |
@@ -31,7 +31,7 @@ A reader detection alone must never check a battery in or out. Loss of detection
 ## Next decision sequence
 
 1. Stakeholder reviews the working staff workflow.
-   Confirm the actual storage room within J18; until then, keep storage room unspecified.
+   Confirm the actual storage room within J18; until then, leave it unspecified or use an explicitly marked placeholder for demonstration.
 2. Measure workload against the current method.
 3. Obtain tag/reader models and one real output sample.
 4. Validate room-level read performance in the actual storage environment.

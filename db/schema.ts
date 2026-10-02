@@ -24,20 +24,24 @@ export const signInAttempts = sqliteTable("sign_in_attempts", {
     key: text("key").primaryKey(), failures: integer("failures").notNull(), windowStartedAt: text("window_started_at").notNull(),
 });
 export const people = sqliteTable("people", {
+    accountId: text("account_id").references(() => staffAccounts.id),
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), name: text("name").notNull(), reference: text("reference").notNull().default(""), role: text("role").notNull(), version: integer("version").notNull().default(1),
-}, t => [uniqueIndex("idx_people_scope_id").on(t.scope, t.id), check("people_role", sql `${t.role} IN ('staff','borrower')`)]);
+}, t => [uniqueIndex("idx_people_scope_id").on(t.scope, t.id), uniqueIndex("idx_people_scope_account").on(t.scope, t.accountId), check("people_role", sql `${t.role} IN ('staff','borrower')`)]);
 export const buildings = sqliteTable("buildings", {
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), name: text("name").notNull(), version: integer("version").notNull().default(1),
 }, t => [uniqueIndex("idx_buildings_scope_id").on(t.scope, t.id)]);
 export const rooms = sqliteTable("rooms", {
+    isPlaceholder: integer("is_placeholder").notNull().default(0), selectable: integer("selectable").notNull().default(0),
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), name: text("name").notNull(), building: text("building").notNull().default(""), version: integer("version").notNull().default(1),
     buildingKey: text("building_key").references(() => buildings.key), number: text("number"),
-}, t => [uniqueIndex("idx_rooms_scope_id").on(t.scope, t.id), uniqueIndex("idx_rooms_building_number").on(t.scope, t.buildingKey, t.number)]);
+}, t => [uniqueIndex("idx_rooms_scope_id").on(t.scope, t.id), uniqueIndex("idx_rooms_building_number").on(t.scope, t.buildingKey, t.number), check("room_placeholder_flag", sql`${t.isPlaceholder} IN (0,1)`), check("room_selectable_flag", sql`${t.selectable} IN (0,1)`)]);
 export const batteries = sqliteTable("batteries", {
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), name: text("name").notNull(), chemistry: text("chemistry").notNull().default(""), model: text("model").notNull().default(""),
+    manufacturedOn: text("manufactured_on"), firstUsedOn: text("first_used_on"),
     capacityMah: real("capacity_mah"), voltage: real("voltage"), tagId: text("tag_id"), ownerKey: text("owner_key").notNull().references(() => people.key), homeBuildingKey: text("home_building_key").references(() => buildings.key), homeRoomKey: text("home_room_key").references(() => rooms.key), createdAt: text("created_at").notNull(), version: integer("version").notNull().default(1),
 }, t => [uniqueIndex("idx_batteries_scope_id").on(t.scope, t.id), uniqueIndex("idx_batteries_scope_tag").on(t.scope, t.tagId), check("battery_storage_required", sql `${t.homeBuildingKey} IS NOT NULL OR ${t.homeRoomKey} IS NOT NULL`), check("positive_capacity", sql `${t.capacityMah} IS NULL OR ${t.capacityMah}>0`), check("positive_voltage", sql `${t.voltage} IS NULL OR ${t.voltage}>0`)]);
 export const loans = sqliteTable("loans", {
+    borrowerAccountId: text("borrower_account_id").references(() => staffAccounts.id),
     id: text("id").primaryKey(), scope: text("scope").notNull(), batteryKey: text("battery_key").notNull().references(() => batteries.key), borrowerKey: text("borrower_key").notNull().references(() => people.key), borrowerName: text("borrower_name").notNull(),
     checkedOutAt: text("checked_out_at").notNull(), returnedAt: text("returned_at"), cancelledAt: text("cancelled_at"), checkoutActorId: text("checkout_actor_id").notNull(), checkoutActorName: text("checkout_actor_name").notNull(), returnActorId: text("return_actor_id"), returnActorName: text("return_actor_name"), correctionReason: text("correction_reason"),
 }, t => [uniqueIndex("idx_loans_one_active").on(t.batteryKey).where(sql `${t.returnedAt} IS NULL AND ${t.cancelledAt} IS NULL`), index("idx_loans_scope_battery_time").on(t.scope, t.batteryKey, t.checkedOutAt)]);

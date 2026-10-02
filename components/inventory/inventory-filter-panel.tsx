@@ -1,0 +1,74 @@
+"use client";
+import { Search, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
+import type { InventorySnapshot } from "@/lib/domain";
+import type { InventoryFilter } from "@/lib/inventory-query";
+import { buildingLabel, roomLabel } from "@/lib/client-utils";
+import { isSupportedBuilding, isSelectableRoom } from "@/lib/location-catalog";
+
+type FilterChip = { key: string; label: string; reset: Partial<InventoryFilter> };
+export function appliedFilterChips(filters: InventoryFilter, data: InventorySnapshot): FilterChip[] {
+    const chips: FilterChip[] = [];
+    if (filters.status !== "all") chips.push({ key: "status", label: `Status: ${filters.status === "in" ? "In store" : "On loan"}`, reset: { status: "all" } });
+    if (filters.search.trim()) chips.push({ key: "search", label: `Search: ${filters.search.trim()}`, reset: { search: "" } });
+    if (filters.chemistry !== null || filters.chemistryUnknown) chips.push({ key: "chemistry", label: `Chemistry: ${filters.chemistryUnknown ? "Not recorded" : filters.chemistry}`, reset: { chemistry: null, chemistryUnknown: false } });
+    if (filters.model !== null || filters.modelUnknown) chips.push({ key: "model", label: `Model: ${filters.modelUnknown ? "Not recorded" : filters.model}`, reset: { model: null, modelUnknown: false } });
+    if (filters.building !== "all") {
+        const building = data.buildings.find(item => item.id === filters.building);
+        chips.push({ key: "building", label: `Building: ${building ? buildingLabel(building) : filters.building}`, reset: { building: "all", room: "all" } });
+    }
+    if (filters.room !== "all") {
+        const room = data.rooms.find(item => item.id === filters.room);
+        chips.push({ key: "room", label: `Room: ${filters.room === "__unspecified" ? "Not specified" : room ? roomLabel(room) : filters.room}`, reset: { room: "all" } });
+    }
+    if (filters.owner !== "all") {
+        const owner = data.people.find(person => person.id === filters.owner);
+        const duplicateName = owner && data.people.some(person => person.id !== owner.id && person.name === owner.name);
+        chips.push({ key: "owner", label: `Responsible owner: ${owner?.name ?? filters.owner}${duplicateName && owner?.accountId ? ` (${owner.accountId.slice(0, 8)})` : ""}`, reset: { owner: "all" } });
+    }
+    if (filters.holder !== "all") {
+        const holder = data.batteries.find(battery => battery.loanId && battery.borrowerAccountId === filters.holder);
+        chips.push({ key: "holder", label: `Current holder: ${holder?.borrowerName ?? `Staff account ${filters.holder.slice(0, 8)}`}`, reset: { holder: "all" } });
+    }
+    function range(key: string, label: string, mode: "any" | "known" | "unknown", low: string | number | null, high: string | number | null, reset: Partial<InventoryFilter>, unit = "") {
+        if (mode === "any" && low === null && high === null) return;
+        const bounds = low !== null && high !== null ? `${low}–${high}${unit}` : low !== null ? `at least ${low}${unit}` : high !== null ? `at most ${high}${unit}` : "";
+        const value = mode === "unknown" ? "Not recorded" : [mode === "known" ? "Recorded" : "", bounds].filter(Boolean).join(" · ");
+        chips.push({ key, label: `${label}: ${value}`, reset });
+    }
+    range("capacity", "Capacity", filters.capacityMode, filters.capacityMinMah, filters.capacityMaxMah, { capacityMode: "any", capacityMinMah: null, capacityMaxMah: null }, " mAh");
+    range("voltage", "Voltage", filters.voltageMode, filters.voltageMin, filters.voltageMax, { voltageMode: "any", voltageMin: null, voltageMax: null }, " V");
+    range("age", "Age since manufacture", filters.ageMode, filters.ageMinDays, filters.ageMaxDays, { ageMode: "any", ageMinDays: null, ageMaxDays: null }, " days");
+    range("checkout", "Latest checkout date", filters.checkoutMode, filters.checkoutFrom, filters.checkoutTo, { checkoutMode: "any", checkoutFrom: null, checkoutTo: null });
+    range("charge", "Latest charge date", filters.chargeMode, filters.chargeFrom, filters.chargeTo, { chargeMode: "any", chargeFrom: null, chargeTo: null });
+    return chips;
+}
+
+export function AppliedFilters({ chips, onRemove, onClear }: { chips: FilterChip[]; onRemove: (patch: Partial<InventoryFilter>) => void; onClear: () => void }) {
+    return <section className="applied-filters" aria-label="Applied filters"><strong>Applied filters</strong>{chips.length ? <><div className="filter-chips">{chips.map(chip => <button key={chip.key} className="filter-chip" onClick={() => onRemove(chip.reset)} aria-label={`Remove ${chip.label}`} title={chip.label}><span>{chip.label}</span><X size={14}/></button>)}</div><Button variant="ghost" size="sm" onClick={onClear}>Clear filters</Button></> : <span className="muted">None</span>}</section>;
+}
+
+export function InventoryFilterPanel({ data, filters, asOfOn, onChange }: { data: InventorySnapshot; filters: InventoryFilter; asOfOn: string; onChange: (patch: Partial<InventoryFilter>) => void }) {
+    const batteries = data.batteries;
+    const chemistryOptions = [...new Set([...batteries.map(battery => battery.chemistry), filters.chemistry ?? ""].filter(value => value.trim()))].sort();
+    const modelOptions = [...new Set([...batteries.map(battery => battery.model), filters.model ?? ""].filter(value => value.trim()))].sort();
+    const holders = [...new Map(batteries.filter(battery => battery.loanId && battery.borrowerKind === "staff" && battery.borrowerAccountId).map(battery => [battery.borrowerAccountId!, battery.borrowerName ?? "Staff account"])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
+    const selectedBuildingSupported = filters.building === "all" || isSupportedBuilding(filters.building);
+    return <div id="inventory-filter-panel" className="inventory-filter-panel">
+        <fieldset className="filter-section"><legend>Find batteries</legend><div className="filter-field-grid"><label className="filter-search-label">Search<div className="search-field"><Search size={18}/><Input aria-label="Search batteries" placeholder="Battery ID, name, model, tag, people or location…" value={filters.search} onChange={event => onChange({ search: event.target.value })}/></div></label><label>Chemistry<SavedValueFilter label="Battery type (chemistry)" values={chemistryOptions} value={filters.chemistry} unknown={filters.chemistryUnknown} onChange={(chemistry, chemistryUnknown) => onChange({ chemistry, chemistryUnknown })}/></label><label>Model<SavedValueFilter label="model" values={modelOptions} value={filters.model} unknown={filters.modelUnknown} onChange={(model, modelUnknown) => onChange({ model, modelUnknown })}/></label></div></fieldset>
+        <fieldset className="filter-section"><legend>Registered location</legend><div className="filter-field-grid"><label>Building<Select value={filters.building} onValueChange={building => onChange({ building, room: "all" })}><SelectTrigger aria-label="Filter by storage building"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All buildings</SelectItem>{data.buildings.map(building => <SelectItem key={building.id} value={building.id} disabled={!isSupportedBuilding(building.id)}>{buildingLabel(building)}{!isSupportedBuilding(building.id) ? " · Not available" : ""}</SelectItem>)}</SelectContent></Select></label><label>Room<Select value={filters.room} onValueChange={room => onChange({ room })}><SelectTrigger aria-label="Filter by registered storage room" disabled={!selectedBuildingSupported}><SelectValue placeholder="Not available"/></SelectTrigger><SelectContent><SelectItem value="all">All storage rooms</SelectItem><SelectItem value="__unspecified">Room not specified</SelectItem>{data.rooms.filter(room => isSelectableRoom(room) && (filters.building === "all" || room.buildingId === filters.building)).map(room => <SelectItem key={room.id} value={room.id}>{roomLabel(room)}{room.isPlaceholder ? " · Placeholder" : ""}</SelectItem>)}</SelectContent></Select></label></div><p className="field-hint">J18 is currently supported. Demo room and Demo workspace are placeholders awaiting confirmed room details.</p></fieldset>
+        <fieldset className="filter-section"><legend>Responsibility</legend><div className="filter-field-grid"><label>Responsible owner<Select value={filters.owner} onValueChange={owner => onChange({ owner })}><SelectTrigger aria-label="Filter by responsible owner"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All responsible owners</SelectItem>{data.people.filter(person => person.role === "staff" && person.accountId).map(person => <SelectItem key={person.id} value={person.id}>{person.name}{person.accountId === data.user.id ? " · You" : ""}</SelectItem>)}</SelectContent></Select></label><label>Current holder<Select value={filters.holder} onValueChange={holder => onChange({ holder })}><SelectTrigger aria-label="Filter by current staff holder"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="all">All current holders</SelectItem>{holders.map(([id, name]) => <SelectItem key={id} value={id}>{name}{holders.filter(entry => entry[1] === name).length > 1 ? ` (${id.slice(0, 8)})` : ""}{id === data.user.id ? " · You" : ""}</SelectItem>)}{filters.holder !== "all" && !holders.some(entry => entry[0] === filters.holder) && <SelectItem value={filters.holder}>Staff account {filters.holder.slice(0, 8)} · no current loans</SelectItem>}</SelectContent></Select></label></div></fieldset>
+        <fieldset className="filter-section"><legend>Specifications and age</legend><div className="filter-field-grid"><RangeFilter label="Capacity (mAh)" mode={filters.capacityMode} low={filters.capacityMinMah} high={filters.capacityMaxMah} onModeChange={capacityMode => onChange({ capacityMode, ...(capacityMode === "unknown" ? { capacityMinMah: null, capacityMaxMah: null } : {}) })} onLowChange={value => onChange({ capacityMinMah: numberOrNull(value) })} onHighChange={value => onChange({ capacityMaxMah: numberOrNull(value) })}/><RangeFilter label="Voltage (V)" mode={filters.voltageMode} low={filters.voltageMin} high={filters.voltageMax} onModeChange={voltageMode => onChange({ voltageMode, ...(voltageMode === "unknown" ? { voltageMin: null, voltageMax: null } : {}) })} onLowChange={value => onChange({ voltageMin: numberOrNull(value) })} onHighChange={value => onChange({ voltageMax: numberOrNull(value) })}/><RangeFilter label="Age since manufacture (days)" mode={filters.ageMode} low={filters.ageMinDays} high={filters.ageMaxDays} wholeDays onModeChange={ageMode => onChange({ ageMode, ...(ageMode === "unknown" ? { ageMinDays: null, ageMaxDays: null } : {}) })} onLowChange={value => onChange({ ageMinDays: numberOrNull(value) })} onHighChange={value => onChange({ ageMaxDays: numberOrNull(value) })}/></div></fieldset>
+        <fieldset className="filter-section"><legend>Activity dates</legend><div className="filter-field-grid"><RangeFilter label="Latest checkout date" type="date" mode={filters.checkoutMode} low={filters.checkoutFrom} high={filters.checkoutTo} onModeChange={checkoutMode => onChange({ checkoutMode, ...(checkoutMode === "unknown" ? { checkoutFrom: null, checkoutTo: null } : {}) })} onLowChange={value => onChange({ checkoutFrom: value || null })} onHighChange={value => onChange({ checkoutTo: value || null })}/><RangeFilter label="Latest charge date" type="date" mode={filters.chargeMode} low={filters.chargeFrom} high={filters.chargeTo} onModeChange={chargeMode => onChange({ chargeMode, ...(chargeMode === "unknown" ? { chargeFrom: null, chargeTo: null } : {}) })} onLowChange={value => onChange({ chargeFrom: value || null })} onHighChange={value => onChange({ chargeTo: value || null })}/></div></fieldset>
+        <p className="filter-guidance">Ranges include both limits and exclude unrecorded values. Choose Not recorded to find unknown values. Age is measured in days since manufacture, as of {asOfOn}; checkout and charge dates use Sydney time.</p>
+    </div>;
+}
+function numberOrNull(value: string): number | null { return value === "" ? null : Number(value); }
+function SavedValueFilter({ label, values, value, unknown, onChange }: { label: string; values: string[]; value: string | null; unknown: boolean; onChange: (value: string | null, unknown: boolean) => void }) {
+    return <Select value={unknown ? "__unknown" : value === null ? "__all" : `value:${value}`} onValueChange={selected => onChange(selected.startsWith("value:") ? selected.slice(6) : null, selected === "__unknown")}><SelectTrigger aria-label={`Filter by ${label.toLowerCase()}`}><SelectValue /></SelectTrigger><SelectContent><SelectItem value="__all">{label === "model" ? "All models" : "All types (chemistry)"}</SelectItem><SelectItem value="__unknown">{label === "model" ? "Model" : "Chemistry"} not recorded</SelectItem>{values.map(item => <SelectItem key={item} value={`value:${item}`}>{item}</SelectItem>)}</SelectContent></Select>;
+}
+function RangeFilter({ label, type = "number", mode, low, high, wholeDays = false, onModeChange, onLowChange, onHighChange }: { label: string; type?: "number" | "date"; mode: "any" | "known" | "unknown"; low: number | string | null; high: number | string | null; wholeDays?: boolean; onModeChange: (value: "any" | "known" | "unknown") => void; onLowChange: (value: string) => void; onHighChange: (value: string) => void }) {
+    return <div className="filter-range-group"><strong>{label}</strong><Select value={mode} onValueChange={value => onModeChange(value as typeof mode)}><SelectTrigger aria-label={`${label} availability`}><SelectValue /></SelectTrigger><SelectContent><SelectItem value="any">Any value</SelectItem><SelectItem value="known">Recorded only</SelectItem><SelectItem value="unknown">Not recorded</SelectItem></SelectContent></Select><div className="filter-range-inputs"><label>{type === "date" ? "From" : "Minimum"}<Input aria-label={`${label} ${type === "date" ? "from" : "minimum"}`} type={type} value={low ?? ""} min={type === "number" ? wholeDays ? 0 : undefined : undefined} step={type === "number" ? wholeDays ? 1 : "any" : undefined} disabled={mode === "unknown"} onChange={event => onLowChange(event.target.value)}/></label><label>{type === "date" ? "To" : "Maximum"}<Input aria-label={`${label} ${type === "date" ? "to" : "maximum"}`} type={type} value={high ?? ""} min={type === "number" ? wholeDays ? 0 : undefined : undefined} step={type === "number" ? wholeDays ? 1 : "any" : undefined} disabled={mode === "unknown"} onChange={event => onHighChange(event.target.value)}/></label></div></div>;
+}

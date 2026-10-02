@@ -1,11 +1,35 @@
+import { calendarAge, currentSydneyDate, isDateOnly } from "./battery-age";
+import { isSupportedBuilding } from "./location-catalog";
+
+export function formatDateOnly(value: string | null | undefined) {
+    if (!value) return "Not recorded";
+    if (!isDateOnly(value)) return "Invalid recorded date";
+    return new Intl.DateTimeFormat("en-AU", { timeZone: "UTC", day: "2-digit", month: "short", year: "numeric" }).format(new Date(`${value}T00:00:00Z`));
+}
+export function formatBatteryAge(value: string | null | undefined, asOfOn = currentSydneyDate()) {
+    if (!value) return "Not recorded";
+    const age = calendarAge(value, asOfOn);
+    if (!age) return "Age unavailable";
+    const parts = ([ [age.years, "year"], [age.months, "month"], [age.days, "day"] ] as const).filter(([count]) => count > 0).map(([count, unit]) => `${count} ${unit}${count === 1 ? "" : "s"}`);
+    return parts.length ? parts.join(", ") : "0 days";
+}
+export function dateOnlyOrNull(value: string, label: string) {
+    if (!value.trim()) return null;
+    if (!isDateOnly(value.trim())) throw new Error(`${label} must be a valid date in YYYY-MM-DD format or blank.`);
+    return value.trim();
+}
+
 export function formatTime(value: string | null | undefined) {
     if (!value)
         return "Not recorded";
     return new Intl.DateTimeFormat("en-AU", { timeZone: "Australia/Sydney", day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(value));
 }
 export function buildingLabel(building: { id: string; name: string }) { return `${building.id} - ${building.name}`; }
-export function roomLabel(room: { number: string | null; name: string }) { return room.number ? `${room.number} - ${room.name}` : room.name; }
-export function storageRoomLabel(battery: { homeRoomName: string | null; homeRoomNumber: string | null }) { return battery.homeRoomName ? roomLabel({ name: battery.homeRoomName, number: battery.homeRoomNumber }) : "Room not specified"; }
+export function roomLabel(room: { number: string | null; name: string; isPlaceholder?: boolean }) { return `${room.number && !room.isPlaceholder ? `${room.number} - ` : ""}${room.name}${room.isPlaceholder ? " — Placeholder" : ""}`; }
+export function storageRoomLabel(battery: { homeRoomName: string | null; homeRoomNumber: string | null; homeBuildingId?: string | null; homeRoomIsPlaceholder?: boolean | null }) {
+    if (battery.homeBuildingId && !isSupportedBuilding(battery.homeBuildingId)) return "Not available";
+    return battery.homeRoomName ? roomLabel({ name: battery.homeRoomName, number: battery.homeRoomNumber, isPlaceholder: battery.homeRoomIsPlaceholder === true }) : "Room not specified";
+}
 export function durationLabel(minutes: number | null | undefined) { return minutes == null ? "Duration not recorded" : `${minutes} min`; }
 export function sydneyInput(value = new Date()) {
     const parts = new Intl.DateTimeFormat("en-AU", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(value);
@@ -96,5 +120,5 @@ export function importPayload(kind: string, rows: Record<string, string>[]) {
     for (const field of required)
         if (!(field in rows[0]))
             throw new Error(`Missing column: ${field}. Download the template.`);
-    return rows.map(r => kind === "people" ? { id: r.id, name: r.name, reference: r.reference ?? "", role: r.role } : kind === "buildings" ? { id: r.id, name: r.name } : kind === "rooms" ? { id: r.id, name: r.name, buildingId: r.building_id, number: r.number } : { id: r.id, name: r.name, chemistry: r.chemistry ?? "", model: r.model ?? "", capacityMah: numberOrNull(r.capacity_mah ?? "", "Capacity"), voltage: numberOrNull(r.nominal_voltage ?? "", "Voltage"), tagId: r.rfid_tag_id || null, ownerId: r.owner_id, homeBuildingId: r.storage_building_id, homeRoomId: r.storage_room_id || null });
+    return rows.map(r => kind === "people" ? { id: r.id, name: r.name, reference: r.reference ?? "", role: r.role } : kind === "buildings" ? { id: r.id, name: r.name } : kind === "rooms" ? { id: r.id, name: r.name, buildingId: r.building_id, number: r.number, isPlaceholder: true } : { id: r.id, name: r.name, chemistry: r.chemistry ?? "", model: r.model ?? "", capacityMah: numberOrNull(r.capacity_mah ?? "", "Capacity"), voltage: numberOrNull(r.nominal_voltage ?? "", "Voltage"), manufacturedOn: dateOnlyOrNull(r.manufactured_on ?? "", "Manufactured on"), firstUsedOn: dateOnlyOrNull(r.first_used_on ?? "", "First used on"), tagId: r.rfid_tag_id || null, ownerId: r.owner_id, homeBuildingId: r.storage_building_id, homeRoomId: r.storage_room_id || null });
 }

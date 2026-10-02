@@ -3,14 +3,14 @@
 - Keep all interface text, documentation and validation records in English.
 - Be explicit about uncertainty and unverified work. Never conceal a limitation.
 - The primary success criterion is reducing staff workload.
-- Authorized staff confirm checkouts and returns. Students are borrower records.
+- Authenticated staff check out batteries to themselves; never accept a substitute holder from a client or match an account by display name. Responsible owners are active native staff accounts with explicit inventory projections. Do not add legacy-borrower UI categories or compatibility machinery to retain disposable preview data.
 - Maintain one battery register; derive in-store/on-loan views from active loans.
 - Keep responsible ownership, borrowing, storage home and observed location distinct.
 - Observations require time and source. Never present simulated observations as hardware data.
 - Preserve history and reasoned corrections; do not erase transactions.
 - New charging records contain duration in minutes and completion time. Preserve legacy percentages and unknown durations without guessing them; keep unknown asset specifications null.
-- Use separate building and room records. J18 is the initial reference building; do not assign an unconfirmed storage room or import the entire makerspace list as inventory.
-- New batteries require a storage building and can leave the room null. Room choices must belong to that building. Preserve unmapped legacy rooms until reviewed.
+- Use separate building and room records. Reference names are J18 Willis Annexe, E10 Hilmer Building and G17 Electrical Engineering Building; only J18 is currently selectable. Demo room and Demo workspace are explicit J18 placeholders, not verified storage evidence. Do not import the entire makerspace list as inventory.
+- New batteries require J18 and can leave the room null. Room choices must be selectable and belong to that building. Renaming a placeholder must not automatically mark it verified.
 - Do not enable real RFID ingestion until its model, output and room mapping are validated.
 - All active staff accounts share the same working inventory and a separate shared demonstration inventory. Do not scope business records to individual accounts.
 - Administrators manage accounts, directories, saved metadata, corrections, charge records and demo observations. Staff may view/export all business data, register new batteries, and check out/return existing batteries. Enforce permissions on the server and preserve individual actor attribution.
@@ -26,6 +26,10 @@
 - When local history does not meet the publishing rules, retain it locally and publish a reviewed source-only release snapshot.
 - The fictional local preview account is admin. Preserve stable data keys and historical actor records when changing its display name.
 - Metadata edits must carry the loaded version and reject stale writes atomically with their audit events.
+- Returns must carry the reviewed battery/loan ID pairs. Corrections must carry the reviewed action and return state. Reject stale responsibility/state without switching the draft to a later loan or a different correction action.
+- Common and advanced filters must use one shared query model for counts, pagination and exports. Unknown values remain selectable and are not inferred.
+- Keep the three status tabs; put all other criteria under one Filter panel and show removable Applied filters above results. My batteries uses owner account identity; My loans uses active holder identity. Both are views of shared data, with downloads constrained to the authenticated personal scope.
+- The user has designated current development business data as disposable. Rebuild isolated local test state when useful instead of designing compatibility features for it. Do not erase subsequent normal transaction history or touch remote state without the task requiring it.
 - Preserve database identity, staff-owner and same-inventory trigger constraints in future migrations, including table rebuilds.
 - Preserve duplicate-record insertion guards. Replacement and upsert statements must not bypass version checks or rewrite evidence.
 - New trigger migrations must use LF line endings, uppercase BEGIN/END and conditional SELECT RAISE guards without unparenthesized CASE. Add their paths to .gitattributes. Never normalize or edit a migration already applied to the hosted database.

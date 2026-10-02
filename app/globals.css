@@ -171,6 +171,36 @@ h1 { font-size:30px; font-weight:600; line-height:1.2; letter-spacing:-.025em; }
 .history-entry .correction-reason { color:#59626b; background:#f5f6f8; padding:9px; border-radius:3px; }
 .history-empty { padding:24px 0; color:#697a89; }
 .time-note { margin-top:20px; }
+.inventory-filter-toolbar { display:flex; gap:12px; }
+.inventory-filter-toolbar .toolbar-meta { margin-left:auto; }
+.inventory-filter-panel { padding:0 19px 18px; border-bottom:1px solid #dce3e9; background:#f8fafc; }
+.filter-section { border:0; padding:17px 0; min-width:0; border-bottom:1px solid #e1e7ec; }
+.filter-section legend { float:left; width:100%; font-size:14px; font-weight:600; color:#2d4b61; margin-bottom:11px; }
+.filter-field-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; clear:both; }
+.filter-field-grid>label { font-size:13px; color:#526c80; display:flex; flex-direction:column; gap:7px; min-width:0; }
+.filter-field-grid [data-slot="select-trigger"] { width:100%; min-width:0; background:white; }
+.filter-field-grid .search-field { min-width:0; width:100%; }
+.filter-range-group { display:flex; flex-direction:column; gap:8px; min-width:0; }
+.filter-range-group>strong { font-size:13px; font-weight:500; color:#526c80; }
+.filter-guidance { color:#657889; font-size:13px; line-height:1.5; margin-bottom:14px; }
+.inventory-filter-panel>.filter-guidance { margin:14px 0 0; }
+.filter-range-inputs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; }
+.filter-range-inputs label { font-size:12px; color:#657889; }
+.filter-range-inputs input { margin-top:4px; color:#263f53; }
+.applied-filters { display:flex; align-items:center; flex-wrap:wrap; gap:10px; padding:12px 19px; border-bottom:1px solid #dce3e9; font-size:13px; }
+.applied-filters>strong { color:#526c80; font-weight:500; }
+.filter-chips { display:flex; gap:7px; flex:1; flex-wrap:wrap; min-width:0; }
+.filter-chip { display:inline-flex; align-items:center; gap:8px; padding:5px 9px; max-width:100%; border:1px solid #cbdbe7; background:#eef5fa; color:#2b5473; border-radius:4px; cursor:pointer; text-align:left; }
+.filter-chip>span { overflow-wrap:anywhere; }.filter-chip>svg { flex-shrink:0; }
+.filter-chip:hover { background:#e0edf7; border-color:#9dbad1; }.filter-chip:focus-visible { outline:2px solid #315d7d; outline-offset:2px; }
+.personal-inventory-scope { display:flex; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:18px; padding:12px 15px; background:#eef4f8; border-left:3px solid #315d7d; color:#526c80; font-size:14px; }
+.personal-inventory-scope>strong { color:#2d4b61; }.personal-inventory-scope>span { flex:1; min-width:min(300px,100%); line-height:1.5; }
+.selection-scope-warning { margin:14px 19px; padding:13px 15px; border:1px solid #e1ce96; border-radius:4px; background:#fff8e8; color:#715a25; font-size:13px; }
+.selection-scope-warning>strong { display:block; font-weight:600; }.selection-scope-warning>p { margin:6px 0 11px; line-height:1.6; }.selection-scope-warning .record-link { color:#715a25; }
+.unsupported-location-row { color:#83919c; }.unsupported-location-row strong,.unsupported-location-row .cell-secondary { color:#83919c; }
+.filter-error { padding-inline:19px; }
+@media(max-width:1150px) { .filter-field-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }.filter-search-label { grid-column:1/-1; } }
+@media(max-width:640px) { .inventory-filter-panel,.applied-filters { padding-inline:10px; }.filter-field-grid { grid-template-columns:1fr; }.filter-chips { flex-basis:100%; }.inventory-filter-toolbar .toolbar-meta { order:3; flex-basis:100%; margin-left:0; }.inventory-filter-toolbar>[data-slot="button"]:last-child { margin-left:auto; } }
 .signin-page { min-height:100dvh; display:grid; place-items:center; padding:24px; background:#edf1f5; border-top:5px solid #234a69; }
 .signin-card { width:min(100%,440px); padding:32px; background:white; border:1px solid #d9e1e8; border-radius:6px; box-shadow:0 8px 26px #182f4910; }
 .signin-brand { display:flex; gap:13px; align-items:center; margin-bottom:32px; }
