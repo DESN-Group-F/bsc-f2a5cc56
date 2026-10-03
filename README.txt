@@ -17,3 +17,16 @@ INVENTORY_PORT defaults to 8081. No scheduler or automatic restart is installed.
 
 This is a portable Miniflare demonstration, not a high-availability service.
 The frozen source branch and release tag are independent of this helper.
+
+Deployment revision 2
+The runtime is installed in releases/0.6.0-r2. A verified existing 0.6.0 source
+build is reused without changing it; otherwise the pinned source is built.
+Applied migration files are retained byte-for-byte in a deployment sidecar and
+verified against the existing database receipts. The original 0000 CRLF bytes
+are retained; only line-ending differences from frozen source are permitted.
+The six new migrations remain byte-identical to frozen source. Database
+receipts, old migration files and the frozen application release are not edited.
+
+Use a distinct public mapping name when retrying a stopped execution. Previous
+console attempts using retained names did not create a new job; the platform
+did not confirm the cause. Use the address shown by the new running job.

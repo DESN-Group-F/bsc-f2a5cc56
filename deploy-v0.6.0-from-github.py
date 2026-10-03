@@ -56,6 +56,9 @@ try {
     .map(({ name }) => [name, saved.prepare(`SELECT COUNT(*) AS count FROM "${name.replaceAll('"', '""')}"`).get().count]));
 } finally { saved.close(); }
 const sourceRoot = path.join(root, "source");
+const migrationRoot = path.join(root, "migrations");
+const compatibility = JSON.parse(await readFile(path.join(root, "migration-compatibility.json"), "utf8"));
+if (compatibility.sourceCommit !== expectedCommit || compatibility.entries?.length !== 16) throw new Error("The verified migration compatibility sidecar is required.");
 const serverRoot = path.join(sourceRoot, "dist/server");
 const files = (await readdir(serverRoot, { recursive: true })).filter(file => /\.m?js$/.test(file));
 files.sort((left, right) => left === "index.js" ? -1 : right === "index.js" ? 1 : left.localeCompare(right));
@@ -71,12 +74,20 @@ const runtime = new Miniflare({
 try {
   const db = await runtime.getD1Database("DB");
   if (Number(await db.prepare("SELECT COUNT(*) FROM staff_accounts").first("COUNT(*)")) < 1) throw new Error("The Worker database has no existing accounts; refusing replacement.");
-  const journal = JSON.parse(await readFile(path.join(sourceRoot, "drizzle/meta/_journal.json"), "utf8"));
+  const journal = JSON.parse(await readFile(path.join(migrationRoot, "meta/_journal.json"), "utf8"));
   if (journal.entries.length !== 16) throw new Error("The frozen release requires sixteen migrations.");
-  for (const entry of journal.entries) {
+  for (const [index, entry] of journal.entries.entries()) {
     if (!/^\d{4}_[a-z0-9_]+$/.test(entry.tag)) throw new Error("Invalid migration journal entry.");
-    const sql = await readFile(path.join(sourceRoot, `drizzle/${entry.tag}.sql`), "utf8");
+    const sql = await readFile(path.join(migrationRoot, `${entry.tag}.sql`), "utf8");
+    const sourceSql = await readFile(path.join(sourceRoot, `drizzle/${entry.tag}.sql`), "utf8");
     const hash = createHash("sha256").update(sql).digest("hex");
+    const sourceHash = createHash("sha256").update(sourceSql).digest("hex");
+    const expected = compatibility.entries[index];
+    if (expected.name !== entry.tag || expected.sha256 !== hash || expected.sourceSha256 !== sourceHash
+      || expected.retainedLegacyBytes !== (index < 10) || expected.lineEndingOnlyDifference !== (hash !== sourceHash)
+      || (index < 10 ? sql.replaceAll("\r\n", "\n") !== sourceSql.replaceAll("\r\n", "\n") : sql !== sourceSql)) {
+      throw new Error(`Unverified migration compatibility: ${entry.tag}`);
+    }
     const previous = await db.prepare("SELECT sha256 FROM portable_migrations WHERE name=?").bind(entry.tag).first();
     if (previous) {
       if (previous.sha256 !== hash) throw new Error(`Applied migration changed: ${entry.tag}`);
@@ -96,7 +107,7 @@ try {
   const complete = path.join(dataRoot, "upgrade-complete.json");
   await writeFile(complete + ".tmp", JSON.stringify(receipt, null, 2) + "\n", { mode: 0o600 });
   await rename(complete + ".tmp", complete);
-  console.log(JSON.stringify({ event: "database_upgrade_verified", migrations: 16, preservedTableCounts: beforeCounts }));
+  console.log(JSON.stringify({ event: "database_upgrade_verified", migrations: 16, preservedTableCounts: beforeCounts, retainedLineEndingExceptions: compatibility.entries.filter(entry => entry.lineEndingOnlyDifference).map(entry => ({ name: entry.name, sha256: entry.sha256, sourceSha256: entry.sourceSha256 })) }));
 
   const manualStop = process.env.INVENTORY_MANUAL_STOP === "1";
   const maximumSeconds = Number(process.env.INVENTORY_MAX_SECONDS || 7200);
@@ -342,9 +353,69 @@ def inspect_database(file, expected, required_count):
         connection.close()
 
 
-def upgrade_copy(project, source):
+def prepare_migrations(project, source, target):
+    """Retain applied SQL bytes; allow only explicitly recorded CRLF differences."""
+    frozen = frozen_receipts(source)
+    original = database_file(project / "data-v0.5.0")
+    connection = sqlite3.connect(original.resolve().as_uri() + "?mode=ro", uri=True)
+    try:
+        recorded = dict(connection.execute("SELECT name,sha256 FROM portable_migrations ORDER BY name"))
+    finally:
+        connection.close()
+    if list(recorded) != list(frozen)[:10]:
+        raise RuntimeError("The legacy migration journal must contain exactly the first ten entries.")
+    entries = []
+    chosen = {}
+    for index, (name, source_hash) in enumerate(frozen.items()):
+        source_bytes = (source / "drizzle" / (name + ".sql")).read_bytes()
+        content = source_bytes
+        if index < 10:
+            content = (project / "releases/0.5.0/drizzle" / (name + ".sql")).read_bytes()
+            actual = hashlib.sha256(content).hexdigest()
+            if recorded[name] != actual:
+                raise RuntimeError("A saved legacy migration file does not match its database receipt.")
+            if content.replace(b"\r\n", b"\n") != source_bytes.replace(b"\r\n", b"\n"):
+                raise RuntimeError("A legacy migration differs from frozen source beyond line endings.")
+        digest = hashlib.sha256(content).hexdigest()
+        chosen[name] = content
+        entries.append({"name": name, "sha256": digest, "sourceSha256": source_hash,
+                        "retainedLegacyBytes": index < 10, "lineEndingOnlyDifference": digest != source_hash})
+    hashes = {entry["name"]: entry["sha256"] for entry in entries}
+    inspect_database(original, hashes, 10)
+    target.mkdir()
+    (target / "meta").mkdir()
+    (target / "meta/_journal.json").write_bytes((source / "drizzle/meta/_journal.json").read_bytes())
+    for name, content in chosen.items():
+        (target / (name + ".sql")).write_bytes(content)
+    compatibility = {"sourceCommit": PIN, "entries": entries}
+    (target.parent / "migration-compatibility.json").write_text(json.dumps(compatibility, indent=2) + "\n")
+    log("applied_migration_bytes_retained", lineEndingExceptions=[entry for entry in entries if entry["lineEndingOnlyDifference"]])
+    return hashes
+
+
+def deployment_receipts(release):
+    frozen = frozen_receipts(release / "source")
+    compatibility = json.loads((release / "migration-compatibility.json").read_text())
+    entries = compatibility.get("entries", [])
+    if compatibility.get("sourceCommit") != PIN or [entry["name"] for entry in entries] != list(frozen):
+        raise RuntimeError("The migration compatibility record does not match this release.")
+    hashes = {}
+    for index, entry in enumerate(entries):
+        name = entry["name"]
+        content = (release / "migrations" / (name + ".sql")).read_bytes()
+        original = (release / "source/drizzle" / (name + ".sql")).read_bytes()
+        digest = hashlib.sha256(content).hexdigest()
+        if entry["sha256"] != digest or entry["sourceSha256"] != frozen[name] or entry["retainedLegacyBytes"] != (index < 10) or entry["lineEndingOnlyDifference"] != (digest != frozen[name]):
+            raise RuntimeError("A deployed migration does not match its compatibility receipt.")
+        if (content.replace(b"\r\n", b"\n") != original.replace(b"\r\n", b"\n")) if index < 10 else content != original:
+            raise RuntimeError("The migration sidecar changes frozen SQL beyond permitted legacy line endings.")
+        hashes[name] = digest
+    return hashes
+
+
+def upgrade_copy(project, source, expected=None):
     original, upgraded = project / "data-v0.5.0", project / "data-v0.6.0"
-    expected = frozen_receipts(source)
+    expected = frozen_receipts(source) if expected is None else expected
     if upgraded.exists():
         marker = upgraded / "upgrade-complete.json"
         if not marker.is_file() or json.loads(marker.read_text()).get("sourceCommit") != PIN:
@@ -390,7 +461,7 @@ def main():
         raise RuntimeError("Restore the verified v0.5.0 saved home before upgrading.")
     if shutil.disk_usage(project).free < 5 * 1024**3:
         raise RuntimeError("At least five GiB of free deployment space is required.")
-    release = project / "releases/0.6.0"
+    release = project / "releases/0.6.0-r2"
     runtime_digest = hashlib.sha256(RUNTIME_SOURCE.encode()).hexdigest()
     stage = None
     if release.exists():
@@ -398,13 +469,21 @@ def main():
         if manifest.get("sourceCommit") != PIN or manifest.get("archiveSha256") != CONFIGURATION["archiveSha256"] or manifest.get("runtimeSha256") != runtime_digest or sha256(release / "runtime/runtime.mjs") != runtime_digest or not (release / "source/dist/server/index.js").is_file():
             raise RuntimeError("The saved release is incomplete or does not match this deployment.")
     else:
-        stage = project / "releases" / (".0.6.0-build-" + str(uuid.uuid4()))
+        stage = project / "releases" / (".0.6.0-r2-build-" + str(uuid.uuid4()))
         stage.mkdir()
         source = stage / "source"
-        source.mkdir()
-        archive = stage / "frozen-source.tar.gz"
-        download(CONFIGURATION["archiveUrl"], archive, CONFIGURATION["archiveSha256"], "codeload.github.com", 30 * 1024 * 1024)
-        extract_source(archive, source)
+        reusable = project / "releases/0.6.0"
+        if reusable.exists():
+            previous = json.loads((reusable / "deployment.json").read_text())
+            if previous.get("sourceCommit") != PIN or previous.get("archiveSha256") != CONFIGURATION["archiveSha256"] or previous.get("runtimeSha256") != sha256(reusable / "runtime/runtime.mjs") or not (reusable / "source/dist/server/index.js").is_file() or not (reusable / "source/dist/client").is_dir():
+                raise RuntimeError("The previous source build is incomplete or unverified.")
+            source.symlink_to(reusable / "source", target_is_directory=True)
+            log("verified_source_build_reused", sourceCommit=PIN)
+        else:
+            source.mkdir()
+            archive = stage / "frozen-source.tar.gz"
+            download(CONFIGURATION["archiveUrl"], archive, CONFIGURATION["archiveSha256"], "codeload.github.com", 30 * 1024 * 1024)
+            extract_source(archive, source)
         if json.loads((source / "package.json").read_text()).get("version") != "0.6.0":
             raise RuntimeError("The archive has the wrong application version.")
         frozen_receipts(source)
@@ -414,23 +493,25 @@ def main():
                        CI="true", SHARP_IGNORE_GLOBAL_LIBVIPS="1", NODE_OPTIONS="--max-old-space-size=2560",
                        CLOUDFLARE_CF_FETCH_ENABLED="false", WRANGLER_SEND_METRICS="false", WRANGLER_WRITE_LOGS="false")
     if stage is not None:
-        build_log = stage / "build.log"
-        npm = node.parent.parent / "lib/node_modules/npm/bin/npm-cli.js"
-        log("remote_install_started", sourceCommit=PIN)
-        run([str(node), str(npm), "ci", "--include=dev", "--include=optional", "--no-audit", "--no-fund"], source, environment, build_log, 1800)
-        log("remote_build_started", sourceCommit=PIN)
-        run([str(node), str(npm), "run", "build"], source, environment, build_log, 1200)
+        if not source.is_symlink():
+            build_log = stage / "build.log"
+            npm = node.parent.parent / "lib/node_modules/npm/bin/npm-cli.js"
+            log("remote_install_started", sourceCommit=PIN)
+            run([str(node), str(npm), "ci", "--include=dev", "--include=optional", "--no-audit", "--no-fund"], source, environment, build_log, 1800)
+            log("remote_build_started", sourceCommit=PIN)
+            run([str(node), str(npm), "run", "build"], source, environment, build_log, 1200)
         if not (source / "dist/server/index.js").is_file() or not (source / "dist/client").is_dir():
             raise RuntimeError("The frozen source build did not produce the Worker and assets.")
         runtime = stage / "runtime"
         runtime.mkdir()
         (runtime / "runtime.mjs").write_text(RUNTIME_SOURCE, encoding="utf-8", newline="\n")
         (runtime / "node_modules").symlink_to(runtime_modules, target_is_directory=True)
-        manifest = {"sourceCommit": PIN, "applicationVersion": "0.6.0", "archiveSha256": CONFIGURATION["archiveSha256"], "runtimeSha256": runtime_digest, "nodeArchiveSha256": NODE_SHA256}
+        prepare_migrations(project, source, stage / "migrations")
+        manifest = {"sourceCommit": PIN, "applicationVersion": "0.6.0", "deploymentRevision": 2, "archiveSha256": CONFIGURATION["archiveSha256"], "runtimeSha256": runtime_digest, "nodeArchiveSha256": NODE_SHA256}
         (stage / "deployment.json").write_text(json.dumps(manifest, indent=2) + "\n")
         stage.rename(release)
         log("remote_build_verified", sourceCommit=PIN, version="0.6.0")
-    data = upgrade_copy(project, release / "source")
+    data = upgrade_copy(project, release / "source", deployment_receipts(release))
     port = int(os.environ.get("INVENTORY_PORT", "8081"))
     if not 1 <= port <= 65535:
         raise RuntimeError("The application port is invalid.")
