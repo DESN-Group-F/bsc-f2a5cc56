@@ -42,7 +42,8 @@ function text(node) {
 }
 const ui = Object.fromEntries(["Search", "X", "CalendarDays", "CheckCircle2", "Battery", "Package", "Plus", "Download", "Upload", "Pencil", "Settings2", "ClipboardList", "Copy", "Button", "Input", "Textarea", "Label", "Checkbox", "RecordPicker", "BatteryModelPicker", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Select", "SelectTrigger", "SelectContent", "SelectValue", "SelectItem", "Tabs", "TabsList", "TabsTrigger", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Skeleton", "InventoryFilterPanel", "AppliedFilters"].map(name => [name, name]));
 async function component(path, exports, state = hooks(), additional = {}) {
-    const input = await readFile(path, "utf8");
+    const paths = Array.isArray(path) ? path : [path];
+    const input = (await Promise.all(paths.map(file => readFile(file, "utf8")))).join("\n");
     const output = ts.transpileModule(input, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export \{[^\n]*\} from [^;]+;\r?\n/gm, "").replace(/^export /gm, "");
     const bindings = { ...ui, ...client, ...locations, ...lifecycle, ...schedule, ...inventoryQuery, ...state, ...additional, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
     return new Function(...names, "_jsx", "_jsxs", "_Fragment", `${output}\nreturn { ${exports.join(", ")} };`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
@@ -119,7 +120,7 @@ test("owner and holder filters use distinct identities and the same applied labe
 test("task staff choices and assignment summaries keep full identity fallbacks and account-ID selection", async () => {
     const data = fixture(), state = hooks();
     const taskCreate = await component("lib/task-create-session.ts", ["captureTaskCreate", "recoverTaskCreate", "taskCreateFailureStatus", "taskCreateStorageKey", "verifyTaskCreateReceipt"]);
-    const { TaskPlanEditor, assignmentNames } = await component("components/inventory/task-plans-panel.tsx", ["TaskPlanEditor", "assignmentNames"], state, { ...taskCreate, sessionStorage: { getItem: () => null } });
+    const { TaskPlanEditor, assignmentNames } = await component(["components/inventory/tasks/task-presentation.ts", "components/inventory/tasks/task-plan-editor.tsx"], ["TaskPlanEditor", "assignmentNames"], state, { ...taskCreate, sessionStorage: { getItem: () => null } });
     const original = schedule.taskPlanSchema.parse({ title: "Test plan", category: "inventory_reconciliation", assigneeIds: ["account-prefix-disabled"] });
     const render = () => { state.reset(); return TaskPlanEditor({ original, data, cycles: [], onClose() {}, async onSaved() {} }); };
     const assigned = tree => nodes(tree).find(node => node.type === "fieldset" && nodes(node).some(child => child.type === "legend" && text(child) === "Assigned staff"));
@@ -199,7 +200,7 @@ async function personalTable(scope = "responsible") {
     const data = fixture(), state = hooks(), exports = [], movements = [];
     data.batteries = [inventoryBattery("BAT-PERSONAL", data.user.id), inventoryBattery("BAT-OTHER", "other-account")];
     const { appliedFilterChips } = await component("components/inventory/inventory-filter-panel.tsx", ["appliedFilterChips"]);
-    const { InventoryTable } = await component("components/inventory/views.tsx", ["InventoryTable"], state, { appliedFilterChips });
+    const { InventoryTable } = await component("components/inventory/inventory-table.tsx", ["InventoryTable"], state, { appliedFilterChips });
     const props = { data, ready: true, personalScope: scope, onEdit() {}, onDetail() {}, onSetup() {}, onMovement: (kind, ids) => movements.push({ kind, ids }), onExport: draft => exports.push(structuredClone(draft)) };
     return { data, exports, movements, render() { state.reset(); return InventoryTable(props); } };
 }

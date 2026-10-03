@@ -15,6 +15,29 @@ flowchart LR
     Views --> UI
 ```
 
+## Current module boundaries
+
+The application remains one deployable system and one D1 database. The current organization separates presentation, browser lifecycle coordination, business operations and storage concerns without replacing the transaction model.
+
+| Area | Entry points and responsibility |
+| --- | --- |
+| Application composition | `app/inventory-app.tsx` connects workspaces, reviewed dialogs and deliberate operation entry points. |
+| Navigation and presentation | `components/application/` owns the sidebar/top bar, workspace heading and recovery notices. |
+| Client lifecycle | `hooks/use-inventory-data.ts` owns authoritative snapshots, context changes and stale-response rejection; polling cancels in-flight work when its context changes. `use-message-count.ts` retains global own unread counts independently of inbox filters. |
+| Workflow recovery | `lib/client/workflow-recovery.ts` reads existing account/dataset-bound recovery records without modifying payloads; one priority rule gates ordinary navigation and browser-tool movement entry. `use-workflow-recovery.ts` connects this model to browser events. |
+| Shared contracts | `lib/client/inventory-contracts.ts` defines operation names and form drafts without depending on UI components. |
+| Business UI | Inventory table, directory management and activity history have separate components. Task requests, endpoint loading, list, editor, cycle detail and shared notices have independent modules. Compatibility exports preserve existing callers during this migration. |
+| Inventory facade | `lib/store.ts` preserves the existing `InventoryStore` API and composes focused services. |
+| Inventory services | `lib/server/inventory/` separates queries, directories, registration, movements, lifecycle, maintenance, imports and teaching-group resolution. Small database/session/transaction helpers carry the scoped D1 connection, authenticated actor, receipts and audit boundary. Services never call back into the facade. |
+| Provisioning | The dedicated provisioning module supplies missing reference directories. Intake invokes it directly instead of retrieving a full inventory snapshot. Existing snapshot provisioning and request-driven task generation remain explicit release behavior. |
+| Visual system | `app/globals.css` imports `styles/theme.css`, `base.css`, `shell.css`, `components.css`, `inventory.css` and `workflows.css`; colors and interaction primitives are defined once. |
+
+The module reorganization preserves existing schema migrations, shared/private data boundaries, exact loan/tag/version guards, terminal rejection receipts and the atomic D1 batch containing a business operation and its audit evidence. Recoverable task-record removal is a separate additive schema change described below. Full snapshots and complete-history exports remain the existing small-inventory implementation; server-side pagination is a separate future change that requires scale measurements.
+
+The test runner discovers root `*.test.mjs` suites and recursively transpiles the library graph with its relative paths intact. D1 suites use separate Miniflare databases and bounded suite concurrency. Component-handler tests still do not claim real DOM or visual coverage; browser review is recorded separately in the validation log.
+
+Production API checks copy the built Worker and assets into an isolated run directory, apply the complete migration journal to a fresh local D1 database and create temporary native accounts. Each run owns its ports, process tree and state. This keeps checks independent of the normal preview, its credentials and concurrent builds. Rejected JSON-request bodies are discarded without buffering, within byte and time limits, before returning the original origin/content-type rejection; this prevents an unread small request from disrupting the local Worker transport's next request.
+
 ## Data model
 
 | Table | Responsibility |
@@ -34,11 +57,11 @@ flowchart LR
 | staff_sessions | Hashed session tokens, account authorization version and expiry |
 | staff_account_events | Immutable account-management and profile/password audit |
 | sign_in_attempts | Failed sign-in window counters |
-| task_plans | Shared versioned periodic configuration, basis, scope, recurrence and reminder preferences |
+| task_plans | Shared versioned periodic configuration, basis, scope, recurrence, reminder preferences and recoverable removal timestamp |
 | task_plan_assignees | Explicit native account assignments for each plan |
 | task_plan_batteries | Explicit registered-battery membership for selected/group targets |
 | task_cycles | Recorded requirements/target snapshot and due date, versioned reminder state and completion evidence |
-| task_messages | Recipient-specific persistent reminder content and creation/read evidence |
+| task_messages | Recipient-specific persistent reminder content, creation/read evidence, version and recoverable removal timestamp |
 | teaching_groups | Account-private, inventory-specific saved battery selections with versions and archive state |
 | teaching_group_operations | Immutable private request receipts or final rejections and commit guards |
 | teaching_group_events | Private attributed before/after evidence for creating, editing and removing shortcuts |
@@ -55,13 +78,19 @@ Migration 0004 adds accounts and shared scope mapping without rebuilding existin
 
 ## Periodic tasks and Messages
 
-`lib/task-schedule.ts` defines the three categories, prepared templates, active validation, original-anchor calendar arithmetic and explicit Sydney reminder conversion. `lib/task-plans.ts` resolves shared dataset scope and authenticated identity, validates actual model/room/asset targets and uses D1 transaction guards. `/api/task-plans` supplies shared records and administrator configuration/assigned completion; `/api/messages` supplies only the authenticated recipient's inbox/read state. Neither client-provided actor IDs nor display names determine identity.
+`lib/task-schedule.ts` defines the three categories, prepared templates, active validation, original-anchor calendar arithmetic and explicit Sydney reminder conversion. `lib/task-plans.ts` resolves shared dataset scope and authenticated identity, validates actual model/room/asset targets and uses D1 transaction guards. `/api/task-plans` supplies shared records, administrator configuration/removal/restoration and assigned completion; `/api/messages` supplies only the authenticated recipient's message/read/visibility state. Neither client-provided actor IDs nor display names determine identity.
 
 Migration `0008_periodic_tasks_messages.sql` adds the five task tables, foreign keys, same-scope/identity/evidence guards and unique indexes without rebuilding earlier account or business tables. A partial unique index permits one open cycle per plan. Message occurrence uniqueness deduplicates a cycle/recipient reminder. Existing inventory guards, actor keys, account authorization versions and operations/audit tables remain in use; source release 0.3.0 is unchanged.
 
 Additive migration `0009_optional_task_completion_notes.sql` replaces only the cycle update trigger to permit absent completion notes and enforce their maximum length. Completion time and operator remain required, recorded cycles remain immutable and all existing identity/version/history guards remain in place. Earlier migration files are unchanged.
 
+Additive migration `0015_recoverable_task_removal.sql` adds nullable `removed_at` fields to plans and messages, a message version and a recipient/current-message index. Removal does not delete either record or rewrite plan state, original message content/read history, recorded cycles or completion evidence. Database triggers reject cycle insertion/update and message generation for removed plans and require message versions to advance while preserving existing immutable evidence. Earlier migration files remain unchanged.
+
 All staff may view/search/download shared plans and recorded cycles. Only administrators configure them. Completion carries the loaded cycle ID/version and optional notes; omitted, empty or whitespace-only notes are stored as null. Nonempty notes are trimmed and limited to 2,000 characters. Completion time and actor are always retained. The server checks active authorization and current assignment, allowing administrators all cycles. Create/update/complete requests use stable request IDs for unchanged retries. Atomic guards reject concurrent plan, cycle, assignment, target or authorization changes; a conflicting form retains its input and requires explicit review before replacing its loaded version. Mark read changes only the authenticated recipient's read timestamp.
+
+`TaskPlanStore.changePlanVisibility` requires administrator authority; `changeMessageVisibility` resolves only the authenticated recipient's record. Remove/restore carries its ID, loaded version and request ID. The state change, actor-attributed event and matching receipt commit in one guarded D1 batch. Replays return the original result; authorized final rejections reserve the operation key so a delayed original write cannot later succeed. `lib/client/task-record-action.ts` saves the exact payload in account/dataset/resource-specific session storage before sending and verifies the returned record/version/action, request, account and dataset before the interface treats it as saved. Reopening the panel in the same intact tab offers explicit recovery, including when the record has already left the current list. Only a matching receipt or a reserved final rejection clears the request; ordinary conflicts and uncertain results retain it. Storage failure blocks the write. Unmounting suppresses late callbacks into a different view. Closed tabs, cleared storage and other devices remain outside this recovery guarantee.
+
+Removed plans are excluded from generation and reject edits/completion, including completion entered through an existing message. Restore clears the removal timestamp while retaining the original draft/active/paused state, configuration, assignments and existing open cycle. It neither replaces that cycle nor resets its recorded due date. Later authenticated evaluation resumes only the generation allowed by the retained state and existing recurrence rules. Recipient message removal does not remove the plan, change completion or affect another inbox. Existing occurrence uniqueness prevents generating a replacement copy of a removed reminder.
 
 New-plan submission captures the validated configuration and request ID in account/inventory-specific session storage before sending. An uncertain result locks editing and dismissal; returning to Recurring tasks in the same intact tab recovers the exact submission. A verified actor/inventory/request receipt clears the capture. An explicit review may replace a definitively rejected request, but ordinary HTTP errors cannot clear prior uncertainty. The server rechecks matching receipts after conflicts and reserves the same operation key with `task_plan_create_rejected` when rejecting finally. A paused original request cannot later create another plan after that final outcome. Closed tabs, cleared storage and other devices are outside this recovery guarantee.
 
@@ -69,9 +98,13 @@ Templates cover weekly storage-area review, teaching-period reconciliation at co
 
 Calendar recurrence derives each occurrence from the original date anchor, preserving month-end behavior. Completion-based recurrence uses actual completion; explicit dates remain configured dates. After completion, calendar/explicit rules advance beyond the previous due date and actual completion. Skipped planning periods are recorded separately and do not create completion evidence. Reminder advance uses calendar days independently of due date. A Sydney wall time resolves to UTC only when exactly one instant exists; ambiguous/nonexistent times remain visibly unavailable.
 
-Authenticated inventory/task/Message requests evaluate active plans and due reminders. This may create the next outstanding cycle and one message per current active recipient when its valid reminder instant has been reached. Generation rechecks state, assignment and version atomically. Invalid later targets or disabled assignments produce visible generation issues. Former assignees keep old inbox history but receive no future routing; completed or paused tasks generate no new reminders. There is no scheduled worker, continuous background guarantee or email transport. Saved email preferences do not send an email.
+Authenticated inventory/task/Message requests evaluate active plans and due reminders. This may create the next outstanding cycle and one message per current active recipient when its valid reminder instant has been reached. Generation rechecks state, assignment and version atomically. Invalid later targets or disabled assignments produce visible generation issues. Former assignees keep old inbox history but receive no future routing; completed or paused tasks and removed plans generate no new reminders. There is no scheduled worker, continuous background guarantee or email transport. Saved email preferences do not send an email.
 
-The shared plans view/download use `taskPlanMatchesQuery` before selecting associated complete cycle history. Personal Messages task-state/read-state/search and JSON downloads use the same authenticated server scope, without the inventory snapshot's 200-event cap. Unread counts remain global to the recipient's selected inventory; filtered views do not hide the sidebar red dot when other unread messages exist. Downloads include scope/count/filter metadata, omit private credentials and remain separate from battery-detail sections. Task/Message views refresh every fifteen seconds while visible and idle, pause around review dialogs and reject late responses from another account/dataset/context.
+Both task endpoints accept `visibility=current|removed|all`, defaulting to current. The shared plans view/download applies visibility and `taskPlanMatchesQuery` before selecting associated complete cycle history. Personal Messages visibility/task-state/read-state/search and JSON downloads use the same authenticated server scope, without the inventory snapshot's 200-event cap. To do excludes cycles whose plan is removed. Unread counts include only the recipient's nonremoved messages in the selected inventory and remain independent of other filters; restoring an unread message returns it to that count. Downloads include scope/count/filter metadata, omit private credentials and remain separate from battery-detail sections. Task/Message views refresh every fifteen seconds while visible and idle, pause around review dialogs and reject late responses from another account/dataset/context.
+
+The Messages interface renders one responsive card per record so completion, read and remove/restore actions remain beside or below its content. Task state and recipient read state are distinct badges. `TaskCycleDialog` shows a short deadline/assignment summary, optional notes and explicit completion confirmation, with recorded requirements in an initially collapsed details element. Its bounded flex container keeps the footer outside the scrolling body. Completed tasks offer View completion; removed plans and unassigned viewers receive an explicit reason instead of an unexplained missing completion control. Plan actions sit with their title, and the prepared-template library starts collapsed.
+
+The existing six-module visual system keeps the yellow-and-ink palette. Operational text/table cells are 14px, hints 13px and compact labels at least 12px. The supporting token is `#52524d`; sidebar status text consumes that color at full opacity. These are presentation changes, with actual color calculations and responsive rules documented in the [design system](design-system.md). Browser and transaction verification outcomes belong in the validation record.
 
 ## Loan state
 

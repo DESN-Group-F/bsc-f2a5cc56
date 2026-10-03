@@ -30,10 +30,47 @@ export default function SignInForm() {
         } catch (error) { setError((error as Error).message); }
         finally { setBusy(false); }
     }
-    return <main className="signin-page"><section className="signin-card"><div className="signin-brand"><span className="brand-mark"><Battery size={28}/></span><div><strong>Battery Inventory</strong><span>Staff workspace</span></div></div><h1>{setup ? "Set up the administrator" : "Staff sign in"}</h1><p>{setup ? "Use the installation setup key to create the first administrator." : "Use the account provided by your administrator."}</p><form onSubmit={submit} className="form-stack">
-        {setup && <><div className="form-field"><Label htmlFor="setup-key">Installation setup key</Label><Input id="setup-key" type="password" autoComplete="off" value={key} onChange={event => setKey(event.target.value)} required disabled={busy}/></div><div className="form-field"><Label htmlFor="setup-name">Display name</Label><Input id="setup-name" value={name} onChange={event => setName(event.target.value)} required minLength={2} disabled={busy}/></div></>}
-        <div className="form-field"><Label htmlFor="signin-username">Username</Label><Input id="signin-username" autoComplete="username" value={username} onChange={event => setUsername(event.target.value)} required disabled={busy || !loaded}/></div>
-        <div className="form-field"><Label htmlFor="signin-password">Password</Label><Input id="signin-password" type="password" autoComplete={setup ? "new-password" : "current-password"} value={password} onChange={event => setPassword(event.target.value)} required minLength={setup ? 12 : undefined} disabled={busy || !loaded}/></div>
-        {notice && <p className="field-hint" role="status">{notice}</p>}{error && <p className="form-error" role="alert">{error}</p>}<Button type="submit" disabled={busy || !loaded}>{busy ? "Please wait…" : setup ? "Create administrator" : "Sign in"}</Button>
-    </form><div className="signin-note"><ShieldCheck size={16}/><span>Staff access only. Accounts are created and managed by administrators.</span></div></section></main>;
+    return (
+        <main className="signin-page">
+            <section className="signin-card" aria-labelledby="signin-title">
+                <div className="signin-brand">
+                    <span className="brand-mark"><Battery size={26} strokeWidth={1.8} aria-hidden="true" /></span>
+                    <div><strong>Battery</strong><span>Inventory workspace</span></div>
+                </div>
+                <h1 id="signin-title">{setup ? "Set up the administrator" : "Staff sign in"}</h1>
+                <p>{setup ? "Use the installation setup key to create the first administrator." : "Use the account provided by your administrator."}</p>
+                <form onSubmit={submit} className="form-stack" aria-busy={busy}>
+                    {setup && (
+                        <>
+                            <div className="form-field">
+                                <Label htmlFor="setup-key">Installation setup key</Label>
+                                <Input id="setup-key" type="password" autoComplete="off" value={key} onChange={event => setKey(event.target.value)} required disabled={busy} />
+                            </div>
+                            <div className="form-field">
+                                <Label htmlFor="setup-name">Display name</Label>
+                                <Input id="setup-name" value={name} onChange={event => setName(event.target.value)} required minLength={2} disabled={busy} />
+                            </div>
+                        </>
+                    )}
+                    <div className="form-field">
+                        <Label htmlFor="signin-username">Username</Label>
+                        <Input id="signin-username" autoComplete="username" value={username} onChange={event => setUsername(event.target.value)} required disabled={busy || !loaded} />
+                    </div>
+                    <div className="form-field">
+                        <Label htmlFor="signin-password">Password</Label>
+                        <Input id="signin-password" type="password" autoComplete={setup ? "new-password" : "current-password"} value={password} onChange={event => setPassword(event.target.value)} required minLength={setup ? 12 : undefined} disabled={busy || !loaded} />
+                    </div>
+                    {notice && <p className="field-hint" role="status">{notice}</p>}
+                    {error && <p className="form-error" role="alert">{error}</p>}
+                    <Button type="submit" disabled={busy || !loaded}>
+                        {busy ? "Please wait…" : setup ? "Create administrator" : "Sign in"}
+                    </Button>
+                </form>
+                <div className="signin-note">
+                    <ShieldCheck size={16} aria-hidden="true" />
+                    <span>Staff access only. Accounts are created and managed by administrators.</span>
+                </div>
+            </section>
+        </main>
+    );
 }

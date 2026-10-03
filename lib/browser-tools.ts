@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { isActiveBattery } from "./battery-lifecycle";
 import type { InventorySnapshot } from "./domain";
-import type { MovementDraft } from "@/components/inventory/movement-dialog";
+import type { MovementDraft } from "@/lib/client/inventory-contracts";
 type Tool = {
     name: string;
     title: string;

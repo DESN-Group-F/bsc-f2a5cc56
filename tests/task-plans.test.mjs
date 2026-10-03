@@ -637,3 +637,131 @@ test("inbox task status and read state combine independently within the authenti
     await assert.rejects(own.messages({ readState: "invalid" }), invalid);
     await assert.rejects(own.messages({ taskStatus: "invalid" }), invalid);
 });
+
+test("personal message removal preserves read history, isolates recipients and restores the global inbox unread count", async () => {
+    const context = await fixture("message-removal"), own = context.tasks(self);
+    await context.tasks().savePlan(activePlan({ assigneeIds: [self.id, other.id] }));
+    const message = (await own.messages()).messages[0];
+    await assert.rejects(context.tasks(other).changeMessageVisibility({ id: message.id, expectedVersion: message.version }, "remove", crypto.randomUUID()), status(404));
+    const requestId = crypto.randomUUID(), input = { id: message.id, expectedVersion: message.version };
+    const removed = await own.changeMessageVisibility(input, "remove", requestId);
+    assert.equal(removed.actorAccountId, self.id); assert.equal(removed.action, "remove"); assert.equal(removed.requestId, requestId);
+    assert.equal((await own.messages()).messages.length, 0);
+    assert.equal((await own.messageCounts()).unreadCount, 0);
+    assert.equal((await context.tasks(other).messageCounts()).unreadCount, 1);
+    const archived = await own.messages({ visibility: "removed", readState: "unread" });
+    assert.equal(archived.messages[0].id, message.id); assert.equal(archived.messages[0].readAt, null); assert.equal(archived.unreadCount, 0);
+    const restored = await own.changeMessageVisibility({ id: message.id, expectedVersion: removed.version }, "restore", crypto.randomUUID());
+    assert.equal(restored.removedAt, null);
+    assert.equal((await own.messages({ search: "no match", taskStatus: "completed" })).unreadCount, 1);
+    assert.deepEqual(await own.changeMessageVisibility(input, "remove", requestId), removed);
+    assert.equal((await own.messages()).messages[0].removedAt, null, "An old successful removal receipt cannot remove a restored message again.");
+    await own.markRead({ id: message.id });
+    const read = (await own.messages()).messages[0];
+    assert.equal(read.version, restored.version + 1);
+    const removedRead = await own.changeMessageVisibility({ id: message.id, expectedVersion: read.version }, "remove", crypto.randomUUID());
+    await own.changeMessageVisibility({ id: message.id, expectedVersion: removedRead.version }, "restore", crypto.randomUUID());
+    assert.equal((await own.messages()).messages[0].readAt, read.readAt);
+    assert.equal((await own.messageCounts()).unreadCount, 0);
+    assert.equal((await rows("task_messages", context.scope)).length, 2);
+    const audit = (await rows("audit_events", context.scope)).filter(row => row.action === "task_message_removed");
+    assert.ok(audit.every(row => Object.keys(JSON.parse(row.details_json)).sort().join(",") === "after,before,messageId"));
+});
+
+test("removing a plan preserves its open cycle and messages, blocks completion, and restores the original configuration", async () => {
+    const context = await fixture("plan-removal"), plan = await context.tasks().savePlan(activePlan());
+    const cycle = await openCycle(context, plan.id), message = (await context.tasks(self).messages()).messages[0];
+    await assert.rejects(context.tasks(self).changePlanVisibility({ id: plan.id, expectedVersion: plan.version }, "remove", crypto.randomUUID()), status(403));
+    const requestId = crypto.randomUUID(), input = { id: plan.id, expectedVersion: plan.version };
+    const removed = await context.tasks().changePlanVisibility(input, "remove", requestId);
+    assert.equal((await context.tasks().list()).plans.length, 0);
+    const archived = await context.tasks().list({ visibility: "removed" });
+    assert.equal(archived.plans[0].state, "active"); assert.equal(archived.plans[0].removedAt, removed.removedAt);
+    assert.equal(archived.cycles[0].status, "open"); assert.equal(archived.cycles[0].version, cycle.version);
+    assert.equal(archived.cycles[0].planRemoved, true); assert.equal(archived.cycles[0].canComplete, false);
+    for (const user of [admin, self]) await assert.rejects(context.tasks(user).completeCycle({ cycleId: cycle.id, expectedVersion: cycle.version }), error => error.status === 409 && error.code === "plan_removed");
+    await assert.rejects(context.tasks().savePlan({ ...(await context.tasks().list({ visibility: "all" })).plans[0], expectedVersion: removed.version }, true), error => error.code === "plan_removed");
+    assert.equal((await context.tasks(self).messages({ taskStatus: "open" })).messages.length, 0);
+    assert.equal((await context.tasks(self).messages()).messages[0].id, message.id);
+    const counts = [(await rows("task_cycles", context.scope)).length, (await rows("task_messages", context.scope)).length];
+    context.setTime("2026-05-02T02:00:00.000Z"); await context.tasks().sync();
+    assert.deepEqual([(await rows("task_cycles", context.scope)).length, (await rows("task_messages", context.scope)).length], counts);
+    const restored = await context.tasks().changePlanVisibility({ id: plan.id, expectedVersion: removed.version }, "restore", crypto.randomUUID());
+    assert.equal(restored.removedAt, null);
+    assert.deepEqual(await context.tasks().changePlanVisibility(input, "remove", requestId), removed);
+    const current = (await context.tasks(self).list()).cycles.find(row => row.id === cycle.id);
+    assert.equal(current.planRemoved, false); assert.equal(current.canComplete, true); assert.equal(current.dueOn, cycle.dueOn);
+    assert.equal((await context.tasks(self).messages({ taskStatus: "open" })).messages[0].id, message.id);
+    await context.tasks(self).completeCycle({ cycleId: cycle.id, expectedVersion: current.version });
+    assert.equal((await context.tasks().list()).cycles.find(row => row.id === cycle.id).status, "completed");
+});
+
+test("removing a plan before generation and restoring paused plans never invents cycles or changes its prior state", async () => {
+    for (const state of ["active", "paused", "draft"]) {
+        const context = await fixture(`plan-removal-${state}`), plan = await context.tasks().savePlan(activePlan({ state }));
+        const removed = await context.tasks().changePlanVisibility({ id: plan.id, expectedVersion: plan.version }, "remove", crypto.randomUUID());
+        await context.tasks().sync();
+        assert.equal((await rows("task_cycles", context.scope)).length, 0);
+        assert.equal((await rows("task_messages", context.scope)).length, 0);
+        await context.tasks().changePlanVisibility({ id: plan.id, expectedVersion: removed.version }, "restore", crypto.randomUUID());
+        const result = await context.tasks().list();
+        assert.equal(result.plans[0].state, state);
+        assert.equal(result.cycles.length, state === "active" ? 1 : 0);
+    }
+});
+
+test("a delayed removal cannot cross a remove-and-restore version change and its rejection remains final", async () => {
+    const context = await fixture("remove-restore-race"), plan = await context.tasks().savePlan(activePlan());
+    const input = { id: plan.id, expectedVersion: plan.version }, requestId = crypto.randomUUID();
+    const raced = beforeAtomicCommit(async () => {
+        const removed = await context.tasks(secondAdmin).changePlanVisibility(input, "remove", crypto.randomUUID());
+        await context.tasks(secondAdmin).changePlanVisibility({ id: plan.id, expectedVersion: removed.version }, "restore", crypto.randomUUID());
+    });
+    await assert.rejects(context.tasks(admin, raced).changePlanVisibility(input, "remove", requestId), error => error.status === 409 && error.code === "task_visibility_rejected_final");
+    await assert.rejects(context.tasks().changePlanVisibility(input, "remove", requestId), error => error.code === "task_visibility_rejected_final");
+    const current = (await context.tasks().list()).plans[0];
+    assert.equal(current.removedAt, null); assert.equal(current.version, plan.version + 2);
+    assert.equal((await rows("operations", context.scope)).filter(row => row.kind === "task_plan_remove_rejected").length, 1);
+    assert.equal((await rows("audit_events", context.scope)).filter(row => row.action === "task_plan_removed").length, 1);
+    await assert.rejects(context.tasks().changePlanVisibility({ id: plan.id, expectedVersion: current.version }, "remove", requestId), error => error.code === "idempotency_conflict");
+});
+
+test("message removal atomically rejects an intervening read and preserves both visibility and first-read evidence", async () => {
+    const context = await fixture("message-read-removal-race");
+    await context.tasks().savePlan(activePlan());
+    const message = (await context.tasks(self).messages()).messages[0];
+    const raced = beforeAtomicCommit(() => context.tasks(self).markRead({ id: message.id }));
+    await assert.rejects(context.tasks(self, raced).changeMessageVisibility({ id: message.id, expectedVersion: message.version }, "remove", crypto.randomUUID()), status(409));
+    const current = (await context.tasks(self).messages()).messages[0];
+    assert.equal(current.removedAt, null); assert.ok(current.readAt); assert.equal(current.version, message.version + 1);
+    assert.equal((await rows("audit_events", context.scope)).filter(row => row.action === "task_message_removed").length, 0);
+});
+
+test("recoverable-removal migration preserves old task evidence and retains deletion, identity and first-read guards", async () => {
+    const isolated = new Miniflare({ modules: true, script: "export default {fetch(){return new Response('task-removal-migration-test')}}", compatibilityDate: "2026-05-15", d1Databases: { DB: "task-removal-migration-test" }, d1Persist: false });
+    try {
+        const database = await isolated.getD1Database("DB"), migration = journal.entries.find(entry => entry.tag === "0015_recoverable_task_removal");
+        await migrate(database, journal.entries.filter(entry => entry.idx < migration.idx));
+        const [owner, , assigned] = await seedAccounts(database), scope = "task-removal-migration:demo";
+        await new InventoryStore(database, scope, "demo", inventoryActor(owner), () => new Date(initialTime)).snapshot();
+        const tasks = new TaskPlanStore(database, scope, "demo", owner, () => new Date(initialTime));
+        await tasks.savePlan(activePlan({ assigneeIds: [assigned.id] })); await tasks.sync();
+        const message = (await rows("task_messages", scope, database))[0];
+        await database.prepare("UPDATE task_messages SET read_at=? WHERE key=?").bind(initialTime, message.key).run();
+        const tables = ["task_plans", "task_cycles", "task_messages", "task_plan_assignees", "task_plan_batteries", "audit_events", "operations"];
+        const before = new Map();
+        for (const table of tables) before.set(table, (await database.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results);
+        await migrate(database, [migration]);
+        for (const table of tables) {
+            const after = (await database.prepare(`SELECT * FROM ${table} ORDER BY rowid`).all()).results;
+            assert.deepEqual(after.map((row, index) => Object.fromEntries(Object.keys(before.get(table)[index]).map(key => [key, row[key]]))), before.get(table), `${table} existing evidence changed`);
+        }
+        const current = (await rows("task_messages", scope, database))[0];
+        assert.equal(current.removed_at, null); assert.equal(current.version, 1); assert.equal(current.read_at, initialTime);
+        for (const table of ["task_plans", "task_cycles", "task_messages"]) await assert.rejects(database.prepare(`DELETE FROM ${table} WHERE scope=?`).bind(scope).run(), /cannot be deleted/);
+        await assert.rejects(database.prepare("UPDATE task_messages SET read_at=NULL,version=version+1 WHERE key=?").bind(message.key).run(), /cannot be rewritten/);
+        await assert.rejects(database.prepare("UPDATE task_messages SET body='Rewritten',version=version+1 WHERE key=?").bind(message.key).run(), /immutable/);
+        await assert.rejects(database.prepare("UPDATE task_messages SET removed_at=? WHERE key=?").bind(initialTime, message.key).run(), /version must advance/);
+        assert.deepEqual((await database.prepare("PRAGMA foreign_key_check").all()).results, []);
+    } finally { await isolated.dispose(); }
+});

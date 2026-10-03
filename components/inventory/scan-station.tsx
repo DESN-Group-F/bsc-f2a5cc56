@@ -16,7 +16,7 @@ import { isSelectableRoom } from "@/lib/location-catalog";
 import { recoverScanSession, resolveRegisteredTagIssues, scanCompletedReadMatches, scanFailureStatus, scanMovementPayload, scanReadProblem, type ScanAttempt, type ScanIssue, type ScanReceipt, type ScanSession, type ScanSource } from "@/lib/scan-session";
 import { TeachingGroupsPanel } from "./teaching-groups-panel";
 import { verifyGroupEvidence } from "@/lib/teaching-context";
-import type { WriteAction } from "./movement-dialog";
+import type { WriteAction } from "@/lib/client/inventory-contracts";
 
 export type ScanStationProps = {
     data: InventorySnapshot;

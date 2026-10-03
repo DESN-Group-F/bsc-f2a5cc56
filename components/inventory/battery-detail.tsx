@@ -15,7 +15,7 @@ import { actionNames, formatTime, formatDateOnly, formatBatteryAge, sydneyInput,
 import { currentSydneyDate } from "@/lib/battery-age";
 import { buildingPickerOptions, isSupportedBuilding, roomPickerOptions } from "@/lib/location-catalog";
 import { RecordPicker } from "./record-picker";
-import type { WriteAction } from "./movement-dialog";
+import type { WriteAction } from "@/lib/client/inventory-contracts";
 type DetailDraft = { kind: "charge" } | { kind: "observation" } | {
     kind: "correction";
     loanId: string;

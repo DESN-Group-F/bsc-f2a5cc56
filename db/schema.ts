@@ -76,6 +76,7 @@ export const operations = sqliteTable("operations", {
     id: text("id").primaryKey(), scope: text("scope").notNull(), kind: text("kind").notNull(), fingerprint: text("fingerprint").notNull(), resultJson: text("result_json").notNull(), createdAt: text("created_at").notNull(), guard: integer("guard").notNull().default(1),
 }, t => [check("operation_guard", sql `${t.guard}=1`)]);
 export const taskPlans = sqliteTable("task_plans", {
+    removedAt: text("removed_at"),
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), title: text("title").notNull(), description: text("description").notNull(), category: text("category").notNull(),
     scopeNote: text("scope_note").notNull().default(""), basis: text("basis").notNull().default(""), targetKind: text("target_kind").notNull(), targetRef: text("target_ref"),
     recurrenceBasis: text("recurrence_basis").notNull(), firstDueOn: text("first_due_on"), intervalCount: integer("interval_count").notNull(), intervalUnit: text("interval_unit").notNull(), scheduledDatesJson: text("scheduled_dates_json").notNull(),
@@ -104,5 +105,6 @@ export const teachingGroupEvents = sqliteTable("teaching_group_events", {
     id: text("id").primaryKey(), scope: text("scope").notNull(), ownerAccountId: text("owner_account_id").notNull().references(() => staffAccounts.id), groupKey: text("group_key").notNull().references(() => teachingGroups.key), action: text("action").notNull(), at: text("at").notNull(), beforeJson: text("before_json"), afterJson: text("after_json").notNull(), requestId: text("request_id").notNull(),
 });
 export const taskMessages = sqliteTable("task_messages", {
+    removedAt: text("removed_at"), version: integer("version").notNull().default(1),
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), cycleKey: text("cycle_key").notNull().references(() => taskCycles.key), recipientId: text("recipient_id").notNull().references(() => staffAccounts.id), occurrence: text("occurrence").notNull(), title: text("title").notNull(), body: text("body").notNull(), reminderOn: text("reminder_on"), reminderTime: text("reminder_time"), reminderAtUtc: text("reminder_at_utc"), createdAt: text("created_at").notNull(), readAt: text("read_at"),
-}, t => [uniqueIndex("idx_task_messages_scope_id").on(t.scope, t.id), uniqueIndex("idx_task_message_occurrence").on(t.cycleKey, t.recipientId, t.occurrence), index("idx_task_messages_recipient").on(t.scope, t.recipientId, t.createdAt)]);
+}, t => [uniqueIndex("idx_task_messages_scope_id").on(t.scope, t.id), uniqueIndex("idx_task_message_occurrence").on(t.cycleKey, t.recipientId, t.occurrence), index("idx_task_messages_recipient").on(t.scope, t.recipientId, t.createdAt), index("idx_task_messages_current_recipient").on(t.scope, t.recipientId, t.removedAt, t.createdAt)]);

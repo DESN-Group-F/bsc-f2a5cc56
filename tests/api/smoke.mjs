@@ -1,0 +1,937 @@
+import assert from "node:assert/strict";
+import ExcelJS from "exceljs";
+import { checkTaskRemoval } from "./tasks.mjs";
+
+/** Actual HTTP checks against a caller-owned, freshly initialized local Worker. */
+export async function runApiSmoke({
+  base,
+  credentials,
+  signal,
+  onCheck = () => {},
+}) {
+  const target = new URL(base);
+  assert.equal(target.protocol, "http:");
+  assert.equal(target.hostname, "127.0.0.1");
+  assert.ok(target.port, "An isolated loopback port is required.");
+  const results = [];
+  async function check(name, pathname, options = {}, status = 200) {
+    const response = await fetch(base + pathname, {
+      ...options,
+      redirect: "manual",
+      signal: AbortSignal.any([
+        AbortSignal.timeout(20000),
+        ...(signal ? [signal] : []),
+      ]),
+    });
+    const receivedBody = await response.clone().arrayBuffer();
+    const result = {
+      name,
+      status: response.status,
+      expectedStatus: status,
+      passed: response.status === status,
+    };
+    results.push(result);
+    onCheck(result);
+    const errorBody = result.passed
+      ? ""
+      : new TextDecoder().decode(receivedBody).slice(0, 1000);
+    assert.equal(
+      response.status,
+      status,
+      `${name}: expected HTTP ${status}, received ${response.status}${errorBody ? `\n${errorBody}` : ""}`,
+    );
+    return response;
+  }
+  const json = (body, cookie) => ({
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      ...(cookie ? { Cookie: cookie } : {}),
+    },
+    body: JSON.stringify(body),
+  });
+  async function signin(account) {
+    const response = await check(
+      `${account.username} has an independent sign-in`,
+      "/api/session",
+      json({ action: "signin", payload: account }),
+    );
+    return response.headers.get("set-cookie").split(";")[0];
+  }
+  await check(
+    "anonymous inventory access is rejected",
+    "/api/inventory",
+    {},
+    401,
+  );
+  await check(
+    "client identity headers and old preview cookies cannot grant access",
+    "/api/inventory",
+    {
+      headers: {
+        Cookie: "__sites_local_auth=1",
+        "oai-authenticated-user-id": "spoof",
+        "oai-authenticated-user-email": "spoof@example.invalid",
+      },
+    },
+    401,
+  );
+  await check(
+    "setup requires the installation secret",
+    "/api/session",
+    json({ action: "setup", setupKey: "incorrect", payload: {} }),
+    403,
+  );
+  const adminCookie = await signin(credentials.admin),
+    staffCookie = await signin(credentials.staff);
+  assert.notEqual(adminCookie, staffCookie);
+  await check(
+    "non-JSON writes are rejected",
+    "/api/inventory",
+    { method: "POST", headers: { Cookie: adminCookie }, body: "invalid" },
+    415,
+  );
+  await check(
+    "malformed JSON is rejected",
+    "/api/inventory",
+    {
+      method: "POST",
+      headers: { Cookie: adminCookie, "Content-Type": "application/json" },
+      body: "{",
+    },
+    400,
+  );
+  await check(
+    "cross-origin writes are rejected",
+    "/api/inventory",
+    {
+      ...json({ dataset: "demo", action: "initialize_demo" }, adminCookie),
+      headers: {
+        Cookie: adminCookie,
+        "Content-Type": "application/json",
+        Origin: "https://example.invalid",
+      },
+    },
+    403,
+  );
+  await check(
+    "a valid POST immediately after a rejected cross-origin write remains available",
+    "/api/session",
+    json({ action: "signin", payload: credentials.staff }),
+  );
+  for (const [action, extra] of [
+    ["battery", { update: true }],
+    ["person", {}],
+    ["building", {}],
+    ["room", {}],
+    ["charge", {}],
+    ["observation", {}],
+    ["correction", {}],
+    ["import", { kind: "people", records: [] }],
+  ])
+    await check(
+      `staff cannot perform privileged ${action}`,
+      "/api/inventory",
+      json({ dataset: "demo", action, payload: {}, ...extra }, staffCookie),
+      403,
+    );
+  await check(
+    "staff cannot manage other accounts",
+    "/api/accounts",
+    { headers: { Cookie: staffCookie } },
+    403,
+  );
+  await check(
+    "staff cannot create accounts",
+    "/api/accounts",
+    json({ action: "create", payload: {} }, staffCookie),
+    403,
+  );
+  const staff = await (
+    await check(
+      "staff can manage their own profile",
+      "/api/accounts?scope=self",
+      { headers: { Cookie: staffCookie } },
+    )
+  ).json();
+  await check(
+    "a profile cannot promote its staff account",
+    "/api/accounts",
+    json(
+      {
+        action: "profile",
+        payload: {
+          id: staff.user.id,
+          expectedVersion: staff.user.version,
+          displayName: staff.user.displayName,
+          role: "admin",
+        },
+      },
+      staffCookie,
+    ),
+    403,
+  );
+  await check(
+    "working RFID remains unavailable",
+    "/api/inventory",
+    json({ dataset: "live", action: "observation", payload: {} }, adminCookie),
+    501,
+  );
+  await check(
+    "demonstration initialization is an explicit idempotent staff action",
+    "/api/inventory",
+    json({ dataset: "demo", action: "initialize_demo" }, adminCookie),
+  );
+  let snapshot = await (
+    await check(
+      "administrator can read the shared inventory",
+      "/api/inventory?dataset=demo",
+      { headers: { Cookie: adminCookie } },
+    )
+  ).json();
+  const adminOwner = snapshot.people.find(
+      (person) =>
+        person.accountId === snapshot.user.id && person.role === "staff",
+    ),
+    staffOwner = snapshot.people.find(
+      (person) => person.accountId === staff.user.id && person.role === "staff",
+    );
+  assert.ok(adminOwner);
+  assert.ok(staffOwner);
+  assert.deepEqual(
+    snapshot.buildings.map(({ id, name }) => ({ id, name })),
+    [
+      { id: "E10", name: "Hilmer Building" },
+      { id: "G17", name: "Electrical Engineering Building" },
+      { id: "J18", name: "Willis Annexe" },
+    ],
+  );
+  assert.deepEqual(
+    snapshot.rooms
+      .filter((room) => room.selectable)
+      .map((room) => room.id)
+      .sort(),
+    ["J18-DEMO-ROOM", "J18-DEMO-WORKSPACE"],
+  );
+  assert.ok(
+    snapshot.rooms
+      .filter((room) => room.selectable)
+      .every((room) => room.buildingId === "J18" && room.isPlaceholder),
+  );
+  const seeded = snapshot.batteries.filter((battery) =>
+    /^BAT-00[1-6]$/.test(battery.id),
+  );
+  assert.equal(seeded.length, 6);
+  assert.ok(
+    seeded.every(
+      (battery) =>
+        battery.ownerAccountId &&
+        battery.homeBuildingId === "J18" &&
+        (!battery.loanId || battery.borrowerAccountId),
+    ),
+  );
+  const working = await (
+    await check(
+      "working inventory has reference places and no invented batteries",
+      "/api/inventory?dataset=live",
+      { headers: { Cookie: adminCookie } },
+    )
+  ).json();
+  assert.equal(working.batteries.length, 0);
+  assert.deepEqual(working.buildings, snapshot.buildings);
+  assert.ok(
+    working.rooms.every(
+      (room) => room.buildingId === "J18" && room.isPlaceholder,
+    ),
+  );
+  await check(
+    "unavailable building cannot be a new battery location",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "battery",
+        payload: {
+          id: "QA-UNAVAILABLE-BUILDING",
+          name: "Rejected location battery",
+          ownerId: staffOwner.id,
+          homeBuildingId: "E10",
+        },
+      },
+      staffCookie,
+    ),
+    400,
+  );
+  await check(
+    "unavailable building cannot receive a new room",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "room",
+        payload: {
+          id: "QA-E10-ROOM",
+          name: "Rejected room",
+          buildingId: "E10",
+          number: "QA",
+        },
+      },
+      adminCookie,
+    ),
+    400,
+  );
+  await check(
+    "room import cannot bypass the J18 restriction",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "import",
+        kind: "rooms",
+        records: [
+          {
+            id: "QA-G17-ROOM",
+            name: "Rejected imported room",
+            buildingId: "G17",
+            number: "QA",
+          },
+        ],
+      },
+      adminCookie,
+    ),
+    400,
+  );
+  await check(
+    "staff can register a battery assigned to another native staff owner",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "battery",
+        payload: {
+          id: "QA-STAFF-001",
+          name: "Demo QA Staff Battery",
+          ownerId: adminOwner.id,
+          homeBuildingId: "J18",
+        },
+      },
+      staffCookie,
+    ),
+  );
+  const missing = Array.from({ length: 4 }, (_, index) => ({
+    id: `QA-BULK-0${index + 1}`,
+    name: `Demo QA Batch Battery ${index + 1}`,
+    ownerId: staffOwner.id,
+    homeBuildingId: "J18",
+  })).filter(
+    (battery) =>
+      !snapshot.batteries.some((existing) => existing.id === battery.id),
+  );
+  if (missing.length)
+    await check(
+      "staff may import new batteries without editing existing records",
+      "/api/inventory",
+      json(
+        {
+          dataset: "demo",
+          action: "import",
+          kind: "batteries",
+          records: missing,
+        },
+        staffCookie,
+      ),
+    );
+  snapshot = await (
+    await check(
+      "another account sees the same registered batteries",
+      "/api/inventory?dataset=demo",
+      { headers: { Cookie: adminCookie } },
+    )
+  ).json();
+  assert.ok(
+    snapshot.batteries.some((battery) => battery.id === "QA-STAFF-001"),
+  );
+  const before = snapshot.batteries.find(
+    (battery) => battery.id === "QA-STAFF-001",
+  );
+  assert.equal(before.ownerAccountId, snapshot.user.id);
+  assert.equal(snapshot.batteries.length, 11);
+  for (const [label, cookie, accountId] of [
+    ["administrator", adminCookie, snapshot.user.id],
+    ["staff", staffCookie, staff.user.id],
+  ]) {
+    const mine = await (
+      await check(
+        `${label} responsible-battery export uses the authenticated account`,
+        "/api/export",
+        json(
+          {
+            dataset: "demo",
+            mode: "summary",
+            filter: {
+              personalScope: "responsible",
+              building: "J18",
+              search: "QA-",
+            },
+            viewerAccountId:
+              accountId === staff.user.id ? snapshot.user.id : staff.user.id,
+          },
+          cookie,
+        ),
+      )
+    ).json();
+    assert.deepEqual(
+      mine.tables.Inventory.map((row) => row.battery_id).sort(),
+      snapshot.batteries
+        .filter(
+          (battery) =>
+            battery.ownerAccountId === accountId &&
+            battery.id.startsWith("QA-"),
+        )
+        .map((battery) => battery.id)
+        .sort(),
+    );
+    assert.equal(mine.metadata.filters.personalScope, "responsible");
+  }
+  const returning = (battery) => ({
+    requestId: crypto.randomUUID(),
+    kind: "return",
+    batteryIds: [battery.id],
+    expectedLoans: [{ batteryId: battery.id, loanId: battery.loanId }],
+  });
+  assert.equal(
+    before.loanId,
+    null,
+    "the isolated fixture must start without an existing QA loan",
+  );
+  const request = {
+    requestId: crypto.randomUUID(),
+    kind: "checkout",
+    batteryIds: [before.id],
+  };
+  await check(
+    "staff cannot substitute an alternate holder",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "movement",
+        payload: { ...request, borrowerId: adminOwner.id },
+      },
+      staffCookie,
+    ),
+    400,
+  );
+  await check(
+    "administrators cannot check out as another account",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "movement",
+        payload: { ...request, borrowerAccountId: staff.user.id },
+      },
+      adminCookie,
+    ),
+    400,
+  );
+  await check(
+    "staff can check out a shared battery",
+    "/api/inventory",
+    json(
+      { dataset: "demo", action: "movement", payload: request },
+      staffCookie,
+    ),
+  );
+  const loan = await (
+    await check(
+      "another account sees the confirmed checkout",
+      "/api/inventory?dataset=demo",
+      { headers: { Cookie: adminCookie } },
+    )
+  ).json();
+  const held = loan.batteries.find((battery) => battery.id === before.id);
+  assert.ok(held.loanId);
+  assert.equal(held.borrowerAccountId, staff.user.id);
+  assert.equal(held.borrowerKind, "staff");
+  assert.equal(held.borrowerName, staff.user.displayName);
+  assert.equal(held.ownerId, before.ownerId);
+  assert.equal(
+    loan.people.find((person) => person.accountId === staff.user.id).id,
+    `staff-${staff.user.id}`,
+  );
+  const holderExport = await (
+    await check(
+      "native current-holder filter exports the same responsibility",
+      "/api/export",
+      json(
+        { dataset: "demo", mode: "summary", filter: { holder: staff.user.id } },
+        staffCookie,
+      ),
+    )
+  ).json();
+  assert.deepEqual(
+    holderExport.tables.Inventory.map((row) => row.battery_id).sort(),
+    loan.batteries
+      .filter((b) => b.loanId && b.borrowerAccountId === staff.user.id)
+      .map((b) => b.id)
+      .sort(),
+  );
+  const staffBorrowed = await (
+    await check(
+      "staff borrowed-battery scope combines with status location and unknown-capacity filters",
+      "/api/export",
+      json(
+        {
+          dataset: "demo",
+          mode: "detail",
+          filter: {
+            personalScope: "borrowed",
+            status: "out",
+            building: "J18",
+            room: "__unspecified",
+            capacityMode: "unknown",
+            search: "QA-",
+          },
+          sections: ["responsibility", "loans"],
+          viewerAccountId: loan.user.id,
+        },
+        staffCookie,
+      ),
+    )
+  ).json();
+  assert.deepEqual(
+    staffBorrowed.tables.Batteries.map((row) => row.battery_id),
+    [before.id],
+  );
+  assert.equal(
+    staffBorrowed.tables.Batteries[0].current_borrower_account_id,
+    staff.user.id,
+  );
+  assert.equal(
+    staffBorrowed.tables.Batteries[0].owner_account_id,
+    loan.user.id,
+  );
+  await check(
+    "administrator borrowed scope does not inherit another staff member's loan",
+    "/api/export",
+    json(
+      {
+        dataset: "demo",
+        mode: "summary",
+        filter: { personalScope: "borrowed", search: "QA-" },
+        viewerAccountId: staff.user.id,
+      },
+      adminCookie,
+    ),
+    400,
+  );
+  await check(
+    "retrying the same action does not duplicate its loan",
+    "/api/inventory",
+    json(
+      { dataset: "demo", action: "movement", payload: request },
+      staffCookie,
+    ),
+  );
+  await check(
+    "a second checkout of the same battery is rejected",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "movement",
+        payload: { ...request, requestId: crypto.randomUUID() },
+      },
+      adminCookie,
+    ),
+    409,
+  );
+  await check(
+    "a return must name the reviewed loan",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "movement",
+        payload: {
+          requestId: crypto.randomUUID(),
+          kind: "return",
+          batteryIds: [before.id],
+        },
+      },
+      adminCookie,
+    ),
+    400,
+  );
+  const reviewedReturn = returning(held);
+  await check(
+    "a different account can return the shared battery",
+    "/api/inventory",
+    json(
+      { dataset: "demo", action: "movement", payload: reviewedReturn },
+      adminCookie,
+    ),
+  );
+  const detail = await (
+    await check(
+      "per-account holder and return actors remain in history",
+      "/api/inventory?dataset=demo&batteryId=QA-STAFF-001",
+      { headers: { Cookie: staffCookie } },
+    )
+  ).json();
+  assert.equal(detail.loans[0].borrowerAccountId, staff.user.id);
+  assert.equal(detail.loans[0].checkoutActorName, staff.user.displayName);
+  assert.equal(detail.loans[0].returnActorName, loan.user.displayName);
+  await check(
+    "a correction must freeze its intended action and state",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "correction",
+        payload: {
+          requestId: crypto.randomUUID(),
+          loanId: held.loanId,
+          reason: "Local API review only.",
+        },
+      },
+      adminCookie,
+    ),
+    400,
+  );
+  await check(
+    "a void-checkout draft cannot reopen a returned loan",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "correction",
+        payload: {
+          requestId: crypto.randomUUID(),
+          loanId: held.loanId,
+          action: "checkout_voided",
+          expectedReturnedAt: null,
+          reason: "Local stale correction review.",
+        },
+      },
+      adminCookie,
+    ),
+    409,
+  );
+  await check(
+    "a later loan can be created after a return",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "movement",
+        payload: { ...request, requestId: crypto.randomUUID() },
+      },
+      adminCookie,
+    ),
+  );
+  await check(
+    "a stale return cannot close a later loan",
+    "/api/inventory",
+    json(
+      {
+        dataset: "demo",
+        action: "movement",
+        payload: { ...reviewedReturn, requestId: crypto.randomUUID() },
+      },
+      staffCookie,
+    ),
+    409,
+  );
+  const subsequent = await (
+    await check(
+      "the subsequent loan retains its current holder",
+      "/api/inventory?dataset=demo",
+      { headers: { Cookie: staffCookie } },
+    )
+  ).json();
+  const current = subsequent.batteries.find((b) => b.id === before.id);
+  assert.notEqual(current.loanId, held.loanId);
+  assert.equal(current.borrowerAccountId, loan.user.id);
+  const adminBorrowed = await (
+    await check(
+      "administrator borrowed scope follows their own later loan and combined filter",
+      "/api/export",
+      json(
+        {
+          dataset: "demo",
+          mode: "summary",
+          filter: {
+            personalScope: "borrowed",
+            status: "out",
+            building: "J18",
+            search: "QA-",
+          },
+          viewerAccountId: staff.user.id,
+        },
+        adminCookie,
+      ),
+    )
+  ).json();
+  assert.deepEqual(
+    adminBorrowed.tables.Inventory.map((row) => row.battery_id),
+    [before.id],
+  );
+  assert.equal(
+    adminBorrowed.tables.Inventory[0].current_borrower_account_id,
+    loan.user.id,
+  );
+  await check(
+    "staff borrowed scope becomes empty when a different account holds the later loan",
+    "/api/export",
+    json(
+      {
+        dataset: "demo",
+        mode: "summary",
+        filter: { personalScope: "borrowed", search: "QA-" },
+        viewerAccountId: loan.user.id,
+      },
+      staffCookie,
+    ),
+    400,
+  );
+  await check(
+    "staff may receive the administrator's loan",
+    "/api/inventory",
+    json(
+      { dataset: "demo", action: "movement", payload: returning(current) },
+      staffCookie,
+    ),
+  );
+  const filter = { search: "QA-" };
+  const expectedIds = snapshot.batteries
+    .filter((battery) =>
+      `${battery.id} ${battery.name}`.toLowerCase().includes("qa-"),
+    )
+    .map((battery) => battery.id)
+    .sort();
+  const all = await (
+    await check(
+      "staff can export all filtered summary results",
+      "/api/export",
+      json({ dataset: "demo", mode: "summary", filter }, staffCookie),
+    )
+  ).json();
+  assert.deepEqual(
+    all.tables.Inventory.map((row) => row.battery_id).sort(),
+    expectedIds,
+  );
+  const page = await (
+    await check(
+      "staff can export only a current page",
+      "/api/export",
+      json(
+        {
+          dataset: "demo",
+          mode: "summary",
+          filter: {},
+          range: "page",
+          page: 1,
+          pageSize: "10",
+        },
+        staffCookie,
+      ),
+    )
+  ).json();
+  assert.equal(
+    page.tables.Inventory.length,
+    Math.min(10, snapshot.batteries.length - 10),
+  );
+  const checkedIds = ["BAT-001", "BAT-002"];
+  const checked = await (
+    await check(
+      "selected downloads keep exact IDs outside the current filter",
+      "/api/export",
+      json(
+        {
+          dataset: "demo",
+          mode: "detail",
+          range: "selected",
+          batteryIds: checkedIds,
+          filter: { search: "no-matching-batteries" },
+          sections: ["responsibility", "loans"],
+        },
+        staffCookie,
+      ),
+    )
+  ).json();
+  assert.deepEqual(
+    checked.tables.Batteries.map((row) => row.battery_id).sort(),
+    checkedIds,
+  );
+  const unknownAge = await (
+    await check(
+      "advanced unknown-age filter is shared by exported summary",
+      "/api/export",
+      json(
+        { dataset: "demo", mode: "summary", filter: { ageMode: "unknown" } },
+        staffCookie,
+      ),
+    )
+  ).json();
+  assert.deepEqual(
+    unknownAge.tables.Inventory.map((row) => row.battery_id).sort(),
+    snapshot.batteries
+      .filter((b) => b.manufacturedOn === null)
+      .map((b) => b.id)
+      .sort(),
+  );
+  await check(
+    "invalid filter ranges are rejected",
+    "/api/export",
+    json(
+      {
+        dataset: "demo",
+        mode: "summary",
+        filter: { capacityMinMah: 5000, capacityMaxMah: 2000 },
+      },
+      staffCookie,
+    ),
+    400,
+  );
+  const full = await (
+    await check(
+      "staff can export complete filtered battery details",
+      "/api/export",
+      json({ dataset: "demo", mode: "detail", filter }, staffCookie),
+    )
+  ).json();
+  assert.deepEqual(
+    full.tables.Batteries.map((row) => row.battery_id).sort(),
+    expectedIds,
+  );
+  assert.ok(full.tables.Loans.length);
+  const selected = await (
+    await check(
+      "single-battery export respects selected sections",
+      "/api/export",
+      json(
+        {
+          dataset: "demo",
+          mode: "detail",
+          batteryId: before.id,
+          sections: ["loans"],
+        },
+        staffCookie,
+      ),
+    )
+  ).json();
+  assert.deepEqual(Object.keys(selected.tables), ["Batteries", "Loans"]);
+  await check(
+    "empty detail selection is rejected",
+    "/api/export",
+    json(
+      { dataset: "demo", mode: "detail", batteryId: before.id, sections: [] },
+      staffCookie,
+    ),
+    400,
+  );
+  await check(
+    "unknown batteries do not export unrelated data",
+    "/api/export",
+    json(
+      { dataset: "demo", mode: "detail", batteryId: "UNKNOWN" },
+      staffCookie,
+    ),
+    404,
+  );
+  await check(
+    "complete activity history is available to staff",
+    "/api/inventory?dataset=demo&activity=all",
+    { headers: { Cookie: staffCookie } },
+  );
+  const downloadUrl = (request, format) =>
+    `/api/export?request=${encodeURIComponent(JSON.stringify(request))}&format=${format}`;
+  const currentPageRequest = {
+    dataset: "demo",
+    mode: "summary",
+    range: "page",
+    page: 1,
+    pageSize: "10",
+  };
+  await check(
+    "anonymous downloads are rejected",
+    downloadUrl(currentPageRequest, "xlsx"),
+    {},
+    401,
+  );
+  const attachment = await check(
+    "staff receive a real current-page Excel attachment",
+    downloadUrl(currentPageRequest, "xlsx"),
+    { headers: { Cookie: staffCookie } },
+  );
+  assert.match(attachment.headers.get("content-disposition"), /^attachment;/);
+  assert.equal(attachment.headers.get("cache-control"), "no-store");
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(Buffer.from(await attachment.arrayBuffer()));
+  assert.equal(
+    workbook.getWorksheet("Inventory").rowCount,
+    page.tables.Inventory.length + 1,
+  );
+  const downloadedDetail = await (
+    await check(
+      "staff receive all selected JSON history tables",
+      downloadUrl(
+        {
+          dataset: "demo",
+          mode: "detail",
+          batteryId: before.id,
+          sections: ["loans", "audit"],
+        },
+        "json",
+      ),
+      { headers: { Cookie: staffCookie } },
+    )
+  ).json();
+  assert.deepEqual(Object.keys(downloadedDetail.tables), [
+    "Batteries",
+    "Loans",
+    "Operations",
+  ]);
+  await check(
+    "CSV cannot silently discard detailed history tables",
+    downloadUrl(
+      { dataset: "demo", mode: "detail", batteryId: before.id },
+      "csv",
+    ),
+    { headers: { Cookie: staffCookie } },
+    400,
+  );
+  await check(
+    "staff cannot download account administration data",
+    "/api/accounts?download=csv",
+    { headers: { Cookie: staffCookie } },
+    403,
+  );
+  const accountCsv = await (
+    await check(
+      "admin account download excludes credential material",
+      "/api/accounts?download=csv",
+      { headers: { Cookie: adminCookie } },
+    )
+  ).text();
+  assert.doesNotMatch(
+    accountCsv,
+    /password_hash|password_salt|token_hash|authVersion/,
+  );
+  await checkTaskRemoval({ check, json, adminCookie, staffCookie });
+  await check(
+    "staff sign-out invalidates their session",
+    "/api/session",
+    json({ action: "signout" }, staffCookie),
+  );
+  await check(
+    "signed-out sessions lose access",
+    "/api/inventory",
+    { headers: { Cookie: staffCookie } },
+    401,
+  );
+
+  return { checks: results.length, passed: true, results };
+}

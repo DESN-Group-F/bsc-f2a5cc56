@@ -63,6 +63,56 @@ async function savedModel(context) {
     return { modelInput, model: (await context.models().create(modelInput)).model };
 }
 
+test("first intake provisions missing directories without reading the inventory or unrelated history", async () => {
+    const scope = "intake-provisioning-only:demo", queries = [], statements = new WeakMap();
+    const trace = (statement, sql) => {
+        const proxy = new Proxy(statement, {
+            get(target, property) {
+                if (property === "bind") return (...values) => trace(target.bind(...values), sql);
+                if (["first", "all", "run", "raw"].includes(property)) return (...args) => {
+                    queries.push(sql);
+                    return target[property](...args);
+                };
+                const value = Reflect.get(target, property);
+                return typeof value === "function" ? value.bind(target) : value;
+            },
+        });
+        statements.set(proxy, { statement, sql });
+        return proxy;
+    };
+    const database = {
+        prepare: sql => trace(db.prepare(sql), sql),
+        batch: prepared => {
+            const real = prepared.map(statement => statements.get(statement));
+            queries.push(...real.map(item => item.sql));
+            return db.batch(real.map(item => item.statement));
+        },
+    };
+    assert.equal((await rows("people", scope)).length, 0);
+    assert.equal((await rows("buildings", scope)).length, 0);
+    assert.equal((await rows("rooms", scope)).length, 0);
+    const payload = {
+        requestId: crypto.randomUUID(), sessionId: crypto.randomUUID(), tagId: "DEMO-INTAKE-PROVISIONING-ONLY",
+        firstUseMode: "at_registration",
+        common: {
+            name: "First incoming battery", model: "FIRST-2200", chemistry: "LiPo", capacityMah: 2200, voltage: 7.4,
+            ownerId: `staff-${other.id}`, homeBuildingId: "J18", homeRoomId: "J18-DEMO-ROOM", manufacturedOn: null, firstUsedOn: null,
+        },
+    };
+    const receipt = await new IntakeStore(database, scope, "demo", self, () => new Date(at)).register(payload);
+    assert.equal(receipt.batteryId, "BAT-00000001");
+    assert.equal((await rows("batteries", scope)).length, 1);
+    assert.ok((await rows("people", scope)).some(person => person.account_id === other.id));
+    assert.ok((await rows("buildings", scope)).some(building => building.id === "J18"));
+    assert.ok((await rows("rooms", scope)).some(room => room.id === "J18-DEMO-ROOM"));
+    const reads = queries.filter(sql => /^\s*SELECT\b/i.test(sql));
+    assert.ok(reads.length > 0);
+    assert.ok(reads.every(sql => !/\b(loans|charges|observations|audit_events|teaching_groups)\b/i.test(sql)), "intake must not query unrelated inventory history or private groups");
+    const batteryReads = reads.filter(sql => /\bFROM\s+batteries\b/i.test(sql));
+    assert.ok(batteryReads.length > 0);
+    assert.ok(batteryReads.every(sql => /\btag_id\s*=\s*\?/i.test(sql) || /\bLIMIT\s+1\b/i.test(sql)), "battery reads must stay bounded to the reviewed tag or automatic-number lookup");
+});
+
 test("a deliberate demo intake atomically creates one numbered asset and a native attributable receipt", async () => {
     const context = await fixture("one"), requested = input(context), receipt = await context.intake().register(requested);
     assert.equal(receipt.batteryId, "BAT-00000001"); assert.equal(receipt.tagId, requested.tagId);

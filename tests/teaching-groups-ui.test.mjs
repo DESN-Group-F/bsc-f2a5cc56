@@ -115,7 +115,7 @@ test("inventory groups select members across pages while respecting the fixed pe
     const more = Array.from({ length: 30 }, (_, index) => ({ ...data.batteries[2], id: `BAT-EXTRA-${String(index).padStart(3, "0")}` }));
     data.batteries.push(...more); data.teachingGroups[0].batteryIds.push(...more.map(battery => battery.id));
     const { appliedFilterChips } = await component("components/inventory/inventory-filter-panel.tsx", ["appliedFilterChips"], hooks());
-    const { InventoryTable } = await component("components/inventory/views.tsx", ["InventoryTable"], state, { appliedFilterChips });
+    const { InventoryTable } = await component("components/inventory/inventory-table.tsx", ["InventoryTable"], state, { appliedFilterChips });
     const render = () => { state.reset(); const tree = InventoryTable({ data, ready: true, personalScope: scope, onEdit() {}, onDetail() {}, onSetup() {}, onMovement() {}, onExport: value => exports.push(value) }); state.commit(); return tree; };
     button(render(), "Teaching groups").props.onClick(); const manager = nodes(render()).find(node => node.type === "TeachingGroupsPanel"); manager.props.onSelect(data.teachingGroups[0]); manager.props.onClose();
     const tree = render(); assert.match(text(tree), /31 batteries selected\. 1 member is outside this personal view/); assert.equal(button(tree, "Check out selected").props.disabled, true); assert.equal(button(tree, "Download selected").props.disabled, false);
@@ -129,7 +129,7 @@ test("sort criteria appear in applied filters and Clear filters restores ID asce
     assert.equal(select(tree, "Battery sort direction").props.value, "desc"); select(tree, "Sort batteries by").props.onValueChange("registered"); assert.deepEqual(changes, [{ sortBy: "registered" }]);
     const chips = appliedFilterChips(filters, data); assert.match(chips.find(chip => chip.key === "sort").label, /Capacity.*Descending/); assert.equal(chips.find(chip => chip.key === "group").label, "Teaching group: Class A");
     assert.deepEqual(chips.find(chip => chip.key === "sort").reset, { sortBy: "id", sortDirection: "asc" }); assert.deepEqual(chips.find(chip => chip.key === "group").reset, { groupId: null });
-    const tableState = hooks(), table = await component("components/inventory/views.tsx", ["InventoryTable"], tableState, { appliedFilterChips });
+    const tableState = hooks(), table = await component("components/inventory/inventory-table.tsx", ["InventoryTable"], tableState, { appliedFilterChips });
     const render = () => { tableState.reset(); const current = table.InventoryTable({ data, ready: true, personalScope: "responsible", onEdit() {}, onDetail() {}, onSetup() {}, onMovement() {}, onExport() {} }); tableState.commit(); return current; };
     nodes(render()).find(node => node.type === "Checkbox" && node.props["aria-label"] === "Select BAT-A").props.onCheckedChange(true);
     button(render(), "Filter").props.onClick(); nodes(render()).find(node => node.type === "InventoryFilterPanel").props.onChange({ groupId: data.teachingGroups[0].id, sortBy: "voltage", sortDirection: "desc" });

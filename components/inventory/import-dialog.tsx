@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from "@/components/ui/table";
 import { parseCsv, importPayload } from "@/lib/client-utils";
-import type { WriteAction } from "./movement-dialog";
+import type { WriteAction } from "@/lib/client/inventory-contracts";
 export function ImportDialog({ kind, onClose, write }: {
     kind: "people" | "buildings" | "rooms" | "batteries";
     onClose: () => void;

@@ -11,7 +11,7 @@ import type { TeachingGroup } from "@/lib/teaching-groups";
 import { groupMaintenanceKey, captureGroupMaintenance, recoverGroupMaintenance, verifyGroupMaintenance, type GroupMaintenanceAttempt, type GroupMaintenancePayload } from "@/lib/group-maintenance";
 import { fromSydneyInput, staffIdentityLabel } from "@/lib/client-utils";
 import { roomPickerOptions } from "@/lib/location-catalog";
-import type { WriteAction } from "./movement-dialog";
+import type { WriteAction } from "@/lib/client/inventory-contracts";
 
 export function GroupMaintenanceDialog({ data, group, ids, write, onClose, onChanged }: { data: InventorySnapshot; group?: TeachingGroup; ids: string[]; write: WriteAction; onClose: () => void; onChanged: () => Promise<void> }) {
     const [context] = useState(() => ({ accountId: data.user.id, dataset: data.dataset }));

@@ -1,4 +1,6 @@
 "use client";
+import type { MovementDraft, WriteAction } from "@/lib/client/inventory-contracts";
+export type { MovementDraft, WriteAction } from "@/lib/client/inventory-contracts";
 import { isActiveBattery } from "@/lib/battery-lifecycle";
 import { useEffect, useRef, useState } from "react";
 import { ScanLine, Trash2, Radio, Plus, RefreshCw } from "lucide-react";
@@ -11,10 +13,9 @@ import { RecordPicker } from "./record-picker";
 import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
 import { formatTime, reloadSessionPage } from "@/lib/client-utils";
 import { captureMovementAttempt, movementFailureStatus, movementStorageKey, recoverMovementAttempt, verifyMovementReceipt, type MovementAttempt } from "@/lib/movement-session";
-import type { TeachingGroupReference } from "@/lib/teaching-context";
 
-export type MovementDraft = { kind: "checkout" | "return"; ids: string[]; nonce: string; teachingGroup?: TeachingGroupReference; excludedIds?: string[] };
-export type WriteAction = (action: string, payload: unknown, extra?: Record<string, unknown>) => Promise<unknown>;
+
+
 type LatestReview = { inventory: InventorySnapshot; changes: { before: BatteryRecord; after: BatteryRecord | undefined }[] };
 
 export function MovementDialog({ draft, data, onClose, write }: {

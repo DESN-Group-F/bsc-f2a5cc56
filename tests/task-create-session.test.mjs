@@ -80,11 +80,12 @@ function nodes(node, result = []) {
 }
 function label(node) { return Array.isArray(node) ? node.map(label).join("") : node && typeof node === "object" ? label(node.props?.children) : node == null ? "" : String(node); }
 async function loadEditor(harness) {
-    const source = await readFile("components/inventory/task-plans-panel.tsx", "utf8");
+    const files = ["lib/client/task-api.ts", "components/inventory/tasks/task-presentation.ts", "components/inventory/tasks/task-plan-editor.tsx"];
+    const source = (await Promise.all(files.map(file => readFile(file, "utf8")))).join("\n");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export \{.*\}(?: from "[^"]+")?;\r?\n/gm, "").replace(/\bexport (?=(?:async )?function|const|let|var)/g, "");
     const bindings = { ...harness.hooks, ...harness.ui, captureTaskCreate, recoverTaskCreate, taskCreateFailureStatus, taskCreateStorageKey, verifyTaskCreateReceipt, taskTemplates, taskPlanSchema, taskSchedulePreview, taskTargetsByCategory, taskPlanMatchesQuery,
         currentSydneyDate: () => "2026-10-03", formatDateOnly: value => value || "Not configured", formatTime: value => value, roomLabel: room => room.name, staffIdentityLabel: (name, username) => `${name} (${username})`, isSelectableRoom: room => room.selectable, reloadSessionPage() { throw new Error("Unexpected sign-in navigation"); }, downloadTaskJson() { throw new Error("No download expected"); } };
-    return new Function(...Object.keys(bindings), "_jsx", "_jsxs", "_Fragment", `${compiled}\nreturn { TaskPlanEditor, TaskPlansPanel };`)(...Object.values(bindings), harness.jsx, harness.jsx, "Fragment");
+    return new Function(...Object.keys(bindings), "_jsx", "_jsxs", "_Fragment", `${compiled}\nreturn { TaskPlanEditor };`)(...Object.values(bindings), harness.jsx, harness.jsx, "Fragment");
 }
 
 test("actual task creation handlers lock a lost-response payload, recover it after remount and retry without a replacement ID", async context => {

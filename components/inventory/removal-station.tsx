@@ -13,7 +13,7 @@ import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
 import { formatTime } from "@/lib/client-utils";
 import { captureLifecycleAttempt, lifecycleFailureStatus, lifecycleStorageKey, recoverLifecycleSession, verifyLifecycleReceipt, type LifecycleAttempt, type LifecyclePayload, type LifecycleReceipt } from "@/lib/lifecycle-session";
 import { captureRemovalDraft, recoverRemovalDraft, removalDraftStorageKey, type RemovalDraft } from "@/lib/removal-draft";
-import type { WriteAction } from "./movement-dialog";
+import type { WriteAction } from "@/lib/client/inventory-contracts";
 
 import type { TeachingGroupReference } from "@/lib/teaching-context";
 

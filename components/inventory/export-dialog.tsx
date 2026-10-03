@@ -1,4 +1,6 @@
 "use client";
+import type { ExportDraft } from "@/lib/client/inventory-contracts";
+export type { ExportDraft } from "@/lib/client/inventory-contracts";
 import { useState } from "react";
 import { Download } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -6,10 +8,10 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import { exportSections, type ExportSection, type InventoryFilter } from "@/lib/inventory-query";
+import { exportSections, type ExportSection } from "@/lib/inventory-query";
 import { downloadExportAttachment, type ExportDownloadFormat } from "@/lib/client-utils";
 import type { Dataset } from "@/lib/domain";
-export type ExportDraft = { batteryId?: string; selectedIds?: string[]; selectedOnly?: boolean; filter: InventoryFilter; page: number; pageSize: "10" | "25" | "50" | "100"; matching: number; pageCount: number };
+
 export function ExportDialog({ draft, dataset, onClose }: { draft: ExportDraft; dataset: Dataset; onClose: () => void }) {
     const [selectedIds] = useState(() => [...new Set(draft.selectedIds ?? [])]);
     const [mode, setMode] = useState(draft.batteryId || draft.selectedOnly ? "detail" : "summary"), [range, setRange] = useState(selectedIds.length ? "selected" : "filtered"), [format, setFormat] = useState<ExportDownloadFormat>("xlsx");

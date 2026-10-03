@@ -6,9 +6,8 @@ import { ArrowLeft } from "lucide-react";
 import type { InventorySnapshot } from "@/lib/domain";
 import type { TeachingGroup } from "@/lib/teaching-groups";
 import type { TeachingGroupReference } from "@/lib/teaching-context";
-import type { EditorDraft } from "./record-editor";
-import type { ExportDraft } from "./export-dialog";
-import { InventoryTable } from "./views";
+import type { EditorDraft, ExportDraft } from "@/lib/client/inventory-contracts";
+import { InventoryTable } from "./inventory-table";
 import { TeachingGroupsPanel } from "./teaching-groups-panel";
 
 export function TeachingGroupsWorkspace({ data, ready, activeId, onActiveChange, onBack, returnBlocked = false, onMovement, onRemoval, onMaintenance, onEdit, onDetail, onExport, onChanged, onDialogChange, onActivity }: {

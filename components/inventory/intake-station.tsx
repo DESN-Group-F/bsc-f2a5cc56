@@ -13,7 +13,7 @@ import { TeachingGroupsPanel } from "./teaching-groups-panel";
 import { RecordPicker } from "./record-picker";
 import { BatteryModelPicker } from "./battery-model-picker";
 import type { InventorySnapshot } from "@/lib/domain";
-import type { WriteAction } from "./movement-dialog";
+import type { WriteAction } from "@/lib/client/inventory-contracts";
 import { dateOnlyOrNull, formatTime, numberOrNull, staffIdentityLabel } from "@/lib/client-utils";
 import { currentSydneyDate } from "@/lib/battery-age";
 import { buildingPickerOptions, isSelectableRoom, roomPickerOptions } from "@/lib/location-catalog";

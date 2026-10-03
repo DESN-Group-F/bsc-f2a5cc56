@@ -15,3 +15,4 @@ drizzle/0011_batch_intake.sql text eol=lf
 drizzle/0012_battery_lifecycle.sql text eol=lf
 drizzle/0013_optional_removal_reason.sql text eol=lf
 drizzle/0014_personal_teaching_groups.sql text eol=lf
+drizzle/0015_recoverable_task_removal.sql text eol=lf

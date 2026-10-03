@@ -10,18 +10,22 @@ export const taskCapabilities = {
     schedulerAvailable: false, emailAvailable: false, messageGeneration: "on_request",
     note: "Generated while system is in use; unattended delivery unavailable.",
 } as const;
-export type TaskPlanRecord = TaskPlan & { id: string; version: number; createdAt: string; updatedAt: string; createdBy: string; updatedBy: string; preview: ReturnType<typeof taskSchedulePreview> };
+export type TaskVisibility = "current" | "removed" | "all";
+export type TaskPlanRecord = TaskPlan & { id: string; version: number; removedAt: string | null; createdAt: string; updatedAt: string; createdBy: string; updatedBy: string; preview: ReturnType<typeof taskSchedulePreview> };
 export type TaskGenerationIssue = { planId: string; message: string };
 export type TaskCycleRecord = TaskPlan & {
     id: string; planId: string; planVersion: number; dueOn: string; reminderOn: string | null; reminderStatus: string; reminderAtUtc: string | null;
     status: "open" | "completed"; version: number; createdAt: string; completedAt: string | null; completedBy: string | null; completedByName: string | null; completionNotes: string | null;
-    currentAssigneeIds: string[]; canComplete: boolean; targetSnapshot: Record<string, unknown>;
+    currentAssigneeIds: string[]; canComplete: boolean; planRemoved: boolean; planRemovedAt: string | null; targetSnapshot: Record<string, unknown>;
 };
-export type InboxMessage = { id: string; cycleId: string; planId: string; recipientId: string; title: string; body: string; createdAt: string; readAt: string | null; dueOn: string; reminderOn: string | null; reminderTime: string | null; reminderAtUtc: string | null; taskStatus: "open" | "completed"; cycleVersion: number; cycle: TaskCycleRecord };
+export type InboxMessage = { id: string; version: number; removedAt: string | null; cycleId: string; planId: string; recipientId: string; title: string; body: string; createdAt: string; readAt: string | null; dueOn: string; reminderOn: string | null; reminderTime: string | null; reminderAtUtc: string | null; taskStatus: "open" | "completed"; cycleVersion: number; cycle: TaskCycleRecord };
 
 const editSchema = z.object({ id: z.string().uuid(), expectedVersion: z.number().int().positive() });
 const completionSchema = z.object({ cycleId: z.string().uuid(), expectedVersion: z.number().int().positive(), notes: z.string().trim().max(2000).optional().transform(value => value || null) }).strict();
 const readSchema = z.object({ id: z.string().uuid() }).strict();
+const visibilitySchema = z.enum(["current", "removed", "all"]);
+const removalSchema = editSchema.strict();
+const includesVisibility = (removedAt: unknown, visibility: TaskVisibility) => visibility === "all" || (visibility === "removed" ? removedAt != null : removedAt == null);
 
 /** Task configurations, shared cycles and private read state use the same D1 boundary. */
 export class TaskPlanStore {
@@ -43,6 +47,7 @@ export class TaskPlanStore {
         if (!await this.first(`SELECT id FROM staff_accounts WHERE ${authorization.sql}`, ...authorization.values)) throw new DomainError(403, "Your account access changed. Sign in again.");
         const result = JSON.parse(String(row.result_json));
         if (row.kind === "task_plan_create_rejected" && result.rejected === true) throw new DomainError(Number(result.status), String(result.error), "task_create_rejected_final");
+        if (/^task_(plan|message)_(remove|restore)_rejected$/.test(String(row.kind)) && result.rejected === true) throw new DomainError(Number(result.status), String(result.error), "task_visibility_rejected_final");
         return result;
     }
     private async rejectCreate(identity: { requestId: string; fingerprint: string }, rejection: DomainError) {
@@ -96,7 +101,8 @@ export class TaskPlanStore {
         return { ...snapshot.plan, reminderDaysBefore, id: String(row.id), planId: String(planRow.id), planVersion: Number(row.plan_version), dueOn: String(row.due_on), reminderOn: row.reminder_on as string | null, reminderTime: row.reminder_time as string | null,
             reminderStatus: String(row.reminder_status), reminderAtUtc: row.reminder_at_utc as string | null, status: row.status as "open" | "completed", version: Number(row.version), createdAt: String(row.created_at), completedAt: row.completed_at as string | null,
             completedBy: row.completed_by as string | null, completedByName: row.completed_by_name as string | null, completionNotes: row.completion_notes as string | null, currentAssigneeIds,
-            canComplete: row.status === "open" && (this.actor.role === "admin" || currentAssigneeIds.includes(this.actor.id)), targetSnapshot: snapshot.target };
+            planRemoved: planRow.removed_at != null, planRemovedAt: planRow.removed_at as string | null,
+            canComplete: row.status === "open" && planRow.removed_at == null && (this.actor.role === "admin" || currentAssigneeIds.includes(this.actor.id)), targetSnapshot: snapshot.target };
     }
     private latestCompletion(planKey: unknown, cycles: Row[]) { return cycles.find(cycle => cycle.plan_key === planKey && cycle.status === "completed") ?? null; }
     private async validateTarget(plan: TaskPlan) {
@@ -135,6 +141,7 @@ export class TaskPlanStore {
             const id = edit?.id ?? crypto.randomUUID(), key = this.key(id), at = this.clock().toISOString();
             const data = await this.data(), before = data.plans.find(row => row.id === id) ?? null;
             if (update && !before) throw new DomainError(404, "Task plan not found in this inventory.");
+            if (before?.removed_at != null) throw new DomainError(409, "Restore this task plan before editing it.", "plan_removed");
             if (before && Number(before.version) !== edit?.expectedVersion) throw new DomainError(409, "This task plan changed. Review the latest configuration before saving.", "record_conflict");
             const version = before ? Number(before.version) + 1 : 1, target = await this.validateTarget(plan);
             const activeIds = new Set(data.staffDirectory.filter(account => account.active).map(account => account.id));
@@ -174,7 +181,7 @@ export class TaskPlanStore {
         let data = await this.data();
         const generationIssues: TaskGenerationIssue[] = [];
         for (const row of data.plans) {
-            if (row.state !== "active") continue;
+            if (row.state !== "active" || row.removed_at != null) continue;
             const plan = this.plan(row, data);
             const unavailable = plan.assigneeIds.filter(id => !data.staffDirectory.some(account => account.id === id && account.active));
             if (unavailable.length) generationIssues.push({ planId: String(row.id), message: "An assigned staff account is disabled. Reassign this plan to active staff; existing messages and task history are retained." });
@@ -207,7 +214,7 @@ export class TaskPlanStore {
         const now = this.clock().toISOString();
         for (const row of data.cycles) {
             const planRow = data.plans.find(plan => plan.key === row.plan_key);
-            if (row.status !== "open" || planRow?.state !== "active" || !row.reminder_at_utc || String(row.reminder_at_utc) > now) continue;
+            if (row.status !== "open" || planRow?.state !== "active" || planRow.removed_at != null || !row.reminder_at_utc || String(row.reminder_at_utc) > now) continue;
             const cycle = this.cycle(row, data);
             const recipients = cycle.currentAssigneeIds.filter(id => data.staffDirectory.some(account => account.id === id && account.active));
             for (const recipient of recipients) {
@@ -223,15 +230,18 @@ export class TaskPlanStore {
         return generationIssues;
     }
 
-    async list() {
+    async list(options: { visibility?: TaskVisibility } = {}) {
+        const visibility = visibilitySchema.parse(options.visibility ?? "current");
         const generationIssues = await this.sync();
         const data = await this.data();
-        const cycles = data.cycles.map(row => this.cycle(row, data));
-        const plans: TaskPlanRecord[] = data.plans.map(row => {
+        const selectedPlans = data.plans.filter(row => includesVisibility(row.removed_at, visibility));
+        const selectedKeys = new Set(selectedPlans.map(row => row.key));
+        const cycles = data.cycles.filter(row => selectedKeys.has(row.plan_key)).map(row => this.cycle(row, data));
+        const plans: TaskPlanRecord[] = selectedPlans.map(row => {
             const plan = this.plan(row, data), previous = this.latestCompletion(row.key, data.cycles), open = cycles.find(cycle => cycle.planId === row.id && cycle.status === "open");
             const preview = taskSchedulePreview(plan, { lastDueOn: previous?.due_on as string | null, completedOn: previous?.completed_at ? currentSydneyDate(new Date(String(previous.completed_at))) : null });
             if (open) Object.assign(preview, { nextDueOn: open.dueOn, nextReminderOn: open.reminderOn, reminderTime: open.reminderTime, reminderStatus: open.reminderStatus, reminderAtUtc: open.reminderAtUtc });
-            return { ...plan, id: String(row.id), version: Number(row.version), createdAt: String(row.created_at), updatedAt: String(row.updated_at), createdBy: String(row.created_by), updatedBy: String(row.updated_by), preview };
+            return { ...plan, id: String(row.id), version: Number(row.version), removedAt: row.removed_at as string | null, createdAt: String(row.created_at), updatedAt: String(row.updated_at), createdBy: String(row.created_by), updatedBy: String(row.updated_by), preview };
         });
         return { plans, cycles, staffDirectory: data.staffDirectory, capabilities: taskCapabilities, generationIssues };
     }
@@ -244,6 +254,7 @@ export class TaskPlanStore {
         if (!row) throw new DomainError(404, "Task cycle not found in this inventory.");
         if (row.status !== "open" || row.version !== payload.expectedVersion) throw new DomainError(409, "This task changed or was already completed. Review its latest record.", "record_conflict");
         const cycle = this.cycle(row, data);
+        if (cycle.planRemoved) throw new DomainError(409, "This task plan was removed. Restore the plan before completing its outstanding task.", "plan_removed");
         if (!cycle.canComplete) throw new DomainError(403, "Only assigned staff or an administrator can complete this task.");
         const planRow = data.plans.find(plan => plan.key === row.plan_key)!, plan = this.plan(planRow, data), at = this.clock().toISOString();
         const candidate = taskCycleCandidate(plan, String(row.due_on), currentSydneyDate(new Date(at)));
@@ -254,25 +265,78 @@ export class TaskPlanStore {
         ], identity);
     }
 
-    async messages(options: { allUnread?: boolean; readState?: "all" | "unread" | "read"; taskStatus?: "all" | "open" | "completed"; search?: string } = {}) {
+    async messages(options: { visibility?: TaskVisibility; allUnread?: boolean; readState?: "all" | "unread" | "read"; taskStatus?: "all" | "open" | "completed"; search?: string } = {}) {
+        const visibility = visibilitySchema.parse(options.visibility ?? "current");
         const legacyUnread = z.boolean().parse(options.allUnread ?? false);
         const readState = z.enum(["all", "unread", "read"]).parse(options.readState ?? (legacyUnread ? "unread" : "all"));
         const taskStatus = z.enum(["all", "open", "completed"]).parse(options.taskStatus ?? "all");
         const generationIssues = await this.sync();
         const data = await this.data(), rows = await this.rows("SELECT * FROM task_messages WHERE scope=? AND recipient_id=? ORDER BY created_at DESC,rowid DESC", this.scope, this.actor.id);
-        const unreadCount = rows.filter(row => row.read_at === null).length;
+        const unreadCount = rows.filter(row => row.read_at === null && row.removed_at === null).length;
         const query = (options.search ?? "").trim().toLowerCase();
-        const messages: InboxMessage[] = rows.map(row => {
+        const messages: InboxMessage[] = rows.filter(row => includesVisibility(row.removed_at, visibility)).map(row => {
             const cycle = this.cycle(data.cycles.find(cycle => cycle.key === row.cycle_key)!, data);
-            return { id: String(row.id), cycleId: cycle.id, planId: cycle.planId, recipientId: String(row.recipient_id), title: String(row.title), body: String(row.body), createdAt: String(row.created_at), readAt: row.read_at as string | null, dueOn: cycle.dueOn, reminderOn: row.reminder_on as string | null, reminderTime: row.reminder_time as string | null, reminderAtUtc: row.reminder_at_utc as string | null, taskStatus: cycle.status, cycleVersion: cycle.version, cycle };
-        }).filter(message => (readState === "all" || (readState === "unread" ? message.readAt === null : message.readAt !== null)) && (taskStatus === "all" || message.taskStatus === taskStatus) && (!query || taskPlanMatchesQuery(message.cycle, query) || `${message.title} ${message.body} ${message.dueOn} ${JSON.stringify(message.cycle.targetSnapshot)}`.toLowerCase().includes(query)));
+            return { id: String(row.id), version: Number(row.version), removedAt: row.removed_at as string | null, cycleId: cycle.id, planId: cycle.planId, recipientId: String(row.recipient_id), title: String(row.title), body: String(row.body), createdAt: String(row.created_at), readAt: row.read_at as string | null, dueOn: cycle.dueOn, reminderOn: row.reminder_on as string | null, reminderTime: row.reminder_time as string | null, reminderAtUtc: row.reminder_at_utc as string | null, taskStatus: cycle.status, cycleVersion: cycle.version, cycle };
+        }).filter(message => (readState === "all" || (readState === "unread" ? message.readAt === null : message.readAt !== null)) && (taskStatus === "all" || (message.taskStatus === taskStatus && (taskStatus !== "open" || !message.cycle.planRemoved))) && (!query || taskPlanMatchesQuery(message.cycle, query) || `${message.title} ${message.body} ${message.dueOn} ${JSON.stringify(message.cycle.targetSnapshot)}`.toLowerCase().includes(query)));
         return { messages, unreadCount, capabilities: taskCapabilities, generationIssues };
     }
 
     async messageCounts() {
         const generationIssues = await this.sync();
-        const counts = await this.first("SELECT COUNT(*) AS total,SUM(CASE WHEN read_at IS NULL THEN 1 ELSE 0 END) AS unread FROM task_messages WHERE scope=? AND recipient_id=?", this.scope, this.actor.id);
+        const counts = await this.first("SELECT COUNT(*) AS total,SUM(CASE WHEN read_at IS NULL THEN 1 ELSE 0 END) AS unread FROM task_messages WHERE scope=? AND recipient_id=? AND removed_at IS NULL", this.scope, this.actor.id);
         return { messageCount: Number(counts?.total ?? 0), unreadCount: Number(counts?.unread ?? 0), capabilities: taskCapabilities, generationIssues };
+    }
+
+    private async rejectVisibility(kind: string, identity: { requestId: string; fingerprint: string }, rejection: DomainError) {
+        const authorization = this.actorGuard();
+        const result = { rejected: true, status: rejection.status, error: rejection.message };
+        try {
+            await this.db.batch([this.statement(`INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) SELECT ?,?,?,?,?,?,CASE WHEN (${authorization.sql}) THEN 1 ELSE 0 END`, this.key(identity.requestId), this.scope, `${kind}_rejected`, identity.fingerprint, JSON.stringify(result), this.clock().toISOString(), ...authorization.values)]);
+        } catch (error) {
+            const committed = await this.replay(identity.requestId, identity.fingerprint);
+            if (committed) return committed;
+            throw error;
+        }
+        throw new DomainError(rejection.status, rejection.message, "task_visibility_rejected_final");
+    }
+
+    private async changeVisibility(entity: "plan" | "message", action: "remove" | "restore", input: unknown, requestId: string) {
+        if (entity === "plan") this.requireAdmin();
+        const payload = removalSchema.parse(input);
+        const identity = { requestId: z.string().uuid().parse(requestId), fingerprint: JSON.stringify({ actorId: this.actor.id, entity, action, payload }) };
+        const previous = await this.replay(identity.requestId, identity.fingerprint);
+        if (previous) return previous;
+        const kind = `task_${entity}_${action}`, table = entity === "plan" ? "task_plans" : "task_messages";
+        const personal = entity === "message" ? " AND recipient_id=?" : "", personalValues = entity === "message" ? [this.actor.id] : [];
+        try {
+            const row = await this.first(`SELECT * FROM ${table} WHERE scope=? AND id=?${personal}`, this.scope, payload.id, ...personalValues);
+            if (!row) throw new DomainError(404, entity === "plan" ? "Task plan not found in this inventory." : "Message not found in your inbox.");
+            if (row.version !== payload.expectedVersion || (action === "remove" ? row.removed_at !== null : row.removed_at === null)) throw new DomainError(409, "This record changed. Reload its current state before removing or restoring it.", "record_conflict");
+            const at = this.clock().toISOString(), removedAt = action === "remove" ? at : null;
+            const result = { id: payload.id, version: Number(row.version) + 1, removedAt, requestId: identity.requestId, action, actorAccountId: this.actor.id, dataset: this.dataset };
+            const stateGuard = action === "remove" ? "removed_at IS NULL" : "removed_at IS NOT NULL";
+            const condition = `key=? AND scope=? AND version=? AND ${stateGuard}${personal}`;
+            const values = [row.key, this.scope, payload.expectedVersion, ...personalValues];
+            const write = entity === "plan"
+                ? this.statement(`UPDATE task_plans SET removed_at=?,updated_at=?,updated_by=?,version=version+1 WHERE ${condition}`, removedAt, at, this.actor.id, ...values)
+                : this.statement(`UPDATE task_messages SET removed_at=?,version=version+1 WHERE ${condition}`, removedAt, ...values);
+            return await this.atomic(kind, result, `EXISTS(SELECT 1 FROM ${table} WHERE ${condition})`, values, [write,
+                this.event(`task_${entity}_${action === "remove" ? "removed" : "restored"}`, { [entity === "plan" ? "planId" : "messageId"]: payload.id, before: { removedAt: row.removed_at }, after: { removedAt } }, at),
+            ], identity);
+        } catch (error) {
+            const committed = await this.replay(identity.requestId, identity.fingerprint);
+            if (committed) return committed;
+            if (error instanceof DomainError && error.status >= 400 && error.status < 500) return this.rejectVisibility(kind, identity, error);
+            throw error;
+        }
+    }
+
+    changePlanVisibility(input: unknown, action: "remove" | "restore", requestId: string) {
+        return this.changeVisibility("plan", action, input, requestId);
+    }
+
+    changeMessageVisibility(input: unknown, action: "remove" | "restore", requestId: string) {
+        return this.changeVisibility("message", action, input, requestId);
     }
 
     async markRead(input: unknown) {
@@ -281,8 +345,8 @@ export class TaskPlanStore {
         if (row.read_at) return { id, readAt: String(row.read_at) };
         const readAt = this.clock().toISOString();
         try {
-            return await this.atomic("task_message_read", { id, readAt }, "EXISTS(SELECT 1 FROM task_messages WHERE key=? AND scope=? AND recipient_id=? AND read_at IS NULL)", [row.key, this.scope, this.actor.id], [
-                this.statement("UPDATE task_messages SET read_at=? WHERE key=? AND scope=? AND recipient_id=? AND read_at IS NULL", readAt, row.key, this.scope, this.actor.id),
+            return await this.atomic("task_message_read", { id, readAt }, "EXISTS(SELECT 1 FROM task_messages WHERE key=? AND scope=? AND recipient_id=? AND read_at IS NULL AND version=?)", [row.key, this.scope, this.actor.id, row.version], [
+                this.statement("UPDATE task_messages SET read_at=?,version=version+1 WHERE key=? AND scope=? AND recipient_id=? AND read_at IS NULL AND version=?", readAt, row.key, this.scope, this.actor.id, row.version),
                 this.event("task_message_read", { messageId: id, cycleKey: row.cycle_key }, readAt),
             ]);
         } catch (error) {

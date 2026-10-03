@@ -1,4 +1,6 @@
 "use client";
+import type { EditorDraft, WriteAction } from "@/lib/client/inventory-contracts";
+export type { EditorDraft } from "@/lib/client/inventory-contracts";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
@@ -8,16 +10,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RecordPicker } from "./record-picker";
 import { BatteryModelPicker } from "./battery-model-picker";
 import { modelApplication, modelFieldValue, type BatteryModelChoice, type ModelField, type ModelSelection } from "@/lib/battery-models";
-import type { InventorySnapshot, BatteryRecord, Person, Room, Building } from "@/lib/domain";
-import type { WriteAction } from "./movement-dialog";
+import type { InventorySnapshot } from "@/lib/domain";
 import { numberOrNull, dateOnlyOrNull, staffIdentityLabel } from "@/lib/client-utils";
 import { currentSydneyDate } from "@/lib/battery-age";
 import { buildingPickerOptions, isSupportedBuilding, roomPickerOptions } from "@/lib/location-catalog";
-export type EditorDraft = {
-    kind: "battery" | "person" | "building" | "room";
-    record?: BatteryRecord | Person | Room | Building;
-    initialTagId?: string;
-};
+
 export function RecordEditor({ draft, data, onClose, write }: {
     draft: EditorDraft;
     data: InventorySnapshot;

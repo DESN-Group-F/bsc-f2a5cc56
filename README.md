@@ -2,13 +2,15 @@
 
 A staff work platform for the DESN2000 battery-management design project. Its primary aim is to reduce routine staff work while keeping responsibility, lending and dated location evidence traceable.
 
-The current [source snapshot](docs/releases/2026-10-03-teaching-groups.md) is published on `battery-staff-platform-teaching-groups-20261003`. It includes model-assisted registration, reviewed intake/removal, manual scan selection and the primary Teaching groups workspace with recorded group activity. The package version remains 0.5.0; this is a development snapshot after the original freeze.
+The frozen **0.6.0** release reorganizes the existing staff workflows into explicit application, client, inventory-service and visual-system modules. The yellow-and-ink interface uses a shared theme across the inventory, workstations, tasks, dialogs and sign-in. Operational text and table cells use 14px text, supporting hints use 13px and compact labels use at least 12px; darker secondary text improves contrast while preserving the existing theme. See the [architecture map](docs/architecture.md), [design system](docs/design-system.md) and [release record](docs/releases/0.6.0.md).
+
+Release **0.6.0** uses branch `battery-staff-platform-v0.6.0` and annotated tag `battery-inventory-v0.6.0-freeze-20261003`. It includes recoverable personal Messages and shared recurring-plan removal, clearer task completion, model-assisted registration, reviewed intake/removal, manual scan selection and the primary Teaching groups workspace with recorded group activity. The preceding [development snapshot](docs/releases/2026-10-03-teaching-groups.md) remains available on `battery-staff-platform-teaching-groups-20261003`.
 
 The original **0.5.0** source remains at Git tag `battery-inventory-v0.5.0-freeze-20261003`, on branch `battery-staff-platform-v0.5.0`. See [that release record](docs/releases/0.5.0.md) for its frozen scope. Shared native staff accounts, role permissions, editable responsibility, battery age, personal inventory/activity views and complete exports continue in the current snapshot. Source publication does not deploy the application or include any local business database.
 
-The frozen source also includes **Recurring tasks**, **Messages** and a persistent **Scan checkout / Scan return** station, with reviewed batches, exact-request recovery and cleanup of successful simulator selections. The [task and Messages plan](docs/messages-and-reminders-plan.md) describes the implemented workflow and remaining email/scheduler conditions. Reminders are evaluated during authenticated use; email and unattended delivery are unavailable.
+The frozen source also includes **Recurring tasks**, **Messages** and a persistent **Scan checkout / Scan return** station, with reviewed batches, exact-request recovery and cleanup of successfully processed selections. The [task and Messages plan](docs/messages-and-reminders-plan.md) describes the implemented workflow and remaining email/scheduler conditions. Reminders are evaluated during authenticated use; email and unattended delivery are unavailable.
 
-Local development after the 0.5.0 freeze replaces the station's right-side simulator controls with **Manual selection**. Both inventories support selecting tagged or untagged batteries, searching the candidate list and clearing filters without losing selections. Saved movements identify this input as Manual selection. The frozen 0.5.0 tag remains unchanged.
+Release 0.6.0 replaces the station's right-side simulator controls with **Manual selection**. Both inventories support selecting tagged or untagged batteries, searching the candidate list and clearing filters without losing selections. Saved movements identify this input as Manual selection. The frozen 0.5.0 tag remains unchanged.
 
 The [staff workflow demonstration and guide](docs/staff-workflow-demo.md) provides a four-scene presentation script and a daily quick guide for batch borrowing and returns, shared tasks, selections across pages and periodic task templates.
 
@@ -22,9 +24,9 @@ All active staff see the same **Working inventory** and the same separate **Demo
 | --- | --- | --- |
 | View, filter and download all business records | Yes | Yes |
 | View/download shared periodic plans and cycles | Yes | Yes |
-| Configure periodic plans | No | Yes |
+| Configure, remove and restore shared periodic plans | No | Yes |
 | Complete a reviewed task cycle | Currently assigned tasks | All tasks |
-| Read and download own Messages | Yes | Yes |
+| Read, remove, restore and download own Messages | Yes | Yes |
 | Register new batteries, including reviewed CSV creation | Yes | Yes |
 | Save reusable battery models | Yes | Yes |
 | Save, edit and remove own teaching battery groups | Yes | Yes |
@@ -46,10 +48,10 @@ All active staff see the same **Working inventory** and the same separate **Demo
 4. Click the battery name, status, location or blank space in its row, or use its checkbox, to select or deselect it. Choose **Download selected** for summaries or complete selected details, including selections across filters/pages. Clicking the battery ID opens details without changing selection. The download dialog also offers all filtered results or the current page. **Download details** on one battery selects its information sections; **Select all information** includes all sections. A movement is limited to 100 batteries, while selected downloads do not inherit that limit.
 5. **My batteries** shows assets for which your account is the responsible owner, with In store / In use counts. **My batteries in use** shows your active recorded checkouts. Filters and downloads work within either personal view. These shortcuts do not restrict shared access. Use **My account** for preferences; administrators maintain accounts and saved records. The staff directory is read-only and follows native accounts.
 6. **My activity**, under **MY WORK**, shows inventory operations performed by your signed-in account; **Activity history** shows everyone's inventory operations. Both support search, historic-group filters, selection and complete downloads. Group operations appear as one expandable entry with original member evidence. Download group summaries as Excel/CSV/JSON, or include member actions and selectable full battery sections as Excel/JSON. Personal activity follows the recorded operator account ID, including operations on someone else's battery; it does not include account-management or sign-in records.
-7. **Recurring tasks** shows shared periodic plans and recorded cycles. Administrators start with one of three templates: weekly storage-area review, teaching-period inventory reconciliation or applicable six-calendar-month storage maintenance review. Dates, applicability, reminder time and assignments require explicit confirmation; all staff can view/search/download the complete matching task records as JSON. Actual procedures and real battery data remain pending.
-8. **Messages** is your persistent personal inbox. All / To do / Completed tabs filter task state; All read states / Unread / Read separately filter message reading. A red dot in the sidebar and beside unread subjects indicates unread messages, including any whose task is already completed. Search and a complete matching JSON download use the same criteria. Mark read records only your read state. **Open task** shows its reviewed requirements and recorded deadline; assigned staff or administrators can confirm completion after performing the task. Completion notes are optional, with a maximum of 2,000 characters. The completion time and operator are retained whether or not notes are supplied. Completion does not certify battery safety.
+7. **Recurring tasks** shows shared periodic plans and recorded cycles under **Current / Removed**. The initially collapsed **Prepared periodic tasks** library offers weekly storage-area review, teaching-period inventory reconciliation and applicable six-calendar-month storage maintenance review. Administrators confirm dates, applicability, reminder time and assignments before activation; all staff can view/search/download matching plans and their full cycle history. Administrators can **Remove** a plan after review and **Restore** it from Removed. Removal preserves its original draft/active/paused state, open cycle, recorded due date, assignments and completion history. While removed, the plan cannot be edited, generate cycles/reminders or have an outstanding task completed. Restore returns the same plan and existing cycle; later generation follows its retained state and recurrence. Actual procedures and real battery data remain pending.
+8. **Messages** is your persistent personal inbox with **Inbox / Removed** locations. Each card keeps its actions visible: **Complete task** for an eligible open task, **View completion** for a completed task, or **View task** with a visible reason when completion is unavailable. All / To do / Completed filters task state; All read states / Unread / Read independently filters reading. **Mark read** records only your read state. **Remove** moves only your copy into Removed; **Restore** returns that same message with its content, creation time, read history and linked task unchanged. Removal does not cancel or complete shared work or affect another recipient. The sidebar red dot counts unread messages still in your Inbox, independently of the visible filters or task completion. Task details show the deadline and assignments first, keep recorded requirements initially collapsed and retain the completion controls below the scrolling body. Assigned staff or administrators must explicitly confirm actual completion. Notes are optional up to 2,000 characters; completion time and operator are always retained. Completion does not certify battery safety.
 
-Every search/filter area includes **Clear filters**, including option-search popups. Resetting preserves the selected inventory, fixed personal or opened-group scope, chosen batteries and unrelated form values. Messages reset returns to All tasks and All read states; a filtered download includes only the resulting matching messages.
+Every search/filter area includes **Clear filters**, including option-search popups. Resetting preserves the selected inventory, fixed personal or opened-group scope, chosen batteries and unrelated form values. Messages reset returns to All tasks and All read states while retaining Inbox or Removed; a filtered download includes only the resulting matching messages in that location.
 
 Working inventory has no batteries until actual records are supplied. Both inventories contain reference building names **J18 - Willis Annexe**, **E10 - Hilmer Building** and **G17 - Electrical Engineering Building**, verified from [UNSW's makerspace directory](https://www.making.unsw.edu.au/makerspaces/about/). Only J18 is enabled; other buildings are greyed out and their room information is **Not available**. J18 contains **Demo room** and **Demo workspace**, explicitly marked **Placeholder**. These labels are not verified storage locations or RFID evidence. Room names can be updated later; renaming alone does not remove the placeholder flag.
 
@@ -71,7 +73,7 @@ Selected histories include every stored record, including records older than the
 
 The server reads the selected inventory and history in one D1 batch for each file. It rechecks filters and the authenticated personal scope when generating downloads. Ordinary filter/page changes retain explicit selections; if selected assets leave a personal view after reassignment or return, the download requires review instead of silently widening its scope. Data may have changed since the screen or validation request. The file's metadata and counts describe the downloaded state. Excel cell text longer than the supported limit is preserved in a **Complete text** worksheet. An export exceeding Excel's row limit is rejected with a JSON alternative, rather than silently shortened.
 
-Task-record JSON uses the same search as the shared plans/cycles view and includes every matching plan and its recorded cycles. Messages JSON includes only the authenticated recipient's messages with the current task-state, read-state and search criteria. These downloads carry scope/count metadata and are separate from the nine battery-detail sections; battery downloads do not automatically include periodic tasks or Messages.
+Task-record JSON uses the same Current/Removed location and search as the shared plans/cycles view and includes every matching plan and its recorded cycles. Messages JSON includes only the authenticated recipient's messages with the current Inbox/Removed location, task-state, read-state and search criteria. These downloads carry scope/count metadata and are separate from the nine battery-detail sections; battery downloads do not automatically include periodic tasks or Messages.
 
 ## Concurrent operation
 
@@ -91,17 +93,22 @@ Task and Messages views refresh every fifteen seconds while visible and idle. Ta
 - Tests cover independent accounts and contested transactions, not departmental-scale load. Staff efficiency has not been measured; see the proposed study.
 - Task intervals and procedures are provisional until confirmed for real areas/models. Working storage-area activation rejects placeholder rooms. No task or completion record establishes hardware evidence or safety certification.
 - Messages are generated during authenticated requests when an active task's valid Sydney reminder time has been reached. Stopping the server or use suspends evaluation until a later request. Email preferences are saved, but no email sender or unattended scheduler is connected.
-- Automatic email, student self-service and safety agents remain deferred. Release 0.5.0 has not been deployed to the earlier hosted service or OpenBayes. No model training is needed.
+- Automatic email, student self-service and safety agents remain deferred. This source release does not deploy or update the earlier hosted service or OpenBayes. No model training is needed.
 
 ## Project map
 
 | Directory | Purpose |
 | --- | --- |
 | app | Staff application, sign-in and authenticated APIs |
+| components/application | Application shell, navigation, workspace headings and recovery notices |
 | components/inventory | Staff forms, tables, accounts, imports and downloads |
 | components/ui | Bundled Shadcn primitives |
+| hooks | Browser snapshot, polling, workflow recovery and task loading lifecycles |
 | lib | Accounts, validation, inventory domain, export and client utilities |
+| lib/client | UI-independent request, draft and recovery contracts |
+| lib/server/inventory | Composed inventory services and transactional storage helpers |
 | lib/platform | Retained external protocol identifiers |
+| styles | Shared theme, base rules, shell, components, inventory and workflows |
 | db / drizzle | Database schema and versioned migrations |
 | tests | Domain, account, export and D1 invariant checks |
 | scripts | Local runtime, checks and build helpers |
@@ -121,7 +128,7 @@ npm run install:ci
 npm run build
 ```
 
-On a fresh database, apply migrations `0000` through `0009` once in journal order, using each SQL file's exact name:
+On a fresh database, apply migrations `0000` through `0015` once in journal order, using each SQL file's exact name. The current code requires the later model, intake, lifecycle and teaching-group tables and recoverable task-removal fields:
 
 ```sh
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_military_warstar.sql
@@ -134,6 +141,12 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0007_room_availability.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0008_periodic_tasks_messages.sql
 node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0009_optional_task_completion_notes.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0010_battery_models.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0011_batch_intake.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0012_battery_lifecycle.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0013_optional_removal_reason.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0014_personal_teaching_groups.sql
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0015_recoverable_task_removal.sql
 npm run dev
 ```
 
@@ -146,12 +159,12 @@ Set `INVENTORY_DEV_STATE_DIR` for isolated test state, or record a project-local
 ```sh
 npm run typecheck
 npm test
-npm run test:api
 npm run build
+npm run test:api
 ```
 
-Domain tests use isolated Miniflare D1 databases. API checks require the local preview and fictional credentials in ignored `work/local-access.json`; they never target a hosted site. If a Windows npm shim fails, invoke the installed npm CLI with Node rather than changing global configuration.
+Domain tests use isolated Miniflare D1 databases. API checks use the production build, apply all journaled migrations to a new local database, create temporary native test accounts and start their own loopback Worker. They do not read local-access credentials or use the normal preview database. The runner stops its own processes and keeps diagnostic evidence under ignored `work/qa/api-*`. If a Windows npm shim fails, invoke the installed npm CLI with Node rather than changing global configuration.
 
 ## Design reference
 
-The restrained blue controls, grey navigation and structured tables draw from the public [UNSW JAGGAER guidance](https://www.unsw.edu.au/assurance-integrity/safety/systems/Jaggaer/qrg). The protected live system was not accessed. This is a student project, with no institutional endorsement or JAGGAER connection.
+The current visual system combines a campus-inspired yellow, black and white palette with restrained typography, light surfaces and short interaction transitions. Its implementation is documented in the [design system](docs/design-system.md). Earlier table and workflow conventions drew from public UNSW JAGGAER guidance; the protected live system was not accessed. This is a student project, with no institutional endorsement or JAGGAER connection.
