@@ -1,0 +1,4125 @@
+{
+  "sources": [
+    {
+      "source_id": "jauch-lithium-ion-family-page-batch6",
+      "url": "https://www.jauch.com/en-US/products/battery_technology/getPrm/batteries/Lithium%20Ion%20Batteries/",
+      "title": "Lithium ion batteries",
+      "publisher": "Jauch",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LI18650JLS HB 1S2P; Jauch No. 250480",
+        "LI18650JLS HB 2S1P; Jauch No. 250481",
+        "LI18650JLS HB 2S2P; Jauch No. 250478"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Direct official HTML opened. Product Type rows link these three exact commercial pack assemblies and state voltage/capacity. Capacity is unqualified on the page; selected linked PDFs supply Typical/Minimum labels. Custom configurations and contact variants are not counted."
+    },
+    {
+      "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+      "url": "https://www.jauch.com/downloadfile/61f0fb7230945444b292c0fac704609f8/6700%20mAh,%20LI18650JLS%20HB%201s2p,%20Mat.%20250480.pdf",
+      "title": "Specifications - LI18650JLS HB 1S2P; Jauch No. 250480",
+      "publisher": "Jauch Quartz GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Version 1.2; 01/2022 TMU",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LI18650JLS HB 1S2P; Jauch No. 250480; selected protected pack assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official two-page PDF opened, including fresh direct HTTPS verification. Page 1 identifies the assembly and Jauch number, nominal voltage, Typical/Minimum capacity and PCM parameters. Page 2 identifies rechargeable lithium battery packs and lithium-ion pack storage. Printed footer supplies the selected version; no globally latest edition is assumed."
+    },
+    {
+      "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+      "url": "https://www.jauch.com/downloadfile/61f114f59a2ba243e32fa0846647a765b/3350%20mAh,%20LI18650JLS%20HB%202s1p,%20Mat.%20250481.pdf",
+      "title": "Specifications - LI18650JLS HB 2S1P; Jauch No. 250481",
+      "publisher": "Jauch Quartz GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Version 1.1; 12/2021 TMU",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LI18650JLS HB 2S1P; Jauch No. 250481; selected protected pack assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official two-page PDF opened, including fresh direct HTTPS verification. Page 1 identifies the assembly and Jauch number, nominal voltage, Typical/Minimum capacity and PCM parameters. Page 2 identifies rechargeable lithium battery packs and lithium-ion pack storage. Printed footer supplies the selected version; no globally latest edition is assumed."
+    },
+    {
+      "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+      "url": "https://www.jauch.com/downloadfile/61eff7f2998371c8ecd7aa7800c7b2958/6700%20mAh,%20LI18650%20JLS%20HB%202s2p,%20Mat.%20250478.pdf",
+      "title": "Specifications - LI18650JLS HB 2S2P; Jauch No. 250478",
+      "publisher": "Jauch Quartz GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Version 1.1; 12/2021 TMU",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LI18650JLS HB 2S2P; Jauch No. 250478; selected protected pack assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official two-page PDF opened, including fresh direct HTTPS verification. Page 1 identifies the assembly and Jauch number, nominal voltage, Typical/Minimum capacity and PCM parameters. Page 2 identifies rechargeable lithium battery packs and lithium-ion pack storage. Printed footer supplies the selected version; no globally latest edition is assumed."
+    },
+    {
+      "source_id": "rrc-rrc2020-product-page-batch6",
+      "url": "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2020",
+      "title": "POWERPAQ RRC2020: 3S3P Battery Pack | RRC",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2020; P/N 100496; product edition linked on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official HTML opened. Product identity, finished standard pack status, Electrical Parameters and explicit Battery cell configuration describe the selected commercial assembly. Manufacturer links older versions separately where offered; no all-generations claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+      "url": "https://www.rrc-ps.com/fileadmin/Dokumente/Data-Sheets/DS_RRC2020.pdf",
+      "title": "RRC2020 Datasheet - Standard Battery Pack Li-Ion",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DS_RRC2020_J.docx",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2020; exact P/N 100496; selected printed footer DS_RRC2020_J.docx"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF opened by direct HTTPS, with fresh model/P/N/voltage/capacity checks. PDF page 1 identifies the standard Li-Ion pack; PDF page 4 Characteristics supplies P/N, nominal electrical data, dimensions and mass. Printed footer differs from the URL suffix; the printed document identifier is retained. No issue date is printed in the curated pages; no global latest-version claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2024-product-page-batch6",
+      "url": "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2024",
+      "title": "POWERPAQ RRC2024: 4S3P Battery Pack | RRC",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2024; P/N 100497; product edition linked on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official HTML opened. Product identity, finished standard pack status, Electrical Parameters and explicit Battery cell configuration describe the selected commercial assembly. Manufacturer links older versions separately where offered; no all-generations claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+      "url": "https://www.rrc-ps.com/fileadmin/Dokumente/Data-Sheets/DS_RRC2024_L.pdf",
+      "title": "RRC2024 Datasheet - Standard Battery Pack Li-Ion",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DS_RRC2024_L.docx",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2024; exact P/N 100497; selected printed footer DS_RRC2024_L.docx"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF opened by direct HTTPS, with fresh model/P/N/voltage/capacity checks. PDF page 1 identifies the standard Li-Ion pack; PDF page 4 Characteristics supplies P/N, nominal electrical data, dimensions and mass. Printed footer differs from the URL suffix; the printed document identifier is retained. No issue date is printed in the curated pages; no global latest-version claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2037-product-page-batch6",
+      "url": "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2037",
+      "title": "POWERPAQ RRC2037: 2S1P Battery Pack | RRC",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2037; P/N 110133; product edition linked on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official HTML opened. Product identity, finished standard pack status, Electrical Parameters and explicit Battery cell configuration describe the selected commercial assembly. Manufacturer links older versions separately where offered; no all-generations claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+      "url": "https://www.rrc-ps.com/fileadmin/Dokumente/RRC2037/Gen2/DS_RRC2037.pdf",
+      "title": "RRC2037 Datasheet - Standard Battery Pack Li-Ion",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DS_RRC2037_G",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2037; exact P/N 110133; selected printed footer DS_RRC2037_G"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF opened by direct HTTPS, with fresh model/P/N/voltage/capacity checks. PDF page 1 identifies the standard Li-Ion pack; PDF page 4 Characteristics supplies P/N, nominal electrical data, dimensions and mass. Printed footer differs from the URL suffix; the printed document identifier is retained. No issue date is printed in the curated pages; no global latest-version claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2040-product-page-batch6",
+      "url": "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2040",
+      "title": "POWERPAQ RRC2040: 3S1P Battery Pack | RRC",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2040; P/N 100498; product edition linked on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official HTML opened. Product identity, finished standard pack status, Electrical Parameters and explicit Battery cell configuration describe the selected commercial assembly. Manufacturer links older versions separately where offered; no all-generations claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+      "url": "https://www.rrc-ps.com/fileadmin/Dokumente/Data-Sheets/DS_RRC2040.pdf",
+      "title": "RRC2040 Datasheet - Standard Battery Pack Li-Ion",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DS_RRC2040_J.docx",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2040; exact P/N 100498; selected printed footer DS_RRC2040_J.docx"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF opened by direct HTTPS, with fresh model/P/N/voltage/capacity checks. PDF page 1 identifies the standard Li-Ion pack; PDF page 4 Characteristics supplies P/N, nominal electrical data, dimensions and mass. Printed footer differs from the URL suffix; the printed document identifier is retained. No issue date is printed in the curated pages; no global latest-version claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2040-2-product-page-batch6",
+      "url": "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2040-2",
+      "title": "POWERPAQ RRC2040-2: 3S2P Battery Pack | RRC",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2040-2; P/N 1005590; product edition linked on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official HTML opened. Product identity, finished standard pack status, Electrical Parameters and explicit Battery cell configuration describe the selected commercial assembly. Manufacturer links older versions separately where offered; no all-generations claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+      "url": "https://www.rrc-ps.com/fileadmin/Dokumente/Data-Sheets/DS_RRC2040-2.pdf",
+      "title": "RRC2040-2 Datasheet - Standard Battery Pack Li-Ion",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DS_RRC2040-2_L",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2040-2; exact P/N 1005590; selected printed footer DS_RRC2040-2_L"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF opened by direct HTTPS, with fresh model/P/N/voltage/capacity checks. PDF page 1 identifies the standard Li-Ion pack; PDF page 4 Characteristics supplies P/N, nominal electrical data, dimensions and mass. Printed footer differs from the URL suffix; the printed document identifier is retained. No issue date is printed in the curated pages; no global latest-version claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2054-product-page-batch6",
+      "url": "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2054",
+      "title": "POWERPAQ RRC2054: 4S1P Lithium Battery Pack | RRC",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2054; P/N 1005680; product edition linked on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official HTML opened. Product identity, finished standard pack status, Electrical Parameters and explicit Battery cell configuration describe the selected commercial assembly. Manufacturer links older versions separately where offered; no all-generations claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+      "url": "https://www.rrc-ps.com/fileadmin/Dokumente/Data-Sheets/DS_RRC2054.pdf",
+      "title": "RRC2054 Datasheet - Standard Battery Pack Li-Ion",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DS_RRC2054_L.docx",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2054; exact P/N 1005680; selected printed footer DS_RRC2054_L.docx"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF opened by direct HTTPS, with fresh model/P/N/voltage/capacity checks. PDF page 1 identifies the standard Li-Ion pack; PDF page 4 Characteristics supplies P/N, nominal electrical data, dimensions and mass. Printed footer differs from the URL suffix; the printed document identifier is retained. No issue date is printed in the curated pages; no global latest-version claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2054-2-product-page-batch6",
+      "url": "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2054-2",
+      "title": "POWERPAQ RRC2054-2: 4S2P Li-Ion Battery Pack | RRC",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2054-2; P/N 1100640; product edition linked on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official HTML opened. Product identity, finished standard pack status, Electrical Parameters and explicit Battery cell configuration describe the selected commercial assembly. Manufacturer links older versions separately where offered; no all-generations claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+      "url": "https://www.rrc-ps.com/fileadmin/Dokumente/Data-Sheets/DS_RRC2054-2.pdf",
+      "title": "RRC2054-2 Datasheet - Standard Battery Pack Li-Ion",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DS_RRC2054-2_J",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2054-2; exact P/N 1100640; selected printed footer DS_RRC2054-2_J"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF opened by direct HTTPS, with fresh model/P/N/voltage/capacity checks. PDF page 1 identifies the standard Li-Ion pack; PDF page 4 Characteristics supplies P/N, nominal electrical data, dimensions and mass. Printed footer differs from the URL suffix; the printed document identifier is retained. No issue date is printed in the curated pages; no global latest-version claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2057-product-page-batch6",
+      "url": "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2057",
+      "title": "POWERPAQ RRC2057: 2S2P Li-Ion Battery Pack | RRC",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2057; P/N 100569; product edition linked on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official HTML opened. Product identity, finished standard pack status, Electrical Parameters and explicit Battery cell configuration describe the selected commercial assembly. Manufacturer links older versions separately where offered; no all-generations claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+      "url": "https://www.rrc-ps.com/fileadmin/Dokumente/Data-Sheets/DS_RRC2057.pdf",
+      "title": "RRC2057 Datasheet - Standard Battery Pack Li-Ion",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DS_RRC2057_I.DOCX",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2057; exact P/N 100569; selected printed footer DS_RRC2057_I.DOCX"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF opened by direct HTTPS, with fresh model/P/N/voltage/capacity checks. PDF page 1 identifies the standard Li-Ion pack; PDF page 4 Characteristics supplies P/N, nominal electrical data, dimensions and mass. Printed footer differs from the URL suffix; the printed document identifier is retained. No issue date is printed in the curated pages; no global latest-version claim is made."
+    },
+    {
+      "source_id": "rrc-rrc3570-product-page-batch6",
+      "url": "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC3570",
+      "title": "POWERPAQ RRC3570: 7S1P High Performance Battery 24V",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC3570; P/N 110125; product edition linked on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official HTML opened. Product identity, finished standard pack status, Electrical Parameters and explicit Battery cell configuration describe the selected commercial assembly. Manufacturer links older versions separately where offered; no all-generations claim is made."
+    },
+    {
+      "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+      "url": "https://www.rrc-ps.com/fileadmin/Dokumente/Data-Sheets/DS_RRC3570.pdf",
+      "title": "RRC3570 Datasheet - Standard Battery Pack Li-Ion",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DS_RRC3570_E",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC3570; exact P/N 110125; selected printed footer DS_RRC3570_E"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF opened by direct HTTPS, with fresh model/P/N/voltage/capacity checks. PDF page 1 identifies the standard Li-Ion pack; PDF page 4 Characteristics supplies P/N, nominal electrical data, dimensions and mass. Printed footer differs from the URL suffix; the printed document identifier is retained. No issue date is printed in the curated pages; no global latest-version claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2130-product-page-batch6",
+      "url": "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2130",
+      "title": "FLATPAQ RRC2130: 2S1P Thin Battery Pack | RRC",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2130; P/N 110088; product edition linked on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official HTML opened. Product identity, finished standard pack status, Electrical Parameters and explicit Battery cell configuration describe the selected commercial assembly. Manufacturer links older versions separately where offered; no all-generations claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+      "url": "https://www.rrc-ps.com/fileadmin/Dokumente/RRC2130/Gen2/DS_RRC2130_F.pdf",
+      "title": "RRC2130 Datasheet - Standard Battery Pack Li-Ion",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DS_RRC2130_G.DOCX",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2130; exact P/N 110088; selected printed footer DS_RRC2130_G.DOCX"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF opened by direct HTTPS, with fresh model/P/N/voltage/capacity checks. PDF page 1 identifies the standard Li-Ion pack; PDF page 4 Characteristics supplies P/N, nominal electrical data, dimensions and mass. Printed footer differs from the URL suffix; the printed document identifier is retained. No issue date is printed in the curated pages; no global latest-version claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2140-product-page-batch6",
+      "url": "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2140",
+      "title": "FLATPAQ RRC2140: 3S1P Battery Pack | RRC",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2140; P/N 110076; product edition linked on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official HTML opened. Product identity, finished standard pack status, Electrical Parameters and explicit Battery cell configuration describe the selected commercial assembly. Manufacturer links older versions separately where offered; no all-generations claim is made."
+    },
+    {
+      "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+      "url": "https://www.rrc-ps.com/fileadmin/Dokumente/Data-Sheets/DS_RRC2140_G.pdf",
+      "title": "RRC2140 Datasheet - Standard Battery Pack Li-Ion",
+      "publisher": "RRC power solutions GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DS_RRC2140_H.DOCX",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "RRC2140; exact P/N 110076; selected printed footer DS_RRC2140_H.DOCX"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF opened by direct HTTPS, with fresh model/P/N/voltage/capacity checks. PDF page 1 identifies the standard Li-Ion pack; PDF page 4 Characteristics supplies P/N, nominal electrical data, dimensions and mass. Printed footer differs from the URL suffix; the printed document identifier is retained. No issue date is printed in the curated pages; no global latest-version claim is made."
+    },
+    {
+      "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+      "url": "https://inspired-energy.com/images/product_data_sheets/NF3040HD34_spec_v2.0.pdf",
+      "title": "Battery Specification - NF3040HD34 - Rechargeable Smart Lithium Ion Battery Pack",
+      "publisher": "Inspired Energy",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DSNF3040HD34 Rev 2.0; Issue date 10/7/22 (as printed)",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "NF3040HD34; standard assembly; selected DSNF3040HD34 Rev 2.0; Issue date 10/7/22 (as printed)"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official PDF opened with web PDF reader. Cover supplies exact assembly part number and rechargeable Li-Ion pack description; page 4 Section 2.2 supplies explicit cell array and pack Typical capacity; Section 3.1.1 nominal voltage and Section 3.1.2 initial Rated Capacity with >= qualification and test conditions are distinct. Issue date is preserved literally, not silently normalized. No full manual is copied."
+    },
+    {
+      "source_id": "inspired-energy-nf3040hd34-product-page-batch6",
+      "url": "https://inspired-energy.com/new-products/details/3/262-nf3040hd34",
+      "title": "Inspired Energy Products - NF3040HD34",
+      "publisher": "Inspired Energy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "NF3040HD34; standard assembly listed on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened. Exact part number, commercial standard product, chemistry/cell array and a capacity headline corroborate the selected PDF. Headline capacity is not relabelled Rated. Custom label, firmware, accessory and agency-approved variants are not counted."
+    },
+    {
+      "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+      "url": "https://inspired-energy.com/images/product_data_sheets/NH2057HD34_spec_v2.0.pdf",
+      "title": "Battery Specification - NH2057HD34 - Rechargeable Smart Lithium Ion Battery Pack",
+      "publisher": "Inspired Energy",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DSNH2057HD34 Rev 2.0; Issue date 2/17/23 (as printed)",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "NH2057HD34; standard assembly; selected DSNH2057HD34 Rev 2.0; Issue date 2/17/23 (as printed)"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official PDF opened with web PDF reader. Cover supplies exact assembly part number and rechargeable Li-Ion pack description; page 4 Section 2.2 supplies explicit cell array and pack Typical/Minimum capacity; Section 3.1.1 nominal voltage and Section 3.1.2 initial Rated Capacity with >= qualification and test conditions are distinct. Issue date is preserved literally, not silently normalized. No full manual is copied. Metadata discrepancy: recurring issue-date header is 2/17/23, while PDF page 4 revision-history row for 2.0 is 2/17/22; both are retained explicitly."
+    },
+    {
+      "source_id": "inspired-energy-nh2057hd34-product-page-batch6",
+      "url": "https://inspired-energy.com/products/details/3/85-nh2057hd34",
+      "title": "Inspired Energy Products - NH2057HD34",
+      "publisher": "Inspired Energy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "NH2057HD34; standard assembly listed on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened. Exact part number, commercial standard product, chemistry/cell array and a capacity headline corroborate the selected PDF. Headline capacity is not relabelled Rated. Custom label, firmware, accessory and agency-approved variants are not counted."
+    },
+    {
+      "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+      "url": "https://inspired-energy.com/images/product_data_sheets/NC4040HD50_Rev1.2.pdf",
+      "title": "Battery Specification - NC4040HD50 - Rechargeable Smart Lithium Ion Battery Pack",
+      "publisher": "Inspired Energy",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DSNC4040HD50 Rev 1.2; Issue date 4/14/24 (as printed)",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "NC4040HD50; standard assembly; selected DSNC4040HD50 Rev 1.2; Issue date 4/14/24 (as printed)"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official PDF opened with web PDF reader. Cover supplies exact assembly part number and rechargeable Li-Ion pack description; page 4 Section 2.2 supplies explicit cell array and pack Typical capacity; Section 3.1.1 nominal voltage and Section 3.1.2 initial Rated Capacity with >= qualification and test conditions are distinct. Issue date is preserved literally, not silently normalized. No full manual is copied."
+    },
+    {
+      "source_id": "inspired-energy-nc4040hd50-product-page-batch6",
+      "url": "https://inspired-energy.com/products/details/3/116-nc4040hd50",
+      "title": "Inspired Energy Products - NC4040HD50",
+      "publisher": "Inspired Energy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "NC4040HD50; standard assembly listed on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened. Exact part number, commercial standard product, chemistry/cell array and a capacity headline corroborate the selected PDF. Headline capacity is not relabelled Rated. Custom label, firmware, accessory and agency-approved variants are not counted."
+    },
+    {
+      "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+      "url": "https://inspired-energy.com/images/product_data_sheets/NH3054HD34_spec_v1.2.pdf",
+      "title": "Battery Specification - NH3054HD34 - Rechargeable Smart Lithium Ion Battery Pack",
+      "publisher": "Inspired Energy",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "DSNH3054HD34 Rev 1.2; Issue date 9/15/23 (as printed)",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "NH3054HD34; standard assembly; selected DSNH3054HD34 Rev 1.2; Issue date 9/15/23 (as printed)"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official PDF opened with web PDF reader. Cover supplies exact assembly part number and rechargeable Li-Ion pack description; page 4 Section 2.2 supplies explicit cell array and pack Typical capacity; Section 3.1.1 nominal voltage and Section 3.1.2 initial Rated Capacity with >= qualification and test conditions are distinct. Issue date is preserved literally, not silently normalized. No full manual is copied."
+    },
+    {
+      "source_id": "inspired-energy-nh3054hd34-product-page-batch6",
+      "url": "https://inspired-energy.com/products/details/3/212-nh3054hd34",
+      "title": "Inspired Energy Products - NH3054HD34",
+      "publisher": "Inspired Energy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "NH3054HD34; standard assembly listed on 2026-10-03"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened. Exact part number, commercial standard product, chemistry/cell array and a capacity headline corroborate the selected PDF. Headline capacity is not relabelled Rated. Custom label, firmware, accessory and agency-approved variants are not counted."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "jauch-li18650jls-hb-1s2p-250480",
+      "manufacturer": null,
+      "brand": "Jauch",
+      "model": "LI18650JLS HB 1S2P",
+      "variant_key": "part-250480",
+      "variant_description": "Manufacturer-listed protected battery pack assembly; Jauch No. 250480.",
+      "suggested_display_name": "Jauch LI18650JLS HB 1S2P",
+      "aliases": [
+        {
+          "value": "LI18650JLS HB 1S2P",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "250480",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "battery_pack",
+        "description": "Finished rechargeable lithium-ion battery pack."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 6700,
+      "minimum_capacity_mah": 6500,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Typical and Minimum capacity rows both state (0.2C, 2.50V discharge). Temperature and full charge/rest protocol are not stated; this literal condition is not replaced with the separate pack cut-off voltage.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": 100,
+      "maintenance_notes": null,
+      "source_ids": [
+        "jauch-lithium-ion-family-page-batch6",
+        "jauch-li18650jls-hb-1s2p-250480-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF pages 1-2, Jauch branding and publisher footer",
+            "observation": "Jauch branded assembly specification."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 1, Model/Cell Used row and title; Jauch No. row",
+            "observation": "Exact assembly LI18650JLS HB 1S2P and part 250480."
+          },
+          {
+            "source_id": "jauch-lithium-ion-family-page-batch6",
+            "locator": "Official product table, Type row LI18650JLS HB 1S2P",
+            "observation": "Listed commercial assembly links the selected official PDF."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 1, Jauch No. row and PCM parameters",
+            "observation": "Selected commercial protected assembly is part 250480."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 1, title/model and Jauch No. row",
+            "observation": "Exact model and manufacturer part number retained as candidates."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 2, Storage paragraph naming Lithium-ion Battery Pack",
+            "observation": "Pack chemistry is lithium-ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 2, Handling and Storage opening",
+            "observation": "Describes rechargeable lithium battery packs."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 1, Charging/Discharging Characteristics per Battery Pack",
+            "observation": "Specifications apply to a completed battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 1, pack characteristics and PCM parameter blocks",
+            "observation": "Finished protected pack assembly."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 1, Specifications / Typ. Capacity",
+            "observation": "6700mAh Typical."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 1, Specifications / Min. Capacity",
+            "observation": "6500mAh Minimum."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 1, conditions under Typ. Capacity and Min. Capacity",
+            "observation": "Both rows retain 0.2C, 2.50V discharge; no total pack test voltage is inferred."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 1, Specifications / Nominal Voltage",
+            "observation": "3.6V nominal, stated independently of the model name."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 1, Specifications / Weight",
+            "observation": "Approximately 100g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "jauch-li18650jls-hb-1s2p-250480-datasheet",
+            "locator": "PDF page 1, Jauch branding and exact assembly model",
+            "observation": "Editable suggestion combines brand and model."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "A separate Rated/Nominal capacity rating is not stated; rated_capacity_mah remains null.",
+        "Numerical series/parallel fields are null: the model name contains S/P notation, but a separate configuration definition was not established from the curated sources.",
+        "Complete assembly dimensions and connector/pinout were not curated.",
+        "Legal manufacturing entity is not independently established; publisher identity is not substituted.",
+        "Energy basis and maintenance protocol were not curated.",
+        "Capacity test temperature and complete charge/rest protocol are not stated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "Typical and Minimum capacities are kept separately; the website capacity agrees with Typical and is not relabelled Rated.",
+        "The capacity-row 2.50V discharge condition is kept literally. Separate battery-pack cut-off data are not substituted, multiplied or treated as a capacity measurement.",
+        "One exact listed assembly is counted; no alternate connector/PCM version or hypothetical custom configuration is added.",
+        "Published mass is approximate."
+      ]
+    },
+    {
+      "catalog_id": "jauch-li18650jls-hb-2s1p-250481",
+      "manufacturer": null,
+      "brand": "Jauch",
+      "model": "LI18650JLS HB 2S1P",
+      "variant_key": "part-250481",
+      "variant_description": "Manufacturer-listed protected battery pack assembly; Jauch No. 250481.",
+      "suggested_display_name": "Jauch LI18650JLS HB 2S1P",
+      "aliases": [
+        {
+          "value": "LI18650JLS HB 2S1P",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "250481",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "battery_pack",
+        "description": "Finished rechargeable lithium-ion battery pack."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 3350,
+      "minimum_capacity_mah": 3250,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Typical and Minimum capacity rows both state (0.2C, 2.50V discharge). Temperature and full charge/rest protocol are not stated; this literal condition is not replaced with the separate pack cut-off voltage.",
+      "nominal_voltage_v": 7.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": 100,
+      "maintenance_notes": null,
+      "source_ids": [
+        "jauch-lithium-ion-family-page-batch6",
+        "jauch-li18650jls-hb-2s1p-250481-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF pages 1-2, Jauch branding and publisher footer",
+            "observation": "Jauch branded assembly specification."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 1, Model/Cell Used row and title; Jauch No. row",
+            "observation": "Exact assembly LI18650JLS HB 2S1P and part 250481."
+          },
+          {
+            "source_id": "jauch-lithium-ion-family-page-batch6",
+            "locator": "Official product table, Type row LI18650JLS HB 2S1P",
+            "observation": "Listed commercial assembly links the selected official PDF."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 1, Jauch No. row and PCM parameters",
+            "observation": "Selected commercial protected assembly is part 250481."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 1, title/model and Jauch No. row",
+            "observation": "Exact model and manufacturer part number retained as candidates."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 2, Storage paragraph naming Lithium-ion Battery Pack",
+            "observation": "Pack chemistry is lithium-ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 2, Handling and Storage opening",
+            "observation": "Describes rechargeable lithium battery packs."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 1, Charging/Discharging Characteristics per Battery Pack",
+            "observation": "Specifications apply to a completed battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 1, pack characteristics and PCM parameter blocks",
+            "observation": "Finished protected pack assembly."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 1, Specifications / Typ. Capacity",
+            "observation": "3350mAh Typical."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 1, Specifications / Min. Capacity",
+            "observation": "3250mAh Minimum."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 1, conditions under Typ. Capacity and Min. Capacity",
+            "observation": "Both rows retain 0.2C, 2.50V discharge; no total pack test voltage is inferred."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 1, Specifications / Nominal Voltage",
+            "observation": "7.2V nominal, stated independently of the model name."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 1, Specifications / Weight",
+            "observation": "Approximately 100g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s1p-250481-datasheet",
+            "locator": "PDF page 1, Jauch branding and exact assembly model",
+            "observation": "Editable suggestion combines brand and model."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "A separate Rated/Nominal capacity rating is not stated; rated_capacity_mah remains null.",
+        "Numerical series/parallel fields are null: the model name contains S/P notation, but a separate configuration definition was not established from the curated sources.",
+        "Complete assembly dimensions and connector/pinout were not curated.",
+        "Legal manufacturing entity is not independently established; publisher identity is not substituted.",
+        "Energy basis and maintenance protocol were not curated.",
+        "Capacity test temperature and complete charge/rest protocol are not stated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "Typical and Minimum capacities are kept separately; the website capacity agrees with Typical and is not relabelled Rated.",
+        "The capacity-row 2.50V discharge condition is kept literally. Separate battery-pack cut-off data are not substituted, multiplied or treated as a capacity measurement.",
+        "One exact listed assembly is counted; no alternate connector/PCM version or hypothetical custom configuration is added.",
+        "Published mass is approximate."
+      ]
+    },
+    {
+      "catalog_id": "jauch-li18650jls-hb-2s2p-250478",
+      "manufacturer": null,
+      "brand": "Jauch",
+      "model": "LI18650JLS HB 2S2P",
+      "variant_key": "part-250478",
+      "variant_description": "Manufacturer-listed protected battery pack assembly; Jauch No. 250478.",
+      "suggested_display_name": "Jauch LI18650JLS HB 2S2P",
+      "aliases": [
+        {
+          "value": "LI18650JLS HB 2S2P",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "250478",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "battery_pack",
+        "description": "Finished rechargeable lithium-ion battery pack."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 6700,
+      "minimum_capacity_mah": 6500,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Typical and Minimum capacity rows both state (0.2C, 2.50V discharge). Temperature and full charge/rest protocol are not stated; this literal condition is not replaced with the separate pack cut-off voltage.",
+      "nominal_voltage_v": 7.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": 200,
+      "maintenance_notes": null,
+      "source_ids": [
+        "jauch-lithium-ion-family-page-batch6",
+        "jauch-li18650jls-hb-2s2p-250478-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF pages 1-2, Jauch branding and publisher footer",
+            "observation": "Jauch branded assembly specification."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 1, Model/Cell Used row and title; Jauch No. row",
+            "observation": "Exact assembly LI18650JLS HB 2S2P and part 250478."
+          },
+          {
+            "source_id": "jauch-lithium-ion-family-page-batch6",
+            "locator": "Official product table, Type row LI18650JLS HB 2S2P",
+            "observation": "Listed commercial assembly links the selected official PDF."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 1, Jauch No. row and PCM parameters",
+            "observation": "Selected commercial protected assembly is part 250478."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 1, title/model and Jauch No. row",
+            "observation": "Exact model and manufacturer part number retained as candidates."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 2, Storage paragraph naming Lithium-ion Battery Pack",
+            "observation": "Pack chemistry is lithium-ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 2, Handling and Storage opening",
+            "observation": "Describes rechargeable lithium battery packs."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 1, Charging/Discharging Characteristics per Battery Pack",
+            "observation": "Specifications apply to a completed battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 1, pack characteristics and PCM parameter blocks",
+            "observation": "Finished protected pack assembly."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 1, Specifications / Typ. Capacity",
+            "observation": "6700mAh Typical."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 1, Specifications / Min. Capacity",
+            "observation": "6500mAh Minimum."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 1, conditions under Typ. Capacity and Min. Capacity",
+            "observation": "Both rows retain 0.2C, 2.50V discharge; no total pack test voltage is inferred."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 1, Specifications / Nominal Voltage",
+            "observation": "7.2V nominal, stated independently of the model name."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 1, Specifications / Weight",
+            "observation": "Approximately 200g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "jauch-li18650jls-hb-2s2p-250478-datasheet",
+            "locator": "PDF page 1, Jauch branding and exact assembly model",
+            "observation": "Editable suggestion combines brand and model."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "A separate Rated/Nominal capacity rating is not stated; rated_capacity_mah remains null.",
+        "Numerical series/parallel fields are null: the model name contains S/P notation, but a separate configuration definition was not established from the curated sources.",
+        "Complete assembly dimensions and connector/pinout were not curated.",
+        "Legal manufacturing entity is not independently established; publisher identity is not substituted.",
+        "Energy basis and maintenance protocol were not curated.",
+        "Capacity test temperature and complete charge/rest protocol are not stated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "Typical and Minimum capacities are kept separately; the website capacity agrees with Typical and is not relabelled Rated.",
+        "The capacity-row 2.50V discharge condition is kept literally. Separate battery-pack cut-off data are not substituted, multiplied or treated as a capacity measurement.",
+        "One exact listed assembly is counted; no alternate connector/PCM version or hypothetical custom configuration is added.",
+        "Published mass is approximate."
+      ]
+    },
+    {
+      "catalog_id": "rrc-rrc2020-100496",
+      "manufacturer": null,
+      "brand": "RRC",
+      "model": "RRC2020",
+      "variant_key": "part-100496",
+      "variant_description": "Standard finished battery pack; P/N 100496; selected DS_RRC2020_J.docx document edition.",
+      "suggested_display_name": "RRC RRC2020",
+      "aliases": [
+        {
+          "value": "RRC2020",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "100496",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "standard_battery_pack",
+        "description": "Manufacturer-standard finished lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 9220,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 10.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 3,
+        "parallel": 3
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 149,
+        "width": 89,
+        "height": 19.7,
+        "basis": "PDF page 4 Battery Dimensions: published Length/Width/Thickness reference values. Tolerances retained: Length 149.00mm +0.70/-0.70 Width 89.00mm +0.25/-0.25 Thickness 19.70mm +0.40/-0.25 . Height maps the source Thickness; no maximum envelope is calculated."
+      },
+      "mass_g": 505,
+      "maintenance_notes": null,
+      "source_ids": [
+        "rrc-rrc2020-product-page-batch6",
+        "rrc-rrc2020-100496-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF cover and product identifier",
+            "observation": "RRC branded standard battery pack."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF cover and page 4 General / P/N",
+            "observation": "Exact assembly RRC2020; P/N 100496."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and footer",
+            "observation": "Selected assembly 100496 and printed DS_RRC2020_J.docx edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and header",
+            "observation": "Exact model and listed manufacturer P/N retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack Li-Ion",
+            "observation": "Chemistry is Li-Ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Max. charge current and Max. charge voltage",
+            "observation": "Pack has manufacturer charging parameters and compatible battery chargers."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Finished battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Standard finished battery assembly."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal capacity",
+            "observation": "9.22Ah under the manufacturer original capacity label; converted to 9220mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, capacity row",
+            "observation": "Manufacturer labels capacity Nominal; Typical/Minimum labels are not substituted."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal voltage",
+            "observation": "10.80V nominal, explicitly printed."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Weight",
+            "observation": "505g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF cover, brand and exact assembly identity",
+            "observation": "Editable name combines RRC and the model."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Length",
+            "observation": "149mm published reference value."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Width",
+            "observation": "89mm published reference value."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Thickness",
+            "observation": "19.7mm published reference value."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "rrc-rrc2020-100496-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions",
+            "observation": "Published tolerance strings are retained; Thickness maps to height."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "rrc-rrc2020-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 3S3P assembly; no voltage-based calculation."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "rrc-rrc2020-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 3S3P assembly; no voltage-based calculation."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Capacity test discharge current, cut-off voltage, temperature and charge/rest protocol are not stated for the curated nominal/rated row.",
+        "Separate Typical/Minimum capacity properties are not stated in the selected electrical table.",
+        "Exact connector geometry/pin orientation was not curated; contact legends are not treated as a full pinout.",
+        "Legal manufacturing entity was not independently established; publisher is not substituted.",
+        "Energy basis and maintenance protocol were not curated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "One commercial assembly P/N is counted; older editions, mating connector accessories and sourcing options are not additional independent models.",
+        "Published Length/Width/Thickness reference values retain original tolerances; no dimension is inferred from cell counts."
+      ]
+    },
+    {
+      "catalog_id": "rrc-rrc2024-100497",
+      "manufacturer": null,
+      "brand": "RRC",
+      "model": "RRC2024",
+      "variant_key": "part-100497",
+      "variant_description": "Standard finished battery pack; P/N 100497; selected DS_RRC2024_L.docx document edition.",
+      "suggested_display_name": "RRC RRC2024",
+      "aliases": [
+        {
+          "value": "RRC2024",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "100497",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "standard_battery_pack",
+        "description": "Manufacturer-standard finished lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 6600,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 14.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 4,
+        "parallel": 3
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 167.2,
+        "width": 107.2,
+        "height": 21.51,
+        "basis": "PDF page 4 Battery Dimensions: published Length/Width/Thickness reference values. Tolerances retained: Length 167.20mm +0.50/-0.50 Width 107.20mm +0.40/-0.30 Thickness 21.51mm +0.30/-0.50 . Height maps the source Thickness; no maximum envelope is calculated."
+      },
+      "mass_g": 600,
+      "maintenance_notes": null,
+      "source_ids": [
+        "rrc-rrc2024-product-page-batch6",
+        "rrc-rrc2024-100497-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF cover and product identifier",
+            "observation": "RRC branded standard battery pack."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF cover and page 4 General / P/N",
+            "observation": "Exact assembly RRC2024; P/N 100497."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / General, P/N and footer",
+            "observation": "Selected assembly 100497 and printed DS_RRC2024_L.docx edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / General, P/N and header",
+            "observation": "Exact model and listed manufacturer P/N retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack Li-Ion",
+            "observation": "Chemistry is Li-Ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Max. charge current and Max. charge voltage",
+            "observation": "Pack has manufacturer charging parameters and compatible battery chargers."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Finished battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Standard finished battery assembly."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Nominal capacity",
+            "observation": "6.60Ah under the manufacturer original capacity label; converted to 6600mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, capacity row",
+            "observation": "Manufacturer labels capacity Nominal; Typical/Minimum labels are not substituted."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Nominal voltage",
+            "observation": "14.40V nominal, explicitly printed."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Weight",
+            "observation": "600g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF cover, brand and exact assembly identity",
+            "observation": "Editable name combines RRC and the model."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Length",
+            "observation": "167.2mm published reference value."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Width",
+            "observation": "107.2mm published reference value."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Thickness",
+            "observation": "21.51mm published reference value."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "rrc-rrc2024-100497-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions",
+            "observation": "Published tolerance strings are retained; Thickness maps to height."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "rrc-rrc2024-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 4S3P assembly; no voltage-based calculation."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "rrc-rrc2024-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 4S3P assembly; no voltage-based calculation."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Capacity test discharge current, cut-off voltage, temperature and charge/rest protocol are not stated for the curated nominal/rated row.",
+        "Separate Typical/Minimum capacity properties are not stated in the selected electrical table.",
+        "Exact connector geometry/pin orientation was not curated; contact legends are not treated as a full pinout.",
+        "Legal manufacturing entity was not independently established; publisher is not substituted.",
+        "Energy basis and maintenance protocol were not curated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "One commercial assembly P/N is counted; older editions, mating connector accessories and sourcing options are not additional independent models.",
+        "Published Length/Width/Thickness reference values retain original tolerances; no dimension is inferred from cell counts."
+      ]
+    },
+    {
+      "catalog_id": "rrc-rrc2037-110133",
+      "manufacturer": null,
+      "brand": "RRC",
+      "model": "RRC2037",
+      "variant_key": "part-110133",
+      "variant_description": "Standard finished battery pack; P/N 110133; selected DS_RRC2037_G document edition.",
+      "suggested_display_name": "RRC RRC2037",
+      "aliases": [
+        {
+          "value": "RRC2037",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "110133",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "standard_battery_pack",
+        "description": "Manufacturer-standard finished lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 3350,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 7.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 2,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 85.39,
+        "width": 41.99,
+        "height": 22.4,
+        "basis": "PDF page 4 Battery Dimensions: published Length/Width/Thickness reference values. Tolerances retained: Length 85.39mm +0.40/-0.40 Width 41.99mm +0.40/-0.40 Thickness 22.40mm +0.40/-0.25 . Height maps the source Thickness; no maximum envelope is calculated."
+      },
+      "mass_g": 124,
+      "maintenance_notes": null,
+      "source_ids": [
+        "rrc-rrc2037-product-page-batch6",
+        "rrc-rrc2037-110133-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF cover and product identifier",
+            "observation": "RRC branded standard battery pack."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF cover and page 4 General / P/N",
+            "observation": "Exact assembly RRC2037; P/N 110133."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and footer",
+            "observation": "Selected assembly 110133 and printed DS_RRC2037_G edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and header",
+            "observation": "Exact model and listed manufacturer P/N retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack Li-Ion",
+            "observation": "Chemistry is Li-Ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Max. charge current and Max. charge voltage",
+            "observation": "Pack has manufacturer charging parameters and compatible battery chargers."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Finished battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Standard finished battery assembly."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal capacity",
+            "observation": "3.35Ah under the manufacturer original capacity label; converted to 3350mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, capacity row",
+            "observation": "Manufacturer labels capacity Nominal; Typical/Minimum labels are not substituted."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal voltage",
+            "observation": "7.20V nominal, explicitly printed."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Weight",
+            "observation": "124g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF cover, brand and exact assembly identity",
+            "observation": "Editable name combines RRC and the model."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Length",
+            "observation": "85.39mm published reference value."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Width",
+            "observation": "41.99mm published reference value."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Thickness",
+            "observation": "22.4mm published reference value."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "rrc-rrc2037-110133-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions",
+            "observation": "Published tolerance strings are retained; Thickness maps to height."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "rrc-rrc2037-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 2S1P assembly; no voltage-based calculation."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "rrc-rrc2037-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 2S1P assembly; no voltage-based calculation."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Capacity test discharge current, cut-off voltage, temperature and charge/rest protocol are not stated for the curated nominal/rated row.",
+        "Separate Typical/Minimum capacity properties are not stated in the selected electrical table.",
+        "Exact connector geometry/pin orientation was not curated; contact legends are not treated as a full pinout.",
+        "Legal manufacturing entity was not independently established; publisher is not substituted.",
+        "Energy basis and maintenance protocol were not curated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "One commercial assembly P/N is counted; older editions, mating connector accessories and sourcing options are not additional independent models.",
+        "Published Length/Width/Thickness reference values retain original tolerances; no dimension is inferred from cell counts."
+      ]
+    },
+    {
+      "catalog_id": "rrc-rrc2040-100498",
+      "manufacturer": null,
+      "brand": "RRC",
+      "model": "RRC2040",
+      "variant_key": "part-100498",
+      "variant_description": "Standard finished battery pack; P/N 100498; selected DS_RRC2040_J.docx document edition.",
+      "suggested_display_name": "RRC RRC2040",
+      "aliases": [
+        {
+          "value": "RRC2040",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "100498",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "standard_battery_pack",
+        "description": "Manufacturer-standard finished lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 3350,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 10.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 3,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 84.87,
+        "width": 58.79,
+        "height": 21.89,
+        "basis": "PDF page 4 Battery Dimensions: published Length/Width/Thickness reference values. Tolerances retained: Length 84.87mm +0.25/-0.25 Width 58.79mm +0.25/-0.25 Thickness 21.89mm +0.50/-0.25 . Height maps the source Thickness; no maximum envelope is calculated."
+      },
+      "mass_g": 170,
+      "maintenance_notes": null,
+      "source_ids": [
+        "rrc-rrc2040-product-page-batch6",
+        "rrc-rrc2040-100498-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF cover and product identifier",
+            "observation": "RRC branded standard battery pack."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF cover and page 4 General / P/N",
+            "observation": "Exact assembly RRC2040; P/N 100498."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and footer",
+            "observation": "Selected assembly 100498 and printed DS_RRC2040_J.docx edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and header",
+            "observation": "Exact model and listed manufacturer P/N retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack Li-Ion",
+            "observation": "Chemistry is Li-Ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Max. charge current and Max. charge voltage",
+            "observation": "Pack has manufacturer charging parameters and compatible battery chargers."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Finished battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Standard finished battery assembly."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal capacity",
+            "observation": "3.35Ah under the manufacturer original capacity label; converted to 3350mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, capacity row",
+            "observation": "Manufacturer labels capacity Nominal; Typical/Minimum labels are not substituted."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal voltage",
+            "observation": "10.80V nominal, explicitly printed."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Weight",
+            "observation": "170g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF cover, brand and exact assembly identity",
+            "observation": "Editable name combines RRC and the model."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Length",
+            "observation": "84.87mm published reference value."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Width",
+            "observation": "58.79mm published reference value."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Thickness",
+            "observation": "21.89mm published reference value."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "rrc-rrc2040-100498-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions",
+            "observation": "Published tolerance strings are retained; Thickness maps to height."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "rrc-rrc2040-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 3S1P assembly; no voltage-based calculation."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "rrc-rrc2040-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 3S1P assembly; no voltage-based calculation."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Capacity test discharge current, cut-off voltage, temperature and charge/rest protocol are not stated for the curated nominal/rated row.",
+        "Separate Typical/Minimum capacity properties are not stated in the selected electrical table.",
+        "Exact connector geometry/pin orientation was not curated; contact legends are not treated as a full pinout.",
+        "Legal manufacturing entity was not independently established; publisher is not substituted.",
+        "Energy basis and maintenance protocol were not curated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "One commercial assembly P/N is counted; older editions, mating connector accessories and sourcing options are not additional independent models.",
+        "Published Length/Width/Thickness reference values retain original tolerances; no dimension is inferred from cell counts."
+      ]
+    },
+    {
+      "catalog_id": "rrc-rrc2040-2-1005590",
+      "manufacturer": null,
+      "brand": "RRC",
+      "model": "RRC2040-2",
+      "variant_key": "part-1005590",
+      "variant_description": "Standard finished battery pack; P/N 1005590; selected DS_RRC2040-2_L document edition.",
+      "suggested_display_name": "RRC RRC2040-2",
+      "aliases": [
+        {
+          "value": "RRC2040-2",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "1005590",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "standard_battery_pack",
+        "description": "Manufacturer-standard finished lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 6800,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 6800,
+      "stated_capacity_label": "Nominal capacity >=6.80Ah",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 10.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 3,
+        "parallel": 2
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 150.25,
+        "width": 58.75,
+        "height": 21.9,
+        "basis": "PDF page 4 Battery Dimensions: published Length/Width/Thickness reference values. Tolerances retained: Length 150.25mm +0.25/-0.25 Width 58.75mm +0.25/-0.25 Thickness 21.90mm +0.50/-0.25 . Height maps the source Thickness; no maximum envelope is calculated."
+      },
+      "mass_g": 336,
+      "maintenance_notes": null,
+      "source_ids": [
+        "rrc-rrc2040-2-product-page-batch6",
+        "rrc-rrc2040-2-1005590-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF cover and product identifier",
+            "observation": "RRC branded standard battery pack."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF cover and page 4 General / P/N",
+            "observation": "Exact assembly RRC2040-2; P/N 1005590."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and footer",
+            "observation": "Selected assembly 1005590 and printed DS_RRC2040-2_L edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and header",
+            "observation": "Exact model and listed manufacturer P/N retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack Li-Ion",
+            "observation": "Chemistry is Li-Ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Max. charge current and Max. charge voltage",
+            "observation": "Pack has manufacturer charging parameters and compatible battery chargers."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Finished battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Standard finished battery assembly."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal capacity",
+            "observation": ">=6.80Ah under the manufacturer original capacity label; converted to 6800mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, capacity row",
+            "observation": "Manufacturer labels capacity Nominal; Typical/Minimum labels are not substituted."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal voltage",
+            "observation": "10.80V nominal, explicitly printed."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Weight",
+            "observation": "336g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF cover, brand and exact assembly identity",
+            "observation": "Editable name combines RRC and the model."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Length",
+            "observation": "150.25mm published reference value."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Width",
+            "observation": "58.75mm published reference value."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Thickness",
+            "observation": "21.9mm published reference value."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions",
+            "observation": "Published tolerance strings are retained; Thickness maps to height."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "rrc-rrc2040-2-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 3S2P assembly; no voltage-based calculation."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "rrc-rrc2040-2-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 3S2P assembly; no voltage-based calculation."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / capacity row",
+            "observation": "Original Nominal capacity >=6.80Ah retained alongside the numeric capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "rrc-rrc2040-2-1005590-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / capacity row",
+            "observation": "Capacity qualification retained: Nominal capacity >=6.80Ah."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Capacity test discharge current, cut-off voltage, temperature and charge/rest protocol are not stated for the curated nominal/rated row.",
+        "Separate Typical/Minimum capacity properties are not stated in the selected electrical table.",
+        "Exact connector geometry/pin orientation was not curated; contact legends are not treated as a full pinout.",
+        "Legal manufacturing entity was not independently established; publisher is not substituted.",
+        "Energy basis and maintenance protocol were not curated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "One commercial assembly P/N is counted; older editions, mating connector accessories and sourcing options are not additional independent models.",
+        "Published Length/Width/Thickness reference values retain original tolerances; no dimension is inferred from cell counts.",
+        "The nominal capacity is a published lower bound (>=6.80Ah). The numeric scalar stores that bound and stated_capacity_label retains >=; it is not an equality, Typical or separately labelled Minimum rating."
+      ]
+    },
+    {
+      "catalog_id": "rrc-rrc2054-1005680",
+      "manufacturer": null,
+      "brand": "RRC",
+      "model": "RRC2054",
+      "variant_key": "part-1005680",
+      "variant_description": "Standard finished battery pack; P/N 1005680; selected DS_RRC2054_L.docx document edition.",
+      "suggested_display_name": "RRC RRC2054",
+      "aliases": [
+        {
+          "value": "RRC2054",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "1005680",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "standard_battery_pack",
+        "description": "Manufacturer-standard finished lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 3400,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 3400,
+      "stated_capacity_label": "Nominal capacity >=3.40Ah",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 14.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 4,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 85.1,
+        "width": 77.4,
+        "height": 22.4,
+        "basis": "PDF page 4 Battery Dimensions: published Length/Width/Thickness reference values. Tolerances retained: Length 85.10mm +0.25/-0.25 Width 77.40mm +0.25/-0.25 Thickness 22.40mm +0.60/-0.40 . Height maps the source Thickness; no maximum envelope is calculated."
+      },
+      "mass_g": 230,
+      "maintenance_notes": null,
+      "source_ids": [
+        "rrc-rrc2054-product-page-batch6",
+        "rrc-rrc2054-1005680-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF cover and product identifier",
+            "observation": "RRC branded standard battery pack."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF cover and page 4 General / P/N",
+            "observation": "Exact assembly RRC2054; P/N 1005680."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and footer",
+            "observation": "Selected assembly 1005680 and printed DS_RRC2054_L.docx edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and header",
+            "observation": "Exact model and listed manufacturer P/N retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack Li-Ion",
+            "observation": "Chemistry is Li-Ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Max. charge current and Max. charge voltage",
+            "observation": "Pack has manufacturer charging parameters and compatible battery chargers."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Finished battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Standard finished battery assembly."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal capacity",
+            "observation": ">=3.40Ah under the manufacturer original capacity label; converted to 3400mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, capacity row",
+            "observation": "Manufacturer labels capacity Nominal; Typical/Minimum labels are not substituted."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal voltage",
+            "observation": "14.40V nominal, explicitly printed."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Weight",
+            "observation": "230g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF cover, brand and exact assembly identity",
+            "observation": "Editable name combines RRC and the model."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Length",
+            "observation": "85.1mm published reference value."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Width",
+            "observation": "77.4mm published reference value."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Thickness",
+            "observation": "22.4mm published reference value."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions",
+            "observation": "Published tolerance strings are retained; Thickness maps to height."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "rrc-rrc2054-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 4S1P assembly; no voltage-based calculation."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "rrc-rrc2054-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 4S1P assembly; no voltage-based calculation."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / capacity row",
+            "observation": "Original Nominal capacity >=3.40Ah retained alongside the numeric capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "rrc-rrc2054-1005680-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / capacity row",
+            "observation": "Capacity qualification retained: Nominal capacity >=3.40Ah."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Capacity test discharge current, cut-off voltage, temperature and charge/rest protocol are not stated for the curated nominal/rated row.",
+        "Separate Typical/Minimum capacity properties are not stated in the selected electrical table.",
+        "Exact connector geometry/pin orientation was not curated; contact legends are not treated as a full pinout.",
+        "Legal manufacturing entity was not independently established; publisher is not substituted.",
+        "Energy basis and maintenance protocol were not curated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "One commercial assembly P/N is counted; older editions, mating connector accessories and sourcing options are not additional independent models.",
+        "Published Length/Width/Thickness reference values retain original tolerances; no dimension is inferred from cell counts.",
+        "The nominal capacity is a published lower bound (>=3.40Ah). The numeric scalar stores that bound and stated_capacity_label retains >=; it is not an equality, Typical or separately labelled Minimum rating."
+      ]
+    },
+    {
+      "catalog_id": "rrc-rrc2054-2-1100640",
+      "manufacturer": null,
+      "brand": "RRC",
+      "model": "RRC2054-2",
+      "variant_key": "part-1100640",
+      "variant_description": "Standard finished battery pack; P/N 1100640; selected DS_RRC2054-2_J document edition.",
+      "suggested_display_name": "RRC RRC2054-2",
+      "aliases": [
+        {
+          "value": "RRC2054-2",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "1100640",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "standard_battery_pack",
+        "description": "Manufacturer-standard finished lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 6800,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 6800,
+      "stated_capacity_label": "Nominal capacity >=6.80Ah",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 14.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 4,
+        "parallel": 2
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 150.4,
+        "width": 77.4,
+        "height": 22.4,
+        "basis": "PDF page 4 Battery Dimensions: published Length/Width/Thickness reference values. Tolerances retained: Length 150.40mm +0.40/-0.40 Width 77.40mm +0.25/-0.25 Thickness 22.40mm +0.60/-0.40 . Height maps the source Thickness; no maximum envelope is calculated."
+      },
+      "mass_g": 450,
+      "maintenance_notes": null,
+      "source_ids": [
+        "rrc-rrc2054-2-product-page-batch6",
+        "rrc-rrc2054-2-1100640-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF cover and product identifier",
+            "observation": "RRC branded standard battery pack."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF cover and page 4 General / P/N",
+            "observation": "Exact assembly RRC2054-2; P/N 1100640."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and footer",
+            "observation": "Selected assembly 1100640 and printed DS_RRC2054-2_J edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and header",
+            "observation": "Exact model and listed manufacturer P/N retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack Li-Ion",
+            "observation": "Chemistry is Li-Ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Max. charge current and Max. charge voltage",
+            "observation": "Pack has manufacturer charging parameters and compatible battery chargers."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Finished battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Standard finished battery assembly."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal capacity",
+            "observation": ">=6.80Ah under the manufacturer original capacity label; converted to 6800mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, capacity row",
+            "observation": "Manufacturer labels capacity Nominal; Typical/Minimum labels are not substituted."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal voltage",
+            "observation": "14.40V nominal, explicitly printed."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Weight",
+            "observation": "450g typical."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF cover, brand and exact assembly identity",
+            "observation": "Editable name combines RRC and the model."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Length",
+            "observation": "150.4mm published reference value."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Width",
+            "observation": "77.4mm published reference value."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Thickness",
+            "observation": "22.4mm published reference value."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions",
+            "observation": "Published tolerance strings are retained; Thickness maps to height."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "rrc-rrc2054-2-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 4S2P assembly; no voltage-based calculation."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "rrc-rrc2054-2-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 4S2P assembly; no voltage-based calculation."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / capacity row",
+            "observation": "Original Nominal capacity >=6.80Ah retained alongside the numeric capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "rrc-rrc2054-2-1100640-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / capacity row",
+            "observation": "Capacity qualification retained: Nominal capacity >=6.80Ah."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Capacity test discharge current, cut-off voltage, temperature and charge/rest protocol are not stated for the curated nominal/rated row.",
+        "Separate Typical/Minimum capacity properties are not stated in the selected electrical table.",
+        "Exact connector geometry/pin orientation was not curated; contact legends are not treated as a full pinout.",
+        "Legal manufacturing entity was not independently established; publisher is not substituted.",
+        "Energy basis and maintenance protocol were not curated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "One commercial assembly P/N is counted; older editions, mating connector accessories and sourcing options are not additional independent models.",
+        "Published Length/Width/Thickness reference values retain original tolerances; no dimension is inferred from cell counts.",
+        "The nominal capacity is a published lower bound (>=6.80Ah). The numeric scalar stores that bound and stated_capacity_label retains >=; it is not an equality, Typical or separately labelled Minimum rating.",
+        "Published mass is Typical, not a maximum."
+      ]
+    },
+    {
+      "catalog_id": "rrc-rrc2057-100569",
+      "manufacturer": null,
+      "brand": "RRC",
+      "model": "RRC2057",
+      "variant_key": "part-100569",
+      "variant_description": "Standard finished battery pack; P/N 100569; selected DS_RRC2057_I.DOCX document edition.",
+      "suggested_display_name": "RRC RRC2057",
+      "aliases": [
+        {
+          "value": "RRC2057",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "100569",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "standard_battery_pack",
+        "description": "Manufacturer-standard finished lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 6900,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 7.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 2,
+        "parallel": 2
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 85.1,
+        "width": 77.4,
+        "height": 22.4,
+        "basis": "PDF page 4 Battery Dimensions: published Length/Width/Thickness reference values. Tolerances retained: Length 85.10mm +0.25/-0.25 Width 77.40mm +0.25/-0.25 Thickness 22.40mm +0.60/-0.40 . Height maps the source Thickness; no maximum envelope is calculated."
+      },
+      "mass_g": 230,
+      "maintenance_notes": null,
+      "source_ids": [
+        "rrc-rrc2057-product-page-batch6",
+        "rrc-rrc2057-100569-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF cover and product identifier",
+            "observation": "RRC branded standard battery pack."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF cover and page 4 General / P/N",
+            "observation": "Exact assembly RRC2057; P/N 100569."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and footer",
+            "observation": "Selected assembly 100569 and printed DS_RRC2057_I.DOCX edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / General, P/N and header",
+            "observation": "Exact model and listed manufacturer P/N retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack Li-Ion",
+            "observation": "Chemistry is Li-Ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Max. charge current and Max. charge voltage",
+            "observation": "Pack has manufacturer charging parameters and compatible battery chargers."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Finished battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Standard finished battery assembly."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal capacity",
+            "observation": "6.90Ah under the manufacturer original capacity label; converted to 6900mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, capacity row",
+            "observation": "Manufacturer labels capacity Nominal; Typical/Minimum labels are not substituted."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Electrical Parameters, Nominal voltage",
+            "observation": "7.20V nominal, explicitly printed."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Weight",
+            "observation": "230g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF cover, brand and exact assembly identity",
+            "observation": "Editable name combines RRC and the model."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Length",
+            "observation": "85.1mm published reference value."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Width",
+            "observation": "77.4mm published reference value."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions, Thickness",
+            "observation": "22.4mm published reference value."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "rrc-rrc2057-100569-datasheet-batch6",
+            "locator": "PDF page 4 of 7, Characteristics / Battery Dimensions",
+            "observation": "Published tolerance strings are retained; Thickness maps to height."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "rrc-rrc2057-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 2S2P assembly; no voltage-based calculation."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "rrc-rrc2057-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 2S2P assembly; no voltage-based calculation."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Capacity test discharge current, cut-off voltage, temperature and charge/rest protocol are not stated for the curated nominal/rated row.",
+        "Separate Typical/Minimum capacity properties are not stated in the selected electrical table.",
+        "Exact connector geometry/pin orientation was not curated; contact legends are not treated as a full pinout.",
+        "Legal manufacturing entity was not independently established; publisher is not substituted.",
+        "Energy basis and maintenance protocol were not curated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "One commercial assembly P/N is counted; older editions, mating connector accessories and sourcing options are not additional independent models.",
+        "Published Length/Width/Thickness reference values retain original tolerances; no dimension is inferred from cell counts."
+      ]
+    },
+    {
+      "catalog_id": "rrc-rrc3570-110125",
+      "manufacturer": null,
+      "brand": "RRC",
+      "model": "RRC3570",
+      "variant_key": "part-110125",
+      "variant_description": "Standard finished battery pack; P/N 110125; selected DS_RRC3570_E document edition.",
+      "suggested_display_name": "RRC RRC3570",
+      "aliases": [
+        {
+          "value": "RRC3570",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "110125",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "standard_battery_pack",
+        "description": "Manufacturer-standard finished lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 3900,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 3900,
+      "stated_capacity_label": "Nominal (rated) capacity 3.90Ah",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 25.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 7,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 173,
+        "width": 80,
+        "height": 30,
+        "basis": "PDF page 4 Battery Dimensions: published Length/Width/Thickness reference values. Tolerances retained: Length 173mm \u00b1 0.50mm Width 80mm \u00b1 0.40mm Thickness 30mm \u00b1 0.50mm . Height maps the source Thickness; no maximum envelope is calculated."
+      },
+      "mass_g": 655,
+      "maintenance_notes": null,
+      "source_ids": [
+        "rrc-rrc3570-product-page-batch6",
+        "rrc-rrc3570-110125-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF cover and product identifier",
+            "observation": "RRC branded standard battery pack."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF cover and page 4 General / P/N",
+            "observation": "Exact assembly RRC3570; P/N 110125."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / General, P/N and footer",
+            "observation": "Selected assembly 110125 and printed DS_RRC3570_E edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / General, P/N and header",
+            "observation": "Exact model and listed manufacturer P/N retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack Li-Ion",
+            "observation": "Chemistry is Li-Ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Max. charge current and Max. charge voltage",
+            "observation": "Pack has manufacturer charging parameters and compatible battery chargers."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Finished battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Standard finished battery assembly."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Nominal (rated) capacity",
+            "observation": "3.90Ah under the manufacturer original capacity label; converted to 3900mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, capacity row",
+            "observation": "Manufacturer labels capacity Nominal (rated); Typical/Minimum labels are not substituted."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Nominal voltage",
+            "observation": "25.20V nominal, explicitly printed."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Weight",
+            "observation": "655g approximate."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF cover, brand and exact assembly identity",
+            "observation": "Editable name combines RRC and the model."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Length",
+            "observation": "173mm published reference value."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Width",
+            "observation": "80mm published reference value."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Thickness",
+            "observation": "30mm published reference value."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions",
+            "observation": "Published tolerance strings are retained; Thickness maps to height."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "rrc-rrc3570-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 7S1P assembly; no voltage-based calculation."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "rrc-rrc3570-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 7S1P assembly; no voltage-based calculation."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / capacity row",
+            "observation": "Original Nominal (rated) capacity 3.90Ah retained alongside the numeric capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "rrc-rrc3570-110125-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / capacity row",
+            "observation": "Capacity qualification retained: Nominal (rated) capacity 3.90Ah."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Capacity test discharge current, cut-off voltage, temperature and charge/rest protocol are not stated for the curated nominal/rated row.",
+        "Separate Typical/Minimum capacity properties are not stated in the selected electrical table.",
+        "Exact connector geometry/pin orientation was not curated; contact legends are not treated as a full pinout.",
+        "Legal manufacturing entity was not independently established; publisher is not substituted.",
+        "Energy basis and maintenance protocol were not curated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "One commercial assembly P/N is counted; older editions, mating connector accessories and sourcing options are not additional independent models.",
+        "Published Length/Width/Thickness reference values retain original tolerances; no dimension is inferred from cell counts.",
+        "The source capacity label is Nominal (rated); the rated basis and full source label are both retained. Published mass is approximate."
+      ]
+    },
+    {
+      "catalog_id": "rrc-rrc2130-110088",
+      "manufacturer": null,
+      "brand": "RRC",
+      "model": "RRC2130",
+      "variant_key": "part-110088",
+      "variant_description": "Standard finished battery pack; P/N 110088; selected DS_RRC2130_G.DOCX document edition.",
+      "suggested_display_name": "RRC RRC2130",
+      "aliases": [
+        {
+          "value": "RRC2130",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "110088",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "standard_battery_pack",
+        "description": "Manufacturer-standard finished lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 4170,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 7.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 2,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 150.6,
+        "width": 86.2,
+        "height": 8.35,
+        "basis": "PDF page 4 Battery Dimensions: published Length/Width/Thickness reference values. Tolerances retained: Length 150.60mm +0.50/-0.50 Width 86.20mm +0.40/-0.40 Thickness 8.35mm +0.25/-0.25 . Height maps the source Thickness; no maximum envelope is calculated."
+      },
+      "mass_g": 172,
+      "maintenance_notes": null,
+      "source_ids": [
+        "rrc-rrc2130-product-page-batch6",
+        "rrc-rrc2130-110088-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF cover and product identifier",
+            "observation": "RRC branded standard battery pack."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF cover and page 4 General / P/N",
+            "observation": "Exact assembly RRC2130; P/N 110088."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / General, P/N and footer",
+            "observation": "Selected assembly 110088 and printed DS_RRC2130_G.DOCX edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / General, P/N and header",
+            "observation": "Exact model and listed manufacturer P/N retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack Li-Ion",
+            "observation": "Chemistry is Li-Ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Max. charge current and Max. charge voltage",
+            "observation": "Pack has manufacturer charging parameters and compatible battery chargers."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Finished battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Standard finished battery assembly."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Nominal capacity",
+            "observation": "4.17Ah under the manufacturer original capacity label; converted to 4170mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, capacity row",
+            "observation": "Manufacturer labels capacity Nominal; Typical/Minimum labels are not substituted."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Nominal voltage",
+            "observation": "7.20V nominal, explicitly printed."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Weight",
+            "observation": "172g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF cover, brand and exact assembly identity",
+            "observation": "Editable name combines RRC and the model."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Length",
+            "observation": "150.6mm published reference value."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Width",
+            "observation": "86.2mm published reference value."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Thickness",
+            "observation": "8.35mm published reference value."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "rrc-rrc2130-110088-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions",
+            "observation": "Published tolerance strings are retained; Thickness maps to height."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "rrc-rrc2130-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 2S1P assembly; no voltage-based calculation."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "rrc-rrc2130-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 2S1P assembly; no voltage-based calculation."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Capacity test discharge current, cut-off voltage, temperature and charge/rest protocol are not stated for the curated nominal/rated row.",
+        "Separate Typical/Minimum capacity properties are not stated in the selected electrical table.",
+        "Exact connector geometry/pin orientation was not curated; contact legends are not treated as a full pinout.",
+        "Legal manufacturing entity was not independently established; publisher is not substituted.",
+        "Energy basis and maintenance protocol were not curated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "One commercial assembly P/N is counted; older editions, mating connector accessories and sourcing options are not additional independent models.",
+        "Published Length/Width/Thickness reference values retain original tolerances; no dimension is inferred from cell counts.",
+        "The linked PDF URL suffix differs from its printed footer identifier; document_version follows the opened document body."
+      ]
+    },
+    {
+      "catalog_id": "rrc-rrc2140-110076",
+      "manufacturer": null,
+      "brand": "RRC",
+      "model": "RRC2140",
+      "variant_key": "part-110076",
+      "variant_description": "Standard finished battery pack; P/N 110076; selected DS_RRC2140_H.DOCX document edition.",
+      "suggested_display_name": "RRC RRC2140",
+      "aliases": [
+        {
+          "value": "RRC2140",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "110076",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "standard_battery_pack",
+        "description": "Manufacturer-standard finished lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 4170,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 10.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 3,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 212.9,
+        "width": 86.2,
+        "height": 8.35,
+        "basis": "PDF page 4 Battery Dimensions: published Length/Width/Thickness reference values. Tolerances retained: Length 212.90mm +0.50/-0.50 Width 86.20mm +0.40/-0.40 Thickness 8.35mm +0.25/-0.25 . Height maps the source Thickness; no maximum envelope is calculated."
+      },
+      "mass_g": 255,
+      "maintenance_notes": null,
+      "source_ids": [
+        "rrc-rrc2140-product-page-batch6",
+        "rrc-rrc2140-110076-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF cover and product identifier",
+            "observation": "RRC branded standard battery pack."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF cover and page 4 General / P/N",
+            "observation": "Exact assembly RRC2140; P/N 110076."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / General, P/N and footer",
+            "observation": "Selected assembly 110076 and printed DS_RRC2140_H.DOCX edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / General, P/N and header",
+            "observation": "Exact model and listed manufacturer P/N retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack Li-Ion",
+            "observation": "Chemistry is Li-Ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Max. charge current and Max. charge voltage",
+            "observation": "Pack has manufacturer charging parameters and compatible battery chargers."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Finished battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 1, cover / Standard Battery Pack",
+            "observation": "Standard finished battery assembly."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Nominal capacity",
+            "observation": "4.17Ah under the manufacturer original capacity label; converted to 4170mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, capacity row",
+            "observation": "Manufacturer labels capacity Nominal; Typical/Minimum labels are not substituted."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Electrical Parameters, Nominal voltage",
+            "observation": "10.80V nominal, explicitly printed."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Weight",
+            "observation": "255g."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF cover, brand and exact assembly identity",
+            "observation": "Editable name combines RRC and the model."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Length",
+            "observation": "212.9mm published reference value."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Width",
+            "observation": "86.2mm published reference value."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions, Thickness",
+            "observation": "8.35mm published reference value."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "rrc-rrc2140-110076-datasheet-batch6",
+            "locator": "PDF page 4 of 6, Characteristics / Battery Dimensions",
+            "observation": "Published tolerance strings are retained; Thickness maps to height."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "rrc-rrc2140-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 3S1P assembly; no voltage-based calculation."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "rrc-rrc2140-product-page-batch6",
+            "locator": "Product page / Electrical Parameters / Battery cell configuration",
+            "observation": "Explicit 3S1P assembly; no voltage-based calculation."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Capacity test discharge current, cut-off voltage, temperature and charge/rest protocol are not stated for the curated nominal/rated row.",
+        "Separate Typical/Minimum capacity properties are not stated in the selected electrical table.",
+        "Exact connector geometry/pin orientation was not curated; contact legends are not treated as a full pinout.",
+        "Legal manufacturing entity was not independently established; publisher is not substituted.",
+        "Energy basis and maintenance protocol were not curated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "One commercial assembly P/N is counted; older editions, mating connector accessories and sourcing options are not additional independent models.",
+        "Published Length/Width/Thickness reference values retain original tolerances; no dimension is inferred from cell counts.",
+        "The opened manufacturer product page flags this model as not recommended for new designs; this is an identity reference, not a recommendation.",
+        "The linked PDF URL suffix differs from its printed footer identifier; document_version follows the opened document body."
+      ]
+    },
+    {
+      "catalog_id": "inspired-energy-nf3040hd34-standard-assembly",
+      "manufacturer": null,
+      "brand": "Inspired Energy",
+      "model": "NF3040HD34",
+      "variant_key": "standard-assembly",
+      "variant_description": "Manufacturer-standard NF3040HD34 rechargeable smart battery assembly; selected DSNF3040HD34 Rev 2.0; Issue date 10/7/22 (as printed).",
+      "suggested_display_name": "Inspired Energy NF3040HD34",
+      "aliases": [
+        {
+          "value": "NF3040HD34",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "smart_battery_pack",
+        "description": "Manufacturer-standard rechargeable smart lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 6460,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": 6800,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 6460,
+      "stated_capacity_label": "Rated Capacity: initial capacity >= 6460mAh",
+      "capacity_test_conditions": "Section 3.1.2 Rated Capacity initial threshold >=6460mAh: CV charge 12.6V +/-50mV; current limit 3000mA; discharge 1360mA to 7.5V at 25C; within 1 hour of charge. Typical capacity is the separate Section 2.2 pack overview value.",
+      "nominal_voltage_v": 10.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 3,
+        "parallel": 2
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "inspired-energy-nf3040hd34-datasheet-batch6",
+        "inspired-energy-nf3040hd34-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, Inspired Energy Part Number for Battery",
+            "observation": "Inspired Energy branded battery assembly."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, Inspired Energy Part Number for Battery",
+            "observation": "Exact assembly part number NF3040HD34."
+          },
+          {
+            "source_id": "inspired-energy-nf3040hd34-product-page-batch6",
+            "locator": "Official product heading and Data Downloads link",
+            "observation": "Exact commercial NF3040HD34 product links the selected specification."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF cover and page 4, Scope / Battery Pack Overview",
+            "observation": "Selected NF3040HD34 standard assembly and printed document edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, part number",
+            "observation": "Exact manufacturer part number retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description; page 4, Sections 2.1-2.2",
+            "observation": "Rechargeable Lithium Ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description",
+            "observation": "Explicit rechargeable smart battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description",
+            "observation": "Completed smart battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description; page 4, Section 2.2",
+            "observation": "Finished smart battery assembly with management electronics."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.2 Rated Capacity",
+            "observation": "Initial capacity >= 6460mAh, under Rated Capacity heading."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.2 Rated Capacity",
+            "observation": "Manufacturer labels the initial threshold Rated Capacity."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "Pack Typical capacity 6800mAh; not the Rated threshold."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.2 Rated Capacity",
+            "observation": "Numeric initial Rated lower bound 6460mAh."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.2 Rated Capacity",
+            "observation": "Initial capacity >= qualification is retained in the source label."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.2 Rated Capacity",
+            "observation": "Original voltage, current, termination, temperature and within-one-hour condition retained for Rated initial threshold."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.1 Nominal Voltage",
+            "observation": "Nominal operating voltage explicitly 10.8V."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "3 series explicitly stated."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "2 parallel explicitly stated."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "inspired-energy-nf3040hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, brand and exact part number",
+            "observation": "Editable suggestion combines Inspired Energy and exact assembly model."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal manufacturer entity is not independently established in the curated specification; brand/publisher is not substituted.",
+        "Complete dimension/tolerance basis, mass and exact connector/pinout were not curated.",
+        "Energy basis and maintenance protocol were not curated.",
+        "Full test conditions for the separate overview Typical capacity are not stated.",
+        "A separately labelled pack Minimum capacity is not stated in the curated capacity sections; the Rated initial >= threshold is not duplicated as Minimum."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "The numeric Rated value is the published initial-capacity lower bound; >= is retained in stated_capacity_label. The overview Typical value is not substituted for it.",
+        "The test condition applies to the initial Rated threshold; overview capacity values retain their separate source meaning.",
+        "The exact commercial assembly is counted once; custom firmware, labels, connectors and agency-approved equivalents are not additional models."
+      ]
+    },
+    {
+      "catalog_id": "inspired-energy-nh2057hd34-standard-assembly",
+      "manufacturer": null,
+      "brand": "Inspired Energy",
+      "model": "NH2057HD34",
+      "variant_key": "standard-assembly",
+      "variant_description": "Manufacturer-standard NH2057HD34 rechargeable smart battery assembly; selected DSNH2057HD34 Rev 2.0; Issue date 2/17/23 (as printed).",
+      "suggested_display_name": "Inspired Energy NH2057HD34",
+      "aliases": [
+        {
+          "value": "NH2057HD34",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "smart_battery_pack",
+        "description": "Manufacturer-standard rechargeable smart lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 12920,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": 13600,
+      "minimum_capacity_mah": 12800,
+      "stated_capacity_mah": 12920,
+      "stated_capacity_label": "Rated Capacity: initial capacity >= 12920mAh",
+      "capacity_test_conditions": "Section 3.1.2 Rated Capacity initial threshold >=12920mAh: CV charge 8.4V +/-50mV; current limit 4A; discharge 2720mA to 5.5V at 25C; within 1 hour of charge. Typical/Minimum are separate Section 2.2 pack overview values; their own full test conditions are not stated.",
+      "nominal_voltage_v": 7.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 2,
+        "parallel": 4
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "inspired-energy-nh2057hd34-datasheet-batch6",
+        "inspired-energy-nh2057hd34-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, Inspired Energy Part Number for Battery",
+            "observation": "Inspired Energy branded battery assembly."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, Inspired Energy Part Number for Battery",
+            "observation": "Exact assembly part number NH2057HD34."
+          },
+          {
+            "source_id": "inspired-energy-nh2057hd34-product-page-batch6",
+            "locator": "Official product heading and Data Downloads link",
+            "observation": "Exact commercial NH2057HD34 product links the selected specification."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF cover and page 4, Scope / Battery Pack Overview",
+            "observation": "Selected NH2057HD34 standard assembly and printed document edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, part number",
+            "observation": "Exact manufacturer part number retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description; page 4, Sections 2.1-2.2",
+            "observation": "Rechargeable Lithium Ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description",
+            "observation": "Explicit rechargeable smart battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description",
+            "observation": "Completed smart battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description; page 4, Section 2.2",
+            "observation": "Finished smart battery assembly with management electronics."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 6, Section 3.1.2 Rated Capacity",
+            "observation": "Initial capacity >= 12920mAh, under Rated Capacity heading."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 6, Section 3.1.2 Rated Capacity",
+            "observation": "Manufacturer labels the initial threshold Rated Capacity."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "Pack Typical capacity 13600mAh; not the Rated threshold."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 6, Section 3.1.2 Rated Capacity",
+            "observation": "Numeric initial Rated lower bound 12920mAh."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 6, Section 3.1.2 Rated Capacity",
+            "observation": "Initial capacity >= qualification is retained in the source label."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 6, Section 3.1.2 Rated Capacity",
+            "observation": "Original voltage, current, termination, temperature and within-one-hour condition retained for Rated initial threshold."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.1 Nominal Voltage",
+            "observation": "Nominal operating voltage explicitly 7.2V."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "2 series explicitly stated."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "4 parallel explicitly stated."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, brand and exact part number",
+            "observation": "Editable suggestion combines Inspired Energy and exact assembly model."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "Pack overview states 13.6Ah Typical with 12.8 Minimum in the same pack-capacity context; retained as 12800mAh."
+          }
+        ],
+        "/conflicts/0": [
+          {
+            "source_id": "inspired-energy-nh2057hd34-datasheet-batch6",
+            "locator": "PDF page 4, recurring issue-date header and Revision History / revision 2.0 row",
+            "observation": "Header prints 2/17/23; revision-history row prints 2/17/22. Core electrical identity is unchanged."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [
+        "Editorial date inconsistency: recurring issue-date header states 2/17/23, but revision-history row for revision 2.0 states 2/17/22. Header and exact revision are retained as printed; this does not change the core electrical facts."
+      ],
+      "unknowns": [
+        "Legal manufacturer entity is not independently established in the curated specification; brand/publisher is not substituted.",
+        "Complete dimension/tolerance basis, mass and exact connector/pinout were not curated.",
+        "Energy basis and maintenance protocol were not curated.",
+        "Full test conditions for the separate overview Typical/Minimum capacity are not stated."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "The numeric Rated value is the published initial-capacity lower bound; >= is retained in stated_capacity_label. The overview Typical value is not substituted for it.",
+        "The test condition applies to the initial Rated threshold; overview capacity values retain their separate source meaning.",
+        "The exact commercial assembly is counted once; custom firmware, labels, connectors and agency-approved equivalents are not additional models.",
+        "Overview Minimum 12800mAh and tested initial Rated >=12920mAh are different published properties; no equality between them is asserted."
+      ]
+    },
+    {
+      "catalog_id": "inspired-energy-nc4040hd50-standard-assembly",
+      "manufacturer": null,
+      "brand": "Inspired Energy",
+      "model": "NC4040HD50",
+      "variant_key": "standard-assembly",
+      "variant_description": "Manufacturer-standard NC4040HD50 rechargeable smart battery assembly; selected DSNC4040HD50 Rev 1.2; Issue date 4/14/24 (as printed).",
+      "suggested_display_name": "Inspired Energy NC4040HD50",
+      "aliases": [
+        {
+          "value": "NC4040HD50",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "smart_battery_pack",
+        "description": "Manufacturer-standard rechargeable smart lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 4750,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": 5000,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 4750,
+      "stated_capacity_label": "Rated Capacity: initial capacity >= 4750mAh",
+      "capacity_test_conditions": "Section 3.1.2 Rated Capacity initial threshold >=4750mAh: CV charge 12.6V +/-50mV; current limit 1455mA; discharge 970mA to 8.25V at 25C; within 1 hour of charge. Typical capacity is the separate Section 2.2 pack overview value.",
+      "nominal_voltage_v": 10.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 3,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "inspired-energy-nc4040hd50-datasheet-batch6",
+        "inspired-energy-nc4040hd50-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 1 cover, Inspired Energy Part Number for Battery",
+            "observation": "Inspired Energy branded battery assembly."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 1 cover, Inspired Energy Part Number for Battery",
+            "observation": "Exact assembly part number NC4040HD50."
+          },
+          {
+            "source_id": "inspired-energy-nc4040hd50-product-page-batch6",
+            "locator": "Official product heading and Data Downloads link",
+            "observation": "Exact commercial NC4040HD50 product links the selected specification."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF cover and page 4, Scope / Battery Pack Overview",
+            "observation": "Selected NC4040HD50 standard assembly and printed document edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 1 cover, part number",
+            "observation": "Exact manufacturer part number retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 1, Description; page 4, Sections 2.1-2.2",
+            "observation": "Rechargeable Lithium Ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 1, Description",
+            "observation": "Explicit rechargeable smart battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 1, Description",
+            "observation": "Completed smart battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 1, Description; page 4, Section 2.2",
+            "observation": "Finished smart battery assembly with management electronics."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 6, Section 3.1.2 Rated Capacity",
+            "observation": "Initial capacity >= 4750mAh, under Rated Capacity heading."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 6, Section 3.1.2 Rated Capacity",
+            "observation": "Manufacturer labels the initial threshold Rated Capacity."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "Pack Typical capacity 5000mAh; not the Rated threshold."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 6, Section 3.1.2 Rated Capacity",
+            "observation": "Numeric initial Rated lower bound 4750mAh."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 6, Section 3.1.2 Rated Capacity",
+            "observation": "Initial capacity >= qualification is retained in the source label."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 6, Section 3.1.2 Rated Capacity",
+            "observation": "Original voltage, current, termination, temperature and within-one-hour condition retained for Rated initial threshold."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.1 Nominal Voltage",
+            "observation": "Nominal operating voltage explicitly 10.8V."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "3 series explicitly stated."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "1 parallel explicitly stated."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "inspired-energy-nc4040hd50-datasheet-batch6",
+            "locator": "PDF page 1 cover, brand and exact part number",
+            "observation": "Editable suggestion combines Inspired Energy and exact assembly model."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal manufacturer entity is not independently established in the curated specification; brand/publisher is not substituted.",
+        "Complete dimension/tolerance basis, mass and exact connector/pinout were not curated.",
+        "Energy basis and maintenance protocol were not curated.",
+        "Full test conditions for the separate overview Typical capacity are not stated.",
+        "A separately labelled pack Minimum capacity is not stated in the curated capacity sections; the Rated initial >= threshold is not duplicated as Minimum."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "The numeric Rated value is the published initial-capacity lower bound; >= is retained in stated_capacity_label. The overview Typical value is not substituted for it.",
+        "The test condition applies to the initial Rated threshold; overview capacity values retain their separate source meaning.",
+        "The exact commercial assembly is counted once; custom firmware, labels, connectors and agency-approved equivalents are not additional models."
+      ]
+    },
+    {
+      "catalog_id": "inspired-energy-nh3054hd34-standard-assembly",
+      "manufacturer": null,
+      "brand": "Inspired Energy",
+      "model": "NH3054HD34",
+      "variant_key": "standard-assembly",
+      "variant_description": "Manufacturer-standard NH3054HD34 rechargeable smart battery assembly; selected DSNH3054HD34 Rev 1.2; Issue date 9/15/23 (as printed).",
+      "suggested_display_name": "Inspired Energy NH3054HD34",
+      "aliases": [
+        {
+          "value": "NH3054HD34",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "smart_battery_pack",
+        "description": "Manufacturer-standard rechargeable smart lithium-ion battery pack."
+      },
+      "rated_capacity_mah": 6460,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": 6800,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 6460,
+      "stated_capacity_label": "Rated Capacity: initial capacity >= 6460mAh",
+      "capacity_test_conditions": "Section 3.1.2 Rated Capacity initial threshold >=6460mAh: CV charge 16.8V +/-50mV; current limit 3.0A; discharge 1360mA to 11.00V at 25C; within 1 hour of charge. Typical capacity is the separate Section 2.2 pack overview value.",
+      "nominal_voltage_v": 14.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 4,
+        "parallel": 2
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "inspired-energy-nh3054hd34-datasheet-batch6",
+        "inspired-energy-nh3054hd34-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, Inspired Energy Part Number for Battery",
+            "observation": "Inspired Energy branded battery assembly."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, Inspired Energy Part Number for Battery",
+            "observation": "Exact assembly part number NH3054HD34."
+          },
+          {
+            "source_id": "inspired-energy-nh3054hd34-product-page-batch6",
+            "locator": "Official product heading and Data Downloads link",
+            "observation": "Exact commercial NH3054HD34 product links the selected specification."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF cover and page 4, Scope / Battery Pack Overview",
+            "observation": "Selected NH3054HD34 standard assembly and printed document edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, part number",
+            "observation": "Exact manufacturer part number retained."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description; page 4, Sections 2.1-2.2",
+            "observation": "Rechargeable Lithium Ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description",
+            "observation": "Explicit rechargeable smart battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description",
+            "observation": "Completed smart battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 1, Description; page 4, Section 2.2",
+            "observation": "Finished smart battery assembly with management electronics."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.2 Rated Capacity",
+            "observation": "Initial capacity >= 6460mAh, under Rated Capacity heading."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.2 Rated Capacity",
+            "observation": "Manufacturer labels the initial threshold Rated Capacity."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "Pack Typical capacity 6800mAh; not the Rated threshold."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.2 Rated Capacity",
+            "observation": "Numeric initial Rated lower bound 6460mAh."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.2 Rated Capacity",
+            "observation": "Initial capacity >= qualification is retained in the source label."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.2 Rated Capacity",
+            "observation": "Original voltage, current, termination, temperature and within-one-hour condition retained for Rated initial threshold."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 5, Section 3.1.1 Nominal Voltage",
+            "observation": "Nominal operating voltage explicitly 14.4V."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "4 series explicitly stated."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 4, Section 2.2 Battery Pack Overview",
+            "observation": "2 parallel explicitly stated."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "inspired-energy-nh3054hd34-datasheet-batch6",
+            "locator": "PDF page 1 cover, brand and exact part number",
+            "observation": "Editable suggestion combines Inspired Energy and exact assembly model."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal manufacturer entity is not independently established in the curated specification; brand/publisher is not substituted.",
+        "Complete dimension/tolerance basis, mass and exact connector/pinout were not curated.",
+        "Energy basis and maintenance protocol were not curated.",
+        "Full test conditions for the separate overview Typical capacity are not stated.",
+        "A separately labelled pack Minimum capacity is not stated in the curated capacity sections; the Rated initial >= threshold is not duplicated as Minimum."
+      ],
+      "notes": [
+        "Editorial allocation: general finished rechargeable lithium pack. Public manufacturer product reference; no school inventory or purchasing claim.",
+        "Suggested display name is editable and combines the published brand and exact assembly model.",
+        "The numeric Rated value is the published initial-capacity lower bound; >= is retained in stated_capacity_label. The overview Typical value is not substituted for it.",
+        "The test condition applies to the initial Rated threshold; overview capacity values retain their separate source meaning.",
+        "The exact commercial assembly is counted once; custom firmware, labels, connectors and agency-approved equivalents are not additional models."
+      ]
+    }
+  ]
+}

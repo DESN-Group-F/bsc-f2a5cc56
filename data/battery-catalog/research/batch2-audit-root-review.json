@@ -1,0 +1,202 @@
+{
+  "audit_kind": "Root independent source sample for second-batch release",
+  "reviewed_at_utc": "2026-10-02T13:39:35.919172+00:00",
+  "catalog_version": "2026.10.02.2",
+  "samples": [
+    {
+      "catalog_id": "molicel-inr-21700-p45b",
+      "url": "https://www.molicel.com/wp-content/uploads/INR21700P45B_1.2_Product-Data-Sheet-of-INR-21700-P45B-80109.pdf",
+      "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+      "title": "Product Data Sheet: Model INR-21700-P45B",
+      "publisher": "Molicel",
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_method": "Web PDF text reader; printed capacity and cell-voltage table inspected.",
+      "locator": "PDF page 1: printed model, Typical/Minimum capacity, Cell Voltage / Nominal.",
+      "compared_fields": {
+        "brand": "Molicel",
+        "model": "INR-21700-P45B",
+        "nominal_voltage_v": 3.6,
+        "typical_capacity_mah": 4500,
+        "minimum_capacity_mah": 4300
+      },
+      "result": "matches_selected_source_values"
+    },
+    {
+      "catalog_id": "molicel-inr-21700-m65a",
+      "url": "https://www.molicel.com/wp-content/uploads/Product-Data-Sheet-of-INR-21700-M65A-80153-0.1_250805.pdf",
+      "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+      "title": "Product Data Sheet: Model INR-21700-M65A",
+      "publisher": "Molicel",
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_method": "Web PDF text reader; printed capacity and cell-voltage table inspected.",
+      "locator": "PDF page 1: printed model, Typical/Minimum capacity, Cell Voltage / Nominal.",
+      "compared_fields": {
+        "brand": "Molicel",
+        "model": "INR-21700-M65A",
+        "nominal_voltage_v": 3.6,
+        "typical_capacity_mah": 6500,
+        "minimum_capacity_mah": 6400
+      },
+      "result": "matches_selected_source_values"
+    },
+    {
+      "catalog_id": "molicel-inr-18650-p30s",
+      "url": "https://www.molicel.com/product/inr-18650-p30s/",
+      "source_id": "molicel-batch2-inr-18650-p30s-product-page",
+      "title": "INR-18650-P30S",
+      "publisher": "Molicel",
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_method": "Web manufacturer product-page text reader; root PDF re-open timed out, so minimum-capacity confirmation is attributed to the separate independent standard review.",
+      "locator": "Model, Form, Nominal Voltage, Typical Capacity; product page establishes the 18650 model despite the PDF URL filename.",
+      "compared_fields": {
+        "brand": "Molicel",
+        "model": "INR-18650-P30S",
+        "nominal_voltage_v": 3.6,
+        "typical_capacity_mah": 3000
+      },
+      "result": "matches_selected_source_values"
+    },
+    {
+      "catalog_id": "panasonic-eneloop-bk-3hcc",
+      "url": "https://panasonic.jp/battery/products/BK-3HCC_4/spec.html",
+      "source_id": "panasonic-bk-3hcc-4-spec",
+      "title": "BK-3HCC/4 specifications: eneloop AA four-cell retail package (high-end model) (English descriptive translation)",
+      "publisher": "Panasonic",
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_method": "Direct HTTPS GET, HTTP 200, UTF-8 HTML read and parsed with standard-library HTMLParser; web reader returned an internal error.",
+      "locator": "Product specifications: named eneloop cell, capacity min., voltage, rechargeable indicator; retail/kit quantity is not counted as another model.",
+      "compared_fields": {
+        "brand": "eneloop",
+        "model": "BK-3HCC",
+        "nominal_voltage_v": 1.2,
+        "minimum_capacity_mah": 2450,
+        "rechargeable": true
+      },
+      "result": "matches_selected_source_values"
+    },
+    {
+      "catalog_id": "panasonic-eneloop-bk-3mcd",
+      "url": "https://panasonic.jp/battery/products/K-KJ85MCD40/spec.html",
+      "source_id": "panasonic-k-kj85mcd40-cell-identity",
+      "title": "K-KJ85MCD40 specifications: charger kit with BK-3MCD cells (English descriptive translation)",
+      "publisher": "Panasonic",
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_method": "Direct HTTPS GET, HTTP 200, UTF-8 HTML read and parsed with standard-library HTMLParser; web reader returned an internal error.",
+      "locator": "Product specifications: named eneloop cell, capacity min., voltage, rechargeable indicator; retail/kit quantity is not counted as another model.",
+      "compared_fields": {
+        "brand": "eneloop",
+        "model": "BK-3MCD",
+        "nominal_voltage_v": 1.2,
+        "minimum_capacity_mah": 2000,
+        "rechargeable": true
+      },
+      "result": "matches_selected_source_values"
+    },
+    {
+      "catalog_id": "tattu-taa3002s75jst",
+      "url": "https://www.tattuworld.com/products/tattu-classic-300mah-2s1p-7-6v-hv-75c-fpv-lipo-battery.html",
+      "source_id": "tattu-taa3002s75jst-page",
+      "title": "High C Rate 300mAh 2S1P 7.6V HV 75C FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_method": "Web manufacturer product-page text reader; exact SKU and model-specific Specs section inspected.",
+      "locator": "Overview and Specs: Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Connector, Balancer Connector Type.",
+      "compared_fields": {
+        "brand": "Tattu",
+        "model": "TAA3002S75JST",
+        "nominal_voltage_v": 7.6,
+        "rated_capacity_mah": 300,
+        "capacity_basis": "nominal",
+        "configuration": {
+          "series": 2,
+          "parallel": 1
+        },
+        "connector": {
+          "description": "JST-PHR discharge connector; JST-XHR balance connector.",
+          "polarity": null
+        }
+      },
+      "result": "matches_selected_source_values"
+    },
+    {
+      "catalog_id": "tattu-taa22005s15x6",
+      "url": "https://www.tattuworld.com/products/tattu-r-line-5-0-2200mah-5s1p-18-5v-150c-fpv-lipo-battery.html",
+      "source_id": "tattu-taa22005s15x6-page",
+      "title": "R-Line V5 2200mAh 5S1P 18.5V 150C FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_method": "Web manufacturer product-page text reader; exact SKU and model-specific Specs section inspected.",
+      "locator": "Overview and Specs: Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Connector, Balancer Connector Type.",
+      "compared_fields": {
+        "brand": "Tattu",
+        "model": "TAA22005S15X6",
+        "nominal_voltage_v": 18.5,
+        "rated_capacity_mah": 2200,
+        "capacity_basis": "nominal",
+        "configuration": {
+          "series": 5,
+          "parallel": 1
+        },
+        "connector": {
+          "description": "XT60 discharge connector; JST-XHR-6P balance connector.",
+          "polarity": null
+        }
+      },
+      "result": "matches_selected_source_values"
+    },
+    {
+      "catalog_id": "tattu-taa14806s16st",
+      "url": "https://www.tattuworld.com/products/tattu-r-line-6-0-1480mah-6s1p-22-2v-160c-st-fpv-lipo-battery.html",
+      "source_id": "tattu-taa14806s16st-page",
+      "title": "R-Line V6 1480mAh 6S1P 22.2V 160C ST FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_method": "Web manufacturer product-page text reader; exact SKU and model-specific Specs section inspected.",
+      "locator": "Overview and Specs: Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Connector, Balancer Connector Type.",
+      "compared_fields": {
+        "brand": "Tattu",
+        "model": "TAA14806S16ST",
+        "nominal_voltage_v": 22.2,
+        "rated_capacity_mah": 1480,
+        "capacity_basis": "nominal",
+        "configuration": {
+          "series": 6,
+          "parallel": 1
+        },
+        "connector": {
+          "description": "XT60U-F discharge connector; JST-XHR-7P balance connector.",
+          "polarity": null
+        }
+      },
+      "result": "matches_selected_source_values"
+    }
+  ],
+  "source_sample_models": 8,
+  "related_audits": [
+    "batch2-audit-standard-review.json",
+    "batch2-audit-lifepo4-review.json"
+  ],
+  "combined_independently_sampled_new_models": 13,
+  "findings": [
+    "The three Tattu samples preserve manufacturer-labelled nominal capacity, exact SKU, explicit S/P configuration and supplied connector variant. Generic custom connector options were excluded.",
+    "Panasonic BK-3HCC and BK-3MCD min. capacity and 1.2 V were read from actual HTML. Four-cell retail/charger kit quantity did not create a new cell model.",
+    "Molicel minimum and typical capacities remain separate; nominal voltage is not replaced by charge voltage. M65A printed revision/date is retained without asserting newest revision.",
+    "The independent LiFePO4 review found ANR chemistry text on PDF page 1 and unresolved LF105 terminal versions. The locator was corrected before assembly and LF105 is excluded from verified targets.",
+    "All 32 added base identities were checked for overlap with the original 12; 12 pack configurations do not inflate count through connector-only variants."
+  ],
+  "limitations": [
+    "This is a sample review of manufacturer text, not a complete independent re-audit of every field or every new model.",
+    "Neither root nor the LiFePO4 reviewer examined LF105 linked feature-image pixels; image-only terminal identifiers remain unverified.",
+    "No school procurement coverage, individual asset performance, charger compatibility, safety certification, marketing performance claim or newest-source revision is established by this review.",
+    "Audit records are not canonical source records or assembly inputs; their URLs are not added to the 61-source catalog count.",
+    "No application registration feature, API, migration, live database write, deployment or application integration test was performed."
+  ]
+}

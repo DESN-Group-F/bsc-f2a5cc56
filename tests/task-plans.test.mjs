@@ -571,10 +571,12 @@ test("the additive task migration preserves all prior tables, stored rows and ex
         const [migrationAdmin] = await seedAccounts(database);
         const inventory = new InventoryStore(database, "prior-tables:demo", "demo", inventoryActor(migrationAdmin), () => new Date(initialTime));
         await inventory.initializeDemo();
-        await inventory.movement({ requestId: crypto.randomUUID(), kind: "checkout", batteryIds: ["BAT-001"] });
-        const loan = (await inventory.snapshot()).batteries.find(battery => battery.id === "BAT-001");
-        await inventory.movement({ requestId: crypto.randomUUID(), kind: "return", batteryIds: ["BAT-001"], expectedLoans: [{ batteryId: "BAT-001", loanId: loan.loanId }] });
-        await inventory.observation({ requestId: crypto.randomUUID(), batteryId: "BAT-001", roomId: "J18-DEMO-ROOM", observedAt: "2026-01-30T00:00:00.000Z" });
+        // Seed evidence against this historical schema, before later lifecycle columns exist.
+        const borrowerKey = await database.prepare("SELECT key FROM people WHERE scope=? AND account_id=?").bind("prior-tables:demo", migrationAdmin.id).first("key");
+        await database.batch([
+            database.prepare("INSERT INTO loans(id,scope,battery_key,borrower_key,borrower_name,borrower_account_id,checked_out_at,returned_at,checkout_actor_id,checkout_actor_name,return_actor_id,return_actor_name) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)").bind("prior-migration-loan", "prior-tables:demo", "prior-tables:demo/BAT-001", borrowerKey, migrationAdmin.displayName, migrationAdmin.id, initialTime, initialTime, migrationAdmin.id, migrationAdmin.displayName, migrationAdmin.id, migrationAdmin.displayName),
+            database.prepare("INSERT INTO observations(id,scope,battery_key,room_key,observed_at,received_at,source,room_name,room_building) SELECT ?,?,?,r.key,?,?,?,CASE WHEN r.is_placeholder=1 THEN r.name || ' — Placeholder' WHEN r.number IS NULL THEN r.name ELSE r.number || ' - ' || r.name END,COALESCE(b.id || ' - ' || b.name,r.building) FROM rooms r LEFT JOIN buildings b ON b.key=r.building_key WHERE r.key=?").bind("prior-migration-observation", "prior-tables:demo", "prior-tables:demo/BAT-001", initialTime, initialTime, "Migration fixture", "prior-tables:demo/J18-DEMO-ROOM"),
+        ]);
         await database.prepare("INSERT INTO shared_inventories(dataset,scope) VALUES('demo','prior-tables:demo')").run();
         await database.prepare("INSERT INTO staff_sessions(token_hash,account_id,auth_version,created_at,expires_at) VALUES('isolated-test-session-hash',?,1,?,?)").bind(migrationAdmin.id, initialTime, "2026-02-01T00:00:00.000Z").run();
         await database.prepare("INSERT INTO sign_in_attempts(key,failures,window_started_at) VALUES('isolated-test-attempt',1,?)").bind(initialTime).run();

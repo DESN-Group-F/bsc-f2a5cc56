@@ -1,0 +1,3720 @@
+{
+  "sources": [
+    {
+      "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+      "url": "https://www.hacker-motor.com/daten/anleitungen/akkus/Anleitung_Hacker_LiXx_2021-25112020.pdf",
+      "title": "Product description and Manual Hacker Motor LiPo Batteries",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_manual",
+      "document_version": "Version 24.11.2020; printed identifier Anleitung_Hacker_LiPo_2021-24112020.pdf",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "Hacker LiPo family; linked from each of the twelve selected TF MTAG product pages, not a per-SKU numerical test report"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual direct HTTPS 200, 873095 bytes; all four PDF pages read in memory. PDF page 2 English Section 1 defines stated capacity at 1C discharge; page 3 Section 5 describes recharging. Page 4 states version 24.11.2020. Filename dates are not substituted for the printed version. No generic charging, storage or safety guidance is activated as application policy."
+    },
+    {
+      "source_id": "tenergy-31044-product-page-batch6",
+      "url": "https://power.tenergy.com/at-tenergy-18650-7-4v-5200mah-rechargeable-battery-pack-w-pcb-2s2p-38-48wh-5a-rate/",
+      "title": "Tenergy Li-Ion 7.4V 5200mAh Rechargeable Battery 31044 - Tenergy",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "31044 selected standard protected pack; bare leads, excluding custom connector/NTC/configuration requests"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened with web and direct HTTPS 200 (328819 bytes); SKU/P/N, heading and all repeated Product Highlights/output specifications compared. Nominal Voltage is explicit; Capacity is unqualified. Charging/protection limits are not substituted for nominal voltage or capacity conditions."
+    },
+    {
+      "source_id": "tenergy-31800-product-page-batch6",
+      "url": "https://power.tenergy.com/at-tenergy-li-ion-11-1v-10400mah-rechargeable-battery-pack-w-pcb-3s4p-115-44wh-9a-rate-dgr-a/",
+      "title": "Tenergy Li-Ion 11.1V 10400mAh Rechargeable Battery 31800 - Tenergy",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "31800 selected standard protected pack; bare leads, excluding custom connector/NTC/configuration requests"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened with web and direct HTTPS 200 (337656 bytes); SKU/P/N, heading and all repeated Product Highlights/output specifications compared. Nominal Voltage is explicit; Capacity is unqualified. Charging/protection limits are not substituted for nominal voltage or capacity conditions."
+    },
+    {
+      "source_id": "tenergy-31013-product-page-batch6",
+      "url": "https://power.tenergy.com/at-tenergy-li-ion-11-1v-2600mah-rechargeable-battery-pack-w-pcb-3s1p-28-86wh-5a-rate/",
+      "title": "Tenergy 11.1V 2600mAh Li-Ion Rechargeable Battery 31013 - Tenergy",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "31013 selected standard protected pack; bare leads, excluding custom connector/NTC/configuration requests"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened with web and direct HTTPS 200 (329868 bytes); SKU/P/N, heading and all repeated Product Highlights/output specifications compared. Nominal Voltage is explicit; Capacity is unqualified. Charging/protection limits are not substituted for nominal voltage or capacity conditions."
+    },
+    {
+      "source_id": "tenergy-31094-product-page-batch6",
+      "url": "https://power.tenergy.com/at-tenergy-li-ion-11-1v-7800mah-rechargeable-battery-pack-w-pcb-3s3p-86-58wh-5a-rate/",
+      "title": "Tenergy Li-Ion 11.1V 7800mAh Rechargeable Battery 31094 - Tenergy",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "31094 selected standard protected pack; connector unspecified, excluding customized requests"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened with web and direct HTTPS 200 (293107 bytes); SKU/P/N, heading and all repeated Product Highlights/output specifications compared. Nominal Voltage is explicit; Capacity is unqualified. Charging/protection limits are not substituted for nominal voltage or capacity conditions."
+    },
+    {
+      "source_id": "tenergy-31021-product-page-batch6",
+      "url": "https://power.tenergy.com/at-tenergy-li-ion-14-8v-2200mah-rechargeable-battery-pack-w-pcb-4s1p-32-56wh-4a-rate/",
+      "title": "Tenergy Li-Ion 14.8V 2200mAh Rechargeable Battery 31021 - Tenergy",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "31021 selected standard protected pack; bare leads, excluding custom connector/NTC/configuration requests"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened with web and direct HTTPS 200 (330666 bytes); SKU/P/N, heading and all repeated Product Highlights/output specifications compared. Nominal Voltage is explicit; Capacity is unqualified. Charging/protection limits are not substituted for nominal voltage or capacity conditions."
+    },
+    {
+      "source_id": "tenergy-31022-product-page-batch6",
+      "url": "https://power.tenergy.com/at-tenergy-li-ion-14-8v-2600mah-rechargeable-battery-pack-w-pcb-4s1p-38-48wh-5a-rate/",
+      "title": "Tenergy Li-Ion 14.8V 2600mAh Rechargeable Battery 31022 - Tenergy",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "31022 selected standard protected pack; bare leads, excluding custom connector/NTC/configuration requests"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened with web and direct HTTPS 200 (329059 bytes); SKU/P/N, heading and all repeated Product Highlights/output specifications compared. Nominal Voltage is explicit; Capacity is unqualified. Charging/protection limits are not substituted for nominal voltage or capacity conditions."
+    },
+    {
+      "source_id": "tenergy-31802-product-page-batch6",
+      "url": "https://power.tenergy.com/at-tenergy-li-ion-14-8v-7800mah-rechargeable-battery-pack-4s3p-115-44wh-5a-rate-dgr-a/",
+      "title": "Tenergy Li-Ion 14.8V 7800mAh Rechargeable Battery 31802 - Tenergy",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "31802 selected standard protected pack; bare leads, excluding custom connector/NTC/configuration requests"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened with web and direct HTTPS 200 (293459 bytes); SKU/P/N, heading and all repeated Product Highlights/output specifications compared. Nominal Voltage is explicit; Capacity is unqualified. Charging/protection limits are not substituted for nominal voltage or capacity conditions."
+    },
+    {
+      "source_id": "tenergy-31067-product-page-batch6",
+      "url": "https://power.tenergy.com/at-tenergy-li-ion-18650-11-1v-13200mah-rechargeable-battery-pack-w-pcb-3s6p-146-52wh-9a-rate-dgr-a/",
+      "title": "Tenergy Li-Ion 11.1V 13200mAh Rechargeable Battery 31067 - Tenergy",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "31067 selected standard protected pack; bare leads, excluding custom connector/NTC/configuration requests"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened with web and direct HTTPS 200 (336367 bytes); SKU/P/N, heading and all repeated Product Highlights/output specifications compared. Nominal Voltage is explicit; Capacity is unqualified. Charging/protection limits are not substituted for nominal voltage or capacity conditions."
+    },
+    {
+      "source_id": "tenergy-31194-product-page-batch6",
+      "url": "https://power.tenergy.com/at-tenergy-li-ion-18650-11-1v-17-600mah-rechargeable-battery-pack-w-pcb-3s8p-195-36wh-9a-rate-dgr-a/",
+      "title": "Tenergy Li-Ion 11.1V 17,600mAh Rechargeable Battery 31194 - Tenergy",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "31194 selected standard protected pack; bare leads, excluding custom connector/NTC/configuration requests"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official product page opened with web and direct HTTPS 200 (328931 bytes); SKU/P/N, heading and all repeated Product Highlights/output specifications compared. Nominal Voltage is explicit; Capacity is unqualified. Charging/protection limits are not substituted for nominal voltage or capacity conditions."
+    },
+    {
+      "source_id": "hacker-93000431-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/TF-ECO-X-3000-4S-MTAG.htm?ProdNr=93000431&a=article&p=11452",
+      "title": "TF ECO-X 3000-4S MTAG",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "93000431 TF ECO-X 3000-4S MTAG; selected single finished MTAG pack with XT60/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page and direct HTTPS 200 (158675 bytes) read; Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    },
+    {
+      "source_id": "hacker-91300241-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/TF-ECO-X-1300-2S-MTAG.htm?ProdNr=91300241&a=article&p=1313",
+      "title": "TF ECO-X 1300-2S MTAG",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "91300241 TF ECO-X 1300-2S MTAG; selected single finished MTAG pack with XT60/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web-rendered product page opened and read; direct HTTPS fallback failed and is not claimed as successful. Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    },
+    {
+      "source_id": "hacker-95000531-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/Akkus-und-Akkuzubehoer/Akkusuche/TF-ECO-X-5000-5S-MTAG.htm?ProdNr=95000531&a=article&p=11452",
+      "title": "TF ECO-X 5000-5S MTAG | Akkusuche | Akkus und Akkuzubehör",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "95000531 TF ECO-X 5000-5S MTAG; selected single finished MTAG pack with XT90-S/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page and direct HTTPS 200 (160066 bytes) read; Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    },
+    {
+      "source_id": "hacker-95000461-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/TF-Power-X-5000-4S-MTAG.htm?ProdNr=95000461&a=article&p=11452",
+      "title": "TF Power-X 5000-4S MTAG",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "95000461 TF Power-X 5000-4S MTAG; selected single finished MTAG pack with XT90-S/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page and direct HTTPS 200 (163512 bytes) read; Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    },
+    {
+      "source_id": "hacker-92400331-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/TF-ECO-X-2400-3S-MTAG.htm?ProdNr=92400331&a=article&p=11452",
+      "title": "TF ECO-X 2400-3S MTAG",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "92400331 TF ECO-X 2400-3S MTAG; selected single finished MTAG pack with XT60/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page and direct HTTPS 200 (166753 bytes) read; Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    },
+    {
+      "source_id": "hacker-92400231-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/TF-ECO-X-2400-2S-MTAG.htm?ProdNr=92400231&a=article&p=1313",
+      "title": "TF ECO-X 2400-2S MTAG",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "92400231 TF ECO-X 2400-2S MTAG; selected single finished MTAG pack with XT60/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page and direct HTTPS 200 (172441 bytes) read; Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    },
+    {
+      "source_id": "hacker-94000331-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/TF-ECO-X-4000-3S-MTAG.htm?ProdNr=94000331&a=article&p=11452",
+      "title": "TF ECO-X 4000-3S MTAG",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "94000331 TF ECO-X 4000-3S MTAG; selected single finished MTAG pack with XT90-S/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page and direct HTTPS 200 (155644 bytes) read; Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    },
+    {
+      "source_id": "hacker-91450321-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/TF-ECO-X-1450-3S-Slim-MTAG.htm?ProdNr=91450321&a=article&p=11452",
+      "title": "TF ECO-X 1450-3S Slim MTAG",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "91450321 TF ECO-X 1450-3S Slim MTAG; selected single finished MTAG pack with XT60/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web-rendered product page opened and read; direct HTTPS fallback failed and is not claimed as successful. Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    },
+    {
+      "source_id": "hacker-95000631-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/TF-ECO-X-5000-6S-MTAG.htm?ProdNr=95000631&a=article&p=11452",
+      "title": "TF ECO-X 5000-6S MTAG",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "95000631 TF ECO-X 5000-6S MTAG; selected single finished MTAG pack with XT90-S/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page and direct HTTPS 200 (159429 bytes) read; Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    },
+    {
+      "source_id": "hacker-94500231-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/TF-ECO-X-4500-2S-MTAG.htm?ProdNr=94500231&a=article&p=1313",
+      "title": "TF ECO-X 4500-2S MTAG",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "94500231 TF ECO-X 4500-2S MTAG; selected single finished MTAG pack with XT90-S/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page and direct HTTPS 200 (161755 bytes) read; Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    },
+    {
+      "source_id": "hacker-96100521-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/TF-ECO-X-6100-5S-Competition-MTAG.htm?ProdNr=96100521&a=article&p=11452",
+      "title": "TF ECO-X 6100-5S Competition MTAG",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "96100521 TF LiPo ECO-X 6100-5S Competition MTAG; selected single finished MTAG pack with XT60/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page and direct HTTPS 200 (144445 bytes) read; Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    },
+    {
+      "source_id": "hacker-93000231-product-page-batch6",
+      "url": "https://www.hacker-motor-shop.com/TF-ECO-X-3000-2S-MTAG.htm?a=article&ProdNr=93000231&p=11452",
+      "title": "TF ECO-X 3000-2S MTAG",
+      "publisher": "Hacker Motor GmbH",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "93000231 TF ECO-X 3000-2S MTAG; selected single finished MTAG pack with XT60/XH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page and direct HTTPS 200 (164098 bytes) read; Heading, Artikel-Nr., product description, Anschlüsse and Technische Daten read. Nennspannung labels nominal voltage; Kapazität is generic stated capacity. The separate MPN field is blank. Accessory SKUs and quantities are excluded. Linked manual read independently."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "tenergy-31044-protected-bare-leads",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31044",
+      "variant_key": "protected-bare-leads",
+      "variant_description": "Official P/N 31044 rechargeable Li-ion protected battery pack; standard bare leads. Custom connector/NTC/configuration requests are not selected.",
+      "suggested_display_name": "Tenergy 31044",
+      "aliases": [
+        {
+          "value": "31044",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished Li-ion battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 5200,
+      "stated_capacity_label": "Capacity (mAh)",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 7.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Bare leads as explicitly listed in the selected standard product specification; custom connectors are excluded.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tenergy-31044-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31044 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31044 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31044 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Product heading, product attributes and output; customization notice",
+            "observation": "Protected pack 31044 is selected; Bare Leads are explicitly listed. Customized connector/NTC/configuration options are not selected."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Product heading and output Battery Charging Current",
+            "observation": "Product is described as rechargeable and specifies recharging current."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Product Highlights/output: Nominal Voltage (V)",
+            "observation": "Explicit nominal voltage 7.4 V; title agrees."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 5200 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 5200 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 5200 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tenergy-31044-product-page-batch6",
+            "locator": "Product Highlights/output: Connector",
+            "observation": "Bare Leads are explicit; pin polarity is not curated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "No discharge-rate, cutoff, temperature or complete test protocol is stated for the selected capacity; charging/discharging operating ranges are not capacity test conditions."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Source title: AT: Tenergy 18650 7.4V 5200mAh Rechargeable Battery Pack w/ PCB (2S2P, 38.48Wh, 5A Rate). Capacity remains unqualified; no rated-capacity prefill is asserted."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31800-protected-bare-leads",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31800",
+      "variant_key": "protected-bare-leads",
+      "variant_description": "Official P/N 31800 rechargeable Li-ion protected battery pack; standard bare leads. Custom connector/NTC/configuration requests are not selected.",
+      "suggested_display_name": "Tenergy 31800",
+      "aliases": [
+        {
+          "value": "31800",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished Li-ion battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 10400,
+      "stated_capacity_label": "Capacity (mAh)",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 11.1,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Bare leads as explicitly listed in the selected standard product specification; custom connectors are excluded.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tenergy-31800-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31800 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31800 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31800 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Product heading, product attributes and output; customization notice",
+            "observation": "Protected pack 31800 is selected; Bare Leads are explicitly listed. Customized connector/NTC/configuration options are not selected."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Product heading and output Battery Charging Current",
+            "observation": "Product is described as rechargeable and specifies recharging current."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Product Highlights/output: Nominal Voltage (V)",
+            "observation": "Explicit nominal voltage 11.1 V; title agrees."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 10400 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 10400 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 10400 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tenergy-31800-product-page-batch6",
+            "locator": "Product Highlights/output: Connector",
+            "observation": "Bare Leads are explicit; pin polarity is not curated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "No discharge-rate, cutoff, temperature or complete test protocol is stated for the selected capacity; charging/discharging operating ranges are not capacity test conditions."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Source title: AT: Tenergy Li-ion 11.1V 10400mAh Rechargeable Battery Pack w/ PCB (3S4P, 115.44Wh, 9A Rate) **DGR-A. Capacity remains unqualified; no rated-capacity prefill is asserted."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31013-protected-bare-leads",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31013",
+      "variant_key": "protected-bare-leads",
+      "variant_description": "Official P/N 31013 rechargeable Li-ion protected battery pack; standard bare leads. Custom connector/NTC/configuration requests are not selected.",
+      "suggested_display_name": "Tenergy 31013",
+      "aliases": [
+        {
+          "value": "31013",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished Li-ion battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 2600,
+      "stated_capacity_label": "Capacity (mAh)",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 11.1,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Bare leads as explicitly listed in the selected standard product specification; custom connectors are excluded.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tenergy-31013-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31013 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31013 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31013 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Product heading, product attributes and output; customization notice",
+            "observation": "Protected pack 31013 is selected; Bare Leads are explicitly listed. Customized connector/NTC/configuration options are not selected."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Product heading and output Battery Charging Current",
+            "observation": "Product is described as rechargeable and specifies recharging current."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Product Highlights/output: Nominal Voltage (V)",
+            "observation": "Explicit nominal voltage 11.1 V; title agrees."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 2600 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 2600 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 2600 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tenergy-31013-product-page-batch6",
+            "locator": "Product Highlights/output: Connector",
+            "observation": "Bare Leads are explicit; pin polarity is not curated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "No discharge-rate, cutoff, temperature or complete test protocol is stated for the selected capacity; charging/discharging operating ranges are not capacity test conditions."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Source title: AT: Tenergy Li-Ion 11.1V 2600mAh Rechargeable Battery Pack w/ PCB (3S1P, 28.86Wh, 5A Rate). Capacity remains unqualified; no rated-capacity prefill is asserted."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31094-protected-pack-connector-unspecified",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31094",
+      "variant_key": "protected-pack-connector-unspecified",
+      "variant_description": "Official P/N 31094 rechargeable Li-ion protected battery pack; connector is not specified in the selected page. Custom connector/NTC/configuration requests are not selected.",
+      "suggested_display_name": "Tenergy 31094",
+      "aliases": [
+        {
+          "value": "31094",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished Li-ion battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 7800,
+      "stated_capacity_label": "Capacity (mAh)",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 11.1,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tenergy-31094-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31094 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31094 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31094 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Product heading, product attributes and output; customization notice",
+            "observation": "Protected pack 31094 is selected; No connector type is stated. Customized connector/NTC/configuration options are not selected."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Product heading and output Battery Charging Current",
+            "observation": "Product is described as rechargeable and specifies recharging current."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Product Highlights/output: Nominal Voltage (V)",
+            "observation": "Explicit nominal voltage 11.1 V; title agrees."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 7800 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 7800 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31094-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 7800 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The selected page does not specify connector type; images and other products are not used to infer it.",
+        "No discharge-rate, cutoff, temperature or complete test protocol is stated for the selected capacity; charging/discharging operating ranges are not capacity test conditions."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Source title: AT: Tenergy Li-ion 11.1V 7800mAh Rechargeable Battery Pack w/ PCB (3S3P, 86.58Wh, 5A Rate). Capacity remains unqualified; no rated-capacity prefill is asserted."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31021-protected-bare-leads",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31021",
+      "variant_key": "protected-bare-leads",
+      "variant_description": "Official P/N 31021 rechargeable Li-ion protected battery pack; standard bare leads. Custom connector/NTC/configuration requests are not selected.",
+      "suggested_display_name": "Tenergy 31021",
+      "aliases": [
+        {
+          "value": "31021",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished Li-ion battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 2200,
+      "stated_capacity_label": "Capacity (mAh)",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 14.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Bare leads as explicitly listed in the selected standard product specification; custom connectors are excluded.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tenergy-31021-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31021 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31021 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31021 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Product heading, product attributes and output; customization notice",
+            "observation": "Protected pack 31021 is selected; Bare Leads are explicitly listed. Customized connector/NTC/configuration options are not selected."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Product heading and output Battery Charging Current",
+            "observation": "Product is described as rechargeable and specifies recharging current."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Product Highlights/output: Nominal Voltage (V)",
+            "observation": "Explicit nominal voltage 14.8 V; title agrees."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 2200 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 2200 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 2200 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tenergy-31021-product-page-batch6",
+            "locator": "Product Highlights/output: Connector",
+            "observation": "Bare Leads are explicit; pin polarity is not curated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "No discharge-rate, cutoff, temperature or complete test protocol is stated for the selected capacity; charging/discharging operating ranges are not capacity test conditions."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Source title: AT: Tenergy Li-ion 14.8V 2200mAh Rechargeable Battery Pack w/ PCB (4S1P, 32.56Wh, 4A Rate). Capacity remains unqualified; no rated-capacity prefill is asserted."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31022-protected-bare-leads",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31022",
+      "variant_key": "protected-bare-leads",
+      "variant_description": "Official P/N 31022 rechargeable Li-ion protected battery pack; standard bare leads. Custom connector/NTC/configuration requests are not selected.",
+      "suggested_display_name": "Tenergy 31022",
+      "aliases": [
+        {
+          "value": "31022",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished Li-ion battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 2600,
+      "stated_capacity_label": "Capacity (mAh)",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 14.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Bare leads as explicitly listed in the selected standard product specification; custom connectors are excluded.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tenergy-31022-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31022 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31022 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31022 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Product heading, product attributes and output; customization notice",
+            "observation": "Protected pack 31022 is selected; Bare Leads are explicitly listed. Customized connector/NTC/configuration options are not selected."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Product heading and output Battery Charging Current",
+            "observation": "Product is described as rechargeable and specifies recharging current."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Product Highlights/output: Nominal Voltage (V)",
+            "observation": "Explicit nominal voltage 14.8 V; title agrees."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 2600 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 2600 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 2600 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tenergy-31022-product-page-batch6",
+            "locator": "Product Highlights/output: Connector",
+            "observation": "Bare Leads are explicit; pin polarity is not curated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "No discharge-rate, cutoff, temperature or complete test protocol is stated for the selected capacity; charging/discharging operating ranges are not capacity test conditions."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Source title: AT: Tenergy Li-ion 14.8V 2600mAh Rechargeable Battery Pack w/ PCB (4S1P, 38.48Wh, 5A Rate). Capacity remains unqualified; no rated-capacity prefill is asserted."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31802-protected-bare-leads",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31802",
+      "variant_key": "protected-bare-leads",
+      "variant_description": "Official P/N 31802 rechargeable Li-ion protected battery pack; standard bare leads. Custom connector/NTC/configuration requests are not selected.",
+      "suggested_display_name": "Tenergy 31802",
+      "aliases": [
+        {
+          "value": "31802",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished Li-ion battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 7800,
+      "stated_capacity_label": "Capacity (mAh)",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 14.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Bare leads as explicitly listed in the selected standard product specification; custom connectors are excluded.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tenergy-31802-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31802 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31802 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31802 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Product heading, product attributes and output; customization notice",
+            "observation": "Protected pack 31802 is selected; Bare Leads are explicitly listed. Customized connector/NTC/configuration options are not selected."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Product heading and output Battery Charging Current",
+            "observation": "Product is described as rechargeable and specifies recharging current."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Product Highlights/output: Nominal Voltage (V)",
+            "observation": "Explicit nominal voltage 14.8 V; title agrees."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 7800 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 7800 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 7800 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tenergy-31802-product-page-batch6",
+            "locator": "Product Highlights/output: Connector",
+            "observation": "Bare Leads are explicit; pin polarity is not curated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "No discharge-rate, cutoff, temperature or complete test protocol is stated for the selected capacity; charging/discharging operating ranges are not capacity test conditions."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Source title: AT: Tenergy Li-ion 14.8V 7800mAh Rechargeable Battery Pack(4S3P, 115.44Wh, 5A Rate) **DGR-A. Capacity remains unqualified; no rated-capacity prefill is asserted.",
+        "HTML Product Highlights separates capacity digits across tags; the output specification explicitly states 7800 mAh and agrees with the heading."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31067-protected-bare-leads",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31067",
+      "variant_key": "protected-bare-leads",
+      "variant_description": "Official P/N 31067 rechargeable Li-ion protected battery pack; standard bare leads. Custom connector/NTC/configuration requests are not selected.",
+      "suggested_display_name": "Tenergy 31067",
+      "aliases": [
+        {
+          "value": "31067",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished Li-ion battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 13200,
+      "stated_capacity_label": "Capacity (mAh)",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 11.1,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Bare leads as explicitly listed in the selected standard product specification; custom connectors are excluded.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tenergy-31067-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31067 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31067 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31067 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Product heading, product attributes and output; customization notice",
+            "observation": "Protected pack 31067 is selected; Bare Leads are explicitly listed. Customized connector/NTC/configuration options are not selected."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Product heading and output Battery Charging Current",
+            "observation": "Product is described as rechargeable and specifies recharging current."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Product Highlights/output: Nominal Voltage (V)",
+            "observation": "Explicit nominal voltage 11.1 V; title agrees."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 13200 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 13200 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 13200 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tenergy-31067-product-page-batch6",
+            "locator": "Product Highlights/output: Connector",
+            "observation": "Bare Leads are explicit; pin polarity is not curated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "No discharge-rate, cutoff, temperature or complete test protocol is stated for the selected capacity; charging/discharging operating ranges are not capacity test conditions."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Source title: AT: Tenergy Li-ion 18650 11.1V 13200mAh Rechargeable Battery Pack w/ PCB (3S6P, 146.52Wh, 9A Rate)**DGR-A. Capacity remains unqualified; no rated-capacity prefill is asserted."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31194-protected-bare-leads",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31194",
+      "variant_key": "protected-bare-leads",
+      "variant_description": "Official P/N 31194 rechargeable Li-ion protected battery pack; standard bare leads. Custom connector/NTC/configuration requests are not selected.",
+      "suggested_display_name": "Tenergy 31194",
+      "aliases": [
+        {
+          "value": "31194",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished Li-ion battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 17600,
+      "stated_capacity_label": "Capacity (mAh)",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 11.1,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Bare leads as explicitly listed in the selected standard product specification; custom connectors are excluded.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tenergy-31194-product-page-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31194 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31194 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Page heading and SKU/P/N; official product identity",
+            "observation": "Tenergy product P/N 31194 identifies the finished pack. The numerical identifier is retained as an official product-number alias, not a cell-maker MPN."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Product heading, product attributes and output; customization notice",
+            "observation": "Protected pack 31194 is selected; Bare Leads are explicitly listed. Customized connector/NTC/configuration options are not selected."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Product Highlights and output: Chemistry and Type",
+            "observation": "Li-ion chemistry and Type Pack identify an assembled battery pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Product heading and output Battery Charging Current",
+            "observation": "Product is described as rechargeable and specifies recharging current."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Product Highlights/output: Nominal Voltage (V)",
+            "observation": "Explicit nominal voltage 11.1 V; title agrees."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 17600 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 17600 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Product Highlights/output: Capacity (mAh)",
+            "observation": "Capacity 17600 mAh has no rated, nominal, minimum or typical label; retained only as stated capacity."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tenergy-31194-product-page-batch6",
+            "locator": "Product Highlights/output: Connector",
+            "observation": "Bare Leads are explicit; pin polarity is not curated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "No discharge-rate, cutoff, temperature or complete test protocol is stated for the selected capacity; charging/discharging operating ranges are not capacity test conditions."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Source title: AT: Tenergy Li-ion 18650 11.1V 17,600mAh Rechargeable Battery Pack w/ PCB (3S8P, 195.36Wh, 9A Rate)**DGR-A. Capacity remains unqualified; no rated-capacity prefill is asserted."
+      ]
+    },
+    {
+      "catalog_id": "hacker-93000431-mtag-xt60-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "93000431",
+      "variant_key": "mtag-xt60-xh",
+      "variant_description": "Official Hacker article 93000431, TF ECO-X 3000-4S MTAG, supplied with XT60 main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 93000431",
+      "aliases": [
+        {
+          "value": "93000431",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF ECO-X 3000-4S MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 3000,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 14.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT60 main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-93000431-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-93000431-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 93000431 and name TF ECO-X 3000-4S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-93000431-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 93000431 and name TF ECO-X 3000-4S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-93000431-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-93000431-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-93000431-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-93000431-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-93000431-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 14.8 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-93000431-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 3000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-93000431-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 3000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-93000431-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 3000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-93000431-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT60 and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF ECO-X 3000-4S MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    },
+    {
+      "catalog_id": "hacker-91300241-mtag-xt60-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "91300241",
+      "variant_key": "mtag-xt60-xh",
+      "variant_description": "Official Hacker article 91300241, TF ECO-X 1300-2S MTAG, supplied with XT60 main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 91300241",
+      "aliases": [
+        {
+          "value": "91300241",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF ECO-X 1300-2S MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 1300,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 7.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT60 main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-91300241-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-91300241-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 91300241 and name TF ECO-X 1300-2S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-91300241-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 91300241 and name TF ECO-X 1300-2S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-91300241-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-91300241-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-91300241-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-91300241-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-91300241-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 7.4 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-91300241-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 1300 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-91300241-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 1300 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-91300241-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 1300 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-91300241-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT60 and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF ECO-X 1300-2S MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    },
+    {
+      "catalog_id": "hacker-95000531-mtag-xt90-s-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "95000531",
+      "variant_key": "mtag-xt90-s-xh",
+      "variant_description": "Official Hacker article 95000531, TF ECO-X 5000-5S MTAG, supplied with XT90-S main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 95000531",
+      "aliases": [
+        {
+          "value": "95000531",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF ECO-X 5000-5S MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 5000,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 18.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT90-S main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-95000531-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-95000531-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 95000531 and name TF ECO-X 5000-5S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-95000531-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 95000531 and name TF ECO-X 5000-5S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-95000531-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-95000531-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-95000531-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-95000531-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-95000531-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 18.5 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-95000531-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 5000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-95000531-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 5000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-95000531-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 5000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-95000531-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT90-S and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF ECO-X 5000-5S MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    },
+    {
+      "catalog_id": "hacker-95000461-mtag-xt90-s-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "95000461",
+      "variant_key": "mtag-xt90-s-xh",
+      "variant_description": "Official Hacker article 95000461, TF Power-X 5000-4S MTAG, supplied with XT90-S main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 95000461",
+      "aliases": [
+        {
+          "value": "95000461",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF Power-X 5000-4S MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 5000,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 14.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT90-S main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-95000461-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-95000461-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 95000461 and name TF Power-X 5000-4S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-95000461-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 95000461 and name TF Power-X 5000-4S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-95000461-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-95000461-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-95000461-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-95000461-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-95000461-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 14.8 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-95000461-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 5000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-95000461-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 5000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-95000461-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 5000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-95000461-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT90-S and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF Power-X 5000-4S MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    },
+    {
+      "catalog_id": "hacker-92400331-mtag-xt60-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "92400331",
+      "variant_key": "mtag-xt60-xh",
+      "variant_description": "Official Hacker article 92400331, TF ECO-X 2400-3S MTAG, supplied with XT60 main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 92400331",
+      "aliases": [
+        {
+          "value": "92400331",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF ECO-X 2400-3S MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 2400,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 11.1,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT60 main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-92400331-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-92400331-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 92400331 and name TF ECO-X 2400-3S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-92400331-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 92400331 and name TF ECO-X 2400-3S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-92400331-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-92400331-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-92400331-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-92400331-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-92400331-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 11.1 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-92400331-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 2400 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-92400331-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 2400 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-92400331-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 2400 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-92400331-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT60 and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF ECO-X 2400-3S MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    },
+    {
+      "catalog_id": "hacker-92400231-mtag-xt60-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "92400231",
+      "variant_key": "mtag-xt60-xh",
+      "variant_description": "Official Hacker article 92400231, TF ECO-X 2400-2S MTAG, supplied with XT60 main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 92400231",
+      "aliases": [
+        {
+          "value": "92400231",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF ECO-X 2400-2S MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 2400,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 7.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT60 main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-92400231-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-92400231-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 92400231 and name TF ECO-X 2400-2S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-92400231-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 92400231 and name TF ECO-X 2400-2S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-92400231-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-92400231-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-92400231-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-92400231-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-92400231-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 7.4 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-92400231-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 2400 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-92400231-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 2400 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-92400231-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 2400 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-92400231-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT60 and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF ECO-X 2400-2S MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    },
+    {
+      "catalog_id": "hacker-94000331-mtag-xt90-s-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "94000331",
+      "variant_key": "mtag-xt90-s-xh",
+      "variant_description": "Official Hacker article 94000331, TF ECO-X 4000-3S MTAG, supplied with XT90-S main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 94000331",
+      "aliases": [
+        {
+          "value": "94000331",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF ECO-X 4000-3S MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 4000,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 11.1,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT90-S main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-94000331-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-94000331-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 94000331 and name TF ECO-X 4000-3S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-94000331-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 94000331 and name TF ECO-X 4000-3S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-94000331-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-94000331-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-94000331-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-94000331-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-94000331-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 11.1 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-94000331-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 4000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-94000331-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 4000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-94000331-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 4000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-94000331-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT90-S and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF ECO-X 4000-3S MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    },
+    {
+      "catalog_id": "hacker-91450321-mtag-xt60-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "91450321",
+      "variant_key": "mtag-xt60-xh",
+      "variant_description": "Official Hacker article 91450321, TF ECO-X 1450-3S Slim MTAG, supplied with XT60 main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 91450321",
+      "aliases": [
+        {
+          "value": "91450321",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF ECO-X 1450-3S Slim MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 1450,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 11.1,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT60 main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-91450321-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-91450321-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 91450321 and name TF ECO-X 1450-3S Slim MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-91450321-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 91450321 and name TF ECO-X 1450-3S Slim MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-91450321-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-91450321-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-91450321-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-91450321-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-91450321-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 11.1 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-91450321-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 1450 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-91450321-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 1450 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-91450321-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 1450 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-91450321-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT60 and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF ECO-X 1450-3S Slim MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    },
+    {
+      "catalog_id": "hacker-95000631-mtag-xt90-s-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "95000631",
+      "variant_key": "mtag-xt90-s-xh",
+      "variant_description": "Official Hacker article 95000631, TF ECO-X 5000-6S MTAG, supplied with XT90-S main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 95000631",
+      "aliases": [
+        {
+          "value": "95000631",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF ECO-X 5000-6S MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 5000,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 22.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT90-S main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-95000631-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-95000631-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 95000631 and name TF ECO-X 5000-6S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-95000631-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 95000631 and name TF ECO-X 5000-6S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-95000631-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-95000631-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-95000631-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-95000631-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-95000631-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 22.2 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-95000631-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 5000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-95000631-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 5000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-95000631-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 5000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-95000631-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT90-S and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF ECO-X 5000-6S MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    },
+    {
+      "catalog_id": "hacker-94500231-mtag-xt90-s-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "94500231",
+      "variant_key": "mtag-xt90-s-xh",
+      "variant_description": "Official Hacker article 94500231, TF ECO-X 4500-2S MTAG, supplied with XT90-S main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 94500231",
+      "aliases": [
+        {
+          "value": "94500231",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF ECO-X 4500-2S MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 4500,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 7.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT90-S main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-94500231-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-94500231-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 94500231 and name TF ECO-X 4500-2S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-94500231-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 94500231 and name TF ECO-X 4500-2S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-94500231-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-94500231-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-94500231-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT90-S and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-94500231-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-94500231-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 7.4 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-94500231-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 4500 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-94500231-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 4500 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-94500231-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 4500 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-94500231-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT90-S and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF ECO-X 4500-2S MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    },
+    {
+      "catalog_id": "hacker-96100521-mtag-xt60-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "96100521",
+      "variant_key": "mtag-xt60-xh",
+      "variant_description": "Official Hacker article 96100521, TF LiPo ECO-X 6100-5S Competition MTAG, supplied with XT60 main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 96100521",
+      "aliases": [
+        {
+          "value": "96100521",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF LiPo ECO-X 6100-5S Competition MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 6100,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 18.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT60 main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-96100521-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-96100521-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 96100521 and name TF LiPo ECO-X 6100-5S Competition MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-96100521-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 96100521 and name TF LiPo ECO-X 6100-5S Competition MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-96100521-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-96100521-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-96100521-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-96100521-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-96100521-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 18.5 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-96100521-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 6100 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-96100521-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 6100 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-96100521-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 6100 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-96100521-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT60 and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF LiPo ECO-X 6100-5S Competition MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    },
+    {
+      "catalog_id": "hacker-93000231-mtag-xt60-xh",
+      "manufacturer": null,
+      "brand": "Hacker",
+      "model": "93000231",
+      "variant_key": "mtag-xt60-xh",
+      "variant_description": "Official Hacker article 93000231, TF ECO-X 3000-2S MTAG, supplied with XT60 main connector and XH balance connector; one finished MTAG battery pack.",
+      "suggested_display_name": "Hacker 93000231",
+      "aliases": [
+        {
+          "value": "93000231",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "TF ECO-X 3000-2S MTAG",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "assembled_battery_pack",
+        "description": "Finished LiPo battery pack identified in the official product description; internal cell form and enclosure material are not inferred."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 3000,
+      "stated_capacity_label": "Kapazität [mAh] (Capacity)",
+      "capacity_test_conditions": "The linked Hacker family manual, English Section 1, describes stated capacity at 1C discharge. A product-specific cutoff, test temperature, charge sequence and numerical test report are not stated.",
+      "nominal_voltage_v": 7.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "XT60 main connector and XH balance connector explicitly listed in the product description. Detailed pin layout and polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "hacker-93000231-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1; page 4 contact information",
+            "observation": "The linked official manual identifies Hacker lithium batteries; Hacker Motor GmbH publishes the product and manual."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "hacker-93000231-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 93000231 and name TF ECO-X 3000-2S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "hacker-93000231-product-page-batch6",
+            "locator": "Heading and Artikel-Nr.",
+            "observation": "Exact official article number 93000231 and name TF ECO-X 3000-2S MTAG identify one product. Blank MPN is not filled with an invented cell-maker number."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "hacker-93000231-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "hacker-93000231-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "hacker-93000231-product-page-batch6",
+            "locator": "Product description and Anschlüsse; MTAG section",
+            "observation": "Selected TF MTAG product is a finished assembled battery with XT60 and XH connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "hacker-93000231-product-page-batch6",
+            "locator": "Technische Daten: Akkutyp",
+            "observation": "Battery type is explicitly LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 3 English Section 5 Charging process",
+            "observation": "Linked lithium-battery manual describes charging the selected LiPo family."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "hacker-93000231-product-page-batch6",
+            "locator": "Technische Daten: Nennspannung [V]",
+            "observation": "Explicit nominal voltage 7.4 V."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "hacker-93000231-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 3000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "hacker-93000231-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 3000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "hacker-93000231-product-page-batch6",
+            "locator": "Technische Daten: Kapazität [mAh]",
+            "observation": "Capacity 3000 mAh is generically labelled Kapazität, retained as stated capacity rather than rated or nominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+            "locator": "PDF page 2 English Section 1 Product description",
+            "observation": "Family manual describes stated capacity at 1C discharge; no complete per-SKU protocol is given."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "hacker-93000231-product-page-batch6",
+            "locator": "Product description: Anschlüsse or Akku-Anschlüsse",
+            "observation": "Main connector XT60 and XH balance connector are explicit. Pin polarity remains uncurated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact physical manufacturer/factory is not separately established; publisher or brand-owner identification is not factory proof.",
+        "Separate rated, nominal, minimum and typical capacity values are not labelled for this product.",
+        "Dimensions, mass, energy, internal series/parallel topology and detailed connector pin polarity are not curated.",
+        "This public reference does not establish a received item, school procurement, age, condition or compatibility.",
+        "The 1C description is family-level guidance from the linked manual; product-specific discharge cutoff, test temperature and charge/rest sequence remain unknown."
+      ],
+      "notes": [
+        "Public reference product only; confirm exact received model and selected variant.",
+        "The verified brand and official product number form an editable display suggestion.",
+        "Official product name: TF ECO-X 3000-2S MTAG. Official Artikel-Nr. is the catalog model identifier; generic connector and capacity terms do not create extra products.",
+        "The page currently says the product is unavailable. Availability is not imported as inventory, purchase advice or proof of discontinuation.",
+        "Generic safety, charge and storage instructions are not converted into application rules."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,459 @@
+{
+  "audit_kind": "Independent source sample and product-count review",
+  "accessed_on": "2026-10-02",
+  "reviewed_at_utc": "2026-10-02T13:31:47Z",
+  "verdict": "sample_facts_pass_counting_findings_resolved",
+  "scope": {
+    "source_sample_catalog_ids": [
+      "molicel-inr-21700-p50s",
+      "molicel-inr-18650-p30s"
+    ],
+    "data_files": [
+      "research/batch2-standard-cells.json",
+      "research/batch2-lithium-cells.json",
+      "research/batch2-lifepo4-cells.json"
+    ],
+    "code_file": "catalog_tool.py",
+    "code_functions": [
+      "coverage_counts",
+      "run_validation second_batch selection and counts"
+    ],
+    "baseline_version": "2026.10.02.1",
+    "application_files_modified": false,
+    "catalog_or_research_source_records_modified": false,
+    "followup_read_only_files": [
+      "catalog.json",
+      "validation-report.json",
+      "catalog.sqlite3"
+    ]
+  },
+  "sources": [
+    {
+      "source_id": "audit-molicel-p50s-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/Product-Data-Sheet-of-INR-21700-P50S-80XXX-1.1-1.pdf",
+      "title": "Product Data Sheet: Model INR-21700-P50S",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "1.1",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-21700-P50S individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "access_method": "Web PDF text reader, independently corroborated by direct HTTPS 200 response and in-memory pypdf layout extraction",
+      "locator_notes": "Page 1 printed model, classification, Capacity and Cell Voltage rows, and Version footer. Two-page PDF; direct response contained 313758 bytes."
+    },
+    {
+      "source_id": "audit-molicel-p50s-product-page",
+      "url": "https://www.molicel.com/product/inr-21700-p50s/",
+      "title": "INR-21700-P50S - Molicel",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-21700-P50S individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "access_method": "Web page reader",
+      "locator_notes": "Model, Tab Design, Form, Nominal Voltage and Typical Capacity fields. No form was submitted."
+    },
+    {
+      "source_id": "audit-molicel-p30s-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/Product-Data-Sheet-of-INR-21700-P30S-1.1.pdf",
+      "title": "Product Data Sheet: Model INR-18650-P30S",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "1.1",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-18650-P30S individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "access_method": "Direct HTTPS 200 response, read in memory using pypdf layout extraction",
+      "locator_notes": "The web reader timed out; direct response contained 330297 bytes. Both pages print INR-18650-P30S. Page 1 classification, Capacity and Cell Voltage rows, and Version footer were read. The URL contains 21700; printed identity and the separate exact product page establish 18650 applicability."
+    },
+    {
+      "source_id": "audit-molicel-p30s-product-page",
+      "url": "https://www.molicel.com/product/inr-18650-p30s/",
+      "title": "INR-18650-P30S - Molicel",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-18650-P30S individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "access_method": "Web page reader",
+      "locator_notes": "Model, Tab Design, Form, Nominal Voltage and Typical Capacity fields. No form was submitted."
+    }
+  ],
+  "model_reviews": [
+    {
+      "catalog_id": "molicel-inr-21700-p50s",
+      "verdict": "pass",
+      "confirmed_fields": {
+        "brand": "Molicel",
+        "model": "INR-21700-P50S",
+        "chemistry": "lithium_ion",
+        "rechargeable": true,
+        "nominal_voltage_v": 3.6,
+        "typical_capacity_mah": 5000,
+        "minimum_capacity_mah": 4900,
+        "rated_capacity_mah": null,
+        "capacity_literal_qualification": "(+/- 0.2C)"
+      },
+      "evidence": [
+        {
+          "fields": [
+            "brand",
+            "model",
+            "chemistry",
+            "rechargeable"
+          ],
+          "source_id": "audit-molicel-p50s-datasheet",
+          "locator": "Page 1 model and classification headings, Molicel contact footer",
+          "observation": "The named product is a Molicel lithium-ion rechargeable cell."
+        },
+        {
+          "fields": [
+            "nominal_voltage_v"
+          ],
+          "source_id": "audit-molicel-p50s-datasheet",
+          "locator": "Page 1 Cell Voltage / Nominal",
+          "observation": "The nominal row states 3.6 V."
+        },
+        {
+          "fields": [
+            "typical_capacity_mah",
+            "minimum_capacity_mah",
+            "rated_capacity_mah",
+            "capacity_literal_qualification"
+          ],
+          "source_id": "audit-molicel-p50s-datasheet",
+          "locator": "Page 1 Capacity / Typical and Minimum",
+          "observation": "Typical is 5000 mAh; Minimum is 4900 mAh. The literal qualification is retained without assigning a rated capacity."
+        },
+        {
+          "fields": [
+            "model",
+            "nominal_voltage_v",
+            "typical_capacity_mah"
+          ],
+          "source_id": "audit-molicel-p50s-product-page",
+          "locator": "Model, Nominal Voltage, Typical Capacity",
+          "observation": "Exact identity, 3.6 V and 5.0 Ah Typical corroborate the PDF."
+        }
+      ],
+      "limitations": [
+        "The literal +/- qualification is not interpreted as a complete test protocol. Capacity-row temperature and cutoff are not established.",
+        "Legal manufacturer, connector, dimensions, mass, energy and maintenance were outside this sample review."
+      ]
+    },
+    {
+      "catalog_id": "molicel-inr-18650-p30s",
+      "verdict": "pass",
+      "confirmed_fields": {
+        "brand": "Molicel",
+        "model": "INR-18650-P30S",
+        "chemistry": "lithium_ion",
+        "rechargeable": true,
+        "nominal_voltage_v": 3.6,
+        "typical_capacity_mah": 3000,
+        "minimum_capacity_mah": 2900,
+        "rated_capacity_mah": null,
+        "capacity_literal_qualification": "(+/-0.2C)"
+      },
+      "evidence": [
+        {
+          "fields": [
+            "brand",
+            "model",
+            "chemistry",
+            "rechargeable"
+          ],
+          "source_id": "audit-molicel-p30s-datasheet",
+          "locator": "Pages 1 and 2 model and classification headings; page 1 Molicel contact footer",
+          "observation": "Both printed headings identify INR-18650-P30S as lithium-ion rechargeable."
+        },
+        {
+          "fields": [
+            "nominal_voltage_v"
+          ],
+          "source_id": "audit-molicel-p30s-datasheet",
+          "locator": "Page 1 Cell Voltage / Nominal",
+          "observation": "The nominal row states 3.6 V."
+        },
+        {
+          "fields": [
+            "typical_capacity_mah",
+            "minimum_capacity_mah",
+            "rated_capacity_mah",
+            "capacity_literal_qualification"
+          ],
+          "source_id": "audit-molicel-p30s-datasheet",
+          "locator": "Page 1 Capacity / Typical and Minimum",
+          "observation": "Typical is 3000 mAh; Minimum is 2900 mAh. The literal qualification is retained without assigning a rated capacity."
+        },
+        {
+          "fields": [
+            "model",
+            "nominal_voltage_v",
+            "typical_capacity_mah"
+          ],
+          "source_id": "audit-molicel-p30s-product-page",
+          "locator": "Model, Tab Design, Form, Nominal Voltage, Typical Capacity",
+          "observation": "The exact 18650 cylindrical product has 3.6 V and 3.0 Ah Typical."
+        }
+      ],
+      "limitations": [
+        "The PDF filename contains 21700, but its printed identity and exact manufacturer product page both establish 18650. This filename inconsistency does not leave the reviewed identity unresolved.",
+        "The literal +/- qualification is not interpreted as a complete test protocol. Capacity-row temperature and cutoff are not established.",
+        "Legal manufacturer, connector, dimensions, mass, energy and maintenance were outside this sample review."
+      ]
+    }
+  ],
+  "counting_review": {
+    "verdict_for_current_fragment_data": "pass",
+    "fragment_snapshot": {
+      "batch2-standard-cells.json": {
+        "independent_models": 6,
+        "variant_records": 6,
+        "source_records": 12,
+        "unique_source_urls": 12,
+        "sha256": "3c0602385b9b5ea58c64facb8198f0169d27c79879b039f91ff3e9e6ef3fc9c2",
+        "verified_independent_models": 6,
+        "verified_rechargeable_lithium_independent_models": 0,
+        "pending_confirmation_catalog_ids": []
+      },
+      "batch2-lithium-cells.json": {
+        "independent_models": 10,
+        "variant_records": 10,
+        "source_records": 11,
+        "unique_source_urls": 11,
+        "sha256": "b2e798df073c3a3320e7279c3445c2ea2cf5c9dfe45efb40ab08ff0dcaac5a9f",
+        "verified_independent_models": 10,
+        "verified_rechargeable_lithium_independent_models": 10,
+        "pending_confirmation_catalog_ids": []
+      },
+      "batch2-lifepo4-cells.json": {
+        "independent_models": 4,
+        "variant_records": 4,
+        "source_records": 4,
+        "unique_source_urls": 4,
+        "sha256": "6f23622ce5f3cb21716d81174caa79b7c2729d519c729b5c48cb7bab168a1f4a",
+        "verified_independent_models": 3,
+        "verified_rechargeable_lithium_independent_models": 3,
+        "pending_confirmation_catalog_ids": [
+          "eve-lf105-terminal-unspecified"
+        ]
+      }
+    },
+    "added_independent_models": 20,
+    "added_variant_records": 20,
+    "extra_variant_records": 0,
+    "declared_verified_core_independent_models": 19,
+    "declared_verified_rechargeable_lithium_independent_models": 13,
+    "five_field_coverage_per_field": 20,
+    "baseline_product_overlap": [],
+    "fragment_source_records": 27,
+    "fragment_unique_source_urls": 27,
+    "checks": [
+      {
+        "name": "Base model identities in the three-cell-fragment snapshot",
+        "result": "pass",
+        "observation": "Each fragment record uses a distinct base product model. Panasonic /2, /4 and /4H retail quantities remain search-only aliases, not separate records or connected packs."
+      },
+      {
+        "name": "Same-product variant counting, in memory",
+        "result": "pass",
+        "observation": "Two variants with the same brand/model, additional packaging alias and repeated source IDs produce one independent product, two variant records and one extra variant."
+      },
+      {
+        "name": "Baseline exclusion for the three-cell-fragment subset",
+        "result": "pass_for_current_data",
+        "observation": "None of the 20 fragment brand/model identities overlaps the baseline. The code selects second-batch records using product identity rather than new catalog IDs."
+      },
+      {
+        "name": "Baseline object preservation at initial canonical read",
+        "result": "pass",
+        "observation": "At the initial read, canonical model and source objects equalled the baseline objects and the catalog contained the original 12-model release. The separate merged snapshot below records the later 44-model release."
+      },
+      {
+        "name": "Panasonic duplicate URL scope",
+        "result": "pass",
+        "observation": "The baseline panasonic-nimh-psds-2020 object retains BK-3MCC/BK-4MCC applicability. The separate panasonic-nimh-psds-2020-batch2 object applies to BK-3HCC/BK-4HCC/BK-3LCC/BK-4LCC. Their shared URL accounts for the source-record/unique-URL difference."
+      }
+    ],
+    "actionable_findings": [
+      {
+        "severity": "low",
+        "file": "catalog_tool.py",
+        "locator": "run_validation original_products, added_models and verified_rechargeable_lithium_independent_models",
+        "evidence": "An in-memory existing product with a trailing brand space is counted as one new product by the reviewed selector, while normalized selection counts zero and coverage_counts groups it with the original product.",
+        "recommended_action": "Use the same normalized brand/model key in all three calculations.",
+        "current_data_impact": "No observed inflation: all current fragment identities lack surrounding whitespace.",
+        "status": "resolved",
+        "resolved_rechecked_at_utc": "2026-10-02T13:37:22Z",
+        "initial_issue": "Second-batch identity keys use casefold() while coverage_counts and semantic identity validation use strip().casefold().",
+        "resolution": "product_key now uses strip().casefold() and is shared by coverage_counts, original_products, added_models and verified_rechargeable_lithium_independent_models. In-memory leading/trailing-space variants have the same product key, remain excluded from new-product selection and count as one product with two variant records."
+      },
+      {
+        "severity": "low",
+        "file": "catalog_tool.py",
+        "locator": "run_validation report counts",
+        "evidence": "The immutable baseline plus the three current fragments contains 49 source records and 48 distinct URL strings.",
+        "recommended_action": "Keep the existing record count and add a separately labelled unique URL count; do not merge immutable baseline source objects.",
+        "current_data_impact": "Product counts are unaffected. The added metric makes intentional duplicate URL scope explicit.",
+        "status": "resolved",
+        "resolved_rechecked_at_utc": "2026-10-02T13:37:22Z",
+        "initial_issue": "The reviewed report includes source-record count but no unique-source-URL count.",
+        "resolution": "The report now exposes unique_source_urls separately from sources. Direct read-only counts confirm 61 source records and 60 distinct URL strings in both merged JSON and SQLite, matching the saved report."
+      }
+    ],
+    "scope_note": "The fragment_snapshot and added_* fields describe only the three cell research fragments. The current_merged_catalog_snapshot separately describes the complete merged catalog and second batch, including pack records.",
+    "pending_confirmation_catalog_ids": [
+      "eve-lf105-terminal-unspecified"
+    ],
+    "snapshot_rechecked_at_utc": "2026-10-02T13:37:22Z",
+    "baseline_plus_three_cell_fragments_source_records": 49,
+    "baseline_plus_three_cell_fragments_unique_source_urls": 48,
+    "baseline_plus_cell_fragments_scope_note": "49 records and 48 URLs are the baseline plus the three-cell-fragment subset, not the complete merged catalog.",
+    "current_merged_catalog_snapshot": {
+      "rechecked_at_utc": "2026-10-02T13:37:22Z",
+      "catalog_version": "2026.10.02.2",
+      "content_sha256": "36cef04e148648b0a247bcca2a962a0d02672db19995af480a4047b1f895cf24",
+      "canonical_coverage": {
+        "independent_product_models": 44,
+        "variant_records": 44,
+        "extra_variant_records": 0,
+        "verified_independent_product_models": 42,
+        "five_field_coverage_independent_models": {
+          "brand_and_exact_model": 44,
+          "chemistry": 44,
+          "nominal_voltage": 44,
+          "capacity_scalar_with_original_kind": 40,
+          "editable_name_suggestion": 44
+        },
+        "five_field_coverage_variant_records": {
+          "brand_and_exact_model": 44,
+          "chemistry": 44,
+          "nominal_voltage": 44,
+          "capacity_scalar_with_original_kind": 40,
+          "editable_name_suggestion": 44
+        },
+        "capacity_kind_record_counts": {
+          "rated": 2,
+          "nominal": 13,
+          "minimum": 23,
+          "typical": 15,
+          "stated": 1
+        },
+        "missing_capacity_scalar_catalog_ids": [
+          "energizer-e91-standard-flat-contact",
+          "energizer-e92-standard-flat-contact",
+          "energizer-l91-standard-cell",
+          "energizer-l92-standard-cell"
+        ],
+        "pending_confirmation_catalog_ids": [
+          "eve-lf105-terminal-unspecified",
+          "tattu-taa15504s15x6-rline5-xt60"
+        ],
+        "counting_note": "Independent products use normalized brand plus exact model; aliases, packaging counts and repeated source pages do not increase the count. Capacity-kind counts may overlap."
+      },
+      "second_batch_coverage": {
+        "independent_product_models": 32,
+        "variant_records": 32,
+        "extra_variant_records": 0,
+        "verified_independent_product_models": 31,
+        "five_field_coverage_independent_models": {
+          "brand_and_exact_model": 32,
+          "chemistry": 32,
+          "nominal_voltage": 32,
+          "capacity_scalar_with_original_kind": 32,
+          "editable_name_suggestion": 32
+        },
+        "five_field_coverage_variant_records": {
+          "brand_and_exact_model": 32,
+          "chemistry": 32,
+          "nominal_voltage": 32,
+          "capacity_scalar_with_original_kind": 32,
+          "editable_name_suggestion": 32
+        },
+        "capacity_kind_record_counts": {
+          "rated": 0,
+          "nominal": 13,
+          "minimum": 18,
+          "typical": 13,
+          "stated": 0
+        },
+        "missing_capacity_scalar_catalog_ids": [],
+        "pending_confirmation_catalog_ids": [
+          "eve-lf105-terminal-unspecified"
+        ],
+        "counting_note": "Independent products use normalized brand plus exact model; aliases, packaging counts and repeated source pages do not increase the count. Capacity-kind counts may overlap."
+      },
+      "second_batch_verified_rechargeable_lithium_independent_models": 25,
+      "source_records": 61,
+      "unique_source_urls": 60,
+      "saved_validation_report_executed_at_utc": "2026-10-02T13:32:36.927773+00:00",
+      "saved_validation_report_status": "pass",
+      "read_only_database_counts": {
+        "model_records": 44,
+        "source_records": 61,
+        "distinct_source_urls": 60
+      },
+      "checks": {
+        "canonical_coverage_matches_saved_report": true,
+        "second_batch_coverage_matches_saved_report": true,
+        "second_batch_verified_lithium_matches_saved_report": true,
+        "unique_source_url_count_matches_saved_report": true,
+        "canonical_content_hash_matches_saved_report": true,
+        "baseline_model_objects_unchanged": true,
+        "baseline_source_objects_unchanged": true,
+        "three_cell_fragment_models_equal_merged_records": true,
+        "schema_and_semantic_validation_pass": true
+      }
+    },
+    "unresolved_actionable_findings": [],
+    "code_followup": {
+      "verdict": "pass",
+      "rechecked_at_utc": "2026-10-02T13:37:22Z",
+      "catalog_tool_sha256": "5db2a8351fe038a30ca8bc925306ed0e0d97f3a6810ba702df03cffcaf36171d",
+      "shared_product_key_whitespace_test": {
+        "leading_and_trailing_space_product_keys_equal": true,
+        "existing_product_variant_excluded_from_second_batch": true,
+        "independent_products": 1,
+        "variant_records": 2
+      },
+      "source_url_count_report_field": "counts.unique_source_urls",
+      "mutating_catalog_commands_executed": false
+    }
+  },
+  "limitations": [
+    "This remains a two-model independent manufacturer-source sample. Current merged-catalog verification totals are recomputed from declared file statuses; this follow-up does not independently re-establish source facts for the other 42 products.",
+    "The initial snapshot and current merged result are recorded separately. The initial 20/14 cell verified counts were inconsistent with the fingerprinted LF105-partial file and are superseded by the directly rechecked 19/13 counts.",
+    "Product grouping cannot automatically determine whether different manufacturer MPNs are packaging aliases. The three cell fragments use inspected base identities and search-only retail aliases; merged catalog counts follow normalized brand plus exact model.",
+    "The saved full validation report was read and compared, not rerun. This follow-up used read-only JSON/SQLite queries, non-mutating schema validation and in-memory key/count tests. No application integration, deployment, broad application tests or catalog/database write commands were performed.",
+    "Public reference specifications do not establish school stock or school procurement coverage."
+  ],
+  "rechecked_at_utc": "2026-10-02T13:37:22Z",
+  "review_history": [
+    {
+      "stage": "initial_review",
+      "recorded_at_utc": "2026-10-02T13:31:47Z",
+      "canonical_models_at_initial_read": 12,
+      "initial_reported_cell_verified_models": 20,
+      "initial_reported_cell_verified_rechargeable_lithium_models": 14,
+      "status": "superseded_inconsistent_verified_count_snapshot",
+      "explanation": "The initial audit paired earlier live count output with subsequently read file fingerprints. Its 20/14 verified totals do not describe the fingerprinted LF105-partial fragment and must not be used as a consistent verified-count snapshot. The original reported values are retained here to make the correction explicit."
+    },
+    {
+      "stage": "direct_fragment_and_merged_catalog_recheck",
+      "recorded_at_utc": "2026-10-02T13:37:22Z",
+      "status": "corrected_and_code_findings_resolved",
+      "explanation": "Directly re-read all three cell fragments, recomputed their counts using the current coverage_counts/product_key functions, and read the merged canonical catalog, saved validation report and reference SQLite database. The recorded LFP fingerprint remains 6f23622ce5f3cb21716d81174caa79b7c2729d519c729b5c48cb7bab168a1f4a; its LF105 record is partial. Correct verified totals are 19 cell models and 13 rechargeable lithium cell models. This follow-up changes only this audit record."
+    }
+  ]
+}

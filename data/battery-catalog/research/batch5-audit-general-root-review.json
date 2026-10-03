@@ -1,0 +1,196 @@
+{
+  "audit_id": "batch5-independent-general-pack-review",
+  "reviewed_on": "2026-10-03",
+  "reviewer_role": "Independent researcher reopening organizer-selected manufacturer sources",
+  "status": "pass_core_with_non_core_source_conflicts",
+  "reviewed_fragment_names": [
+    "batch5-general-packs-root.json"
+  ],
+  "reviewed_fragment_sha256": "96bbf5a0b64a820b6b64f13ca22a10edd2768679183f8f1d483c5d2fccc98277",
+  "independently_reviewed_catalog_ids": [
+    "tenergy-31003-protected-pack",
+    "tenergy-31001-protected-pack",
+    "tenergy-31012-protected-pack"
+  ],
+  "sample_scope": {
+    "candidate_independent_products": 3,
+    "independently_reopened_products": 3,
+    "sample_percent": 100
+  },
+  "schema_and_semantic_errors": [],
+  "source_reviews": [
+    {
+      "source_ids": [
+        "tenergy-31003-official-page"
+      ],
+      "url": "https://power.tenergy.com/tenergy-li-ion-7-4v-2200mah-rechargeable-battery-w-pcb-2s1p-16-25wh-4a-rate/",
+      "actual_access": "Actual official product HTML opened and read with the web reader; exact SKU, attributes, Product Highlights and Technical Specifications reviewed.",
+      "catalog_id": "tenergy-31003-protected-pack",
+      "decision": "retain_verified_core_with_documented_current_limit_conflict",
+      "core_field_checks": [
+        {
+          "fields": [
+            "brand",
+            "model",
+            "suggested_display_name"
+          ],
+          "locator": "Product heading and SKU P/N 31003; second SKU field 31003",
+          "finding": "Tenergy brand and exact 31003 commercial product identity agree; Tenergy 31003 is an editable editorial name."
+        },
+        {
+          "fields": [
+            "chemistry",
+            "rechargeable",
+            "unit_kind",
+            "form_factor"
+          ],
+          "locator": "SKU attributes; Product Highlights; Technical Specifications / Type",
+          "finding": "Li-Ion, rechargeable Yes and battery pack Yes are explicit. Type Pack and two cylindrical 18650 cells with PCB support an assembled cylindrical-cell pack."
+        },
+        {
+          "fields": [
+            "nominal_voltage_v"
+          ],
+          "locator": "Product Highlights and Technical Specifications / Nominal Voltage (V)",
+          "finding": "The exact product explicitly states nominal 7.4 V."
+        },
+        {
+          "fields": [
+            "stated_capacity_mah",
+            "stated_capacity_label",
+            "rated_capacity_mah",
+            "capacity_basis"
+          ],
+          "locator": "Product Highlights and Technical Specifications / Capacity (mAh)",
+          "finding": "Capacity is 2200 mAh with a generic label. Stated capacity 2200, rated null and capacity_basis not_stated correctly preserve its qualification."
+        },
+        {
+          "fields": [
+            "configuration",
+            "connector"
+          ],
+          "locator": "SKU attributes / Series Config. and Parallel Config.; Technical Specifications / Connector",
+          "finding": "Explicit 2S and parallel 1 support 2S1P without deriving topology from voltage. Bare Leads is explicit; polarity is not stated."
+        }
+      ],
+      "conflict_assessment": "SKU Discharge Rate(A) is 4, whereas the current title and technical maximum continuous current are 3 A. The URL also retains a 4A slug. This unresolved current-limit discrepancy must remain documented. It does not produce a conflicting nominal voltage, capacity or SKU in the selected base-product fields; discharge current is not curated.",
+      "limits": "This review does not establish a current rating, charger compatibility, energy basis, capacity test protocol or physical cell factory."
+    },
+    {
+      "source_ids": [
+        "tenergy-31001-official-page"
+      ],
+      "url": "https://www.tenergy.com/31001",
+      "actual_access": "The browser text reader timed out twice. The same official URL was actually retrieved in memory with urllib, HTTP 200, 60829 bytes; visible HTML was parsed and the product body and Technical Data read.",
+      "catalog_id": "tenergy-31001-protected-pack",
+      "decision": "retain_verified_core_with_excluded_connection_claim",
+      "core_field_checks": [
+        {
+          "fields": [
+            "brand",
+            "model",
+            "suggested_display_name"
+          ],
+          "locator": "Exact product heading and Item #31001",
+          "finding": "The selected product is Tenergy 31001; the suggested brand/model name is appropriate and editable."
+        },
+        {
+          "fields": [
+            "chemistry",
+            "rechargeable",
+            "unit_kind",
+            "form_factor"
+          ],
+          "locator": "Product description; Technical Data / Type and Chemistry",
+          "finding": "Rechargeable Li-Ion battery pack, Type Pack and two cylindrical 18650 cells are explicit."
+        },
+        {
+          "fields": [
+            "nominal_voltage_v",
+            "rated_capacity_mah",
+            "capacity_basis"
+          ],
+          "locator": "Technical Data / Nominal Voltage (V) and Nominal Capacity (mAh)",
+          "finding": "Explicit nominal 3.7 V and nominal 5200 mAh support nominal_voltage_v 3.7, rated_capacity_mah 5200 and capacity_basis nominal."
+        },
+        {
+          "fields": [
+            "configuration",
+            "connector"
+          ],
+          "locator": "Selected model Technical Data and product description",
+          "finding": "A cell count is described, but the record correctly leaves S/P and exact connector null rather than deriving them from voltage or capacity."
+        }
+      ],
+      "conflict_assessment": "A separate sentence proposes a 7.4 V assembly by connecting multiple PCB modules in parallel. Its stated connection claim is erroneous or stale and is not a base-product nominal specification. The exact heading, base-pack description and explicitly labelled nominal field all state 3.7 V. Retaining 3.7 V is supported without accepting the connection sentence; no assembly method is approved by this audit.",
+      "limits": "The failed datasheet link is not treated as opened evidence. No minimum/typical capacity or complete capacity test protocol is established."
+    },
+    {
+      "source_ids": [
+        "tenergy-31012-official-page"
+      ],
+      "url": "https://www.tenergy.com/31012",
+      "actual_access": "Actual official product HTML opened with the web reader; exact Item #31012 product body and Technical Data read.",
+      "catalog_id": "tenergy-31012-protected-pack",
+      "decision": "retain_verified_core_with_scoped_nominal_evidence",
+      "core_field_checks": [
+        {
+          "fields": [
+            "brand",
+            "model",
+            "suggested_display_name"
+          ],
+          "locator": "Exact product heading and Item #31012",
+          "finding": "The selected product is Tenergy 31012; Tenergy 31012 is an editable editorial name."
+        },
+        {
+          "fields": [
+            "chemistry",
+            "rechargeable",
+            "unit_kind",
+            "form_factor"
+          ],
+          "locator": "Exact product description and Technical Data / Type and Chemistry",
+          "finding": "Rechargeable Li-Ion battery pack, Type Pack and three cylindrical 18650 cells with PCB are explicit."
+        },
+        {
+          "fields": [
+            "nominal_voltage_v"
+          ],
+          "locator": "Exact product heading, base-pack description and Technical Data / Nominal Voltage (V)",
+          "finding": "All three selected base-product locations state 11.1 V, including an explicitly labelled nominal field."
+        },
+        {
+          "fields": [
+            "rated_capacity_mah",
+            "capacity_basis",
+            "minimum_capacity_mah"
+          ],
+          "locator": "Technical Data / Nominal Capacity (mAh) and Minimum Capacity",
+          "finding": "Nominal 2200 mAh and minimum 2090 mAh are explicit and correctly remain separate."
+        },
+        {
+          "fields": [
+            "configuration",
+            "capacity_test_conditions"
+          ],
+          "locator": "Technical Data / Number of Cells, Standard Discharge and End Voltage of Discharge",
+          "finding": "S/P is not explicitly supplied and stays null. Separate standard-discharge and end-voltage entries do not establish a complete capacity test protocol; capacity_test_conditions may remain null."
+        }
+      ],
+      "conflict_assessment": "The product also discusses building 10.8 V assemblies by paralleling multiple modules and uses 10.8 V in application text. This is an unresolved inconsistency in application/assembly copy, not a second explicitly labelled base-pack nominal-voltage field. The selected base-pack heading, description and nominal field directly support 11.1 V. This audit does not validate the 10.8 V wording or infer a topology; the discrepancy must remain visible.",
+      "limits": "The full physical pack version, received label and any application-specific compatibility are not established. A later conflicting explicit base-pack nominal specification would require renewed review."
+    }
+  ],
+  "overall_findings": [
+    "All three selected base products retain directly supported brand/exact identity, chemistry, nominal voltage, original capacity basis, rechargeability and pack classification.",
+    "The source inconsistencies remain material limitations outside the selected core fields. No current limit, connection procedure or compatibility statement is accepted by this review.",
+    "Schema and semantic validation of the reviewed fragment in a catalog envelope returned no errors.",
+    "No changes were made to the reviewed research fragment, canonical catalog, database, schema, scripts or application."
+  ],
+  "limitations": [
+    "Independent source review is distinct from schema validation; it does not verify school inventory, procurement suitability or a received physical battery label.",
+    "Manufacturer source statements are scoped to the exact selected commercial product. A brand-owner page does not establish the underlying cell factory.",
+    "Optional numeric fields and operational prescriptions remain uncurated."
+  ]
+}

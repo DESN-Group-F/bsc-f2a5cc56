@@ -1,0 +1,705 @@
+{
+  "sources": [
+    {
+      "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+      "url": "https://lithiumwerks.com/wp-content/uploads/2022/08/26650-Power-Cell-080322.pdf",
+      "title": "26650 Lithium Ion Power Cell: Specs for ANR26650M1B",
+      "publisher": "Lithium Werks",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "SF00008 rev 2; Aug 2022",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "ANR26650M1B; part 300832-001"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Pages 1-2; LiFePO4 description; page 2 Nominal Ratings and part number. Successfully opened PDF."
+    },
+    {
+      "source_id": "lithiumwerks-apr18650m1b-page",
+      "url": "https://lithiumwerks.com/products/lithium-ion-18650-cells/",
+      "title": "Cells - APR18650m1B",
+      "publisher": "Lithium Werks",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "APR18650m1B; part 300949-001"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Model heading, LiFePO4 description and Specifications/Nominal Ratings tables."
+    },
+    {
+      "source_id": "lithiumwerks-aer18650m2a2-page",
+      "url": "https://lithiumwerks.com/products/lithium-ion-lfp-18650-energy-cell/",
+      "title": "Lithium Ion 18650 Energy Cell: AER18650m2A2",
+      "publisher": "Lithium Werks",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "AER18650m2A2; part 320749-001"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact energy-cell heading; specifications at 23 degrees Celsius, Nominal Ratings and part number."
+    },
+    {
+      "source_id": "eve-lf105-official-mall-page",
+      "url": "https://www.evemall.eu/power-battery/prismatic-lfp-cell/lf105",
+      "title": "LF105 - Prismatic LiFePO4 Battery Cells - EVE Energy",
+      "publisher": "EVE Energy / EVEMALL",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "LF105 base prismatic cell; electrical specifications only; threaded-hole terminal version unspecified"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Product identity and Specifications table: Model Number LF105, Nominal Voltage 3.2V and Nominal Capacity 105Ah. Web page was opened; later web re-fetch timed out, direct HTTPS returned 200 and specification table was read successfully. Product Introduction advertises different threaded-hole versions; none is selected or invented here."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "lithiumwerks-anr26650m1b",
+      "manufacturer": null,
+      "brand": "Lithium Werks",
+      "model": "ANR26650M1B",
+      "variant_key": "standard-cell",
+      "variant_description": "ANR26650M1B 26650 rechargeable LiFePO4 cell; manufacturer part number 300832-001.",
+      "suggested_display_name": "Lithium Werks ANR26650M1B",
+      "aliases": [
+        {
+          "value": "ANR26650M1B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "300832-001",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_iron_phosphate",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "26650",
+        "description": "26650 cell; dimensions and terminal hardware are not populated in this batch."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 2600,
+      "minimum_capacity_mah": 2500,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Capacity table states 23 degrees Celsius; its current and cutoff protocol are not separately stated.",
+      "nominal_voltage_v": 3.3,
+      "energy_wh": 8.58,
+      "energy_basis": "manufacturer_nominal",
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "lithiumwerks-anr26650m1b-sf00008-rev2"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Source identifies the Lithium Werks product brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Source identifies exact product ANR26650M1B and part number 300832-001."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Model identity and cell form are supported; no terminal/case equivalence to other variants is assumed."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Aliases retain the source model and published part number only; they are the same product, not new entries."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 1: introductory description explicitly names lithium iron phosphate chemistry (LiFePO4)",
+            "observation": "Source explicitly describes lithium iron phosphate / LiFePO4 chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Source provides charging and discharging specifications for this cell."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Source describes the product as a cell, not a multi-cell battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Source identifies the 26650 cell form; this code is not an inferred exact measurement."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Source nominal-voltage/nominal-ratings entry is 3.3 V."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Capacity is separately qualified Typical (Min); no distinct rated capacity is populated."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Source capacity minimum is 2.5 Ah, converted by 1000 mAh/Ah to 2500 mAh."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Source capacity typical is 2.6 Ah, converted by 1000 mAh/Ah to 2600 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Capacity table states 23 degrees Celsius; its current and cutoff protocol are not separately stated."
+          }
+        ],
+        "/energy_wh": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Source explicitly lists 8.58 Wh under Nominal Ratings; this is not a calculated value."
+          }
+        ],
+        "/energy_basis": [
+          {
+            "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+            "locator": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+            "observation": "Energy appears under the manufacturer Nominal Ratings table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal manufacturer/factory identity, physical dimensions, mass and connector details are not extracted for this five-field research batch.",
+        "Series/parallel assembly configuration and maintenance interval are not imported.",
+        "Rated capacity is not separately declared; the qualified typical and minimum values are retained instead."
+      ],
+      "notes": [
+        "Public product reference only; no evidence of school stock, purchasing preference or asset condition.",
+        "Charging, maximum and float voltages are excluded from the nominal-voltage field.",
+        "Suggested display name is editable and is not an asset identifier."
+      ]
+    },
+    {
+      "catalog_id": "lithiumwerks-apr18650m1b",
+      "manufacturer": null,
+      "brand": "Lithium Werks",
+      "model": "APR18650m1B",
+      "variant_key": "standard-cell",
+      "variant_description": "APR18650m1B 18650 rechargeable LiFePO4 cell; manufacturer part number 300949-001.",
+      "suggested_display_name": "Lithium Werks APR18650m1B",
+      "aliases": [
+        {
+          "value": "APR18650m1B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "300949-001",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_iron_phosphate",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "18650",
+        "description": "18650 cell; dimensions and terminal hardware are not populated in this batch."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 1200,
+      "minimum_capacity_mah": 1150,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Capacity table states 23 degrees Celsius; its current and cutoff protocol are not separately stated.",
+      "nominal_voltage_v": 3.3,
+      "energy_wh": 3.96,
+      "energy_basis": "manufacturer_nominal",
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "lithiumwerks-apr18650m1b-page"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Source identifies the Lithium Werks product brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Source identifies exact product APR18650m1B and part number 300949-001."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Model identity and cell form are supported; no terminal/case equivalence to other variants is assumed."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Aliases retain the source model and published part number only; they are the same product, not new entries."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Source explicitly describes lithium iron phosphate / LiFePO4 chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Source provides charging and discharging specifications for this cell."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Source describes the product as a cell, not a multi-cell battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Source identifies the 18650 cell form; this code is not an inferred exact measurement."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Source nominal-voltage/nominal-ratings entry is 3.3 V."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Capacity is separately qualified Typical (Min); no distinct rated capacity is populated."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Source capacity minimum is 1.15 Ah, converted by 1000 mAh/Ah to 1150 mAh."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Source capacity typical is 1.2 Ah, converted by 1000 mAh/Ah to 1200 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Capacity table states 23 degrees Celsius; its current and cutoff protocol are not separately stated."
+          }
+        ],
+        "/energy_wh": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Source explicitly lists 3.96 Wh under Nominal Ratings; this is not a calculated value."
+          }
+        ],
+        "/energy_basis": [
+          {
+            "source_id": "lithiumwerks-apr18650m1b-page",
+            "locator": "Product model heading and Specifications/Nominal Ratings/Charging/part number",
+            "observation": "Energy appears under the manufacturer Nominal Ratings table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal manufacturer/factory identity, physical dimensions, mass and connector details are not extracted for this five-field research batch.",
+        "Series/parallel assembly configuration and maintenance interval are not imported.",
+        "Rated capacity is not separately declared; the qualified typical and minimum values are retained instead."
+      ],
+      "notes": [
+        "Public product reference only; no evidence of school stock, purchasing preference or asset condition.",
+        "Charging, maximum and float voltages are excluded from the nominal-voltage field.",
+        "Suggested display name is editable and is not an asset identifier."
+      ]
+    },
+    {
+      "catalog_id": "lithiumwerks-aer18650m2a2",
+      "manufacturer": null,
+      "brand": "Lithium Werks",
+      "model": "AER18650m2A2",
+      "variant_key": "standard-cell",
+      "variant_description": "AER18650m2A2 18650 rechargeable LiFePO4 cell; manufacturer part number 320749-001.",
+      "suggested_display_name": "Lithium Werks AER18650m2A2",
+      "aliases": [
+        {
+          "value": "AER18650m2A2",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "320749-001",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_iron_phosphate",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "18650",
+        "description": "18650 cell; dimensions and terminal hardware are not populated in this batch."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 1800,
+      "minimum_capacity_mah": 1700,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Specifications are at 23 degrees Celsius unless otherwise stated; capacity is qualified at C/5. Detailed cutoff protocol is not stated here.",
+      "nominal_voltage_v": 3.2,
+      "energy_wh": 5.76,
+      "energy_basis": "manufacturer_nominal",
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "lithiumwerks-aer18650m2a2-page"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Source identifies the Lithium Werks product brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Source identifies exact product AER18650m2A2 and part number 320749-001."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Model identity and cell form are supported; no terminal/case equivalence to other variants is assumed."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Aliases retain the source model and published part number only; they are the same product, not new entries."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Source explicitly describes lithium iron phosphate / LiFePO4 chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Source provides charging and discharging specifications for this cell."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Source describes the product as a cell, not a multi-cell battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Source identifies the 18650 cell form; this code is not an inferred exact measurement."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Source nominal-voltage/nominal-ratings entry is 3.2 V."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Capacity is separately qualified Typical (Min); no distinct rated capacity is populated."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Source capacity minimum is 1.7 Ah, converted by 1000 mAh/Ah to 1700 mAh."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Source capacity typical is 1.8 Ah, converted by 1000 mAh/Ah to 1800 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Specifications are at 23 degrees Celsius unless otherwise stated; capacity is qualified at C/5. Detailed cutoff protocol is not stated here."
+          }
+        ],
+        "/energy_wh": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Source explicitly lists 5.76 Wh under Nominal Ratings; this is not a calculated value."
+          }
+        ],
+        "/energy_basis": [
+          {
+            "source_id": "lithiumwerks-aer18650m2a2-page",
+            "locator": "Product heading; Specifications at 23 degrees Celsius; Nominal Ratings; Charging; part number",
+            "observation": "Energy appears under the manufacturer Nominal Ratings table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal manufacturer/factory identity, physical dimensions, mass and connector details are not extracted for this five-field research batch.",
+        "Series/parallel assembly configuration and maintenance interval are not imported.",
+        "Rated capacity is not separately declared; the qualified typical and minimum values are retained instead."
+      ],
+      "notes": [
+        "Public product reference only; no evidence of school stock, purchasing preference or asset condition.",
+        "Charging, maximum and float voltages are excluded from the nominal-voltage field.",
+        "Suggested display name is editable and is not an asset identifier."
+      ]
+    },
+    {
+      "catalog_id": "eve-lf105-terminal-unspecified",
+      "manufacturer": null,
+      "brand": "EVE",
+      "model": "LF105",
+      "variant_key": "terminal-variant-unspecified",
+      "variant_description": "LF105 prismatic LiFePO4 cell; threaded-hole terminal version is unspecified in this reference.",
+      "suggested_display_name": "EVE LF105",
+      "aliases": [
+        {
+          "value": "LF105",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_iron_phosphate",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "prismatic",
+        "description": "prismatic cell; dimensions and terminal hardware are not populated in this batch."
+      },
+      "rated_capacity_mah": 105000,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eve-lf105-official-mall-page"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eve-lf105-official-mall-page",
+            "locator": "Product title and Specifications: Model Number, Nominal Voltage, Nominal Capacity, standard charge/discharge ratio",
+            "observation": "Source identifies the EVE product brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eve-lf105-official-mall-page",
+            "locator": "Product title and Specifications: Model Number, Nominal Voltage, Nominal Capacity, standard charge/discharge ratio",
+            "observation": "Source identifies exact product LF105."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eve-lf105-official-mall-page",
+            "locator": "LF105 Product Introduction: different versions of LF105 threaded hole; Specifications: Model Number LF105",
+            "observation": "The source identifies LF105 but advertises multiple threaded-hole versions without a selected version identifier. Reference hardware remains unspecified."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eve-lf105-official-mall-page",
+            "locator": "Product title and Specifications: Model Number, Nominal Voltage, Nominal Capacity, standard charge/discharge ratio",
+            "observation": "Aliases retain the source model and published part number only; they are the same product, not new entries."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eve-lf105-official-mall-page",
+            "locator": "Product title and Specifications: Model Number, Nominal Voltage, Nominal Capacity, standard charge/discharge ratio",
+            "observation": "Source explicitly describes lithium iron phosphate / LiFePO4 chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eve-lf105-official-mall-page",
+            "locator": "Product title and Specifications: Model Number, Nominal Voltage, Nominal Capacity, standard charge/discharge ratio",
+            "observation": "Source provides charging and discharging specifications for this cell."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eve-lf105-official-mall-page",
+            "locator": "Product title and Specifications: Model Number, Nominal Voltage, Nominal Capacity, standard charge/discharge ratio",
+            "observation": "Source describes the product as a cell, not a multi-cell battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eve-lf105-official-mall-page",
+            "locator": "Product title and Specifications: Model Number, Nominal Voltage, Nominal Capacity, standard charge/discharge ratio",
+            "observation": "Source identifies the prismatic cell form; this code is not an inferred exact measurement."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eve-lf105-official-mall-page",
+            "locator": "Product title and Specifications: Model Number, Nominal Voltage, Nominal Capacity, standard charge/discharge ratio",
+            "observation": "Source nominal-voltage/nominal-ratings entry is 3.2 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eve-lf105-official-mall-page",
+            "locator": "Product title and Specifications: Model Number, Nominal Voltage, Nominal Capacity, standard charge/discharge ratio",
+            "observation": "Source Nominal Capacity is 105 Ah, converted by 1000 mAh/Ah to 105000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eve-lf105-official-mall-page",
+            "locator": "Product title and Specifications: Model Number, Nominal Voltage, Nominal Capacity, standard charge/discharge ratio",
+            "observation": "Source explicitly labels capacity nominal."
+          }
+        ]
+      },
+      "verification_status": "partial",
+      "conflicts": [
+        "Variant applicability is unresolved: the official LF105 page advertises different threaded-hole versions without identifying a selected terminal variant in the cited text. Exact hardware needs confirmation; no separate variant SKU is invented."
+      ],
+      "unknowns": [
+        "Legal manufacturer/factory identity, physical dimensions, mass and connector details are not extracted for this five-field research batch.",
+        "Series/parallel assembly configuration and maintenance interval are not imported.",
+        "Detailed nominal-capacity test temperature and cutoff are not supplied in the cited product table; capacity_test_conditions is null.",
+        "Manufacturer energy rating is not selected; energy_wh is null.",
+        "The exact threaded-hole terminal version is unknown; this record is not counted as a verified new variant/model target."
+      ],
+      "notes": [
+        "Public product reference only; no evidence of school stock, purchasing preference or asset condition.",
+        "Charging, maximum and float voltages are excluded from the nominal-voltage field.",
+        "Suggested display name is editable and is not an asset identifier."
+      ]
+    }
+  ]
+}

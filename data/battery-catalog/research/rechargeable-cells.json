@@ -1,0 +1,807 @@
+{
+  "sources": [
+    {
+      "source_id": "molicel-p28a-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/INR18650P28A-V2-80093.pdf",
+      "title": "Product Data Sheet: Model INR-18650-P28A",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-18650-P28A"
+      ],
+      "access_status": "opened",
+      "locator_notes": "One-page PDF; identity heading, Cell Characteristics and Physical Characteristics tables. V2 is present in the URL, but no printed revision was found."
+    },
+    {
+      "source_id": "molicel-p28a-product-page",
+      "url": "https://www.molicel.com/product/inr-18650-p28a/",
+      "title": "INR-18650-P28A",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-18650-P28A"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Model, Tab Design, Form and specification labels; contact footer names E-One Moli Energy Corp."
+    },
+    {
+      "source_id": "molicel-p42a-datasheet-v1-7",
+      "url": "https://www.molicel.com/wp-content/uploads/INR21700P42A_1.7_Product-Data-Sheet-of-INR-21700-P42A-80092.pdf",
+      "title": "Product Data Sheet: Model INR-21700-P42A",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "1.7",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-21700-P42A"
+      ],
+      "access_status": "opened",
+      "locator_notes": "One-page PDF; Cell Characteristics and Physical Characteristics tables; printed Version 1.7. A later text re-fetch timed out; the original PDF open and page screenshot requests succeeded."
+    },
+    {
+      "source_id": "molicel-p42a-product-page",
+      "url": "https://www.molicel.com/product/inr-21700-p42a/",
+      "title": "INR-21700-P42A",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-21700-P42A"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Model, Tab Design, Form and specification labels; contact footer names E-One Moli Energy Corp."
+    },
+    {
+      "source_id": "panasonic-bk3mcc-manual",
+      "url": "https://panasonic.jp/manualdl/p-db/p_/p_bk3mcc248_t_201304181131_0.pdf",
+      "title": "BK-3MCC Notes and Instructions (English description of Japanese document title)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_manual",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-3MCC",
+        "BK-3MCC/2",
+        "BK-3MCC/4",
+        "BK-3MCC/8"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Two-page Japanese manual; page 1 model and AA rechargeable Ni-MH identification, minimum capacity and JIS footnote; usage and storage paragraphs."
+    },
+    {
+      "source_id": "panasonic-bk4mcc-manual",
+      "url": "https://panasonic.jp/manualdl/p-db/p_/p_bk4mcc24_t_201304181134_0.pdf",
+      "title": "BK-4MCC/2 and BK-4MCC/4 Notes and Instructions (English description of Japanese document title)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_manual",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-4MCC",
+        "BK-4MCC/2",
+        "BK-4MCC/4"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Two-page Japanese manual; page 1 model and AAA rechargeable Ni-MH identification, minimum capacity and JIS footnote; usage and storage paragraphs."
+    },
+    {
+      "source_id": "panasonic-nimh-psds-2020",
+      "url": "https://jpn.faq.panasonic.com/euf/assets/images/panasonic/answer_images/energy/psds/nh_psds_2020_e.pdf",
+      "title": "Product Safety Data Sheet: Nickel-metal Hydride Battery",
+      "publisher": "Panasonic Corporation",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "PNH-PSDS-17E1; effective 2020-01-01",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-3MCC",
+        "BK-4MCC"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Page 1 section 1 names standard models and company; page 3 section 9 states cylindrical appearance and nominal voltage. Its generic page 2 handling sentence says not to recharge, in conflict with the model-specific recharge instructions; no maintenance rule is derived from it."
+    }
+  ],
+  "models": [
+    {
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "verification_status": "verified_core",
+      "catalog_id": "molicel-inr-18650-p28a",
+      "manufacturer": "E-One Moli Energy Corp.",
+      "brand": "Molicel",
+      "model": "INR-18650-P28A",
+      "variant_key": "inr-18650-p28a",
+      "variant_description": "Individual INR-18650-P28A cylindrical cell as specified by the manufacturer; wrapped, protected, tabbed or assembled products require separate variant evidence.",
+      "aliases": [
+        {
+          "value": "INR-18650-P28A",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "P28A",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "18650",
+        "description": "Cylindrical 18650 cell; the size code alone does not identify a product."
+      },
+      "typical_capacity_mah": 2800,
+      "minimum_capacity_mah": 2700,
+      "nominal_voltage_v": 3.6,
+      "capacity_test_conditions": null,
+      "dimensions_mm": {
+        "diameter": 18.6,
+        "length": null,
+        "width": null,
+        "height": 65.2,
+        "basis": "Manufacturer maximum diameter and height."
+      },
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-p28a-datasheet",
+        "molicel-p28a-product-page"
+      ],
+      "field_evidence": {
+        "/manufacturer": [
+          {
+            "source_id": "molicel-p28a-product-page",
+            "locator": "Contact footer, HQ",
+            "observation": "E-One Moli Energy Corp. is identified."
+          }
+        ],
+        "/brand": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 heading",
+            "observation": "Molicel brand identifies this data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 model heading",
+            "observation": "INR-18650-P28A"
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 heading and Cell Characteristics",
+            "observation": "The specification is for one named cell, not an assembled pack."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 model heading",
+            "observation": "Only the full MPN is an exact-match candidate."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 heading",
+            "observation": "Rechargeable cell."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 Cell Characteristics",
+            "observation": "Specifications describe a cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-p28a-product-page",
+            "locator": "Tab Design and Form",
+            "observation": "18650 cylindrical cell."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 Cell Characteristics, Capacity",
+            "observation": "Only Typical and Minimum labels are given; Rated or Nominal capacity is not stated."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 Cell Characteristics, Capacity",
+            "observation": "No Rated or Nominal capacity label."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 Cell Characteristics, Capacity / Typical",
+            "observation": "2800 mAh, typical."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 Cell Characteristics, Capacity / Minimum",
+            "observation": "2700 mAh, minimum."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 Cell Characteristics, Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V belongs to the separate charge-voltage row."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "molicel-p28a-datasheet",
+            "locator": "Page 1 Physical Characteristics",
+            "observation": "18.6 mm diameter and 65.2 mm height, maximum."
+          }
+        ]
+      },
+      "conflicts": [
+        "Weight qualification differs: molicel-p28a-datasheet states 46 g Typical; molicel-p28a-product-page states Weight (Max) 46 g. mass_g is left null pending revision or batch-specific clarification."
+      ],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah is null.",
+        "The capacity table does not supply a test protocol for its minimum value; graph-specific conditions are not relabelled as the capacity test protocol.",
+        "The manufacturer lists typical and minimum energy, not a nominal or rated energy basis; energy_wh is null.",
+        "A connector and an assembled series/parallel configuration are not specified.",
+        "A maintenance interval is not specified.",
+        "No printed data-sheet revision was found; the URL's V2 label is not treated as a confirmed document version."
+      ],
+      "notes": [
+        "This is a public product reference, not evidence of school stock or a purchase recommendation.",
+        "Typical and minimum capacity are retained separately; neither silently populates the rated-capacity field.",
+        "No charging or maintenance schedule is defined by this catalog record."
+      ]
+    },
+    {
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "verification_status": "verified_core",
+      "catalog_id": "molicel-inr-21700-p42a",
+      "manufacturer": "E-One Moli Energy Corp.",
+      "brand": "Molicel",
+      "model": "INR-21700-P42A",
+      "variant_key": "inr-21700-p42a",
+      "variant_description": "Individual INR-21700-P42A cylindrical cell as specified by the manufacturer; wrapped, protected, tabbed or assembled products require separate variant evidence.",
+      "aliases": [
+        {
+          "value": "INR-21700-P42A",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "P42A",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "21700",
+        "description": "Cylindrical 21700 cell; the size code alone does not identify a product."
+      },
+      "typical_capacity_mah": 4200,
+      "minimum_capacity_mah": 4000,
+      "nominal_voltage_v": 3.6,
+      "capacity_test_conditions": null,
+      "dimensions_mm": null,
+      "mass_g": 70,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-p42a-datasheet-v1-7",
+        "molicel-p42a-product-page"
+      ],
+      "field_evidence": {
+        "/manufacturer": [
+          {
+            "source_id": "molicel-p42a-product-page",
+            "locator": "Contact footer, HQ",
+            "observation": "E-One Moli Energy Corp. is identified."
+          }
+        ],
+        "/brand": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 heading",
+            "observation": "Molicel brand identifies this data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 model heading",
+            "observation": "INR-21700-P42A"
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 heading and Cell Characteristics",
+            "observation": "The specification is for one named cell, not an assembled pack."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 model heading",
+            "observation": "Only the full MPN is an exact-match candidate."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 heading",
+            "observation": "Rechargeable cell."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 Cell Characteristics",
+            "observation": "Specifications describe a cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-p42a-product-page",
+            "locator": "Tab Design and Form",
+            "observation": "21700 cylindrical cell."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 Cell Characteristics, Capacity",
+            "observation": "Only Typical and Minimum labels are given; Rated or Nominal capacity is not stated."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 Cell Characteristics, Capacity",
+            "observation": "No Rated or Nominal capacity label."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 Cell Characteristics, Capacity / Typical",
+            "observation": "4200 mAh, typical."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 Cell Characteristics, Capacity / Minimum",
+            "observation": "4000 mAh, minimum."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 Cell Characteristics, Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V belongs to the separate charge-voltage row."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "molicel-p42a-datasheet-v1-7",
+            "locator": "Page 1 Physical Characteristics, Weight",
+            "observation": "70 g, maximum."
+          }
+        ]
+      },
+      "conflicts": [
+        "Maximum dimensions differ: molicel-p42a-datasheet-v1-7 gives diameter 21.55 mm and height 70.15 mm; molicel-p42a-product-page gives 21.7 mm and 70.2 mm. dimensions_mm is left null pending revision or batch-specific clarification."
+      ],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah is null.",
+        "The capacity table does not supply a test protocol for its minimum value; graph-specific conditions are not relabelled as the capacity test protocol.",
+        "The manufacturer lists typical and minimum energy, not a nominal or rated energy basis; energy_wh is null.",
+        "A connector and an assembled series/parallel configuration are not specified.",
+        "A maintenance interval is not specified."
+      ],
+      "notes": [
+        "This is a public product reference, not evidence of school stock or a purchase recommendation.",
+        "Typical and minimum capacity are retained separately; neither silently populates the rated-capacity field.",
+        "No charging or maintenance schedule is defined by this catalog record."
+      ]
+    },
+    {
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "verification_status": "verified_core",
+      "catalog_id": "panasonic-eneloop-bk-3mcc",
+      "manufacturer": "Panasonic Corporation",
+      "brand": "eneloop",
+      "model": "BK-3MCC",
+      "variant_key": "bk-3mcc-standard-cell",
+      "variant_description": "Individual standard AA BK-3MCC cell. The opened manual covers retail multipacks BK-3MCC/2, BK-3MCC/4 and BK-3MCC/8; package quantity is not an electrically assembled pack. Other suffixes are not assumed equivalent.",
+      "aliases": [
+        {
+          "value": "BK-3MCC",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "eneloop AA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "nickel_metal_hydride",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AA",
+        "description": "Cylindrical AA consumer cell."
+      },
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 1900,
+      "nominal_voltage_v": 1.2,
+      "capacity_test_conditions": "Minimum capacity is stated against JIS C 8708:2007 section 7.2.1 charge/discharge conditions. The opened manual does not reproduce the numerical protocol.",
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": "Use an eneloop-series charger compatible with this cell size and follow its instructions. Protect cells against short circuits when storing or carrying them. This source summary does not define a maintenance interval.",
+      "source_ids": [
+        "panasonic-bk3mcc-manual",
+        "panasonic-nimh-psds-2020"
+      ],
+      "field_evidence": {
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-nimh-psds-2020",
+            "locator": "Page 1 section 1, company",
+            "observation": "Panasonic Corporation."
+          }
+        ],
+        "/brand": [
+          {
+            "source_id": "panasonic-bk3mcc-manual",
+            "locator": "Page 1 product identification",
+            "observation": "eneloop standard rechargeable cell."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-nimh-psds-2020",
+            "locator": "Page 1 section 1, Standard model",
+            "observation": "BK-3MCC"
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-bk3mcc-manual",
+            "locator": "Page 1 model and package-count labels",
+            "observation": "BK-3MCC/2, BK-3MCC/4 and BK-3MCC/8 are retail packages of individual AA cells."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-nimh-psds-2020",
+            "locator": "Page 1 section 1",
+            "observation": "Only the listed full cell MPN is an exact-match candidate."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-bk3mcc-manual",
+            "locator": "Page 1 product identification",
+            "observation": "Rechargeable nickel-metal hydride cell."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-bk3mcc-manual",
+            "locator": "Page 1 product identification and charging instructions",
+            "observation": "Rechargeable; compatible eneloop charger specified."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-bk3mcc-manual",
+            "locator": "Page 1 package-count and size labels",
+            "observation": "Individual cells are sold in multi-cell packages."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-bk3mcc-manual",
+            "locator": "Page 1 size designation",
+            "observation": "AA cell."
+          },
+          {
+            "source_id": "panasonic-nimh-psds-2020",
+            "locator": "Page 3 section 9, Appearance",
+            "observation": "Listed as cylindrical."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "panasonic-bk3mcc-manual",
+            "locator": "Page 1 capacity label",
+            "observation": "Minimum capacity is given; no Rated or Nominal capacity label."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "panasonic-bk3mcc-manual",
+            "locator": "Page 1 capacity label",
+            "observation": "No Rated or Nominal capacity label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "panasonic-bk3mcc-manual",
+            "locator": "Page 1 capacity label",
+            "observation": "1900 mAh, minimum."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-nimh-psds-2020",
+            "locator": "Page 3 section 9, Nominal Voltage",
+            "observation": "This model is in the 1.2 V list."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-bk3mcc-manual",
+            "locator": "Page 1 minimum-capacity footnote",
+            "observation": "JIS C 8708:2007 section 7.2.1 is referenced."
+          }
+        ],
+        "/maintenance_notes": [
+          {
+            "source_id": "panasonic-bk3mcc-manual",
+            "locator": "Page 1 usage and storage paragraphs",
+            "observation": "Compatible charger instructions and short-circuit protection."
+          }
+        ]
+      },
+      "conflicts": [
+        "panasonic-nimh-psds-2020 page 2 section 7 includes a generic instruction not to recharge, while the model-specific manual identifies this cell as rechargeable and explains charging. The model-specific instructions support rechargeable=true; the contradictory generic sentence is not used for maintenance policy."
+      ],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah is null.",
+        "Typical capacity, nominal or rated energy, exact dimensions and mass are not provided in the opened model-specific manual; these fields are null.",
+        "Retail packaging codes do not establish equivalence to regional suffixes, successor models or other eneloop variants.",
+        "A connector and an assembled series/parallel configuration are not specified.",
+        "A maintenance interval is not specified."
+      ],
+      "notes": [
+        "This is a public product reference, not evidence of school stock or a purchase recommendation.",
+        "An unopened or successor product specification is not used to backfill this model.",
+        "The minimum capacity is retained with its test-standard reference and does not silently populate the rated-capacity field."
+      ]
+    },
+    {
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "verification_status": "verified_core",
+      "catalog_id": "panasonic-eneloop-bk-4mcc",
+      "manufacturer": "Panasonic Corporation",
+      "brand": "eneloop",
+      "model": "BK-4MCC",
+      "variant_key": "bk-4mcc-standard-cell",
+      "variant_description": "Individual standard AAA BK-4MCC cell. The opened manual covers retail multipacks BK-4MCC/2 and BK-4MCC/4; package quantity is not an electrically assembled pack. Other suffixes are not assumed equivalent.",
+      "aliases": [
+        {
+          "value": "BK-4MCC",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "eneloop AAA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "nickel_metal_hydride",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AAA",
+        "description": "Cylindrical AAA consumer cell."
+      },
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 750,
+      "nominal_voltage_v": 1.2,
+      "capacity_test_conditions": "Minimum capacity is stated against JIS C 8708:2007 section 7.2.1 charge/discharge conditions. The opened manual does not reproduce the numerical protocol.",
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": "Use an eneloop-series charger compatible with this cell size and follow its instructions. Protect cells against short circuits when storing or carrying them. This source summary does not define a maintenance interval.",
+      "source_ids": [
+        "panasonic-bk4mcc-manual",
+        "panasonic-nimh-psds-2020"
+      ],
+      "field_evidence": {
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-nimh-psds-2020",
+            "locator": "Page 1 section 1, company",
+            "observation": "Panasonic Corporation."
+          }
+        ],
+        "/brand": [
+          {
+            "source_id": "panasonic-bk4mcc-manual",
+            "locator": "Page 1 product identification",
+            "observation": "eneloop standard rechargeable cell."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-nimh-psds-2020",
+            "locator": "Page 1 section 1, Standard model",
+            "observation": "BK-4MCC"
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-bk4mcc-manual",
+            "locator": "Page 1 model and package-count labels",
+            "observation": "BK-4MCC/2 and BK-4MCC/4 are retail packages of individual AAA cells."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-nimh-psds-2020",
+            "locator": "Page 1 section 1",
+            "observation": "Only the listed full cell MPN is an exact-match candidate."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-bk4mcc-manual",
+            "locator": "Page 1 product identification",
+            "observation": "Rechargeable nickel-metal hydride cell."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-bk4mcc-manual",
+            "locator": "Page 1 product identification and charging instructions",
+            "observation": "Rechargeable; compatible eneloop charger specified."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-bk4mcc-manual",
+            "locator": "Page 1 package-count and size labels",
+            "observation": "Individual cells are sold in multi-cell packages."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-bk4mcc-manual",
+            "locator": "Page 1 size designation",
+            "observation": "AAA cell."
+          },
+          {
+            "source_id": "panasonic-nimh-psds-2020",
+            "locator": "Page 3 section 9, Appearance",
+            "observation": "Listed as cylindrical."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "panasonic-bk4mcc-manual",
+            "locator": "Page 1 capacity label",
+            "observation": "Minimum capacity is given; no Rated or Nominal capacity label."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "panasonic-bk4mcc-manual",
+            "locator": "Page 1 capacity label",
+            "observation": "No Rated or Nominal capacity label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "panasonic-bk4mcc-manual",
+            "locator": "Page 1 capacity label",
+            "observation": "750 mAh, minimum."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-nimh-psds-2020",
+            "locator": "Page 3 section 9, Nominal Voltage",
+            "observation": "This model is in the 1.2 V list."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-bk4mcc-manual",
+            "locator": "Page 1 minimum-capacity footnote",
+            "observation": "JIS C 8708:2007 section 7.2.1 is referenced."
+          }
+        ],
+        "/maintenance_notes": [
+          {
+            "source_id": "panasonic-bk4mcc-manual",
+            "locator": "Page 1 usage and storage paragraphs",
+            "observation": "Compatible charger instructions and short-circuit protection."
+          }
+        ]
+      },
+      "conflicts": [
+        "panasonic-nimh-psds-2020 page 2 section 7 includes a generic instruction not to recharge, while the model-specific manual identifies this cell as rechargeable and explains charging. The model-specific instructions support rechargeable=true; the contradictory generic sentence is not used for maintenance policy."
+      ],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah is null.",
+        "Typical capacity, nominal or rated energy, exact dimensions and mass are not provided in the opened model-specific manual; these fields are null.",
+        "Retail packaging codes do not establish equivalence to regional suffixes, successor models or other eneloop variants.",
+        "A connector and an assembled series/parallel configuration are not specified.",
+        "A maintenance interval is not specified."
+      ],
+      "notes": [
+        "This is a public product reference, not evidence of school stock or a purchase recommendation.",
+        "An unopened or successor product specification is not used to backfill this model.",
+        "The minimum capacity is retained with its test-standard reference and does not silently populate the rated-capacity field."
+      ]
+    }
+  ]
+}

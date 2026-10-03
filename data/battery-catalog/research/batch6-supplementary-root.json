@@ -1,0 +1,1965 @@
+{
+  "sources": [
+    {
+      "source_id": "duracell-technical-library-batch6",
+      "url": "https://duracell.com/techlibrary/product-technical-data-sheets",
+      "title": "Duracell Technical Library - Product Technical Data Sheets",
+      "publisher": "Duracell",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "Selected North America Coppertop MN1500/MN2400/MN1400/MN1300 and specialty Ultra MX2500 listings; not all regional or sub-brand variants"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page and direct HTTPS200 HTML580854 bytes read; corresponding official North America/Coppertop and Ultra PDF links extracted. Repeated regional/sub-brand copies are not new products."
+    },
+    {
+      "source_id": "duracell-alkaline-ais-20260101-batch6",
+      "url": "https://cdn.prod.website-files.com/6835fa821f0f20d8b0b5850b/697c718ead9dc0a3e1481cb5_2026%20Duracell%20Alkaline%20AIS_English%20%281%29.pdf",
+      "title": "Duracell Alkaline Batteries (Major and Specialty Cells) - Article Information Sheet",
+      "publisher": "Duracell North America Product Safety & Regulatory",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "AIS-ALK; Last Revision1/1/2026; Issue Date1-May-15",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "Coppertop major AA/AAA/C/D and Ultra specialty AAAA selected alkaline products"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Linked on official Duracell SDS library; direct HTTPS200247031 bytes,3 pages read. Page1Sections1/3/4/7 identity, coverage, chemistry and recharge warning. Multiple regional company addresses do not establish a selected factory."
+    },
+    {
+      "source_id": "duracell-mn1500-us-datasheet-batch6",
+      "url": "https://cdn.prod.website-files.com/6835fa821f0f20d8b0b5851c/6899e006fd5a5101be9743f8_MN15USCT0122.pdf",
+      "title": "MN1500 - AA Alkaline-Manganese Dioxide Battery",
+      "publisher": "Duracell",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "MN15USCT0122",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "MN1500 selected official North America flat-terminal single-cell data sheet"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official Duracell technical-library link; direct HTTPS200 and both PDF pages read in memory. Page1model/size/chemical system/nominal voltage/flat terminals; pages1-2capacity-dependence notice. Graphical points are not digitized; no scalar capacity is selected from a chart. Footer document code is not interpreted as a technical revision date."
+    },
+    {
+      "source_id": "duracell-mn2400-us-datasheet-batch6",
+      "url": "https://cdn.prod.website-files.com/6835fa821f0f20d8b0b5851c/6899e0ecf015a35407d1756d_MN24USCT0122.pdf",
+      "title": "MN2400 - AAA Alkaline-Manganese Dioxide Battery",
+      "publisher": "Duracell",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "MN24USCT0122",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "MN2400 selected official North America flat-terminal single-cell data sheet"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official Duracell technical-library link; direct HTTPS200 and both PDF pages read in memory. Page1model/size/chemical system/nominal voltage/flat terminals; pages1-2capacity-dependence notice. Graphical points are not digitized; no scalar capacity is selected from a chart. Footer document code is not interpreted as a technical revision date."
+    },
+    {
+      "source_id": "duracell-mn1400-us-datasheet-batch6",
+      "url": "https://cdn.prod.website-files.com/6835fa821f0f20d8b0b5851c/6899df648e6de2505c91dc6f_MN1400_US_CT1.pdf",
+      "title": "MN1400 - C Alkaline-Manganese Dioxide Battery",
+      "publisher": "Duracell",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "MN14CTUS0413",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "MN1400 selected official North America flat-terminal single-cell data sheet"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official Duracell technical-library link; direct HTTPS200 and both PDF pages read in memory. Page1model/size/chemical system/nominal voltage/flat terminals; pages1-2capacity-dependence notice. Graphical points are not digitized; no scalar capacity is selected from a chart. Footer document code is not interpreted as a technical revision date."
+    },
+    {
+      "source_id": "duracell-mn1300-us-datasheet-batch6",
+      "url": "https://cdn.prod.website-files.com/6835fa821f0f20d8b0b5851c/6899ded817ba635584ca2c38_MN1300_US_CT1.pdf",
+      "title": "MN1300 - D Alkaline-Manganese Dioxide Battery",
+      "publisher": "Duracell",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "MN13CTUS0413",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "MN1300 selected official North America flat-terminal single-cell data sheet"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official Duracell technical-library link; direct HTTPS200 and both PDF pages read in memory. Page1model/size/chemical system/nominal voltage/flat terminals; pages1-2capacity-dependence notice. Graphical points are not digitized; no scalar capacity is selected from a chart. Footer document code is not interpreted as a technical revision date."
+    },
+    {
+      "source_id": "duracell-mx2500-us-datasheet-batch6",
+      "url": "https://cdn.prod.website-files.com/6835fa821f0f20d8b0b5851c/6899e1afd98b2d5f2fde3306_MX25US02166.pdf",
+      "title": "MX2500 - AAAA Alkaline-Manganese Dioxide Battery",
+      "publisher": "Duracell",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "MX25US0216",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "MX2500 selected official North America flat-terminal single-cell data sheet"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official Duracell technical-library link; direct HTTPS200 and both PDF pages read in memory. Page1model/size/chemical system/nominal voltage/flat terminals; pages1-2capacity-dependence notice. Graphical points are not digitized; no scalar capacity is selected from a chart. Footer document code is not interpreted as a technical revision date."
+    },
+    {
+      "source_id": "power-sonic-ps-610-datasheet-batch6",
+      "url": "https://www.power-sonic.com/wp-content/uploads/datasheets/ps-610.pdf",
+      "title": "PS-610 - General Purpose SLA; PS Series - General Purpose",
+      "publisher": "Power-Sonic Corporation",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Version1.2; Updated8/18/2026 4:25 PM",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PS-610 F1 configuration option; selected standard base model, not FR or other terminal variants"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF actually opened with web reader,3 pages. Page1Performance Specs, Nominal Capacity20hr row and Configuration Options; page3charging and SLA identity. Direct urllib requests returned403; successful web PDF text is the research source. Source update stamp retained literally without a latest-version claim."
+    },
+    {
+      "source_id": "power-sonic-ps-612-datasheet-batch6",
+      "url": "https://www.power-sonic.com/wp-content/uploads/datasheets/ps-612.pdf",
+      "title": "PS-612 - General Purpose SLA; PS Series - General Purpose",
+      "publisher": "Power-Sonic Corporation",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Version1.2; Updated8/18/2026 4:25 PM",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PS-612 F1 configuration option; selected standard base model, not FR or other terminal variants"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF actually opened with web reader,3 pages. Page1Performance Specs, Nominal Capacity20hr row and Configuration Options; page3charging and SLA identity. Direct urllib requests returned403; successful web PDF text is the research source. Source update stamp retained literally without a latest-version claim."
+    },
+    {
+      "source_id": "power-sonic-ps-621-datasheet-batch6",
+      "url": "https://www.power-sonic.com/wp-content/uploads/datasheets/ps-621.pdf",
+      "title": "PS-621 - General Purpose SLA; PS Series - General Purpose",
+      "publisher": "Power-Sonic Corporation",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Version1.2; Updated8/18/2026 4:25 PM",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PS-621 F1 configuration option; selected standard base model, not FR or other terminal variants"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF actually opened with web reader,3 pages. Page1Performance Specs, Nominal Capacity20hr row and Configuration Options; page3charging and SLA identity. Direct urllib requests returned403; successful web PDF text is the research source. Source update stamp retained literally without a latest-version claim."
+    },
+    {
+      "source_id": "power-sonic-ps-640-datasheet-batch6",
+      "url": "https://www.power-sonic.com/wp-content/uploads/datasheets/ps-640.pdf",
+      "title": "PS-640 - General Purpose SLA; PS Series - General Purpose",
+      "publisher": "Power-Sonic Corporation",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Version1.2; Updated8/18/2026 4:24 PM",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PS-640 F1 configuration option; selected standard base model, not FR or other terminal variants"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF actually opened with web reader,3 pages. Page1Performance Specs, Nominal Capacity20hr row and Configuration Options; page3charging and SLA identity. Direct urllib requests returned403; successful web PDF text is the research source. Source update stamp retained literally without a latest-version claim."
+    },
+    {
+      "source_id": "power-sonic-ps-1208-datasheet-batch6",
+      "url": "https://www.power-sonic.com/wp-content/uploads/datasheets/ps-1208.pdf",
+      "title": "PS-1208 - General Purpose SLA; PS Series - General Purpose",
+      "publisher": "Power-Sonic Corporation",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Version1.2; Updated8/18/2026 4:29 PM",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PS-1208 WL configuration option; selected standard base model, not FR or other terminal variants"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF actually opened with web reader,3 pages. Page1Performance Specs, Nominal Capacity20hr row and Configuration Options; page3charging and SLA identity. Direct urllib requests returned403; successful web PDF text is the research source. Source update stamp retained literally without a latest-version claim."
+    },
+    {
+      "source_id": "power-sonic-ps-1240-datasheet-batch6",
+      "url": "https://www.power-sonic.com/wp-content/uploads/datasheets/ps-1240.pdf",
+      "title": "PS-1240 - General Purpose SLA; PS Series - General Purpose",
+      "publisher": "Power-Sonic Corporation",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Version1.2; Updated8/18/2026 4:27 PM",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PS-1240 F1 configuration option; selected standard base model, not FR or other terminal variants"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official PDF actually opened with web reader,3 pages. Page1Performance Specs, Nominal Capacity20hr row and Configuration Options; page3charging and SLA identity. Direct urllib requests returned403; successful web PDF text is the research source. Source update stamp retained literally without a latest-version claim."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "duracell-mn1500-us-flat-cell",
+      "manufacturer": null,
+      "brand": "Duracell",
+      "model": "MN1500",
+      "variant_key": "us-flat-cell",
+      "variant_description": "MN1500 AA single alkaline flat-terminal cell in the selected North America reference edition.",
+      "suggested_display_name": "Duracell MN1500",
+      "chemistry": "alkaline_zinc_manganese_dioxide",
+      "rechargeable": false,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AA",
+        "description": "AA cell size from the manufacturer heading; dimensions are not curated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Flat terminals as specified in the selected data sheet.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "MN1500",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "duracell-mn1500-us-datasheet-batch6",
+        "duracell-alkaline-ais-20260101-batch6",
+        "duracell-technical-library-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Official Duracell library lists the selected exact model; data sheet is Duracell branded."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Exact model heading MN1500."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Exact model MN1500 retained as an exact candidate; generic size does not establish product identity."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "MN1500 AA single alkaline flat-terminal cell in the selected North America reference edition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "A single AA cell is specified; not a retail multipack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Manufacturer Size heading AA."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Nominal voltage is1.5V."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Terminals areFlat; polarity detail not curated."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF page1chemical system",
+            "observation": "The selected product sheet identifies its chemical system as Alkaline-Manganese Dioxide."
+          },
+          {
+            "source_id": "duracell-alkaline-ais-20260101-batch6",
+            "locator": "AIS PDF page 1, sections 3 and 4",
+            "observation": "The alkaline article family covers major AA, AAA, C and D sizes and specialty AAAA. Ingredient section lists manganese dioxide and zinc. Specialty AAAA applicability supports MX2500 without relying on the major-size sub-brand list."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "duracell-alkaline-ais-20260101-batch6",
+            "locator": "Page1Section3applicability andSection7handling",
+            "observation": "Selected alkaline family is covered; recharge is identified as abusive handling, so rechargeable isfalse. No maintenance program is activated."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "duracell-mn1500-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ]
+      },
+      "conflicts": [],
+      "unknowns": [
+        "No capacity scalar is curated from load-conditioned graphs; capacity test conditions remain null because there is no selected scalar.",
+        "Exact legal manufacturer/factory is not established for this selected product; regional company contacts are not factory proof.",
+        "Dimensions, mass, energy, series/parallel topology and detailed polarity remain uncurated.",
+        "This reference does not establish school procurement, age, physical condition or compatibility."
+      ],
+      "notes": [
+        "Public product reference only; actual received model and variant require confirmation.",
+        "An editable display suggestion is formed from the verified brand and exact model; no school inventory or compatibility is asserted."
+      ]
+    },
+    {
+      "catalog_id": "duracell-mn2400-us-flat-cell",
+      "manufacturer": null,
+      "brand": "Duracell",
+      "model": "MN2400",
+      "variant_key": "us-flat-cell",
+      "variant_description": "MN2400 AAA single alkaline flat-terminal cell in the selected North America reference edition.",
+      "suggested_display_name": "Duracell MN2400",
+      "chemistry": "alkaline_zinc_manganese_dioxide",
+      "rechargeable": false,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AAA",
+        "description": "AAA cell size from the manufacturer heading; dimensions are not curated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Flat terminals as specified in the selected data sheet.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "MN2400",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "duracell-mn2400-us-datasheet-batch6",
+        "duracell-alkaline-ais-20260101-batch6",
+        "duracell-technical-library-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Official Duracell library lists the selected exact model; data sheet is Duracell branded."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Exact model heading MN2400."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Exact model MN2400 retained as an exact candidate; generic size does not establish product identity."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "MN2400 AAA single alkaline flat-terminal cell in the selected North America reference edition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "A single AAA cell is specified; not a retail multipack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Manufacturer Size heading AAA."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Nominal voltage is1.5V."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Terminals areFlat; polarity detail not curated."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF page1chemical system",
+            "observation": "The selected product sheet identifies its chemical system as Alkaline-Manganese Dioxide."
+          },
+          {
+            "source_id": "duracell-alkaline-ais-20260101-batch6",
+            "locator": "AIS PDF page 1, sections 3 and 4",
+            "observation": "The alkaline article family covers major AA, AAA, C and D sizes and specialty AAAA. Ingredient section lists manganese dioxide and zinc. Specialty AAAA applicability supports MX2500 without relying on the major-size sub-brand list."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "duracell-alkaline-ais-20260101-batch6",
+            "locator": "Page1Section3applicability andSection7handling",
+            "observation": "Selected alkaline family is covered; recharge is identified as abusive handling, so rechargeable isfalse. No maintenance program is activated."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "duracell-mn2400-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ]
+      },
+      "conflicts": [],
+      "unknowns": [
+        "No capacity scalar is curated from load-conditioned graphs; capacity test conditions remain null because there is no selected scalar.",
+        "Exact legal manufacturer/factory is not established for this selected product; regional company contacts are not factory proof.",
+        "Dimensions, mass, energy, series/parallel topology and detailed polarity remain uncurated.",
+        "This reference does not establish school procurement, age, physical condition or compatibility."
+      ],
+      "notes": [
+        "Public product reference only; actual received model and variant require confirmation.",
+        "An editable display suggestion is formed from the verified brand and exact model; no school inventory or compatibility is asserted."
+      ]
+    },
+    {
+      "catalog_id": "duracell-mn1400-us-flat-cell",
+      "manufacturer": null,
+      "brand": "Duracell",
+      "model": "MN1400",
+      "variant_key": "us-flat-cell",
+      "variant_description": "MN1400 C single alkaline flat-terminal cell in the selected North America reference edition.",
+      "suggested_display_name": "Duracell MN1400",
+      "chemistry": "alkaline_zinc_manganese_dioxide",
+      "rechargeable": false,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "C",
+        "description": "C cell size from the manufacturer heading; dimensions are not curated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Flat terminals as specified in the selected data sheet.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "MN1400",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "duracell-mn1400-us-datasheet-batch6",
+        "duracell-alkaline-ais-20260101-batch6",
+        "duracell-technical-library-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Official Duracell library lists the selected exact model; data sheet is Duracell branded."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Exact model heading MN1400."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Exact model MN1400 retained as an exact candidate; generic size does not establish product identity."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "MN1400 C single alkaline flat-terminal cell in the selected North America reference edition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "A single C cell is specified; not a retail multipack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Manufacturer Size heading C."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Nominal voltage is1.5V."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Terminals areFlat; polarity detail not curated."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF page1chemical system",
+            "observation": "The selected product sheet identifies its chemical system as Alkaline-Manganese Dioxide."
+          },
+          {
+            "source_id": "duracell-alkaline-ais-20260101-batch6",
+            "locator": "AIS PDF page 1, sections 3 and 4",
+            "observation": "The alkaline article family covers major AA, AAA, C and D sizes and specialty AAAA. Ingredient section lists manganese dioxide and zinc. Specialty AAAA applicability supports MX2500 without relying on the major-size sub-brand list."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "duracell-alkaline-ais-20260101-batch6",
+            "locator": "Page1Section3applicability andSection7handling",
+            "observation": "Selected alkaline family is covered; recharge is identified as abusive handling, so rechargeable isfalse. No maintenance program is activated."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "duracell-mn1400-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ]
+      },
+      "conflicts": [],
+      "unknowns": [
+        "No capacity scalar is curated from load-conditioned graphs; capacity test conditions remain null because there is no selected scalar.",
+        "Exact legal manufacturer/factory is not established for this selected product; regional company contacts are not factory proof.",
+        "Dimensions, mass, energy, series/parallel topology and detailed polarity remain uncurated.",
+        "This reference does not establish school procurement, age, physical condition or compatibility."
+      ],
+      "notes": [
+        "Public product reference only; actual received model and variant require confirmation.",
+        "An editable display suggestion is formed from the verified brand and exact model; no school inventory or compatibility is asserted."
+      ]
+    },
+    {
+      "catalog_id": "duracell-mn1300-us-flat-cell",
+      "manufacturer": null,
+      "brand": "Duracell",
+      "model": "MN1300",
+      "variant_key": "us-flat-cell",
+      "variant_description": "MN1300 D single alkaline flat-terminal cell in the selected North America reference edition.",
+      "suggested_display_name": "Duracell MN1300",
+      "chemistry": "alkaline_zinc_manganese_dioxide",
+      "rechargeable": false,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "D",
+        "description": "D cell size from the manufacturer heading; dimensions are not curated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Flat terminals as specified in the selected data sheet.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "MN1300",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "duracell-mn1300-us-datasheet-batch6",
+        "duracell-alkaline-ais-20260101-batch6",
+        "duracell-technical-library-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Official Duracell library lists the selected exact model; data sheet is Duracell branded."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Exact model heading MN1300."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Exact model MN1300 retained as an exact candidate; generic size does not establish product identity."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "MN1300 D single alkaline flat-terminal cell in the selected North America reference edition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "A single D cell is specified; not a retail multipack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Manufacturer Size heading D."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Nominal voltage is1.5V."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Terminals areFlat; polarity detail not curated."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF page1chemical system",
+            "observation": "The selected product sheet identifies its chemical system as Alkaline-Manganese Dioxide."
+          },
+          {
+            "source_id": "duracell-alkaline-ais-20260101-batch6",
+            "locator": "AIS PDF page 1, sections 3 and 4",
+            "observation": "The alkaline article family covers major AA, AAA, C and D sizes and specialty AAAA. Ingredient section lists manganese dioxide and zinc. Specialty AAAA applicability supports MX2500 without relying on the major-size sub-brand list."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "duracell-alkaline-ais-20260101-batch6",
+            "locator": "Page1Section3applicability andSection7handling",
+            "observation": "Selected alkaline family is covered; recharge is identified as abusive handling, so rechargeable isfalse. No maintenance program is activated."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "duracell-mn1300-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ]
+      },
+      "conflicts": [],
+      "unknowns": [
+        "No capacity scalar is curated from load-conditioned graphs; capacity test conditions remain null because there is no selected scalar.",
+        "Exact legal manufacturer/factory is not established for this selected product; regional company contacts are not factory proof.",
+        "Dimensions, mass, energy, series/parallel topology and detailed polarity remain uncurated.",
+        "This reference does not establish school procurement, age, physical condition or compatibility."
+      ],
+      "notes": [
+        "Public product reference only; actual received model and variant require confirmation.",
+        "An editable display suggestion is formed from the verified brand and exact model; no school inventory or compatibility is asserted."
+      ]
+    },
+    {
+      "catalog_id": "duracell-mx2500-us-flat-cell",
+      "manufacturer": null,
+      "brand": "Duracell",
+      "model": "MX2500",
+      "variant_key": "us-flat-cell",
+      "variant_description": "MX2500 AAAA single alkaline flat-terminal cell in the selected North America reference edition.",
+      "suggested_display_name": "Duracell MX2500",
+      "chemistry": "alkaline_zinc_manganese_dioxide",
+      "rechargeable": false,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AAAA",
+        "description": "AAAA cell size from the manufacturer heading; dimensions are not curated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Flat terminals as specified in the selected data sheet.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "MX2500",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "duracell-mx2500-us-datasheet-batch6",
+        "duracell-alkaline-ais-20260101-batch6",
+        "duracell-technical-library-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Official Duracell library lists the selected exact model; data sheet is Duracell branded."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Exact model heading MX2500."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Exact model MX2500 retained as an exact candidate; generic size does not establish product identity."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "MX2500 AAAA single alkaline flat-terminal cell in the selected North America reference edition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "A single AAAA cell is specified; not a retail multipack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Manufacturer Size heading AAAA."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Nominal voltage is1.5V."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF page1heading and specifications",
+            "observation": "Terminals areFlat; polarity detail not curated."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF page1chemical system",
+            "observation": "The selected product sheet identifies its chemical system as Alkaline-Manganese Dioxide."
+          },
+          {
+            "source_id": "duracell-alkaline-ais-20260101-batch6",
+            "locator": "AIS PDF page 1, sections 3 and 4",
+            "observation": "The alkaline article family covers major AA, AAA, C and D sizes and specialty AAAA. Ingredient section lists manganese dioxide and zinc. Specialty AAAA applicability supports MX2500 without relying on the major-size sub-brand list."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "duracell-alkaline-ais-20260101-batch6",
+            "locator": "Page1Section3applicability andSection7handling",
+            "observation": "Selected alkaline family is covered; recharge is identified as abusive handling, so rechargeable isfalse. No maintenance program is activated."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "duracell-mx2500-us-datasheet-batch6",
+            "locator": "PDF pages1-2capacity notice and selected specifications",
+            "observation": "Delivered capacity depends on load, temperature and cutoff. No suitable scalar capacity has been selected; graphical points remain undigitized and all capacity scalars null."
+          }
+        ]
+      },
+      "conflicts": [],
+      "unknowns": [
+        "No capacity scalar is curated from load-conditioned graphs; capacity test conditions remain null because there is no selected scalar.",
+        "Exact legal manufacturer/factory is not established for this selected product; regional company contacts are not factory proof.",
+        "Dimensions, mass, energy, series/parallel topology and detailed polarity remain uncurated.",
+        "This reference does not establish school procurement, age, physical condition or compatibility."
+      ],
+      "notes": [
+        "Public product reference only; actual received model and variant require confirmation.",
+        "An editable display suggestion is formed from the verified brand and exact model; no school inventory or compatibility is asserted."
+      ]
+    },
+    {
+      "catalog_id": "power-sonic-ps-610-f1",
+      "manufacturer": null,
+      "brand": "Power-Sonic",
+      "model": "PS-610",
+      "variant_key": "f1-base-option",
+      "variant_description": "PS-610 F1 listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded.",
+      "suggested_display_name": "Power-Sonic PS-610",
+      "chemistry": "lead_acid",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "sealed_lead_acid_block",
+        "description": "Sealed lead-acid assembled battery block with ABS case; precise dimensions are not curated."
+      },
+      "rated_capacity_mah": 1000,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Nominal capacity20-hour row: 0.05A discharge to5.25V. No test temperature is separately specified for this selected capacity row.",
+      "nominal_voltage_v": 6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Manufacturer-listed F1 configuration option; terminal dimensions and pin polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "PS-610",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "power-sonic-ps-610-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Power-Sonic branded exact-model official data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact model heading PS-610."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact base model PS-610 retained as an exact candidate; selected F1 option still requires received-variant confirmation."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "PS-610 F1 listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "General Purpose SLA and description explicitly identify sealed lead acid."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Assembled SLA battery; nominal voltage row also lists3.0 cells; cell topology not inferred."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "ABS cased sealed lead-acid battery block; optional UL94V-0/FR variants not silently selected."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Page3Charging describes cyclic andfloat recharging for the selected battery."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Explicit nominal voltage 6.0V; charging voltages are separate."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal Capacity20-hr row 1.0Ah, converted to1000mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Source labels the selected capacityNominal Capacity; retained asnominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal capacity20-hour row: 0.05A discharge to5.25V. No test temperature is separately specified for this selected capacity row."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "power-sonic-ps-610-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Configuration Options explicitly includePS-610 F1. Detailed terminal dimensions and polarity not curated."
+          }
+        ]
+      },
+      "conflicts": [],
+      "unknowns": [
+        "Legal physical manufacturer/factory is not separately established by publisher identification.",
+        "Separate rated/minimum/typical capacity, energy, internal topology, dimensions and mass remain uncurated; other discharge-rate capacities are not mislabeled as minimum/typical.",
+        "Capacity test temperature is not separately stated for the selected20-hour row; charging temperature is not substituted.",
+        "Received terminal/case option and compatibility still require confirmation."
+      ],
+      "notes": [
+        "Public product reference only; actual received model and variant require confirmation.",
+        "An editable display suggestion is formed from the verified brand and exact model; no school inventory or compatibility is asserted."
+      ]
+    },
+    {
+      "catalog_id": "power-sonic-ps-612-f1",
+      "manufacturer": null,
+      "brand": "Power-Sonic",
+      "model": "PS-612",
+      "variant_key": "f1-base-option",
+      "variant_description": "PS-612 F1 listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded.",
+      "suggested_display_name": "Power-Sonic PS-612",
+      "chemistry": "lead_acid",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "sealed_lead_acid_block",
+        "description": "Sealed lead-acid assembled battery block with ABS case; precise dimensions are not curated."
+      },
+      "rated_capacity_mah": 1200,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Nominal capacity20-hour row: 0.06A discharge to5.25V. No test temperature is separately specified for this selected capacity row.",
+      "nominal_voltage_v": 6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Manufacturer-listed F1 configuration option; terminal dimensions and pin polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "PS-612",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "power-sonic-ps-612-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Power-Sonic branded exact-model official data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact model heading PS-612."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact base model PS-612 retained as an exact candidate; selected F1 option still requires received-variant confirmation."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "PS-612 F1 listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "General Purpose SLA and description explicitly identify sealed lead acid."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Assembled SLA battery; nominal voltage row also lists3.0 cells; cell topology not inferred."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "ABS cased sealed lead-acid battery block; optional UL94V-0/FR variants not silently selected."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Page3Charging describes cyclic andfloat recharging for the selected battery."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Explicit nominal voltage 6.0V; charging voltages are separate."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal Capacity20-hr row 1.2Ah, converted to1200mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Source labels the selected capacityNominal Capacity; retained asnominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal capacity20-hour row: 0.06A discharge to5.25V. No test temperature is separately specified for this selected capacity row."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "power-sonic-ps-612-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Configuration Options explicitly includePS-612 F1. Detailed terminal dimensions and polarity not curated."
+          }
+        ]
+      },
+      "conflicts": [],
+      "unknowns": [
+        "Legal physical manufacturer/factory is not separately established by publisher identification.",
+        "Separate rated/minimum/typical capacity, energy, internal topology, dimensions and mass remain uncurated; other discharge-rate capacities are not mislabeled as minimum/typical.",
+        "Capacity test temperature is not separately stated for the selected20-hour row; charging temperature is not substituted.",
+        "Received terminal/case option and compatibility still require confirmation."
+      ],
+      "notes": [
+        "Public product reference only; actual received model and variant require confirmation.",
+        "An editable display suggestion is formed from the verified brand and exact model; no school inventory or compatibility is asserted."
+      ]
+    },
+    {
+      "catalog_id": "power-sonic-ps-621-f1",
+      "manufacturer": null,
+      "brand": "Power-Sonic",
+      "model": "PS-621",
+      "variant_key": "f1-base-option",
+      "variant_description": "PS-621 F1 listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded.",
+      "suggested_display_name": "Power-Sonic PS-621",
+      "chemistry": "lead_acid",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "sealed_lead_acid_block",
+        "description": "Sealed lead-acid assembled battery block with ABS case; precise dimensions are not curated."
+      },
+      "rated_capacity_mah": 2000,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Nominal capacity20-hour row: 0.1A discharge to5.25V. No test temperature is separately specified for this selected capacity row.",
+      "nominal_voltage_v": 6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Manufacturer-listed F1 configuration option; terminal dimensions and pin polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "PS-621",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "power-sonic-ps-621-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Power-Sonic branded exact-model official data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact model heading PS-621."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact base model PS-621 retained as an exact candidate; selected F1 option still requires received-variant confirmation."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "PS-621 F1 listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "General Purpose SLA and description explicitly identify sealed lead acid."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Assembled SLA battery; nominal voltage row also lists3.0 cells; cell topology not inferred."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "ABS cased sealed lead-acid battery block; optional UL94V-0/FR variants not silently selected."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Page3Charging describes cyclic andfloat recharging for the selected battery."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Explicit nominal voltage 6.0V; charging voltages are separate."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal Capacity20-hr row 2.0Ah, converted to2000mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Source labels the selected capacityNominal Capacity; retained asnominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal capacity20-hour row: 0.1A discharge to5.25V. No test temperature is separately specified for this selected capacity row."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "power-sonic-ps-621-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Configuration Options explicitly includePS-621 F1. Detailed terminal dimensions and polarity not curated."
+          }
+        ]
+      },
+      "conflicts": [],
+      "unknowns": [
+        "Legal physical manufacturer/factory is not separately established by publisher identification.",
+        "Separate rated/minimum/typical capacity, energy, internal topology, dimensions and mass remain uncurated; other discharge-rate capacities are not mislabeled as minimum/typical.",
+        "Capacity test temperature is not separately stated for the selected20-hour row; charging temperature is not substituted.",
+        "Received terminal/case option and compatibility still require confirmation."
+      ],
+      "notes": [
+        "Public product reference only; actual received model and variant require confirmation.",
+        "An editable display suggestion is formed from the verified brand and exact model; no school inventory or compatibility is asserted."
+      ]
+    },
+    {
+      "catalog_id": "power-sonic-ps-640-f1",
+      "manufacturer": null,
+      "brand": "Power-Sonic",
+      "model": "PS-640",
+      "variant_key": "f1-base-option",
+      "variant_description": "PS-640 F1 listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded.",
+      "suggested_display_name": "Power-Sonic PS-640",
+      "chemistry": "lead_acid",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "sealed_lead_acid_block",
+        "description": "Sealed lead-acid assembled battery block with ABS case; precise dimensions are not curated."
+      },
+      "rated_capacity_mah": 4500,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Nominal capacity20-hour row: 0.23A discharge to5.25V. No test temperature is separately specified for this selected capacity row.",
+      "nominal_voltage_v": 6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Manufacturer-listed F1 configuration option; terminal dimensions and pin polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "PS-640",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "power-sonic-ps-640-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Power-Sonic branded exact-model official data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact model heading PS-640."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact base model PS-640 retained as an exact candidate; selected F1 option still requires received-variant confirmation."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "PS-640 F1 listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "General Purpose SLA and description explicitly identify sealed lead acid."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Assembled SLA battery; nominal voltage row also lists3.0 cells; cell topology not inferred."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "ABS cased sealed lead-acid battery block; optional UL94V-0/FR variants not silently selected."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Page3Charging describes cyclic andfloat recharging for the selected battery."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Explicit nominal voltage 6.0V; charging voltages are separate."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal Capacity20-hr row 4.5Ah, converted to4500mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Source labels the selected capacityNominal Capacity; retained asnominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal capacity20-hour row: 0.23A discharge to5.25V. No test temperature is separately specified for this selected capacity row."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "power-sonic-ps-640-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Configuration Options explicitly includePS-640 F1. Detailed terminal dimensions and polarity not curated."
+          }
+        ]
+      },
+      "conflicts": [],
+      "unknowns": [
+        "Legal physical manufacturer/factory is not separately established by publisher identification.",
+        "Separate rated/minimum/typical capacity, energy, internal topology, dimensions and mass remain uncurated; other discharge-rate capacities are not mislabeled as minimum/typical.",
+        "Capacity test temperature is not separately stated for the selected20-hour row; charging temperature is not substituted.",
+        "Received terminal/case option and compatibility still require confirmation."
+      ],
+      "notes": [
+        "Public product reference only; actual received model and variant require confirmation.",
+        "An editable display suggestion is formed from the verified brand and exact model; no school inventory or compatibility is asserted."
+      ]
+    },
+    {
+      "catalog_id": "power-sonic-ps-1208-wl",
+      "manufacturer": null,
+      "brand": "Power-Sonic",
+      "model": "PS-1208",
+      "variant_key": "wl-base-option",
+      "variant_description": "PS-1208 WL listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded.",
+      "suggested_display_name": "Power-Sonic PS-1208",
+      "chemistry": "lead_acid",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "sealed_lead_acid_block",
+        "description": "Sealed lead-acid assembled battery block with ABS case; precise dimensions are not curated."
+      },
+      "rated_capacity_mah": 800,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Nominal capacity20-hour row: 0.04A discharge to10.5V. No test temperature is separately specified for this selected capacity row.",
+      "nominal_voltage_v": 12,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Manufacturer-listed WL configuration option; terminal dimensions and pin polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "PS-1208",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "power-sonic-ps-1208-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Power-Sonic branded exact-model official data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact model heading PS-1208."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact base model PS-1208 retained as an exact candidate; selected WL option still requires received-variant confirmation."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "PS-1208 WL listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "General Purpose SLA and description explicitly identify sealed lead acid."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Assembled SLA battery; nominal voltage row also lists6.0 cells; cell topology not inferred."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "ABS cased sealed lead-acid battery block; optional UL94V-0/FR variants not silently selected."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Page3Charging describes cyclic andfloat recharging for the selected battery."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Explicit nominal voltage 12.0V; charging voltages are separate."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal Capacity20-hr row 0.8Ah, converted to800mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Source labels the selected capacityNominal Capacity; retained asnominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal capacity20-hour row: 0.04A discharge to10.5V. No test temperature is separately specified for this selected capacity row."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "power-sonic-ps-1208-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Configuration Options explicitly includePS-1208 WL. Detailed terminal dimensions and polarity not curated."
+          }
+        ]
+      },
+      "conflicts": [],
+      "unknowns": [
+        "Legal physical manufacturer/factory is not separately established by publisher identification.",
+        "Separate rated/minimum/typical capacity, energy, internal topology, dimensions and mass remain uncurated; other discharge-rate capacities are not mislabeled as minimum/typical.",
+        "Capacity test temperature is not separately stated for the selected20-hour row; charging temperature is not substituted.",
+        "Received terminal/case option and compatibility still require confirmation."
+      ],
+      "notes": [
+        "Public product reference only; actual received model and variant require confirmation.",
+        "An editable display suggestion is formed from the verified brand and exact model; no school inventory or compatibility is asserted."
+      ]
+    },
+    {
+      "catalog_id": "power-sonic-ps-1240-f1",
+      "manufacturer": null,
+      "brand": "Power-Sonic",
+      "model": "PS-1240",
+      "variant_key": "f1-base-option",
+      "variant_description": "PS-1240 F1 listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded.",
+      "suggested_display_name": "Power-Sonic PS-1240",
+      "chemistry": "lead_acid",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "sealed_lead_acid_block",
+        "description": "Sealed lead-acid assembled battery block with ABS case; precise dimensions are not curated."
+      },
+      "rated_capacity_mah": 4000,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Nominal capacity20-hour row: 0.2A discharge to10.5V. No test temperature is separately specified for this selected capacity row.",
+      "nominal_voltage_v": 12,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Manufacturer-listed F1 configuration option; terminal dimensions and pin polarity are not curated.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "PS-1240",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "power-sonic-ps-1240-datasheet-batch6"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Power-Sonic branded exact-model official data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact model heading PS-1240."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Exact base model PS-1240 retained as an exact candidate; selected F1 option still requires received-variant confirmation."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "PS-1240 F1 listed configuration option; sealed lead-acid battery block, optional alternative terminals orFR cases excluded."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "General Purpose SLA and description explicitly identify sealed lead acid."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Assembled SLA battery; nominal voltage row also lists6.0 cells; cell topology not inferred."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "ABS cased sealed lead-acid battery block; optional UL94V-0/FR variants not silently selected."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Page3Charging describes cyclic andfloat recharging for the selected battery."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Explicit nominal voltage 12.0V; charging voltages are separate."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal Capacity20-hr row 4.0Ah, converted to4000mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Source labels the selected capacityNominal Capacity; retained asnominal."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Nominal capacity20-hour row: 0.2A discharge to10.5V. No test temperature is separately specified for this selected capacity row."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "power-sonic-ps-1240-datasheet-batch6",
+            "locator": "PDF page1Performance Specs/Configuration Options; page3Charging for rechargeability",
+            "observation": "Configuration Options explicitly includePS-1240 F1. Detailed terminal dimensions and polarity not curated."
+          }
+        ]
+      },
+      "conflicts": [],
+      "unknowns": [
+        "Legal physical manufacturer/factory is not separately established by publisher identification.",
+        "Separate rated/minimum/typical capacity, energy, internal topology, dimensions and mass remain uncurated; other discharge-rate capacities are not mislabeled as minimum/typical.",
+        "Capacity test temperature is not separately stated for the selected20-hour row; charging temperature is not substituted.",
+        "Received terminal/case option and compatibility still require confirmation."
+      ],
+      "notes": [
+        "Public product reference only; actual received model and variant require confirmation.",
+        "An editable display suggestion is formed from the verified brand and exact model; no school inventory or compatibility is asserted."
+      ]
+    }
+  ]
+}

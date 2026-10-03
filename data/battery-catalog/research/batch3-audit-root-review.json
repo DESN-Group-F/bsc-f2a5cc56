@@ -1,0 +1,79 @@
+{
+  "audit_id": "batch3-independent-root-review",
+  "reviewed_on": "2026-10-03",
+  "reviewer_role": "Independent organizer; not the researcher of the sampled fragments",
+  "new_verified_products": 18,
+  "minimum_independent_sample": 4,
+  "independently_reviewed_catalog_ids": [
+    "makita-bl1815n",
+    "makita-bl1820b",
+    "makita-bl1830b",
+    "makita-bl1840b",
+    "makita-bl1850b",
+    "makita-bl1860b",
+    "makita-bl1430b",
+    "makita-bl1440",
+    "eemb-lp604765-bare-cell-solder-tab",
+    "jauch-lp305166jh-248237",
+    "jauch-lp735977jh-246524"
+  ],
+  "status": "pass_with_candidate_exclusions",
+  "source_reviews": [
+    {
+      "source_ids": [
+        "makita-cf101d-dcf102-manual-hk",
+        "makita-dmr057-mr010g-manual-hk",
+        "makita-lxt18-battery-comparison-nz"
+      ],
+      "actual_access": "Direct HTTPS PDF200, 5,185,240 and 2,934,678 bytes; PDF pages7/14/21 and7/8 read. Official NZ comparison actually opened with web reader.",
+      "findings": [
+        "All eight exact battery models have correct stated capacities: 1.5/2/3/4/5/6Ah for six 18V models, 3/4Ah for BL1430B/BL1440. Capacity is not separately qualified as rated.",
+        "Nominal battery rows in Portuguese and Spanish explicitly enumerate 18V and14.4V selected cartridges; 12V max is a separate unselected group.",
+        "Lithium-ion rechargeable battery scope, exact pack identities and slide cartridge form corroborate the five core fields and unit kind. Editable display names are editorial.",
+        "No tool model, retail kit or multipack is counted as an independent battery."
+      ]
+    },
+    {
+      "source_ids": [
+        "eemb-lp604765-bare-cell-page",
+        "eemb-lp604765-specification",
+        "eemb-lithium-polymer-standard-page"
+      ],
+      "actual_access": "Product page and polymer family pages opened; linked PDF directly HTTPS200, nine pages, pages1/3/4 read.",
+      "findings": [
+        "LP604765 is rechargeable polymer Li-ion bare cell; nominal3.7V, nominal1900mAh, minimum1800mAh at0.2C5A; page typical1900mAh retained separately.",
+        "PDF ZJQM-RD-SPC-H2056 prints2022-1-19; 4.2V is charging limit, not nominal. Dimensions L/L1 are deliberately not curated."
+      ]
+    },
+    {
+      "source_ids": [
+        "jauch-lp305166jh-248237-datasheet",
+        "jauch-lp735977jh-246524-datasheet"
+      ],
+      "actual_access": "Direct HTTPS200; 586,346 and1,994,485 bytes; both pages of both PDFs read.",
+      "findings": [
+        "LP305166JH part248237: nominal3.7V, typical1220/minimum1200mAh at0.2C to3.0V; rated null. URLrev1.1 conflicts with printedRev2.1 December2024; body revision used.",
+        "LP735977JH part246524: nominal3.7V, typical4820/minimum4800mAh at0.2C to3.0V; datecode18082025, no numbered revision; rated null.",
+        "Both explicitly rechargeable single-cell lithium-ion polymer packs with PCM. No charger limit used as nominal; no plug inferred."
+      ]
+    }
+  ],
+  "candidate_exclusions": [
+    {
+      "model": "EEMB LP401230",
+      "actually_opened_url": "https://www.eemb.com/product-121",
+      "finding": "Product details nominal100mAh conflicts with OtherInfo typical65/minimum60mAh; linked PDF nominal100/minimum95 does not reconcile the same page. Excluded and replaced, not counted.",
+      "expanded_review": "Researcher rechecked ProductDetails/OtherInfo/linkedPDF for all six remaining EEMB models; no remaining core conflict reported."
+    },
+    {
+      "model": "Makita BL4025 / BL4040 XGT candidates",
+      "finding": "Researcher opened French nominal36V/fullcharge40V brochure and UKBL4040 nominal40V product PDF. Conflicting official nominal labels remain unresolved; excluded and replaced by14.4V models.",
+      "independent_observation": "Root opened HK radio manual whose XGT row explicitly says36V-40Vmax; this does not settle the conflicting UK nominal label."
+    }
+  ],
+  "limitations": [
+    "Independent review counts actual source interpretation, not merely automated citation presence.",
+    "Root retries for UK BL1830B/BL1860B PDFs returned an empty HTTP200 response or web-reader timeout, and US BL1430B web reader timed out; their successful organizer reads are not misrepresented as root reopens. Core fields were independently corroborated in the opened HK manuals and NZ table.",
+    "Actual school procurement coverage and received-label matching remain unknown."
+  ]
+}

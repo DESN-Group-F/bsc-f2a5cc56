@@ -1,0 +1,245 @@
+{
+  "audit_id": "batch6-independent-general-mixed-review",
+  "reviewed_on": "2026-10-03",
+  "timezone": "Australia/Sydney",
+  "reviewer_role": "Independent reviewer reopening selected manufacturer product pages and the actual linked manual",
+  "status": "pass_core_with_disclosed_limits",
+  "reviewed_fragment_names": [
+    "batch6-general-packs-mixed.json"
+  ],
+  "reviewed_fragment_sha256": "07aec04acdc9ca36c20b2fe75ee06a619ea14374de602b4bc1c2a521356cfba4",
+  "independently_reviewed_catalog_ids": [
+    "tenergy-31044-protected-bare-leads",
+    "tenergy-31094-protected-pack-connector-unspecified",
+    "tenergy-31802-protected-bare-leads",
+    "hacker-92400331-mtag-xt60-xh",
+    "hacker-96100521-mtag-xt60-xh"
+  ],
+  "source_reviews": [
+    {
+      "catalog_id": "tenergy-31044-protected-bare-leads",
+      "source_ids": [
+        "tenergy-31044-product-page-batch6"
+      ],
+      "source_urls": [
+        "https://power.tenergy.com/at-tenergy-18650-7-4v-5200mah-rechargeable-battery-pack-w-pcb-2s2p-38-48wh-5a-rate/"
+      ],
+      "accessed_on": "2026-10-03",
+      "actual_access": "Official product HTML reopened in the web reader. The primary page was read before Related Products; no search snippet was used as evidence.",
+      "locator": "Primary h1 and SKU/P/N 31044; product attributes; Product Highlights and output specification before Related Products.",
+      "finding": "Tenergy P/N 31044 identifies one commercial protected rechargeable Li-ion pack. The explicit Nominal Voltage is 7.4 V and unqualified Capacity is 5200 mAh. Bare Leads are explicit. The fragment retains capacity as stated only, leaves rated/minimum/typical null, and suggests the editable name Tenergy 31044. The official P/N is an exact manufacturer_alias rather than an invented cell-factory MPN. Custom connector and NTC options are excluded from the selected product.",
+      "checked_fields": [
+        "brand",
+        "model",
+        "suggested_display_name",
+        "aliases",
+        "chemistry",
+        "rechargeable",
+        "unit_kind",
+        "nominal_voltage_v",
+        "stated_capacity_mah",
+        "stated_capacity_label",
+        "rated_capacity_mah",
+        "capacity_basis",
+        "typical_capacity_mah",
+        "minimum_capacity_mah",
+        "capacity_test_conditions",
+        "connector",
+        "configuration"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": [
+        "No complete capacity measurement protocol is stated. Operating temperature ranges and charging current are not capacity test conditions.",
+        "The page marks this exact commercial P/N built to order; no custom hypothetical assembly is added.",
+        "Configuration remains uncurated/null; voltage is read directly from Nominal Voltage, not calculated from title notation."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31094-protected-pack-connector-unspecified",
+      "source_ids": [
+        "tenergy-31094-product-page-batch6"
+      ],
+      "source_urls": [
+        "https://power.tenergy.com/at-tenergy-li-ion-11-1v-7800mah-rechargeable-battery-pack-w-pcb-3s3p-86-58wh-5a-rate/"
+      ],
+      "accessed_on": "2026-10-03",
+      "actual_access": "Official product HTML reopened in the web reader; primary product identity and specifications read.",
+      "locator": "Primary h1 and SKU/P/N 31094; product attributes; Product Highlights/output Nominal Voltage and Capacity; primary specification has no Connector entry.",
+      "finding": "Tenergy P/N 31094 is a protected rechargeable Li-ion pack. The explicit nominal value is 11.1 V; Capacity is unqualified 7800 mAh. The fragment keeps only stated capacity, not rated/minimum/typical. Connector null agrees with the absence of a primary Connector specification. The editable name is Tenergy 31094. The exact official P/N alias does not claim a cell-maker MPN.",
+      "checked_fields": [
+        "brand",
+        "model",
+        "suggested_display_name",
+        "aliases",
+        "chemistry",
+        "rechargeable",
+        "unit_kind",
+        "nominal_voltage_v",
+        "stated_capacity_mah",
+        "stated_capacity_label",
+        "rated_capacity_mah",
+        "capacity_basis",
+        "typical_capacity_mah",
+        "minimum_capacity_mah",
+        "capacity_test_conditions",
+        "connector",
+        "configuration"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": [
+        "Connector type is not inferred from images, customization offers or other products.",
+        "Capacity discharge rate, cutoff and test temperature remain unknown; the protection cutoff is not used as a capacity-test cutoff.",
+        "Internal topology remains uncurated/null, with no voltage calculation from 3S3P text."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31802-protected-bare-leads",
+      "source_ids": [
+        "tenergy-31802-product-page-batch6"
+      ],
+      "source_urls": [
+        "https://power.tenergy.com/at-tenergy-li-ion-14-8v-7800mah-rechargeable-battery-pack-4s3p-115-44wh-5a-rate-dgr-a/"
+      ],
+      "accessed_on": "2026-10-03",
+      "actual_access": "Official product HTML opened in the web reader and independently fetched via direct HTTPS 200; 293459 bytes read in memory. Primary product identity was checked before related-product content.",
+      "locator": "Primary h1 and SKU/P/N 31802; Product Highlights and output specification, including split capacity digits in the former and complete 7800 in the latter.",
+      "finding": "Tenergy P/N 31802 identifies a rechargeable Li-ion pack with explicit Nominal Voltage 14.8 V and Bare Leads. Product Highlights splits the capacity digits across HTML tags; the same product output specification states 7800 mAh and its heading agrees. Related-product numbers were excluded. Generic Capacity is correctly retained as stated 7800 rather than rated/minimum/typical. The editable name Tenergy 31802 and official product-number alias match the selected identity.",
+      "checked_fields": [
+        "brand",
+        "model",
+        "suggested_display_name",
+        "aliases",
+        "chemistry",
+        "rechargeable",
+        "unit_kind",
+        "nominal_voltage_v",
+        "stated_capacity_mah",
+        "stated_capacity_label",
+        "rated_capacity_mah",
+        "capacity_basis",
+        "typical_capacity_mah",
+        "minimum_capacity_mah",
+        "capacity_test_conditions",
+        "connector",
+        "configuration"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": [
+        "Capacity test protocol is not stated; charge and protection values are not substituted for nominal voltage or capacity conditions.",
+        "Detailed connector polarity and internal topology remain uncurated/null."
+      ]
+    },
+    {
+      "catalog_id": "hacker-92400331-mtag-xt60-xh",
+      "source_ids": [
+        "hacker-92400331-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "source_urls": [
+        "https://www.hacker-motor-shop.com/TF-ECO-X-2400-3S-MTAG.htm?ProdNr=92400331&a=article&p=11452",
+        "https://www.hacker-motor.com/daten/anleitungen/akkus/Anleitung_Hacker_LiXx_2021-25112020.pdf"
+      ],
+      "accessed_on": "2026-10-03",
+      "actual_access": "Official product HTML reopened in the web reader; direct HTTPS also succeeded during independent review. The actual linked four-page manual was fetched via HTTPS 200 and extracted in memory.",
+      "locator": "Product h1 TF ECO-X 2400-3S MTAG and Artikel-Nr. 92400331; blank separate MPN; Anschluesse and Technische Daten. Linked manual PDF page 2 English Section 1, page 3 Section 5 and page 4 version/contact footer.",
+      "finding": "Official Artikel-Nr. 92400331 and product h1 agree. LiPo type, stated Capacity 2400 mAh, XT60 main connector and XH balancer are explicit. Nennspannung is 11.1 V; the separate 12.6 V charge-end value is not imported as nominal voltage. Hacker branding is corroborated by the linked official manual. The finished pack is rechargeable. Its identifier is an official article-number alias; blank MPN is not filled. Hacker 92400331 remains an editable name suggestion. Family-level 1C discharge semantics are preserved without relabelling capacity rated or minimum.",
+      "checked_fields": [
+        "brand",
+        "model",
+        "suggested_display_name",
+        "aliases",
+        "chemistry",
+        "rechargeable",
+        "unit_kind",
+        "nominal_voltage_v",
+        "stated_capacity_mah",
+        "stated_capacity_label",
+        "rated_capacity_mah",
+        "capacity_basis",
+        "typical_capacity_mah",
+        "minimum_capacity_mah",
+        "capacity_test_conditions",
+        "connector",
+        "configuration"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": [
+        "The family manual does not provide a complete product-specific capacity protocol. Cutoff, temperature and charge/rest sequence remain unknown.",
+        "Configuration and connector pin polarity are not inferred. Product availability does not establish stock, discontinuation or school ownership."
+      ]
+    },
+    {
+      "catalog_id": "hacker-96100521-mtag-xt60-xh",
+      "source_ids": [
+        "hacker-96100521-product-page-batch6",
+        "hacker-lithium-batteries-manual-20201124-batch6"
+      ],
+      "source_urls": [
+        "https://www.hacker-motor-shop.com/TF-ECO-X-6100-5S-Competition-MTAG.htm?ProdNr=96100521&a=article&p=11452",
+        "https://www.hacker-motor.com/daten/anleitungen/akkus/Anleitung_Hacker_LiXx_2021-25112020.pdf"
+      ],
+      "accessed_on": "2026-10-03",
+      "actual_access": "The web reader returned Internal Error for this product URL, including a later retry. Direct HTTPS 200 independently returned 144445 bytes and the canonical redirected official product HTML; h1, article number, specification table and actual manual link were read in memory. The linked four-page manual was independently opened by direct HTTPS.",
+      "locator": "HTML title TF ECO-X 6100-5S Competition MTAG; primary h1 TF LiPo ECO-X 6100-5S Competition MTAG and Artikel-Nr. 96100521; separate MPN blank; Akku-Anschluesse and Technische Daten. Manual PDF page 2 English Section 1, page 3 Section 5 and page 4 footer.",
+      "finding": "The title/h1 wording difference does not change identity: the primary h1, exact Artikel-Nr. 96100521 and selected product specifications agree. LiPo, explicit Nennspannung 18.5 V and generic Capacity 6100 mAh are verified. XT60 main and XH balance connectors are explicit. The product paragraph mentions another capacity in its development history; only the selected primary specification is imported. The official article number is not presented as a factory MPN. Hacker 96100521 is an editable suggestion. Rechargeability and family-level 1C stated-capacity context are corroborated by the actual linked manual.",
+      "checked_fields": [
+        "brand",
+        "model",
+        "suggested_display_name",
+        "aliases",
+        "chemistry",
+        "rechargeable",
+        "unit_kind",
+        "nominal_voltage_v",
+        "stated_capacity_mah",
+        "stated_capacity_label",
+        "rated_capacity_mah",
+        "capacity_basis",
+        "typical_capacity_mah",
+        "minimum_capacity_mah",
+        "capacity_test_conditions",
+        "connector",
+        "configuration"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": [
+        "Successful direct HTML access resolves the reader failure for this review; the failure is retained here rather than hidden.",
+        "The family manual does not establish a complete product-specific capacity test or a labelled rated/minimum/typical capacity.",
+        "Internal topology and detailed pin polarity remain uncurated/null; nominal voltage is not calculated from 5S notation."
+      ]
+    }
+  ],
+  "shared_manual_review": {
+    "source_id": "hacker-lithium-batteries-manual-20201124-batch6",
+    "source_url": "https://www.hacker-motor.com/daten/anleitungen/akkus/Anleitung_Hacker_LiXx_2021-25112020.pdf",
+    "accessed_on": "2026-10-03",
+    "title": "Product description and Manual Hacker Motor LiPo Batteries",
+    "publisher": "Hacker Motor GmbH",
+    "actual_access": "The web reader returned Internal Error; direct HTTPS 200 opened the actual 873095-byte PDF, four pages, all extracted in memory.",
+    "document_version": "Version 24.11.2020; printed identifier Anleitung_Hacker_LiPo_2021-24112020.pdf",
+    "locator": "PDF page 2 English Section 1 Product description; page 3 English Section 5 Charging process; page 4 contact/version footer.",
+    "finding": "The English product-description section defines stated capacity using 1C discharge. The charging section corroborates rechargeable lithium batteries; contact and footer identify the publisher and actual printed version. Both selected product pages link this document.",
+    "limitations": [
+      "This is a family manual, not a numerical capacity test report for either article.",
+      "The URL filename differs from the printed document identifier; the printed version is retained without assuming a newer edition.",
+      "Generic use, charging and safety guidance is not applied as catalog operating policy."
+    ]
+  },
+  "structural_review": {
+    "method": "Read-only catalog_tool.py validate_data on this fragment wrapped with canonical metadata; no build or report-generation command was run.",
+    "validation_errors": [],
+    "fragment_model_records": 21,
+    "fragment_source_records": 22,
+    "unique_brand_model_keys": 21,
+    "capacity_property_check": "All 21 records have stated_capacity_mah populated and rated/minimum/typical null; this structural check is not independent source verification of the other 16 products.",
+    "reviewed_sample_count": 5,
+    "sample_share": 0.23809523809523808
+  },
+  "actionable_findings": [],
+  "scope_limits": [
+    "Actual independent source review covers exactly the five listed catalog IDs, plus their shared manual; the other 16 models are not source-audited by this record.",
+    "This review checks public product references and the recorded source scope. It does not establish received hardware, procurement, actual condition, interface compatibility or legal manufacturing factory.",
+    "No core mismatch or extraction-method error was found in this selected sample; therefore an error-triggered expansion to all 21 sources was not necessary.",
+    "The fragment, canonical catalog, application, documentation and scripts were not edited. Only this new audit record is written."
+  ]
+}

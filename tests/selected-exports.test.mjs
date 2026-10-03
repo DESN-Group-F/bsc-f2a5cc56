@@ -92,7 +92,7 @@ test("selected summary exports exactly the checked batteries, even outside the f
     const csv = parseCsv(summaryCsv(document));
     assert.deepEqual(rowIds(csv), selectedIds);
     assert.ok(csv.every(row => row.export_record_count === "2"));
-    assert.equal(csv.find(row => row.battery_id === "BAT-001").status, "On loan");
+    assert.equal(csv.find(row => row.battery_id === "BAT-001").status, "In use");
     assert.equal(csv.find(row => row.battery_id === "BAT-005").status, "In store");
 });
 

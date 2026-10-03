@@ -6,7 +6,7 @@ const sessionId = "11111111-1111-4111-8111-111111111111", requestId = "22222222-
 const loanId = "33333333-3333-4333-8333-333333333333", laterLoanId = "44444444-4444-4444-8444-444444444444";
 const read = (extra = {}, source = "simulated") => ({
     battery: { id: "BAT-001", name: "Scan test battery", version: 7, tagId: "00000001", ownerName: "Responsible Staff", loanId, borrowerName: "Current Staff", ...extra },
-    tagId: extra.tagId ?? "00000001", source, readAt: "2026-10-02T05:00:00.000Z",
+    tagId: Object.hasOwn(extra, "tagId") ? extra.tagId : "00000001", source, readAt: "2026-10-02T05:00:00.000Z",
 });
 const room = () => ({ id: "J18-DEMO-WORKSPACE", version: 4, name: "Demo workspace", isPlaceholder: true, buildingId: "J18" });
 function savedAttempt(status = "uncertain") {
@@ -22,7 +22,7 @@ test("an exact registered tag resolves its old unknown issues without clearing a
         { id: requestId, tagId: "000Tag", category: "unknown", message: "Not registered", acknowledged: false },
         { id: loanId, tagId: "000Tag", category: "unknown", message: "Earlier repeated unknown read", acknowledged: true },
         { id: laterLoanId, tagId: "000tag", category: "unknown", message: "Other exact identifier", acknowledged: false },
-        { id: sessionId, tagId: "000Tag", category: "state", message: "Already on loan", acknowledged: false },
+        { id: sessionId, tagId: "000Tag", category: "state", message: "Already in use", acknowledged: false },
     ];
     assert.equal(resolveRegisteredTagIssues(issues, "000Tag", { id: "REGISTERED", tagId: "OTHER" }), issues);
     const resolved = resolveRegisteredTagIssues(issues, "000Tag", { id: "REGISTERED", tagId: "000Tag" });
@@ -90,7 +90,7 @@ test("a scan movement cannot mix sources, repeat an asset or capture a tag/state
     assert.throws(() => scanMovementPayload("return", [], sessionId, room(), requestId), /between 1 and 100/);
     assert.throws(() => scanMovementPayload("return", Array.from({ length: 101 }, (_, index) => read({ id: `BAT-${index}` })), sessionId, room(), requestId), /between 1 and 100/);
     assert.throws(() => scanMovementPayload("return", [read({ loanId: null })], sessionId, room(), requestId), /No active loan/);
-    assert.throws(() => scanMovementPayload("checkout", [read()], sessionId, null, requestId), /Already on loan/);
+    assert.throws(() => scanMovementPayload("checkout", [read()], sessionId, null, requestId), /Already in use/);
     const changedTag = read();
     changedTag.battery.tagId = "OTHER-TAG";
     assert.match(scanReadProblem("return", changedTag.battery, changedTag.tagId), /registered tag changed/);
@@ -157,4 +157,39 @@ test("valid queued work is recovered independently of completed receipts, while 
     assert.equal(recoverScanSession(JSON.stringify(finished), "return"), null);
     const rejected = savedAttempt("rejected");
     assert.equal(recoverScanSession(JSON.stringify(rejected), "return").attempt.status, "rejected");
+});
+
+test("manual selection captures several untagged batteries with exact versions and loan IDs", () => {
+    const reads = [read({ tagId: null }, "selection"), read({ id: "BAT-002", tagId: null, loanId: laterLoanId }, "selection")];
+    const payload = scanMovementPayload("return", reads, sessionId, null, requestId);
+    assert.equal(payload.scan.source, "selection");
+    assert.deepEqual(payload.scan.bindings, [
+        { batteryId: "BAT-001", tagId: null, version: 7 }, { batteryId: "BAT-002", tagId: null, version: 7 },
+    ]);
+    assert.deepEqual(payload.expectedLoans, [{ batteryId: "BAT-001", loanId }, { batteryId: "BAT-002", loanId: laterLoanId }]);
+    reads[0].battery.tagId = "ADDED-AFTER-SELECTION";
+    reads[0].battery.version = 8;
+    assert.deepEqual(payload.scan.bindings[0], { batteryId: "BAT-001", tagId: null, version: 7 });
+    assert.match(scanReadProblem("return", reads[0].battery, reads[0].tagId), /registered tag changed/);
+    for (const source of ["manual", "simulated"]) assert.throws(() => scanMovementPayload("return", [read({ tagId: null }, source)], sessionId, null, requestId), /require registered tags/);
+    assert.throws(() => scanMovementPayload("return", [read({}, "manual"), read({ id: "BAT-002", tagId: null }, "selection")], sessionId, null, requestId), /separate batches/);
+});
+
+test("untagged selection recovery preserves an uncertain request and rejects changed source or nullable tag bindings", () => {
+    const reads = [read({ tagId: null }, "selection"), read({ id: "BAT-002", tagId: null, loanId: laterLoanId }, "selection")];
+    const saved = { sessionId, mode: "batch", room: null, queue: reads, completed: [], issues: [],
+        attempt: { payload: scanMovementPayload("return", reads, sessionId, null, requestId), reads, status: "uncertain", message: "The response was lost." } };
+    assert.deepEqual(recoverScanSession(JSON.stringify(saved), "return"), saved);
+    for (const source of ["manual", "simulated"]) {
+        const invalid = structuredClone(saved);
+        invalid.attempt.payload.scan.source = source;
+        for (const read of [...invalid.queue, ...invalid.attempt.reads]) read.source = source;
+        assert.equal(recoverScanSession(JSON.stringify(invalid), "return"), null);
+    }
+    const changed = structuredClone(saved);
+    changed.attempt.payload.scan.bindings[0].tagId = "NEW-TAG";
+    assert.equal(recoverScanSession(JSON.stringify(changed), "return"), null);
+    assert.equal(recoverScanSession(JSON.stringify(saved), "checkout"), null);
+    const priorSimulation = savedAttempt();
+    assert.equal(recoverScanSession(JSON.stringify(priorSimulation), "return").attempt.payload.scan.source, "simulated", "existing simulated recovery retains its original source");
 });

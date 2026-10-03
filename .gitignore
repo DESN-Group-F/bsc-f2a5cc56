@@ -46,3 +46,9 @@ next-env.d.ts
 /outputs/
 /work/
 *.tsbuildinfo
+
+# Generated reference research databases, archives and rendered outputs.
+/data/battery-catalog/*.sqlite3
+/data/battery-catalog/*.sqlite3-*
+/data/battery-catalog/outputs/
+/data/battery-catalog/releases/

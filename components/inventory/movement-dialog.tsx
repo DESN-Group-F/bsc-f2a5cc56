@@ -1,4 +1,5 @@
 "use client";
+import { isActiveBattery } from "@/lib/battery-lifecycle";
 import { useEffect, useRef, useState } from "react";
 import { ScanLine, Trash2, Radio, Plus, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,9 @@ import { RecordPicker } from "./record-picker";
 import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
 import { formatTime, reloadSessionPage } from "@/lib/client-utils";
 import { captureMovementAttempt, movementFailureStatus, movementStorageKey, recoverMovementAttempt, verifyMovementReceipt, type MovementAttempt } from "@/lib/movement-session";
+import type { TeachingGroupReference } from "@/lib/teaching-context";
 
-export type MovementDraft = { kind: "checkout" | "return"; ids: string[]; nonce: string };
+export type MovementDraft = { kind: "checkout" | "return"; ids: string[]; nonce: string; teachingGroup?: TeachingGroupReference; excludedIds?: string[] };
 export type WriteAction = (action: string, payload: unknown, extra?: Record<string, unknown>) => Promise<unknown>;
 type LatestReview = { inventory: InventorySnapshot; changes: { before: BatteryRecord; after: BatteryRecord | undefined }[] };
 
@@ -37,8 +39,10 @@ export function MovementDialog({ draft, data, onClose, write }: {
     const captured = useRef(attempt), running = useRef(false);
     const locked = busy || !!attempt || recovery.invalidSaved;
     const checkout = draft.kind === "checkout";
+    const groupReference = recovery.attempt?.payload.teachingGroup ?? draft.teachingGroup;
+    const group = inventory.teachingGroups?.find(group => group.id === groupReference?.id && group.version === groupReference.version);
     const queued = ids.map(id => reviewed[id]).filter(Boolean);
-    const allEligible = inventory.batteries.filter(b => checkout ? !b.loanId : !!b.loanId);
+    const allEligible = inventory.batteries.filter(b => (!groupReference || group?.batteryIds.includes(b.id)) && isActiveBattery(b) && (checkout ? !b.loanId : !!b.loanId));
     const eligible = allEligible.filter(b => checkout || allLoans || b.borrowerAccountId === data.user.id);
     const candidates = eligible.filter(b => !ids.includes(b.id));
 
@@ -77,7 +81,9 @@ export function MovementDialog({ draft, data, onClose, write }: {
         if (running.current || captured.current || recovery.invalidSaved) return;
         const battery = inventory.batteries.find(b => b.id === id);
         if (!battery) { setMessage("This battery is not registered in the inventory. No changes were made."); return; }
-        if (checkout && battery.loanId) { setMessage(`${battery.id} is already on loan to ${battery.borrowerName}.`); return; }
+        if (groupReference && !group?.batteryIds.includes(id)) { setMessage("This battery is outside the reviewed teaching group. Reopen the group to review its members."); return; }
+        if (!isActiveBattery(battery)) { setMessage(`${battery.id} has been retired or permanently removed.`); return; }
+        if (checkout && battery.loanId) { setMessage(`${battery.id} is already in use by ${battery.borrowerName}.`); return; }
         if (!checkout && !battery.loanId) { setMessage(`${battery.id} has no active loan to return.`); return; }
         if (ids.includes(id)) { setMessage(`${id} is already in this list.`); return; }
         addMany([battery]);
@@ -106,8 +112,8 @@ export function MovementDialog({ draft, data, onClose, write }: {
         } finally { running.current = false; setBusy(false); }
     }
     async function confirm() {
-        if (running.current || captured.current || recovery.invalidSaved) return;
-        try { await runAttempt(captureMovementAttempt(draft.kind, queued, data.user.id, data.dataset, crypto.randomUUID()), false); }
+        if (running.current || captured.current || recovery.invalidSaved || groupReference && !group) return;
+        try { await runAttempt(captureMovementAttempt(draft.kind, queued, data.user.id, data.dataset, crypto.randomUUID(), groupReference), false); }
         catch (error) { setMessage((error as Error).message); }
     }
     async function reviewLatest() {
@@ -126,10 +132,10 @@ export function MovementDialog({ draft, data, onClose, write }: {
     }
     function acceptLatest() {
         if (!latestReview || running.current || captured.current?.status !== "rejected" || !persist(null)) return;
-        const next = latestReview.changes.flatMap(({ after }) => after && (checkout ? !after.loanId : !!after.loanId) ? [after] : []);
+        const next = latestReview.changes.flatMap(({ after }) => after && isActiveBattery(after) && (checkout ? !after.loanId : !!after.loanId) ? [after] : []);
         setIds(next.map(b => b.id)); setReviewed(Object.fromEntries(next.map(b => [b.id, b])));
         setInventory(latestReview.inventory); setLatestReview(null);
-        setMessage(checkout ? "The latest reviewed batteries are now in your draft. Unavailable or on-loan batteries were removed. Review the updated list before confirming a new request." : "The reviewed latest loans are now in your draft. Batteries without an active loan were removed. Confirm only after reviewing the updated list.");
+        setMessage(checkout ? "The latest reviewed batteries are now in your draft. Unavailable or batteries in use were removed. Review the updated list before confirming a new request." : "The reviewed latest loans are now in your draft. Batteries without an active loan were removed. Confirm only after reviewing the updated list.");
         if (!next.length) setAdding(true);
     }
     function discardRejected() {
@@ -138,15 +144,18 @@ export function MovementDialog({ draft, data, onClose, write }: {
     }
     return <Dialog open onOpenChange={open => !open && close()}><DialogContent className="movement-dialog" showCloseButton={!locked} onEscapeKeyDown={event => { if (locked) event.preventDefault(); }} onInteractOutside={event => { if (locked) event.preventDefault(); }}><DialogHeader><DialogTitle>{checkout ? "Check out batteries" : "Return batteries"}</DialogTitle><DialogDescription>{checkout ? "Review your selected batteries and confirm with your own staff account." : "Review each selected loan before confirming. You may receive batteries checked out by another staff member."}</DialogDescription></DialogHeader>
         {checkout && <div className="detail-card"><div className="key-value"><span>Checked out to</span><strong>{data.user.displayName} · {data.user.username}</strong></div><p>Your signed-in staff account is responsible for this checkout. The asset owner stays the same.</p></div>}
+        {groupReference && <p className="group-context-banner">Teaching group: <strong>{group?.name ?? "Previously reviewed group"}</strong> · {queued.length} selected members. Review and confirm this operation; its group name and actual members are recorded in shared Activity.</p>}
+        {groupReference && !group && !attempt && <p className="form-error" role="alert">The reviewed teaching group changed or is unavailable. Cancel and reopen the group to review its current members before starting a new operation.</p>}
+        {!!draft.excludedIds?.length && <p className="field-hint">Members unavailable for this {checkout ? "checkout" : "return"}: {draft.excludedIds.join(", ")}. They will remain unchanged. Only the review list below will be processed.</p>}
         <div className="review-title"><strong>Review list</strong><span>{queued.length} {queued.length === 1 ? "battery" : "batteries"}</span></div>
         <div className="review-list"><Table><TableHeader><TableRow><TableHead>BATTERY</TableHead><TableHead>{checkout ? "RESPONSIBLE OWNER" : "CURRENT HOLDER"}</TableHead><TableHead><span className="sr-only">Remove</span></TableHead></TableRow></TableHeader><TableBody>{queued.map(b => <TableRow key={b.id}><TableCell><strong>{b.id}</strong><span className="cell-secondary">{b.name}</span></TableCell><TableCell>{checkout ? b.ownerName : <>{b.borrowerName}<span className="cell-secondary">Checked out {formatTime(b.checkedOutAt)}</span></>}</TableCell><TableCell><Button variant="ghost" size="icon" aria-label={`Remove ${b.id}`} disabled={locked} onClick={() => remove(b.id)}><Trash2 size={16}/></Button></TableCell></TableRow>)}</TableBody></Table>{!queued.length && <div className="queue-empty"><ScanLine size={26}/><p>Add registered batteries below to prepare this {checkout ? "checkout" : "return"}.</p></div>}</div>
         <Button variant="outline" className="justify-start" aria-expanded={adding} aria-controls="movement-add-more" onClick={() => setAdding(!adding)} disabled={locked}>{adding ? "− Hide additional batteries" : "+ Add more batteries"}</Button>
         {adding && <div id="movement-add-more" className="form-stack">
             <p className="time-note">Add already registered batteries to this review list. These optional inputs do not create new battery records.</p>
-            {!checkout && <><div className="flex flex-wrap gap-2" role="group" aria-label="Available return loans"><Button variant={allLoans ? "outline" : "default"} onClick={() => { setAllLoans(false); setPicked(""); }} disabled={locked}>My outstanding loans</Button><Button variant={allLoans ? "default" : "outline"} onClick={() => { setAllLoans(true); setPicked(""); }} disabled={locked}>All on-loan batteries</Button></div><p className="time-note">{allLoans ? "Any staff member may receive these loans. The original holder and your return action remain recorded." : "Showing active loans linked to your staff account. Explicitly selected batteries stay in the review list."}</p></>}
+            {!checkout && <><div className="flex flex-wrap gap-2" role="group" aria-label="Available return loans"><Button variant={allLoans ? "outline" : "default"} onClick={() => { setAllLoans(false); setPicked(""); }} disabled={locked}>My outstanding loans</Button><Button variant={allLoans ? "default" : "outline"} onClick={() => { setAllLoans(true); setPicked(""); }} disabled={locked}>All batteries in use</Button></div><p className="time-note">{allLoans ? "Any staff member may receive these loans. The original holder and your return action remain recorded." : "Showing active loans linked to your staff account. Explicitly selected batteries stay in the review list."}</p></>}
             <div className="reader-entry"><div className="form-field"><Label htmlFor="movement-battery">Search registered batteries</Label><RecordPicker id="movement-battery" options={candidates.map(b => ({ id: b.id, label: `${b.id} · ${b.name}${!checkout ? ` · ${b.borrowerName}` : ""}` }))} value={picked} onChange={id => { setPicked(id); if (id) add(id); }} placeholder="Search batteries…" disabled={locked} resetKey={searchReset} showClearFilters={false} onFilterChange={setBatterySearchActive}/></div><div className="form-field"><Label htmlFor="tag-input">Existing tag identifier (optional)</Label><div className="inline-input"><Input id="tag-input" value={tag} onChange={event => setTag(event.target.value)} onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); addTag(); } }} placeholder={data.dataset === "demo" ? "e.g. DEMO-TAG-001" : "Enter a registered tag identifier"} disabled={locked}/><Button variant="outline" onClick={addTag} disabled={!tag.trim() || locked}><Plus />Add</Button></div></div></div>
             <Button variant="ghost" className="self-start" onClick={clearFilters} disabled={locked || !batterySearchActive && !allLoans}>Clear filters</Button>
-            {!checkout && <><div className="review-title"><strong>{allLoans ? "Available on-loan batteries" : "Your outstanding batteries"}</strong><span>{candidates.length}</span></div>{candidates.length ? <div className="review-list"><Table><TableHeader><TableRow><TableHead>BATTERY</TableHead><TableHead>CURRENT HOLDER</TableHead><TableHead><span className="sr-only">Add</span></TableHead></TableRow></TableHeader><TableBody>{candidates.slice(0, 100).map(b => <TableRow key={b.id}><TableCell><strong>{b.id}</strong><span className="cell-secondary">{b.name}</span></TableCell><TableCell>{b.borrowerName}<span className="cell-secondary">Checked out {formatTime(b.checkedOutAt)}</span></TableCell><TableCell><Button variant="outline" size="sm" onClick={() => add(b.id)} disabled={locked || ids.length >= 100} aria-label={`Add ${b.id}`}><Plus size={16}/>Add</Button></TableCell></TableRow>)}</TableBody></Table></div> : <p className="time-note">{allLoans ? "No additional active loans are available." : "You have no additional outstanding loans. Choose All on-loan batteries to receive another holder's loan."}</p>}{candidates.length > 100 && <p className="time-note">The list shows the first 100 available batteries. Search above to find any other registered battery.</p>}</>}
+            {!checkout && <><div className="review-title"><strong>{allLoans ? "Available batteries in use" : "Your outstanding batteries"}</strong><span>{candidates.length}</span></div>{candidates.length ? <div className="review-list"><Table><TableHeader><TableRow><TableHead>BATTERY</TableHead><TableHead>CURRENT HOLDER</TableHead><TableHead><span className="sr-only">Add</span></TableHead></TableRow></TableHeader><TableBody>{candidates.slice(0, 100).map(b => <TableRow key={b.id}><TableCell><strong>{b.id}</strong><span className="cell-secondary">{b.name}</span></TableCell><TableCell>{b.borrowerName}<span className="cell-secondary">Checked out {formatTime(b.checkedOutAt)}</span></TableCell><TableCell><Button variant="outline" size="sm" onClick={() => add(b.id)} disabled={locked || ids.length >= 100} aria-label={`Add ${b.id}`}><Plus size={16}/>Add</Button></TableCell></TableRow>)}</TableBody></Table></div> : <p className="time-note">{allLoans ? "No additional active loans are available." : "You have no additional outstanding loans. Choose All batteries in use to receive another holder's loan."}</p>}{candidates.length > 100 && <p className="time-note">The list shows the first 100 available batteries. Search above to find any other registered battery.</p>}</>}
             <div className="connection-message"><Radio size={18}/><span><strong>RFID reader not connected.</strong> Entering a tag identifier manually looks up an existing record; it does not read an RFID device.</span></div>
             {data.dataset === "demo" && <Button variant="outline" className="demo-reading-button" onClick={() => { const sample = candidates.slice(0, Math.min(2, 100 - ids.length)); if (sample.length) addMany(sample); else setMessage("No additional eligible demo batteries."); }} disabled={locked || ids.length >= 100}>Add demo records</Button>}
         </div>}
@@ -154,6 +163,6 @@ export function MovementDialog({ draft, data, onClose, write }: {
         {message && <p role="status" className="form-message">{message}</p>}
         {attempt && <div className="detail-card" role="alert"><h3>{busy ? "Submitting captured request…" : attempt.status === "uncertain" ? "Movement result uncertain" : "Movement rejected"}</h3><p>{attempt.message}</p><p className="field-hint">Captured request: {attempt.payload.requestId}. Your reviewed batteries and loan IDs remain locked until this request is resolved. Recovery is available in this browser tab.</p>{attempt.status === "uncertain" ? <Button onClick={() => { const saved = captured.current; if (saved) void runAttempt(saved, true); }} disabled={busy}><RefreshCw size={16}/>Retry same request</Button> : <Button variant="outline" onClick={reviewLatest} disabled={busy}><RefreshCw size={16}/>Review current records</Button>}</div>}
         {latestReview && <div className="detail-card"><h3>Review changes before updating this draft</h3>{latestReview.changes.map(({ before, after }) => <div key={before.id} className="history-entry"><strong>{before.id}</strong><p>Previously reviewed: {before.loanId ? `${before.borrowerName} · ${formatTime(before.checkedOutAt)}` : "In store"}</p><p>Latest: {!after ? "Battery unavailable; it will be removed from the new draft." : after.loanId ? `${after.borrowerName} · ${formatTime(after.checkedOutAt)}${after.loanId !== before.loanId ? " · Different loan" : " · Same loan"}${checkout ? " · Will be removed from the checkout list" : ""}` : checkout ? "In store; available for a new checkout review." : "No active loan; this battery will be removed from the return list."}</p></div>)}<div className="flex flex-wrap gap-2"><Button variant="outline" onClick={acceptLatest} disabled={busy}>Accept reviewed changes</Button><Button variant="outline" onClick={discardRejected} disabled={busy}>Discard rejected request</Button></div><p className="field-hint">Accepting changes prepares a new draft for your confirmation. Discarding performs no movement.</p></div>}
-        <DialogFooter><Button variant="outline" onClick={close} disabled={locked}>Cancel</Button><Button onClick={confirm} disabled={locked || !queued.length || ids.length > 100}>{busy ? "Saving…" : `${checkout ? "Confirm checkout" : "Confirm return"} (${queued.length})`}</Button></DialogFooter>
+        <DialogFooter><Button variant="outline" onClick={close} disabled={locked}>Cancel</Button><Button onClick={confirm} disabled={locked || !queued.length || ids.length > 100 || !!groupReference && !group}>{busy ? "Saving…" : `${checkout ? "Confirm checkout" : "Confirm return"} (${queued.length})`}</Button></DialogFooter>
     </DialogContent></Dialog>;
 }

@@ -1,0 +1,122 @@
+{
+  "audit_id": "batch6-independent-general-jauch-root-review",
+  "reviewed_on": "2026-10-03",
+  "reviewer_role": "Organizer independently reopening researcher-selected manufacturer sources",
+  "status": "pass_core_with_inequality_and_metadata_limits",
+  "reviewed_fragment_names": [
+    "batch6-general-packs-jauch.json"
+  ],
+  "reviewed_fragment_sha256": "32c773f8e8462f6a83f23bf3faddcd265d6732145c39d33c9163444f24ac6395",
+  "independently_reviewed_catalog_ids": [
+    "jauch-li18650jls-hb-2s1p-250481",
+    "rrc-rrc2040-2-1005590",
+    "rrc-rrc2054-1005680",
+    "rrc-rrc2130-110088",
+    "inspired-energy-nf3040hd34-standard-assembly",
+    "inspired-energy-nh2057hd34-standard-assembly"
+  ],
+  "source_reviews": [
+    {
+      "catalog_id": "jauch-li18650jls-hb-2s1p-250481",
+      "source_ids": [
+        "jauch-lithium-ion-family-page-batch6",
+        "jauch-li18650jls-hb-2s1p-250481-datasheet"
+      ],
+      "source_urls": [
+        "https://www.jauch.com/en-US/products/battery_technology/getPrm/batteries/Lithium%20Ion%20Batteries/",
+        "https://www.jauch.com/downloadfile/61f114f59a2ba243e32fa0846647a765b/3350%20mAh,%20LI18650JLS%20HB%202s1p,%20Mat.%20250481.pdf"
+      ],
+      "actual_access": "Family HTML/web reader and PDF in-memory HTTPS200373618bytes,2pages.",
+      "locator": "Jauch part250481; official family exact row and linked PDF version1.1 12/2021, pages1-2.",
+      "finding": "Nominal7.2V; typical3350 and minimum3250mAh explicitly labelled. Rechargeable lithium-ion pack. Literal capacity condition (0.2C,2.50V discharge) retained; numeric S/P stays null because a suffix is not treated as an independent topology definition.",
+      "decision": "pass_core_with_disclosed_limits"
+    },
+    {
+      "catalog_id": "rrc-rrc2040-2-1005590",
+      "source_ids": [
+        "rrc-rrc2040-2-product-page-batch6",
+        "rrc-rrc2040-2-1005590-datasheet-batch6"
+      ],
+      "source_urls": [
+        "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2040-2",
+        "https://www.rrc-ps.com/fileadmin/Dokumente/Data-Sheets/DS_RRC2040-2.pdf"
+      ],
+      "actual_access": "Official page web reader and PDF in-memory HTTPS200962613bytes,7pages.",
+      "locator": "Exact page and linked datasheet DS_RRC2040-2_L, PDF page4 Characteristics, P/N1005590.",
+      "finding": "Li-ion rechargeable standard pack; nominal10.80V; nominal capacity >=6.80Ah. Numeric6800 represents a declared lower bound. Separate original stated label preserves the >= symbol; not relabelled Minimum or Typical. Explicit page3S2P is supported.",
+      "decision": "pass_core_with_disclosed_limits"
+    },
+    {
+      "catalog_id": "rrc-rrc2054-1005680",
+      "source_ids": [
+        "rrc-rrc2054-product-page-batch6",
+        "rrc-rrc2054-1005680-datasheet-batch6"
+      ],
+      "source_urls": [
+        "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2054",
+        "https://www.rrc-ps.com/fileadmin/Dokumente/Data-Sheets/DS_RRC2054.pdf"
+      ],
+      "actual_access": "Official page web reader and PDF in-memory HTTPS2001284813bytes,7pages.",
+      "locator": "Exact page and linked datasheet DS_RRC2054_L.docx, PDF page4 Characteristics, P/N1005680.",
+      "finding": "Li-ion rechargeable standard pack; nominal14.40V; nominal capacity >=3.40Ah. Numeric3400 is a declared lower bound with original label retained; explicit4S1P is supported. The limit is not an exact measured capacity.",
+      "decision": "pass_core_with_disclosed_limits"
+    },
+    {
+      "catalog_id": "rrc-rrc2130-110088",
+      "source_ids": [
+        "rrc-rrc2130-product-page-batch6",
+        "rrc-rrc2130-110088-datasheet-batch6"
+      ],
+      "source_urls": [
+        "https://www.rrc-ps.com/en/battery-packs/standard-battery-packs/products/RRC2130",
+        "https://www.rrc-ps.com/fileadmin/Dokumente/RRC2130/Gen2/DS_RRC2130_F.pdf"
+      ],
+      "actual_access": "Official page web reader and PDF in-memory HTTPS200960548bytes,6pages.",
+      "locator": "Exact page and linked PDF page4 Characteristics, P/N110088; actual footer DS_RRC2130_G.DOCX.",
+      "finding": "Li-ion rechargeable finished flatpack; nominal7.20V; nominal capacity4.17Ah; explicit2S1P. The filename endsF but actual body versionG is retained. No connector/custom variant adds another model.",
+      "decision": "pass_core_with_disclosed_limits"
+    },
+    {
+      "catalog_id": "inspired-energy-nf3040hd34-standard-assembly",
+      "source_ids": [
+        "inspired-energy-nf3040hd34-datasheet-batch6",
+        "inspired-energy-nf3040hd34-product-page-batch6"
+      ],
+      "source_urls": [
+        "https://inspired-energy.com/images/product_data_sheets/NF3040HD34_spec_v2.0.pdf",
+        "https://inspired-energy.com/new-products/details/3/262-nf3040hd34"
+      ],
+      "actual_access": "Official page web reader and PDF in-memory HTTPS200581304bytes,24pages; exact overview/revision/core sections read.",
+      "locator": "Exact product page; DSNF3040HD34 Rev2.0 issue10/7/22 PDF pages1,4,5, section2.2 and3.1.1/3.1.2.",
+      "finding": "Inspired Energy rechargeable smart lithium-ion pack; nominal10.8V, explicit3S2P. Overview6.8Ah Typical remains6800; initial Rated capacity >=6460mAh remains rated6460 with literal threshold label and protocol (CV12.6V +/-50mV,3000mA limit,1360mA discharge to7.5V@25C within1hour).",
+      "decision": "pass_core_with_disclosed_limits"
+    },
+    {
+      "catalog_id": "inspired-energy-nh2057hd34-standard-assembly",
+      "source_ids": [
+        "inspired-energy-nh2057hd34-datasheet-batch6",
+        "inspired-energy-nh2057hd34-product-page-batch6"
+      ],
+      "source_urls": [
+        "https://inspired-energy.com/images/product_data_sheets/NH2057HD34_spec_v2.0.pdf",
+        "https://inspired-energy.com/products/details/3/85-nh2057hd34"
+      ],
+      "actual_access": "Official page web reader and PDF in-memory HTTPS200653997bytes,24pages; exact overview/revision/core sections read.",
+      "locator": "Exact page; DSNH2057HD34 Rev2.0 PDF pages1,4,5,6, section2.2,3.1.1/3.1.2 and revision history.",
+      "finding": "Inspired Energy rechargeable smart lithium-ion pack; nominal7.2V, explicit2S4P. Overview Typical13.6Ah and Minimum12.8Ah are pack values (13600/12800mAh). Initial Rated capacity >=12920mAh remains separate, with CV8.4V +/-50mV,4A limit,2720mA discharge to5.5V@25C within1hour. Header issue2/17/23 versus revision-history2.0 row2/17/22 is a real non-core metadata conflict, disclosed rather than silently corrected.",
+      "decision": "pass_core_with_disclosed_limits"
+    }
+  ],
+  "findings": [
+    "6 of18 full-core independent samples span Jauch, RRC and Inspired Energy, with both smart hardpack and flatpack references.",
+    "Every sampled brand/exact model, chemical class, nominal voltage, cell/pack and rechargeable classification, capacity kind and suggested editable name agrees with its selected source.",
+    "Inequality thresholds are retained in original stated labels and explanatory notes/test conditions. They are not physical measurement results.",
+    "Numeric S/P is supported only by explicit definitions; nominal voltage or model suffix alone is not used to calculate a configuration."
+  ],
+  "limitations": [
+    "Source versions are the actual retrieved editions, not a globally latest-document assertion.",
+    "Jauch capacity-test voltage is retained literally; this review does not interpret it as an operating pack cutoff or charger setting.",
+    "Source statements do not establish school stock, compatibility approval or the identity of a received battery.",
+    "No underlying cell factory is inferred from a pack-brand page."
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "audit_id": "batch4-independent-prototype-review",
+  "reviewed_on": "2026-10-03",
+  "reviewer_role": "Organizer independently reopening researcher-selected sources",
+  "status": "pass_with_optional_field_limits",
+  "reviewed_fragment_names": [
+    "batch4-prototype-eemb.json",
+    "batch4-prototype-jauch.json"
+  ],
+  "independently_reviewed_catalog_ids": [
+    "eemb-lp452235-bare-cell-solder-tab",
+    "eemb-lp652438-bare-cell-solder-tab",
+    "jauch-lp851719ju-237924",
+    "jauch-lp504783ju-246521"
+  ],
+  "source_reviews": [
+    {
+      "source_ids": [
+        "eemb-lp452235-bare-cell-page",
+        "eemb-lp452235-specification",
+        "eemb-lp652438-bare-cell-page",
+        "eemb-lp652438-specification"
+      ],
+      "actual_access": "Both official pages opened with web reader, both linked PDFs HTTPS200 (500763 and424430 bytes), PDF pages1/3/6 actually read.",
+      "findings": [
+        "LP452235 nominal280/minimum250mAh; webpage typical280; nominal3.7V; rechargeable polymer Li-ion bare cell with solder tabs. DocumentH0804 prints2019-6-25.",
+        "LP652438 nominal540/minimum520mAh; webpage typical540; nominal3.7V; rechargeable polymer Li-ion bare cell with solder tabs. DocumentH1229 prints2019-12-14.",
+        "2.2 capacity rows state0.2C5A; source general test conditions retained with their scope, and unspecified capacity charge/rest sequence stays unspecified.",
+        "LP452235 page dimension field contains the model text; optional dimensions remain null. Page and PDF length conventions are not resolved into a guessed scalar."
+      ]
+    },
+    {
+      "source_ids": [
+        "jauch-lp851719ju-237924-datasheet",
+        "jauch-lp504783ju-246521-datasheet"
+      ],
+      "actual_access": "Both PDFs HTTPS200 (579499 and579471 bytes), both pages of each actually read.",
+      "findings": [
+        "Exact model/partLP851719JU237924: nominal3.7V, typical200/minimum180mAh at0.2C to3.0V; printedRev1.2 December2024.",
+        "Exact model/partLP504783JU246521: nominal3.7V, typical2100/minimum2050mAh at0.2C to3.0V; printedRev1.2 December2024.",
+        "Both explicitly rechargeable single-cell polymer packs with PCM; rated capacity and unknown connector stay null. The display names and exact-model alias policy match curated identity.",
+        "LP851719JU manufacturer remains null because the referenced PSDS annex does not establish its applicability; publisher letterhead alone is not asserted as factory identity."
+      ]
+    }
+  ],
+  "organizer_candidate_exclusions": [
+    "LP333437JU andLP802036JU did not explicitly establish single-cell assembly in selected body text; replaced.",
+    "LP503030JU current PDF minimum430 differs fromJU PSDS annex minimum450; excluded and replaced."
+  ],
+  "limitations": [
+    "Source sample is distinct from schema validation; optional geometry and manufacturing identity are conservatively unknown.",
+    "Root independent numeric interpretation is limited to the four named pouches. All25 standalone cells were independently reviewed by a different researcher in batch4-audit-standalone-review.json.",
+    "No school procurement or asset-label coverage is established."
+  ]
+}

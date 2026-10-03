@@ -1,0 +1,388 @@
+{
+  "audit_id": "batch2-lifepo4-independent-source-review",
+  "record_type": "source_audit",
+  "reviewed_on": "2026-10-02",
+  "recorded_at_utc": "2026-10-02T13:32:37Z",
+  "reviewed_fragment": "research/batch2-lifepo4-cells.json",
+  "scope": "Independent source verification of four exact cell models, their source-labelled capacity qualification, nominal voltage, chemistry, aliases and stated energy. This file is an audit record, not another product fragment.",
+  "verdict": "pass_with_recorded_limitations",
+  "counts": {
+    "sources_reviewed": 4,
+    "models_reviewed": 4,
+    "verified_core_models": 3,
+    "partial_models": 1,
+    "unresolved_numeric_discrepancies": 0
+  },
+  "source_reviews": [
+    {
+      "source_id": "lithiumwerks-anr26650m1b-sf00008-rev2",
+      "url": "https://lithiumwerks.com/wp-content/uploads/2022/08/26650-Power-Cell-080322.pdf",
+      "title": "26650 Lithium Ion Power Cell: Specs for ANR26650M1B",
+      "publisher": "Lithium Werks",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "SF00008 rev 2; Aug 2022",
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_methods": [
+        {
+          "method": "web_open",
+          "result": "timed_out"
+        },
+        {
+          "method": "direct_https_get",
+          "result": "opened",
+          "http_status": 200,
+          "content_type": "application/pdf",
+          "extraction": "pypdf in-memory extraction of both PDF pages"
+        }
+      ],
+      "applicable_variants_reviewed": [
+        "ANR26650M1B; part 300832-001"
+      ],
+      "source_fields_checked": [
+        "title",
+        "publisher",
+        "source_type",
+        "document_version",
+        "applicable_variants",
+        "accessed_on",
+        "access_status"
+      ],
+      "checked_model_fields": [
+        "/brand",
+        "/model",
+        "/aliases",
+        "/chemistry",
+        "/rechargeable",
+        "/unit_kind",
+        "/form_factor",
+        "/capacity_basis",
+        "/rated_capacity_mah",
+        "/typical_capacity_mah",
+        "/minimum_capacity_mah",
+        "/capacity_test_conditions",
+        "/nominal_voltage_v",
+        "/energy_wh",
+        "/energy_basis"
+      ],
+      "locators": {
+        "identity_and_ratings": "PDF page 2: Specs for ANR26650M1B; Nominal Ratings; Charging; part number",
+        "chemistry": "PDF page 1: introductory lithium iron phosphate description"
+      },
+      "observed_qualified_values": {
+        "source_model": "ANR26650M1B",
+        "same_product_part_number": "300832-001",
+        "brand": "Lithium Werks",
+        "chemistry": "lithium_iron_phosphate",
+        "rechargeable": true,
+        "unit_kind": "cell",
+        "form_factor_code": "26650",
+        "nominal_voltage_v": 3.3,
+        "rated_capacity_mah": null,
+        "capacity_basis": "not_stated",
+        "typical_capacity_mah": 2600,
+        "minimum_capacity_mah": 2500,
+        "capacity_qualification": "Typical (Min), at 23 degrees Celsius",
+        "energy_wh": 8.58,
+        "energy_basis": "manufacturer_nominal",
+        "charging_voltage_excluded_from_nominal_v": 3.6
+      },
+      "identity_alias_result": "Exact model and any published part number refer to the same product; no alias is counted as an additional model.",
+      "current_verification_status": "verified_core",
+      "result": "matches_selected_core_values",
+      "limitations": [
+        "Capacity conditions identify 23 degrees Celsius, but no separate capacity-current/cutoff protocol was confirmed."
+      ],
+      "version_check": "The printed revision is SF00008 rev 2 and Aug 2022. The separate 2021 copyright notice is not the document publication date."
+    },
+    {
+      "source_id": "lithiumwerks-apr18650m1b-page",
+      "url": "https://lithiumwerks.com/products/lithium-ion-18650-cells/",
+      "title": "Cells - APR18650m1B",
+      "publisher": "Lithium Werks",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_methods": [
+        {
+          "method": "web_open",
+          "result": "opened",
+          "extraction": "manufacturer HTML product page text"
+        }
+      ],
+      "applicable_variants_reviewed": [
+        "APR18650m1B; part 300949-001"
+      ],
+      "source_fields_checked": [
+        "title",
+        "publisher",
+        "source_type",
+        "document_version",
+        "applicable_variants",
+        "accessed_on",
+        "access_status"
+      ],
+      "checked_model_fields": [
+        "/brand",
+        "/model",
+        "/aliases",
+        "/chemistry",
+        "/rechargeable",
+        "/unit_kind",
+        "/form_factor",
+        "/capacity_basis",
+        "/rated_capacity_mah",
+        "/typical_capacity_mah",
+        "/minimum_capacity_mah",
+        "/capacity_test_conditions",
+        "/nominal_voltage_v",
+        "/energy_wh",
+        "/energy_basis"
+      ],
+      "locators": {
+        "identity_and_ratings": "Specifications: Nominal Ratings, Charging and manufacturer part number",
+        "chemistry": "Product heading and introductory LiFePO4 description"
+      },
+      "observed_qualified_values": {
+        "source_model": "APR18650m1B",
+        "same_product_part_number": "300949-001",
+        "brand": "Lithium Werks",
+        "chemistry": "lithium_iron_phosphate",
+        "rechargeable": true,
+        "unit_kind": "cell",
+        "form_factor_code": "18650",
+        "nominal_voltage_v": 3.3,
+        "rated_capacity_mah": null,
+        "capacity_basis": "not_stated",
+        "typical_capacity_mah": 1200,
+        "minimum_capacity_mah": 1150,
+        "capacity_qualification": "Typical (Min), at 23 degrees Celsius",
+        "energy_wh": 3.96,
+        "energy_basis": "manufacturer_nominal",
+        "charging_voltage_excluded_from_nominal_v": 3.6
+      },
+      "identity_alias_result": "Exact model and any published part number refer to the same product; no alias is counted as an additional model.",
+      "current_verification_status": "verified_core",
+      "result": "matches_selected_core_values",
+      "limitations": [
+        "The page supplies the 23 degrees Celsius capacity condition but no separate current/cutoff protocol was confirmed; no page revision was stated."
+      ]
+    },
+    {
+      "source_id": "lithiumwerks-aer18650m2a2-page",
+      "url": "https://lithiumwerks.com/products/lithium-ion-lfp-18650-energy-cell/",
+      "title": "Lithium Ion 18650 Energy Cell: AER18650m2A2",
+      "publisher": "Lithium Werks",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_methods": [
+        {
+          "method": "web_open",
+          "result": "opened",
+          "extraction": "manufacturer HTML product page text"
+        }
+      ],
+      "applicable_variants_reviewed": [
+        "AER18650m2A2; part 320749-001"
+      ],
+      "source_fields_checked": [
+        "title",
+        "publisher",
+        "source_type",
+        "document_version",
+        "applicable_variants",
+        "accessed_on",
+        "access_status"
+      ],
+      "checked_model_fields": [
+        "/brand",
+        "/model",
+        "/aliases",
+        "/chemistry",
+        "/rechargeable",
+        "/unit_kind",
+        "/form_factor",
+        "/capacity_basis",
+        "/rated_capacity_mah",
+        "/typical_capacity_mah",
+        "/minimum_capacity_mah",
+        "/capacity_test_conditions",
+        "/nominal_voltage_v",
+        "/energy_wh",
+        "/energy_basis"
+      ],
+      "locators": {
+        "identity_and_ratings": "Specifications at 23 degrees Celsius unless otherwise noted; Nominal Ratings; Charging; manufacturer part number",
+        "chemistry": "Product heading and introductory LFP / LiFePO4 description"
+      },
+      "observed_qualified_values": {
+        "source_model": "AER18650m2A2",
+        "same_product_part_number": "320749-001",
+        "brand": "Lithium Werks",
+        "chemistry": "lithium_iron_phosphate",
+        "rechargeable": true,
+        "unit_kind": "cell",
+        "form_factor_code": "18650",
+        "nominal_voltage_v": 3.2,
+        "rated_capacity_mah": null,
+        "capacity_basis": "not_stated",
+        "typical_capacity_mah": 1800,
+        "minimum_capacity_mah": 1700,
+        "capacity_qualification": "Typical (Min), at C/5; specifications at 23 degrees Celsius unless otherwise stated",
+        "energy_wh": 5.76,
+        "energy_basis": "manufacturer_nominal",
+        "charging_voltage_excluded_from_nominal_v": 3.6
+      },
+      "identity_alias_result": "Exact model and any published part number refer to the same product; no alias is counted as an additional model.",
+      "current_verification_status": "verified_core",
+      "result": "matches_selected_core_values",
+      "limitations": [
+        "C/5 and 23 degrees Celsius are stated, but the detailed capacity cutoff protocol was not independently verified; no page revision was stated."
+      ]
+    },
+    {
+      "source_id": "eve-lf105-official-mall-page",
+      "url": "https://www.evemall.eu/power-battery/prismatic-lfp-cell/lf105",
+      "title": "LF105 - Prismatic LiFePO4 Battery Cells - EVE Energy",
+      "publisher": "EVE Energy / EVEMALL",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "access_status": "opened",
+      "access_methods": [
+        {
+          "method": "web_open",
+          "result": "timed_out"
+        },
+        {
+          "method": "direct_https_get",
+          "result": "opened",
+          "http_status": 200,
+          "content_type": "text/html",
+          "extraction": "UTF-8 HTML decoded and parsed with standard-library HTMLParser; raw product-feature HTML inspected"
+        }
+      ],
+      "applicable_variants_reviewed": [
+        "LF105 base prismatic cell; electrical specifications only; threaded-hole terminal version unspecified"
+      ],
+      "source_fields_checked": [
+        "title",
+        "publisher",
+        "source_type",
+        "document_version",
+        "applicable_variants",
+        "accessed_on",
+        "access_status"
+      ],
+      "checked_model_fields": [
+        "/brand",
+        "/model",
+        "/aliases",
+        "/chemistry",
+        "/rechargeable",
+        "/unit_kind",
+        "/form_factor",
+        "/capacity_basis",
+        "/rated_capacity_mah",
+        "/typical_capacity_mah",
+        "/minimum_capacity_mah",
+        "/capacity_test_conditions",
+        "/nominal_voltage_v",
+        "/energy_wh",
+        "/energy_basis",
+        "/variant_key",
+        "/variant_description",
+        "/connector",
+        "/verification_status"
+      ],
+      "locators": {
+        "identity_and_ratings": "Specifications: Model Number, Nominal Voltage and Nominal Capacity",
+        "chemistry": "LF105 product title and Prismatic LFP Cell category"
+      },
+      "observed_qualified_values": {
+        "source_model": "LF105",
+        "same_product_part_number": null,
+        "brand": "EVE",
+        "chemistry": "lithium_iron_phosphate",
+        "rechargeable": true,
+        "unit_kind": "cell",
+        "form_factor_code": "prismatic",
+        "nominal_voltage_v": 3.2,
+        "rated_capacity_mah": 105000,
+        "capacity_basis": "nominal",
+        "typical_capacity_mah": null,
+        "minimum_capacity_mah": null,
+        "capacity_qualification": "Nominal Capacity: 105 Ah",
+        "energy_wh": null,
+        "energy_basis": null,
+        "standard_charge_discharge_ratio": "0.5C/0.5C; this is not presented as a complete nominal-capacity test protocol"
+      },
+      "identity_alias_result": "Exact model and any published part number refer to the same product; no alias is counted as an additional model.",
+      "current_verification_status": "partial",
+      "result": "electrical_core_matches_terminal_variant_unresolved",
+      "limitations": [
+        "No separate terminal-version SKU, hole size or manufacturer energy rating was selected. Nominal capacity conditions remain null because the charge/discharge ratio is not a full test protocol."
+      ],
+      "threaded_hole_finding": {
+        "locator": "Product Introduction > pbil-lis > pbil-lis-cont > pbil-lis-cont-tit; following pbil-lis-cont-word paragraph",
+        "heading_text": "Different Versions of LF105 Threaded Hole",
+        "body_paraphrase": "The product card directs readers to online customer service for more information.",
+        "is_lf105_product_feature": true,
+        "is_unrelated_navigation": false,
+        "exposed_selection_list_observed": false,
+        "variant_skus_identified_in_extracted_text": [],
+        "thread_dimensions_identified_in_extracted_text": [],
+        "unreviewed_image_urls": [
+          "https://resource.evemall.com/Public/Uploads/uploadfile2/images/20260609/05-178098311131.png",
+          "https://resource.evemall.com/Public/Uploads/uploadfile2/images/20260624/05-178227019176.jpg"
+        ],
+        "image_pixels_reviewed": false,
+        "interpretation": "The base product page advertises multiple threaded-hole versions. It does not identify the selected version in the extracted text, so neither an M4 nor an M6 SKU is asserted.",
+        "current_catalog_handling": {
+          "catalog_id": "eve-lf105-terminal-unspecified",
+          "variant_key": "terminal-variant-unspecified",
+          "connector": null,
+          "verification_status": "partial",
+          "verified_new_target_eligible": false
+        }
+      }
+    }
+  ],
+  "corrections": [
+    {
+      "model": "ANR26650M1B",
+      "field": "/field_evidence/~1chemistry/0/locator",
+      "finding": "The explicit lithium iron phosphate description is on PDF page 1. The initial page 2 chemistry locator was inaccurate.",
+      "status": "resolved_in_reviewed_fragment",
+      "observed_current_locator": "PDF page 1: introductory description explicitly names lithium iron phosphate chemistry (LiFePO4)"
+    },
+    {
+      "model": "LF105",
+      "fields": [
+        "/catalog_id",
+        "/variant_key",
+        "/variant_description",
+        "/verification_status",
+        "/conflicts",
+        "/source_applicability"
+      ],
+      "finding": "The LF105 product introduction advertises multiple threaded-hole versions without an identified selected hardware version in the extracted text. A standard terminal variant would overstate source applicability.",
+      "status": "resolved_by_explicit_partial_reference",
+      "observed_current_catalog_id": "eve-lf105-terminal-unspecified",
+      "observed_current_variant_key": "terminal-variant-unspecified",
+      "observed_current_verification_status": "partial",
+      "observed_current_connector": null,
+      "verified_new_target_eligible": false
+    }
+  ],
+  "remaining_actionable_issues": [],
+  "limitations": [
+    "No legal factory identity, connector dimensions, weight, maintenance interval or school inventory condition was independently verified in this review.",
+    "A manufacturer-labelled nominal energy was retained only when explicitly printed. No capacity graph or voltage-times-capacity calculation was substituted for a source rating.",
+    "The LF105 HTML was read, but its linked feature-image pixels were not examined. Image-only terminal dimensions or identifiers remain unverified.",
+    "The source pages were accessed on the recorded date; no claim is made that they are the newest published revisions."
+  ]
+}

@@ -1,0 +1,2025 @@
+{
+  "sources": [
+    {
+      "source_id": "eemb-lithium-polymer-standard-page-batch5",
+      "url": "https://www.eemb.com/products-55",
+      "title": "Lithium Polymer Standard Type Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP605590; LP Lithium Polymer-Standard cell",
+        "LP404261; LP Lithium Polymer-Standard cell",
+        "LP653042; LP Lithium Polymer-Standard cell",
+        "LP583759; LP Lithium Polymer-Standard cell",
+        "LP604374; LP Lithium Polymer-Standard cell",
+        "LP604040; LP Lithium Polymer-Standard cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official page reopened in Australia/Sydney on 2026-10-03. Main Features explicitly describes foil-type polymer laminate cases and nominal 3.7 V. Exact selected models occur in the standard-type table; no custom assembled pack is selected."
+    },
+    {
+      "source_id": "eemb-lp605590-bare-cell-page",
+      "url": "https://www.eemb.com/product-224",
+      "title": "LP605590-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP605590 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official model page actually opened through web and direct HTTPS 200. Product Detail, Description and Other Information were individually read and cross-checked with its exact linked PDF."
+    },
+    {
+      "source_id": "eemb-lp605590-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230902/a2037c141226d6dad3e636a78caee61b.pdf",
+      "title": "EEMB LP605590 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H1885; 2021-05-17",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP605590 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the official model page. Nine-page PDF actually fetched by HTTPS 200 and read in memory with pypdf. Page 1 identity/document string; page 3 Scope and core characteristics; page 4 distinguishes body length L from overall L1; page 6 general test note. No latest-version claim."
+    },
+    {
+      "source_id": "eemb-lp404261-bare-cell-page",
+      "url": "https://www.eemb.com/product-219",
+      "title": "LP404261-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP404261 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official model page actually opened through web and direct HTTPS 200. Product Detail, Description and Other Information were individually read and cross-checked with its exact linked PDF."
+    },
+    {
+      "source_id": "eemb-lp404261-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230315/3397eec773a12fcf349d60e21234bde2.pdf",
+      "title": "EEMB LP404261 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H2386; 2023-01-30",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP404261 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the official model page. Nine-page PDF actually fetched by HTTPS 200 and read in memory with pypdf. Page 1 identity/document string; page 3 Scope and core characteristics; page 4 distinguishes body length L from overall L1; page 6 general test note. No latest-version claim."
+    },
+    {
+      "source_id": "eemb-lp653042-bare-cell-page",
+      "url": "https://www.eemb.com/product-216",
+      "title": "LP653042-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP653042 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official model page actually opened through web and direct HTTPS 200. Product Detail, Description and Other Information were individually read and cross-checked with its exact linked PDF."
+    },
+    {
+      "source_id": "eemb-lp653042-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230315/28f8e7468414d2b421c8660279f01e45.pdf",
+      "title": "EEMB LP653042 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H0516; 2019-4-30",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP653042 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the official model page. Nine-page PDF actually fetched by HTTPS 200 and read in memory with pypdf. Page 1 identity/document string; page 3 Scope and core characteristics; page 4 distinguishes body length L from overall L1; page 6 general test note. No latest-version claim."
+    },
+    {
+      "source_id": "eemb-lp583759-bare-cell-page",
+      "url": "https://www.eemb.com/product-213",
+      "title": "LP583759-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP583759 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official model page actually opened through web and direct HTTPS 200. Product Detail, Description and Other Information were individually read and cross-checked with its exact linked PDF."
+    },
+    {
+      "source_id": "eemb-lp583759-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230315/d3b3ab9580e7533727c558c2f541fccc.pdf",
+      "title": "EEMB LP583759 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H0927; 2019-8-50",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP583759 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the official model page. Nine-page PDF actually fetched by HTTPS 200 and read in memory with pypdf. Page 1 identity/document string; page 3 Scope and core characteristics; page 4 distinguishes body length L from overall L1; page 6 general test note. No latest-version claim. Printed date 2019-8-50 is invalid and retained verbatim as a document string, not a parsed publication date."
+    },
+    {
+      "source_id": "eemb-lp604374-bare-cell-page",
+      "url": "https://www.eemb.com/product-212",
+      "title": "LP604374-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP604374 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official model page actually opened through web and direct HTTPS 200. Product Detail, Description and Other Information were individually read and cross-checked with its exact linked PDF."
+    },
+    {
+      "source_id": "eemb-lp604374-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230315/f6822c09a378dfba48beadd9b1460494.pdf",
+      "title": "EEMB LP604374 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H2287; 2022-10-17",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP604374 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the official model page. Nine-page PDF actually fetched by HTTPS 200 and read in memory with pypdf. Page 1 identity/document string; page 3 Scope and core characteristics; page 4 distinguishes body length L from overall L1; page 6 general test note. No latest-version claim."
+    },
+    {
+      "source_id": "eemb-lp604040-bare-cell-page",
+      "url": "https://www.eemb.com/product-211",
+      "title": "LP604040-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP604040 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official model page actually opened through web and direct HTTPS 200. Product Detail, Description and Other Information were individually read and cross-checked with its exact linked PDF."
+    },
+    {
+      "source_id": "eemb-lp604040-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230315/a1b6c020d470f061b5327d86fd752e8d.pdf",
+      "title": "EEMB LP604040 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H1248; 2019-12-18",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP604040 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the official model page. Nine-page PDF actually fetched by HTTPS 200 and read in memory with pypdf. Page 1 identity/document string; page 3 Scope and core characteristics; page 4 distinguishes body length L from overall L1; page 6 general test note. No latest-version claim."
+    },
+    {
+      "source_id": "sparkfun-lipo-pouch-support-batch5",
+      "url": "https://community.sparkfun.com/t/type-of-the-battery/37728",
+      "title": "Type of the battery",
+      "publisher": "SparkFun Community; official technical-support response by TS-Chris",
+      "source_type": "secondary_distributor",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PRT-13851 protected JST-PH assembly",
+        "PRT-13854 protected JST-PH assembly",
+        "PRT-13855 protected JST-PH assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actually reopened official support topic. Original question identifies PRT-13851; TS-Chris response of 2019-09-13 classifies SparkFun carried LiPo batteries as pouch cells except cylindrical 18650 models. Response of 2019-09-17 says SparkFun carries batteries rather than making them. This is dated vendor-family classification evidence, not a factory claim."
+    },
+    {
+      "source_id": "sparkfun-single-cell-lipo-guide-batch5",
+      "url": "https://docs.sparkfun.com/SparkFun_Thing_Plus_RA6M5/print_view/",
+      "title": "SparkFun RA6M5 Thing Plus Hookup Guide - Introduction",
+      "publisher": "SparkFun Electronics",
+      "source_type": "secondary_distributor",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PRT-13851 protected JST-PH assembly",
+        "PRT-13855 protected JST-PH assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official documentation opened. Required Materials > Li-Po Battery calls for single-cell Lithium-Ion Polymer batteries and lists exact PRT-13851 and PRT-13855. Circuit-board component facts are not transferred to battery records."
+    },
+    {
+      "source_id": "sparkfun-prt-13851-official-page",
+      "url": "https://www.sparkfun.com/lithium-ion-battery-400mah.html",
+      "title": "Lithium Ion Battery - 400mAh - SparkFun Electronics",
+      "publisher": "SparkFun Electronics (official seller and SKU owner)",
+      "source_type": "secondary_distributor",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PRT-13851 protected JST-PH assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact official seller SKU page actually opened through web. SKU, Product Overview, Features & Specs and Documentation were read. SparkFun is the sales brand/SKU owner; it is not asserted to manufacture the cell."
+    },
+    {
+      "source_id": "sparkfun-prt-13851-linked-specification",
+      "url": "https://cdn.sparkfun.com/datasheets/Prototyping/spe-00-502535-400mah-en-1.0ver.pdf",
+      "title": "Product Specifications - DTP502535",
+      "publisher": "Data Power Technology Limited (datasheet linked by SparkFun)",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "E-SPE-1106-01; Ver. 1.0; 2015-11-06",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PRT-13851 protected JST-PH assembly; seller-linked DTP502535 document"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the official SKU page actually opened as a ten-page PDF. Page 1 chemistry/model/version; page 4 sections 2/3 rated/minimum/nominal voltage and standard charge/discharge; page 5 section 6.3 capacity test; page 7 assembly/protection parts. Underlying supplier model is not an extra catalog product or an exact interchangeable alias."
+    },
+    {
+      "source_id": "sparkfun-prt-13854-official-page",
+      "url": "https://www.sparkfun.com/lithium-ion-battery-850mah.html",
+      "title": "Lithium Ion Battery - 850mAh - SparkFun Electronics",
+      "publisher": "SparkFun Electronics (official seller and SKU owner)",
+      "source_type": "secondary_distributor",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PRT-13854 protected JST-PH assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact official seller SKU page actually opened through web. SKU, Product Overview, Features & Specs and Documentation were read. SparkFun is the sales brand/SKU owner; it is not asserted to manufacture the cell."
+    },
+    {
+      "source_id": "sparkfun-prt-13854-linked-specification",
+      "url": "https://cdn.sparkfun.com/datasheets/Prototyping/850mah-en-1.0ver.pdf",
+      "title": "Product Specifications - DTP603443",
+      "publisher": "Data Power Technology Limited (datasheet linked by SparkFun)",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "E-SPE-1106-01; Ver. 1.0; 2015-11-06",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PRT-13854 protected JST-PH assembly; seller-linked DTP603443 document"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the official SKU page actually opened as a ten-page PDF. Page 1 chemistry/model/version; page 4 sections 2/3 rated/minimum/nominal voltage and standard charge/discharge; page 5 section 6.3 capacity test; page 7 assembly/protection parts. Underlying supplier model is not an extra catalog product or an exact interchangeable alias."
+    },
+    {
+      "source_id": "sparkfun-prt-13855-official-page",
+      "url": "https://www.sparkfun.com/lithium-ion-battery-2ah.html",
+      "title": "Lithium Ion Battery - 2Ah - SparkFun Electronics",
+      "publisher": "SparkFun Electronics (official seller and SKU owner)",
+      "source_type": "secondary_distributor",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PRT-13855 protected JST-PH assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact official seller SKU page actually opened through web. SKU, Product Overview, Features & Specs and Documentation were read. SparkFun is the sales brand/SKU owner; it is not asserted to manufacture the cell."
+    },
+    {
+      "source_id": "sparkfun-prt-13855-linked-msds",
+      "url": "https://cdn.sparkfun.com/assets/parts/1/1/4/6/2/MSDS_605068a.pdf",
+      "title": "MSDS Report - DTP 605068",
+      "publisher": "Shenzhen Green Seeding Testing Technology Co., Ltd. (report for Shenzhen Data Power Technology Ltd.; linked by SparkFun)",
+      "source_type": "secondary_distributor",
+      "document_version": "GST160122006S; testing period January 14-22, 2016",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "PRT-13855 protected JST-PH assembly; seller-linked DTP 605068 document"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact MSDS URL extracted from the official SKU Documentation link. Direct HTTPS 200; seven-page PDF opened in memory with pypdf. Page 1 rechargeable identity; page 2 Product Identification explicitly spells the labels Norminal Voltage and Norminal Capacity. No hazard/disposal instructions or oddly labelled equivalent-lithium-content energy value are imported."
+    },
+    {
+      "source_id": "adafruit-1317-official-page",
+      "url": "https://www.adafruit.com/product/1317",
+      "title": "Lithium Ion Polymer Battery - 3.7v 150mAh",
+      "publisher": "Adafruit Industries (official seller and product-ID owner)",
+      "source_type": "secondary_distributor",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "Product ID 1317; 150 mAh protected JST-PH assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact official page opened through web and direct HTTPS 200. Product ID, Description, Technical Details, revision history and exact Datasheet link were read. HTML option selected=1317 is 3.7V 150mAh; other capacity/cable products have distinct IDs and are not conflated. Jan. 12, 2024 cable-tape revision is acknowledged; no cell-factory continuity is assumed."
+    },
+    {
+      "source_id": "adafruit-1317-linked-specification",
+      "url": "https://cdn-shop.adafruit.com/product-files/1317/C1515_-_Li-Polymer_402025_150mAh_3.7V_with_PCM.pdf",
+      "title": "Li-Polymer Battery Technology Specification - Li-Polymer 402025 150mAh 3.7V with PCM",
+      "publisher": "Shenzhen PKCELL Battery Co., Ltd. (datasheet linked by Adafruit)",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "QA.S.0228; Edition A; Document Valid Date 2014-07-28",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "Product ID 1317; seller-linked LP-402025 3.7V 150mAh with PCM document"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact current product Datasheet link actually opened as a five-page PDF. Page 1 supplier title; page 2 product type/model, capacity labels, nominal voltage and charge/discharge; page 3 test conditions; page 5 Battery pack drawings. The document metadata title names another company, but the actual pages consistently name PKCELL; the actual document content is used. No supplier identifier is promoted to an interchangeable alias."
+    },
+    {
+      "source_id": "adafruit-lipoly-soft-case-guide-batch5",
+      "url": "https://learn.adafruit.com/li-ion-and-lipoly-batteries/rechargeable-lithiums-names",
+      "title": "Rechargeable Lithium Names - Li-Ion & LiPoly Batteries",
+      "publisher": "Adafruit Industries",
+      "source_type": "secondary_distributor",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "Product ID 1317; seller-classified lithium-ion polymer cell family"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official seller explanation opened. Rechargeable Lithium Names describes lithium-ion polymer cells as soft-shelled silvery-bag cells, distinct from hard-shell lithium-ion products. This supports a textual family classification; it does not establish dimensions or an additional factory model."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "eemb-lp605590-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP605590",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP605590 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP605590",
+      "aliases": [
+        {
+          "value": "LP605590",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 3400,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": 3400,
+      "minimum_capacity_mah": 3200,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp605590-bare-cell-page",
+        "eemb-lp605590-specification",
+        "eemb-lithium-polymer-standard-page-batch5"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp605590-bare-cell-page",
+            "locator": "Official EEMB product page branding",
+            "observation": "The supplier brand is EEMB."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp605590-specification",
+            "locator": "PDF page 3 section 2.1 Model",
+            "observation": "Exact model LP605590."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp605590-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact model is an identity alias; the numeric size code is not used."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp605590-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected item is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp605590-specification",
+            "locator": "PDF page 1 title; page 3 Scope",
+            "observation": "The source specifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp605590-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp605590-bare-cell-page",
+            "locator": "Product Detail: Product Categories",
+            "observation": "The source explicitly calls it Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch5",
+            "locator": "Main Features; exact standard-type model row",
+            "observation": "This series has a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp605590-specification",
+            "locator": "PDF page 3 section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp605590-specification",
+            "locator": "PDF page 3 section 2.2 Nominal row",
+            "observation": "Explicit nominal capacity 3400 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp605590-specification",
+            "locator": "PDF page 3 section 2.2 capacity row labels",
+            "observation": "The selected scalar retains the Nominal label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp605590-specification",
+            "locator": "PDF page 3 section 2.2 Minimum row",
+            "observation": "Minimum capacity 3200 mAh at 0.2C5A."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "eemb-lp605590-bare-cell-page",
+            "locator": "Other Information: Typical capacity",
+            "observation": "Separately labelled typical capacity 3400 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp605590-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test note",
+            "observation": "Capacity rows use 0.2C5A; cutoff 2.750 +/- 0.005 V; general tests 23 +/- 2 degrees Celsius, 25-85% RH. No unstated charge/rest sequence is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp605590-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is expressly specified; plug pinout is not supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; supplier identity is not substituted for a factory claim.",
+        "Numeric series and parallel assembly counts are not stated or inferred from nominal voltage.",
+        "Plug model, pin polarity and a protection-board-equipped assembly are not selected; this reference is the bare solder-tab cell.",
+        "Optional dimensions, mass and manufacturer energy are not imported; no measurements are inferred from the numeric model code.",
+        "An operational maintenance schedule is not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Product Detail, Other Information and the exact linked PDF were individually read. Nominal, minimum and typical capacities remain separate.",
+        "The page overall length and PDF body length differ by their L1/L definitions; no dimensions are populated."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp404261-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP404261",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP404261 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP404261",
+      "aliases": [
+        {
+          "value": "LP404261",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 1000,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": 1000,
+      "minimum_capacity_mah": 950,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp404261-bare-cell-page",
+        "eemb-lp404261-specification",
+        "eemb-lithium-polymer-standard-page-batch5"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp404261-bare-cell-page",
+            "locator": "Official EEMB product page branding",
+            "observation": "The supplier brand is EEMB."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp404261-specification",
+            "locator": "PDF page 3 section 2.1 Model",
+            "observation": "Exact model LP404261."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp404261-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact model is an identity alias; the numeric size code is not used."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp404261-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected item is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp404261-specification",
+            "locator": "PDF page 1 title; page 3 Scope",
+            "observation": "The source specifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp404261-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp404261-bare-cell-page",
+            "locator": "Product Detail: Product Categories",
+            "observation": "The source explicitly calls it Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch5",
+            "locator": "Main Features; exact standard-type model row",
+            "observation": "This series has a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp404261-specification",
+            "locator": "PDF page 3 section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp404261-specification",
+            "locator": "PDF page 3 section 2.2 Nominal row",
+            "observation": "Explicit nominal capacity 1000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp404261-specification",
+            "locator": "PDF page 3 section 2.2 capacity row labels",
+            "observation": "The selected scalar retains the Nominal label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp404261-specification",
+            "locator": "PDF page 3 section 2.2 Minimum row",
+            "observation": "Minimum capacity 950 mAh at 0.2C5A."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "eemb-lp404261-bare-cell-page",
+            "locator": "Other Information: Typical capacity",
+            "observation": "Separately labelled typical capacity 1000 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp404261-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test note",
+            "observation": "Capacity rows use 0.2C5A; cutoff 2.750 +/- 0.005 V; general tests 23 +/- 2 degrees Celsius, 25-85% RH. No unstated charge/rest sequence is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp404261-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is expressly specified; plug pinout is not supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; supplier identity is not substituted for a factory claim.",
+        "Numeric series and parallel assembly counts are not stated or inferred from nominal voltage.",
+        "Plug model, pin polarity and a protection-board-equipped assembly are not selected; this reference is the bare solder-tab cell.",
+        "Optional dimensions, mass and manufacturer energy are not imported; no measurements are inferred from the numeric model code.",
+        "An operational maintenance schedule is not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Product Detail, Other Information and the exact linked PDF were individually read. Nominal, minimum and typical capacities remain separate.",
+        "The page overall length and PDF body length differ by their L1/L definitions; no dimensions are populated."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp653042-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP653042",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP653042 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP653042",
+      "aliases": [
+        {
+          "value": "LP653042",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 820,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": 820,
+      "minimum_capacity_mah": 770,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp653042-bare-cell-page",
+        "eemb-lp653042-specification",
+        "eemb-lithium-polymer-standard-page-batch5"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp653042-bare-cell-page",
+            "locator": "Official EEMB product page branding",
+            "observation": "The supplier brand is EEMB."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp653042-specification",
+            "locator": "PDF page 3 section 2.1 Model",
+            "observation": "Exact model LP653042."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp653042-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact model is an identity alias; the numeric size code is not used."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp653042-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected item is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp653042-specification",
+            "locator": "PDF page 1 title; page 3 Scope",
+            "observation": "The source specifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp653042-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp653042-bare-cell-page",
+            "locator": "Product Detail: Product Categories",
+            "observation": "The source explicitly calls it Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch5",
+            "locator": "Main Features; exact standard-type model row",
+            "observation": "This series has a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp653042-specification",
+            "locator": "PDF page 3 section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp653042-specification",
+            "locator": "PDF page 3 section 2.2 Nominal row",
+            "observation": "Explicit nominal capacity 820 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp653042-specification",
+            "locator": "PDF page 3 section 2.2 capacity row labels",
+            "observation": "The selected scalar retains the Nominal label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp653042-specification",
+            "locator": "PDF page 3 section 2.2 Minimum row",
+            "observation": "Minimum capacity 770 mAh at 0.2C5A."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "eemb-lp653042-bare-cell-page",
+            "locator": "Other Information: Typical capacity",
+            "observation": "Separately labelled typical capacity 820 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp653042-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test note",
+            "observation": "Capacity rows use 0.2C5A; cutoff 2.750 +/- 0.005 V; general tests 23 +/- 2 degrees Celsius, 25-85% RH. No unstated charge/rest sequence is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp653042-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is expressly specified; plug pinout is not supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; supplier identity is not substituted for a factory claim.",
+        "Numeric series and parallel assembly counts are not stated or inferred from nominal voltage.",
+        "Plug model, pin polarity and a protection-board-equipped assembly are not selected; this reference is the bare solder-tab cell.",
+        "Optional dimensions, mass and manufacturer energy are not imported; no measurements are inferred from the numeric model code.",
+        "An operational maintenance schedule is not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Product Detail, Other Information and the exact linked PDF were individually read. Nominal, minimum and typical capacities remain separate.",
+        "The page overall length and PDF body length differ by their L1/L definitions; no dimensions are populated."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp583759-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP583759",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP583759 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP583759",
+      "aliases": [
+        {
+          "value": "LP583759",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 1350,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": 1350,
+      "minimum_capacity_mah": 1250,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp583759-bare-cell-page",
+        "eemb-lp583759-specification",
+        "eemb-lithium-polymer-standard-page-batch5"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp583759-bare-cell-page",
+            "locator": "Official EEMB product page branding",
+            "observation": "The supplier brand is EEMB."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp583759-specification",
+            "locator": "PDF page 3 section 2.1 Model",
+            "observation": "Exact model LP583759."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp583759-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact model is an identity alias; the numeric size code is not used."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp583759-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected item is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp583759-specification",
+            "locator": "PDF page 1 title; page 3 Scope",
+            "observation": "The source specifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp583759-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp583759-bare-cell-page",
+            "locator": "Product Detail: Product Categories",
+            "observation": "The source explicitly calls it Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch5",
+            "locator": "Main Features; exact standard-type model row",
+            "observation": "This series has a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp583759-specification",
+            "locator": "PDF page 3 section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp583759-specification",
+            "locator": "PDF page 3 section 2.2 Nominal row",
+            "observation": "Explicit nominal capacity 1350 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp583759-specification",
+            "locator": "PDF page 3 section 2.2 capacity row labels",
+            "observation": "The selected scalar retains the Nominal label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp583759-specification",
+            "locator": "PDF page 3 section 2.2 Minimum row",
+            "observation": "Minimum capacity 1250 mAh at 0.2C5A."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "eemb-lp583759-bare-cell-page",
+            "locator": "Other Information: Typical capacity",
+            "observation": "Separately labelled typical capacity 1350 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp583759-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test note",
+            "observation": "Capacity rows use 0.2C5A; cutoff 2.750 +/- 0.005 V; general tests 23 +/- 2 degrees Celsius, 25-85% RH. No unstated charge/rest sequence is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp583759-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is expressly specified; plug pinout is not supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; supplier identity is not substituted for a factory claim.",
+        "Numeric series and parallel assembly counts are not stated or inferred from nominal voltage.",
+        "Plug model, pin polarity and a protection-board-equipped assembly are not selected; this reference is the bare solder-tab cell.",
+        "Optional dimensions, mass and manufacturer energy are not imported; no measurements are inferred from the numeric model code.",
+        "An operational maintenance schedule is not imported.",
+        "The PDF prints 2019-8-50 as its document date, which is not a valid calendar date; no corrected date is invented."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Product Detail, Other Information and the exact linked PDF were individually read. Nominal, minimum and typical capacities remain separate.",
+        "The page overall length and PDF body length differ by their L1/L definitions; no dimensions are populated.",
+        "Only the section 2.2 nominal/minimum capacity basis is used; unrelated high-temperature test instructions are not imported."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp604374-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP604374",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP604374 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP604374",
+      "aliases": [
+        {
+          "value": "LP604374",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 2200,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": 2200,
+      "minimum_capacity_mah": 2100,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp604374-bare-cell-page",
+        "eemb-lp604374-specification",
+        "eemb-lithium-polymer-standard-page-batch5"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp604374-bare-cell-page",
+            "locator": "Official EEMB product page branding",
+            "observation": "The supplier brand is EEMB."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp604374-specification",
+            "locator": "PDF page 3 section 2.1 Model",
+            "observation": "Exact model LP604374."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp604374-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact model is an identity alias; the numeric size code is not used."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp604374-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected item is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp604374-specification",
+            "locator": "PDF page 1 title; page 3 Scope",
+            "observation": "The source specifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp604374-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp604374-bare-cell-page",
+            "locator": "Product Detail: Product Categories",
+            "observation": "The source explicitly calls it Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch5",
+            "locator": "Main Features; exact standard-type model row",
+            "observation": "This series has a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp604374-specification",
+            "locator": "PDF page 3 section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp604374-specification",
+            "locator": "PDF page 3 section 2.2 Nominal row",
+            "observation": "Explicit nominal capacity 2200 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp604374-specification",
+            "locator": "PDF page 3 section 2.2 capacity row labels",
+            "observation": "The selected scalar retains the Nominal label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp604374-specification",
+            "locator": "PDF page 3 section 2.2 Minimum row",
+            "observation": "Minimum capacity 2100 mAh at 0.2C5A."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "eemb-lp604374-bare-cell-page",
+            "locator": "Other Information: Typical capacity",
+            "observation": "Separately labelled typical capacity 2200 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp604374-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test note",
+            "observation": "Capacity rows use 0.2C5A; cutoff 2.750 +/- 0.005 V; general tests 23 +/- 2 degrees Celsius, 25-85% RH. No unstated charge/rest sequence is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp604374-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is expressly specified; plug pinout is not supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; supplier identity is not substituted for a factory claim.",
+        "Numeric series and parallel assembly counts are not stated or inferred from nominal voltage.",
+        "Plug model, pin polarity and a protection-board-equipped assembly are not selected; this reference is the bare solder-tab cell.",
+        "Optional dimensions, mass and manufacturer energy are not imported; no measurements are inferred from the numeric model code.",
+        "An operational maintenance schedule is not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Product Detail, Other Information and the exact linked PDF were individually read. Nominal, minimum and typical capacities remain separate.",
+        "The page overall length and PDF body length differ by their L1/L definitions; no dimensions are populated."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp604040-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP604040",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP604040 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP604040",
+      "aliases": [
+        {
+          "value": "LP604040",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 950,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": 950,
+      "minimum_capacity_mah": 920,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp604040-bare-cell-page",
+        "eemb-lp604040-specification",
+        "eemb-lithium-polymer-standard-page-batch5"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp604040-bare-cell-page",
+            "locator": "Official EEMB product page branding",
+            "observation": "The supplier brand is EEMB."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp604040-specification",
+            "locator": "PDF page 3 section 2.1 Model",
+            "observation": "Exact model LP604040."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp604040-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact model is an identity alias; the numeric size code is not used."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp604040-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected item is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp604040-specification",
+            "locator": "PDF page 1 title; page 3 Scope",
+            "observation": "The source specifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp604040-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp604040-bare-cell-page",
+            "locator": "Product Detail: Product Categories",
+            "observation": "The source explicitly calls it Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch5",
+            "locator": "Main Features; exact standard-type model row",
+            "observation": "This series has a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp604040-specification",
+            "locator": "PDF page 3 section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp604040-specification",
+            "locator": "PDF page 3 section 2.2 Nominal row",
+            "observation": "Explicit nominal capacity 950 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp604040-specification",
+            "locator": "PDF page 3 section 2.2 capacity row labels",
+            "observation": "The selected scalar retains the Nominal label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp604040-specification",
+            "locator": "PDF page 3 section 2.2 Minimum row",
+            "observation": "Minimum capacity 920 mAh at 0.2C5A."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "eemb-lp604040-bare-cell-page",
+            "locator": "Other Information: Typical capacity",
+            "observation": "Separately labelled typical capacity 950 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp604040-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test note",
+            "observation": "Capacity rows use 0.2C5A; cutoff 2.750 +/- 0.005 V; general tests 23 +/- 2 degrees Celsius, 25-85% RH. No unstated charge/rest sequence is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp604040-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is expressly specified; plug pinout is not supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; supplier identity is not substituted for a factory claim.",
+        "Numeric series and parallel assembly counts are not stated or inferred from nominal voltage.",
+        "Plug model, pin polarity and a protection-board-equipped assembly are not selected; this reference is the bare solder-tab cell.",
+        "Optional dimensions, mass and manufacturer energy are not imported; no measurements are inferred from the numeric model code.",
+        "An operational maintenance schedule is not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Product Detail, Other Information and the exact linked PDF were individually read. Nominal, minimum and typical capacities remain separate.",
+        "The page overall length and PDF body length differ by their L1/L definitions; no dimensions are populated."
+      ]
+    },
+    {
+      "catalog_id": "sparkfun-prt-13851-protected-jst-ph",
+      "manufacturer": null,
+      "brand": "SparkFun",
+      "model": "PRT-13851",
+      "variant_key": "protected-jst-ph",
+      "variant_description": "PRT-13851 official seller SKU: protected lithium-ion polymer pouch-cell assembly with standard 2-pin JST-PH connector, 2 mm pin spacing.",
+      "suggested_display_name": "SparkFun PRT-13851",
+      "aliases": [
+        {
+          "value": "PRT-13851",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Protected pouch-cell assembly; textual vendor LiPo-family classification is used, with cylindrical 18650 products excluded."
+      },
+      "rated_capacity_mah": 400,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 400,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Linked datasheet sections 3.7/3.8: standard 0.2C charge (80 mA) to 4.20 V, CV to 0.01C; discharge at 0.2C (80 mA) to 2.80 V. Section 6.3 rated-capacity test uses 23 +/- 2 degrees Celsius after a 10-minute rest following standard charge; up to three cycles are permitted.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Standard 2-pin JST-PH connector with 2 mm pin spacing.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "sparkfun-prt-13851-official-page",
+        "sparkfun-prt-13851-linked-specification",
+        "sparkfun-lipo-pouch-support-batch5",
+        "sparkfun-single-cell-lipo-guide-batch5"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "sparkfun-prt-13851-official-page",
+            "locator": "Official seller page and SKU field",
+            "observation": "SparkFun is the seller/SKU brand, not an asserted cell manufacturer."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "sparkfun-prt-13851-official-page",
+            "locator": "SKU field",
+            "observation": "Exact seller SKU PRT-13851."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "sparkfun-prt-13851-official-page",
+            "locator": "SKU field",
+            "observation": "The seller SKU is a search term; no factory-MPN interchangeability is asserted."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "sparkfun-prt-13851-official-page",
+            "locator": "Product Overview",
+            "observation": "The supplied item has protection circuitry and a standard 2-pin JST-PH connector."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "sparkfun-prt-13851-linked-specification",
+            "locator": "PDF page 1 Type; page 4 section 2.1 Type",
+            "observation": "The seller-linked document explicitly identifies lithium-ion polymer chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "sparkfun-prt-13851-linked-specification",
+            "locator": "PDF page 1 Type",
+            "observation": "The linked document identifies a rechargeable battery."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "sparkfun-prt-13851-official-page",
+            "locator": "Product Overview: terminated connector and built-in protection",
+            "observation": "The catalog records the finished protected wired assembly as a pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "sparkfun-lipo-pouch-support-batch5",
+            "locator": "TS-Chris, 2019-09-13, response to exact PRT-13851 question",
+            "observation": "Official support classifies carried LiPo products as pouch cells, excluding cylindrical 18650 types."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "sparkfun-prt-13851-linked-specification",
+            "locator": "PDF page 4 section 3.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "sparkfun-prt-13851-linked-specification",
+            "locator": "PDF page 4 section 3.1 Rated Capacity",
+            "observation": "Explicit rated capacity 400 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "sparkfun-prt-13851-linked-specification",
+            "locator": "PDF page 4 section 3.1 Rated Capacity label",
+            "observation": "The document explicitly labels this capacity Rated."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "sparkfun-prt-13851-official-page",
+            "locator": "Product Overview",
+            "observation": "Standard 2-pin JST-PH; pin spacing 2 mm. Wire polarity is not encoded."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "sparkfun-prt-13851-linked-specification",
+            "locator": "PDF page 4 section 3.2 Minimum Capacity",
+            "observation": "Minimum capacity 400 mAh is separately labelled."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "sparkfun-prt-13851-linked-specification",
+            "locator": "PDF page 4 sections 3.4-3.8; page 5 section 6.3",
+            "observation": "Rated-capacity test specifies 0.2C discharge to 2.80 V after standard charge and 10-minute rest at 23 +/- 2 degrees Celsius; up to three cycles."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The catalog identifies an official seller SKU. The current cell factory identity and interchangeability with a supplier bare-cell model are not established.",
+        "Numeric series/parallel counts are not populated from nominal voltage.",
+        "Connector pin polarity is not separately encoded; no cross-brand plug compatibility is inferred.",
+        "No expressly labelled typical capacity is supplied for this reference.",
+        "Optional dimensions, mass, manufacturer energy and an operational maintenance schedule are not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Official retailer product references use the existing secondary_distributor source type. Seller ownership of the SKU is distinct from cell manufacturing.",
+        "The attached supplier identifier is provenance only; it is not counted as another product or used as an interchangeable alias."
+      ]
+    },
+    {
+      "catalog_id": "sparkfun-prt-13854-protected-jst-ph",
+      "manufacturer": null,
+      "brand": "SparkFun",
+      "model": "PRT-13854",
+      "variant_key": "protected-jst-ph",
+      "variant_description": "PRT-13854 official seller SKU: protected lithium-ion polymer pouch-cell assembly with standard 2-pin JST-PH connector, 2 mm pin spacing.",
+      "suggested_display_name": "SparkFun PRT-13854",
+      "aliases": [
+        {
+          "value": "PRT-13854",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Protected pouch-cell assembly; textual vendor LiPo-family classification is used, with cylindrical 18650 products excluded."
+      },
+      "rated_capacity_mah": 850,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 850,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Linked datasheet sections 3.7/3.8: standard 0.2C charge (170 mA) to 4.20 V, CV to 0.01C; discharge at 0.2C (170 mA) to 2.80 V. Section 6.3 rated-capacity test uses 23 +/- 2 degrees Celsius after a 10-minute rest following standard charge; up to three cycles are permitted.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Standard 2-pin JST-PH connector with 2 mm pin spacing.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "sparkfun-prt-13854-official-page",
+        "sparkfun-prt-13854-linked-specification",
+        "sparkfun-lipo-pouch-support-batch5"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "sparkfun-prt-13854-official-page",
+            "locator": "Official seller page and SKU field",
+            "observation": "SparkFun is the seller/SKU brand, not an asserted cell manufacturer."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "sparkfun-prt-13854-official-page",
+            "locator": "SKU field",
+            "observation": "Exact seller SKU PRT-13854."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "sparkfun-prt-13854-official-page",
+            "locator": "SKU field",
+            "observation": "The seller SKU is a search term; no factory-MPN interchangeability is asserted."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "sparkfun-prt-13854-official-page",
+            "locator": "Product Overview",
+            "observation": "The supplied item has protection circuitry and a standard 2-pin JST-PH connector."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "sparkfun-prt-13854-linked-specification",
+            "locator": "PDF page 1 Type; page 4 section 2.1 Type",
+            "observation": "The seller-linked document explicitly identifies lithium-ion polymer chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "sparkfun-prt-13854-linked-specification",
+            "locator": "PDF page 1 Type",
+            "observation": "The linked document identifies a rechargeable battery."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "sparkfun-prt-13854-official-page",
+            "locator": "Product Overview: terminated connector and built-in protection",
+            "observation": "The catalog records the finished protected wired assembly as a pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "sparkfun-lipo-pouch-support-batch5",
+            "locator": "TS-Chris, 2019-09-13, response to exact PRT-13851 question",
+            "observation": "Official support classifies carried LiPo products as pouch cells, excluding cylindrical 18650 types."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "sparkfun-prt-13854-linked-specification",
+            "locator": "PDF page 4 section 3.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "sparkfun-prt-13854-linked-specification",
+            "locator": "PDF page 4 section 3.1 Rated Capacity",
+            "observation": "Explicit rated capacity 850 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "sparkfun-prt-13854-linked-specification",
+            "locator": "PDF page 4 section 3.1 Rated Capacity label",
+            "observation": "The document explicitly labels this capacity Rated."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "sparkfun-prt-13854-official-page",
+            "locator": "Product Overview",
+            "observation": "Standard 2-pin JST-PH; pin spacing 2 mm. Wire polarity is not encoded."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "sparkfun-prt-13854-linked-specification",
+            "locator": "PDF page 4 section 3.2 Minimum Capacity",
+            "observation": "Minimum capacity 850 mAh is separately labelled."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "sparkfun-prt-13854-linked-specification",
+            "locator": "PDF page 4 sections 3.4-3.8; page 5 section 6.3",
+            "observation": "Rated-capacity test specifies 0.2C discharge to 2.80 V after standard charge and 10-minute rest at 23 +/- 2 degrees Celsius; up to three cycles."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The catalog identifies an official seller SKU. The current cell factory identity and interchangeability with a supplier bare-cell model are not established.",
+        "Numeric series/parallel counts are not populated from nominal voltage.",
+        "Connector pin polarity is not separately encoded; no cross-brand plug compatibility is inferred.",
+        "No expressly labelled typical capacity is supplied for this reference.",
+        "Optional dimensions, mass, manufacturer energy and an operational maintenance schedule are not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Official retailer product references use the existing secondary_distributor source type. Seller ownership of the SKU is distinct from cell manufacturing.",
+        "The attached supplier identifier is provenance only; it is not counted as another product or used as an interchangeable alias."
+      ]
+    },
+    {
+      "catalog_id": "sparkfun-prt-13855-protected-jst-ph",
+      "manufacturer": null,
+      "brand": "SparkFun",
+      "model": "PRT-13855",
+      "variant_key": "protected-jst-ph",
+      "variant_description": "PRT-13855 official seller SKU: protected lithium-ion polymer pouch-cell assembly with standard 2-pin JST-PH connector, 2 mm pin spacing.",
+      "suggested_display_name": "SparkFun PRT-13855",
+      "aliases": [
+        {
+          "value": "PRT-13855",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Protected pouch-cell assembly; textual vendor LiPo-family classification is used, with cylindrical 18650 products excluded."
+      },
+      "rated_capacity_mah": 2000,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Standard 2-pin JST-PH connector with 2 mm pin spacing.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "sparkfun-prt-13855-official-page",
+        "sparkfun-prt-13855-linked-msds",
+        "sparkfun-lipo-pouch-support-batch5",
+        "sparkfun-single-cell-lipo-guide-batch5"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "sparkfun-prt-13855-official-page",
+            "locator": "Official seller page and SKU field",
+            "observation": "SparkFun is the seller/SKU brand, not an asserted cell manufacturer."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "sparkfun-prt-13855-official-page",
+            "locator": "SKU field",
+            "observation": "Exact seller SKU PRT-13855."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "sparkfun-prt-13855-official-page",
+            "locator": "SKU field",
+            "observation": "The seller SKU is a search term; no factory-MPN interchangeability is asserted."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "sparkfun-prt-13855-official-page",
+            "locator": "Product Overview",
+            "observation": "The supplied item has protection circuitry and a standard 2-pin JST-PH connector."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "sparkfun-prt-13855-linked-msds",
+            "locator": "PDF page 2 Product Identification",
+            "observation": "The seller-linked document explicitly identifies lithium-ion polymer chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "sparkfun-prt-13855-linked-msds",
+            "locator": "PDF page 1 Description",
+            "observation": "The linked document identifies a rechargeable battery."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "sparkfun-prt-13855-official-page",
+            "locator": "Product Overview: terminated connector and built-in protection",
+            "observation": "The catalog records the finished protected wired assembly as a pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "sparkfun-lipo-pouch-support-batch5",
+            "locator": "TS-Chris, 2019-09-13, response to exact PRT-13851 question",
+            "observation": "Official support classifies carried LiPo products as pouch cells, excluding cylindrical 18650 types."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "sparkfun-prt-13855-linked-msds",
+            "locator": "PDF page 2 Product Identification: Norminal Voltage",
+            "observation": "Nominal voltage is 3.7 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "sparkfun-prt-13855-linked-msds",
+            "locator": "PDF page 2 Product Identification: Norminal Capacity",
+            "observation": "Explicit nominal capacity 2000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "sparkfun-prt-13855-linked-msds",
+            "locator": "PDF page 2 Norminal Capacity label",
+            "observation": "The document's misspelled Norminal Capacity label is retained as nominal; no minimum or typical label is invented."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "sparkfun-prt-13855-official-page",
+            "locator": "Product Overview",
+            "observation": "Standard 2-pin JST-PH; pin spacing 2 mm. Wire polarity is not encoded."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The catalog identifies an official seller SKU. The current cell factory identity and interchangeability with a supplier bare-cell model are not established.",
+        "Numeric series/parallel counts are not populated from nominal voltage.",
+        "Connector pin polarity is not separately encoded; no cross-brand plug compatibility is inferred.",
+        "No expressly labelled typical capacity is supplied for this reference.",
+        "Optional dimensions, mass, manufacturer energy and an operational maintenance schedule are not imported.",
+        "The linked MSDS states nominal capacity but no capacity-test protocol or minimum capacity; those values remain unknown."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Official retailer product references use the existing secondary_distributor source type. Seller ownership of the SKU is distinct from cell manufacturing.",
+        "The attached supplier identifier is provenance only; it is not counted as another product or used as an interchangeable alias.",
+        "The source's Norminal Capacity spelling denotes nominal capacity. Its equivalent-lithium-content value labelled in Wh is not imported as a rated-energy scalar."
+      ]
+    },
+    {
+      "catalog_id": "adafruit-1317-150mah-protected-jst-ph",
+      "manufacturer": null,
+      "brand": "Adafruit",
+      "model": "1317",
+      "variant_key": "150mah-protected-jst-ph",
+      "variant_description": "Product ID 1317: 150 mAh lithium-ion polymer battery assembly with protection circuitry and pre-attached 2-pin JST-PH connector; current page notes the cable-tape revision of January 12, 2024.",
+      "suggested_display_name": "Adafruit 1317",
+      "aliases": [
+        {
+          "value": "1317",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Soft-shelled lithium-ion polymer pouch-cell assembly, classified from the seller's textual LiPoly-family explanation; dimensions are not inferred."
+      },
+      "rated_capacity_mah": 150,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 142,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Linked datasheet page 2 specifies standard CC charge at 0.2C5A to 4.2 V, CV to 0.01C5A, then standard 0.2C5A discharge to 3.0 V. Page 3 measures minimum discharge capacity within one hour after standard charge. Default test conditions are 20 +/- 5 degrees Celsius and 45-85% relative humidity; new batteries within one week of factory shipment and no more than five prior cycles.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Pre-attached genuine 2-pin JST-PH connector.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "adafruit-1317-official-page",
+        "adafruit-1317-linked-specification",
+        "adafruit-lipoly-soft-case-guide-batch5"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "adafruit-1317-official-page",
+            "locator": "Official seller branding and Product ID",
+            "observation": "Adafruit is the seller/product-ID brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "adafruit-1317-official-page",
+            "locator": "Product ID; HTML selected option",
+            "observation": "Exact seller Product ID 1317 selects the 150 mAh product."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "adafruit-1317-official-page",
+            "locator": "Product ID",
+            "observation": "The seller identifier is a search term; no factory-model alias is asserted."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "adafruit-1317-official-page",
+            "locator": "Description; Technical Details revision history",
+            "observation": "The selected 150 mAh item has protection circuitry, JST-PH connector and a stated cable-tape revision."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "adafruit-1317-official-page",
+            "locator": "Title and Description",
+            "observation": "The exact product is lithium-ion polymer, also called LiPo or LiPoly."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "adafruit-1317-official-page",
+            "locator": "Description: charger/recharge wording",
+            "observation": "The exact battery is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "adafruit-1317-linked-specification",
+            "locator": "PDF page 2 model with PCM; page 5 Battery pack drawings",
+            "observation": "The supplied protected wired product is catalogued as an assembled pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "adafruit-lipoly-soft-case-guide-batch5",
+            "locator": "Rechargeable Lithium Names: Li-ion polymer cell paragraph",
+            "observation": "The vendor describes its LiPoly cell family as soft-shelled cells in a silvery bag; this is textual classification evidence."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "adafruit-1317-linked-specification",
+            "locator": "PDF page 2 Form 1 item 2 Nominal voltage",
+            "observation": "Nominal voltage 3.7 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "adafruit-1317-linked-specification",
+            "locator": "PDF page 2 Form 1 item 1 Capacity: Nominal",
+            "observation": "Nominal capacity 150 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "adafruit-1317-linked-specification",
+            "locator": "PDF page 2 Form 1 item 1 labels",
+            "observation": "The scalar retains Nominal rather than the separate Minimum label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "adafruit-1317-linked-specification",
+            "locator": "PDF page 2 Form 1 item 1: Minimum",
+            "observation": "Minimum capacity 142 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "adafruit-1317-linked-specification",
+            "locator": "PDF page 2 Form 1 items 1/5/7; page 3 sections 4/5",
+            "observation": "Standard 0.2C5A CC/CV charge then 0.2C5A discharge to 3.0 V; minimum measured within one hour. Default 20 +/- 5 degrees Celsius, 45-85% RH, new batteries with limited prior cycling."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "adafruit-1317-official-page",
+            "locator": "Description: pre-attached connector",
+            "observation": "Genuine 2-pin JST-PH connector is supplied; pin polarity is not encoded."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The current factory manufacturer and exact continuity with the dated supplier document are not asserted; manufacturer remains null.",
+        "No series/parallel numeric configuration is inferred from 3.7 V.",
+        "No expressly labelled typical capacity is supplied.",
+        "Connector pin polarity is not separately encoded; cross-brand plug compatibility is not established.",
+        "Optional dimensions, mass, manufacturer energy and an operational maintenance schedule are not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "The product is identified by Adafruit Product ID 1317. Other capacity and cable options use distinct product IDs; none is added as an alias or counted as this product.",
+        "The seller-linked supplier model supports published electrical specifications but is not an interchangeable exact identity alias. The current seller SKU remains the catalog identity.",
+        "Pouch classification follows the vendor's textual soft-case LiPoly-family description, not a visual guess."
+      ]
+    }
+  ]
+}

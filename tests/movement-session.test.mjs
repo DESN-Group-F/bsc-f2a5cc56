@@ -21,7 +21,7 @@ test("ordinary return capture keeps the exact reviewed loan and snapshots after 
 });
 
 test("invalid movement state or oversized and repeated records cannot be captured for a new write", () => {
-    assert.throws(() => captureMovementAttempt("checkout", [battery()], accountId, "demo", requestId), /already on loan/);
+    assert.throws(() => captureMovementAttempt("checkout", [battery()], accountId, "demo", requestId), /already in use/);
     assert.throws(() => captureMovementAttempt("return", [battery({ loanId: null })], accountId, "demo", requestId), /valid reviewed loan/);
     assert.throws(() => captureMovementAttempt("return", [battery(), battery()], accountId, "demo", requestId), /different batteries/);
     assert.throws(() => captureMovementAttempt("return", [], accountId, "demo", requestId), /between 1 and 100/);

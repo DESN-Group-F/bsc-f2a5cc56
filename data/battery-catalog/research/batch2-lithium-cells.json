@@ -1,0 +1,1802 @@
+{
+  "sources": [
+    {
+      "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/INR18650P26A_1.4_Product-Data-Sheet-of-INR-18650-P26A-80087.pdf",
+      "title": "Product Data Sheet: Model INR-18650-P26A",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "1.4",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-18650-P26A individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer PDF opened. Page 1 model heading, Cell Characteristics / Capacity and Cell Voltage, and Physical Characteristics / Shape. The printed revision is retained in document_version."
+    },
+    {
+      "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/Product-Data-Sheet-of-INR-18650-P30B-80111-1.pdf",
+      "title": "Product Data Sheet: Model INR-18650-P30B",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "1.0",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-18650-P30B individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer PDF opened. Page 1 model heading, Cell Characteristics / Capacity and Cell Voltage, and Physical Characteristics / Shape. The printed revision is retained in document_version."
+    },
+    {
+      "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/INR21700P45B_1.2_Product-Data-Sheet-of-INR-21700-P45B-80109.pdf",
+      "title": "Product Data Sheet: Model INR-21700-P45B",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "1.2",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-21700-P45B individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer PDF opened. Page 1 model heading, Cell Characteristics / Capacity and Cell Voltage, and Physical Characteristics / Shape. The printed revision is retained in document_version."
+    },
+    {
+      "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/Product-Data-Sheet-of-INR-21700-P50B-80122.pdf",
+      "title": "Product Data Sheet: Model INR-21700-P50B",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "1.1",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-21700-P50B individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer PDF opened. Page 1 model heading, Cell Characteristics / Capacity and Cell Voltage, and Physical Characteristics / Shape. The printed revision is retained in document_version."
+    },
+    {
+      "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/Product-Data-Sheet-of-INR-21700-P50S-80XXX-1.1-1.pdf",
+      "title": "Product Data Sheet: Model INR-21700-P50S",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "1.1",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-21700-P50S individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer PDF opened. Page 1 model heading, Cell Characteristics / Capacity and Cell Voltage, and Physical Characteristics / Shape. The printed revision is retained in document_version."
+    },
+    {
+      "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/INR18650P22S_1.0_Product-Data-Sheet-of-INR-18650-P22S-80137.pdf",
+      "title": "Product Data Sheet: Model INR-18650-P22S",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "1.0",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-18650-P22S individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer PDF opened. Page 1 model heading, Cell Characteristics / Capacity and Cell Voltage, and Physical Characteristics / Shape. The printed revision is retained in document_version."
+    },
+    {
+      "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/Product-Data-Sheet-of-INR-21700-P30S-1.1.pdf",
+      "title": "Product Data Sheet: Model INR-18650-P30S",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "1.1",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-18650-P30S individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Two-page PDF. Page 1 identifies INR-18650-P30S and supplies Cell Characteristics; page 2 repeats the same exact model heading. The URL filename contains '21700' although the actual document identifies the 18650 model. The first PDF text open succeeded; a later re-fetch timed out."
+    },
+    {
+      "source_id": "molicel-batch2-inr-18650-p30s-product-page",
+      "url": "https://www.molicel.com/product/inr-18650-p30s/",
+      "title": "INR-18650-P30S",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-18650-P30S individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual exact product page opened; Model, Tab Design, Form, Nominal Voltage and Typical Capacity."
+    },
+    {
+      "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/Product-Data-Sheet-of-INR-21700-M65A-80153-0.1_250805.pdf",
+      "title": "Product Data Sheet: Model INR-21700-M65A",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "0.1; printed date 2025-08-05",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-21700-M65A individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer PDF opened. Page 1 model heading, Cell Characteristics / Capacity and Cell Voltage, and Physical Characteristics / Shape. The printed revision is retained in document_version."
+    },
+    {
+      "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/INR18650P28B-V1-80104.pdf",
+      "title": "Product Data Sheet: Model INR-18650-P28B",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-18650-P28B individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer PDF opened. Page 1 model heading, Cell Characteristics / Capacity and Cell Voltage, and Physical Characteristics / Shape. No printed revision was found; URL version-like text is not a confirmed revision."
+    },
+    {
+      "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+      "url": "https://www.molicel.com/wp-content/uploads/INR21700P42B-V1-80101.pdf",
+      "title": "Product Data Sheet: Model INR-21700-P42B",
+      "publisher": "Molicel",
+      "source_type": "manufacturer_datasheet",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "INR-21700-P42B individual cylindrical cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer PDF opened. Page 1 model heading, Cell Characteristics / Capacity and Cell Voltage, and Physical Characteristics / Shape. No printed revision was found; URL version-like text is not a confirmed revision."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "molicel-inr-18650-p26a",
+      "manufacturer": null,
+      "brand": "Molicel",
+      "model": "INR-18650-P26A",
+      "variant_key": "inr-18650-p26a",
+      "variant_description": "Individual INR-18650-P26A cylindrical cell described by the selected manufacturer data-sheet edition; tabbed, protected or assembled variants require their own applicability evidence.",
+      "suggested_display_name": "Molicel INR-18650-P26A",
+      "aliases": [
+        {
+          "value": "INR-18650-P26A",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "P26A",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "18650",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "18650",
+        "description": "Cylindrical 18650 cell; the size code alone does not identify chemistry or an exact product."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 2600,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-batch2-inr-18650-p26a-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Manufacturer PDF branding and contact footer",
+            "observation": "Molicel identifies the product data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "INR-18650-P26A"
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "The full printed MPN is an exact candidate; shortened model and size terms remain search-only."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 model heading and Cell Characteristics",
+            "observation": "This sheet specifies the named individual cell."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Explicitly classified as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 Cell Characteristics and Physical Characteristics",
+            "observation": "The data sheet describes one cylindrical cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 exact model heading and Physical Characteristics / Shape",
+            "observation": "18650 designation; cylindrical shape."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No capacity explicitly labelled Rated or Nominal is supplied."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No Rated or Nominal capacity basis."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical",
+            "observation": "2600 mAh, explicitly Typical."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 Cell Characteristics / Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V is a separate charge-voltage value."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p26a-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "Only Typical capacity is supplied in this selected edition; Minimum is left null."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah remains null.",
+        "Legal manufacturer organization was not separately established for this core-specification batch; manufacturer is null.",
+        "Typical and minimum energy values are not relabelled nominal or rated energy; energy_wh is null.",
+        "Terminal connector, cell configuration, dimensions, mass and maintenance instructions were not selected for this core-specification batch and remain null.",
+        "The selected capacity table does not define a complete capacity test protocol; chart-specific conditions are not generalized to the capacity rating.",
+        "This selected data-sheet edition supplies no Minimum capacity value."
+      ],
+      "notes": [
+        "Public reference product only; not evidence of school inventory or a purchasing recommendation.",
+        "Typical and Minimum values retain manufacturer labels and do not silently populate the application's Rated capacity field.",
+        "The suggested display name is editable; it is not an asset ID."
+      ]
+    },
+    {
+      "catalog_id": "molicel-inr-18650-p30b",
+      "manufacturer": null,
+      "brand": "Molicel",
+      "model": "INR-18650-P30B",
+      "variant_key": "inr-18650-p30b",
+      "variant_description": "Individual INR-18650-P30B cylindrical cell described by the selected manufacturer data-sheet edition; tabbed, protected or assembled variants require their own applicability evidence.",
+      "suggested_display_name": "Molicel INR-18650-P30B",
+      "aliases": [
+        {
+          "value": "INR-18650-P30B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "P30B",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "18650",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "18650",
+        "description": "Cylindrical 18650 cell; the size code alone does not identify chemistry or an exact product."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 3000,
+      "minimum_capacity_mah": 2900,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-batch2-inr-18650-p30b-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Manufacturer PDF branding and contact footer",
+            "observation": "Molicel identifies the product data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "INR-18650-P30B"
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "The full printed MPN is an exact candidate; shortened model and size terms remain search-only."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 model heading and Cell Characteristics",
+            "observation": "This sheet specifies the named individual cell."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Explicitly classified as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 Cell Characteristics and Physical Characteristics",
+            "observation": "The data sheet describes one cylindrical cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 exact model heading and Physical Characteristics / Shape",
+            "observation": "18650 designation; cylindrical shape."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No capacity explicitly labelled Rated or Nominal is supplied."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No Rated or Nominal capacity basis."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical",
+            "observation": "3000 mAh, explicitly Typical."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V is a separate charge-voltage value."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Minimum",
+            "observation": "2900 mAh, explicitly Minimum."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah remains null.",
+        "Legal manufacturer organization was not separately established for this core-specification batch; manufacturer is null.",
+        "Typical and minimum energy values are not relabelled nominal or rated energy; energy_wh is null.",
+        "Terminal connector, cell configuration, dimensions, mass and maintenance instructions were not selected for this core-specification batch and remain null.",
+        "The selected capacity table does not define a complete capacity test protocol; chart-specific conditions are not generalized to the capacity rating."
+      ],
+      "notes": [
+        "Public reference product only; not evidence of school inventory or a purchasing recommendation.",
+        "Typical and Minimum values retain manufacturer labels and do not silently populate the application's Rated capacity field.",
+        "The suggested display name is editable; it is not an asset ID."
+      ]
+    },
+    {
+      "catalog_id": "molicel-inr-21700-p45b",
+      "manufacturer": null,
+      "brand": "Molicel",
+      "model": "INR-21700-P45B",
+      "variant_key": "inr-21700-p45b",
+      "variant_description": "Individual INR-21700-P45B cylindrical cell described by the selected manufacturer data-sheet edition; tabbed, protected or assembled variants require their own applicability evidence.",
+      "suggested_display_name": "Molicel INR-21700-P45B",
+      "aliases": [
+        {
+          "value": "INR-21700-P45B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "P45B",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "21700",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "21700",
+        "description": "Cylindrical 21700 cell; the size code alone does not identify chemistry or an exact product."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 4500,
+      "minimum_capacity_mah": 4300,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-batch2-inr-21700-p45b-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Manufacturer PDF branding and contact footer",
+            "observation": "Molicel identifies the product data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "INR-21700-P45B"
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "The full printed MPN is an exact candidate; shortened model and size terms remain search-only."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 model heading and Cell Characteristics",
+            "observation": "This sheet specifies the named individual cell."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Explicitly classified as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 Cell Characteristics and Physical Characteristics",
+            "observation": "The data sheet describes one cylindrical cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 exact model heading and Physical Characteristics / Shape",
+            "observation": "21700 designation; cylindrical shape."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No capacity explicitly labelled Rated or Nominal is supplied."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No Rated or Nominal capacity basis."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical",
+            "observation": "4500 mAh, explicitly Typical."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V is a separate charge-voltage value."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p45b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Minimum",
+            "observation": "4300 mAh, explicitly Minimum."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah remains null.",
+        "Legal manufacturer organization was not separately established for this core-specification batch; manufacturer is null.",
+        "Typical and minimum energy values are not relabelled nominal or rated energy; energy_wh is null.",
+        "Terminal connector, cell configuration, dimensions, mass and maintenance instructions were not selected for this core-specification batch and remain null.",
+        "The selected capacity table does not define a complete capacity test protocol; chart-specific conditions are not generalized to the capacity rating."
+      ],
+      "notes": [
+        "Public reference product only; not evidence of school inventory or a purchasing recommendation.",
+        "Typical and Minimum values retain manufacturer labels and do not silently populate the application's Rated capacity field.",
+        "The suggested display name is editable; it is not an asset ID."
+      ]
+    },
+    {
+      "catalog_id": "molicel-inr-21700-p50b",
+      "manufacturer": null,
+      "brand": "Molicel",
+      "model": "INR-21700-P50B",
+      "variant_key": "inr-21700-p50b",
+      "variant_description": "Individual INR-21700-P50B cylindrical cell described by the selected manufacturer data-sheet edition; tabbed, protected or assembled variants require their own applicability evidence.",
+      "suggested_display_name": "Molicel INR-21700-P50B",
+      "aliases": [
+        {
+          "value": "INR-21700-P50B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "P50B",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "21700",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "21700",
+        "description": "Cylindrical 21700 cell; the size code alone does not identify chemistry or an exact product."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 5000,
+      "minimum_capacity_mah": 4850,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-batch2-inr-21700-p50b-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Manufacturer PDF branding and contact footer",
+            "observation": "Molicel identifies the product data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "INR-21700-P50B"
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "The full printed MPN is an exact candidate; shortened model and size terms remain search-only."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 model heading and Cell Characteristics",
+            "observation": "This sheet specifies the named individual cell."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Explicitly classified as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 Cell Characteristics and Physical Characteristics",
+            "observation": "The data sheet describes one cylindrical cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 exact model heading and Physical Characteristics / Shape",
+            "observation": "21700 designation; cylindrical shape."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No capacity explicitly labelled Rated or Nominal is supplied."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No Rated or Nominal capacity basis."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical",
+            "observation": "5000 mAh, explicitly Typical."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V is a separate charge-voltage value."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Minimum",
+            "observation": "4850 mAh, explicitly Minimum."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah remains null.",
+        "Legal manufacturer organization was not separately established for this core-specification batch; manufacturer is null.",
+        "Typical and minimum energy values are not relabelled nominal or rated energy; energy_wh is null.",
+        "Terminal connector, cell configuration, dimensions, mass and maintenance instructions were not selected for this core-specification batch and remain null.",
+        "The selected capacity table does not define a complete capacity test protocol; chart-specific conditions are not generalized to the capacity rating."
+      ],
+      "notes": [
+        "Public reference product only; not evidence of school inventory or a purchasing recommendation.",
+        "Typical and Minimum values retain manufacturer labels and do not silently populate the application's Rated capacity field.",
+        "The suggested display name is editable; it is not an asset ID."
+      ]
+    },
+    {
+      "catalog_id": "molicel-inr-21700-p50s",
+      "manufacturer": null,
+      "brand": "Molicel",
+      "model": "INR-21700-P50S",
+      "variant_key": "inr-21700-p50s",
+      "variant_description": "Individual INR-21700-P50S cylindrical cell described by the selected manufacturer data-sheet edition; tabbed, protected or assembled variants require their own applicability evidence.",
+      "suggested_display_name": "Molicel INR-21700-P50S",
+      "aliases": [
+        {
+          "value": "INR-21700-P50S",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "P50S",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "21700",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "21700",
+        "description": "Cylindrical 21700 cell; the size code alone does not identify chemistry or an exact product."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 5000,
+      "minimum_capacity_mah": 4900,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The Capacity / Typical row includes the literal qualification '(+/- 0.2C)'. This row does not specify a complete numerical test protocol, temperature or cutoff; the notation is preserved without reinterpretation.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-batch2-inr-21700-p50s-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Manufacturer PDF branding and contact footer",
+            "observation": "Molicel identifies the product data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "INR-21700-P50S"
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "The full printed MPN is an exact candidate; shortened model and size terms remain search-only."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 model heading and Cell Characteristics",
+            "observation": "This sheet specifies the named individual cell."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Explicitly classified as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 Cell Characteristics and Physical Characteristics",
+            "observation": "The data sheet describes one cylindrical cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 exact model heading and Physical Characteristics / Shape",
+            "observation": "21700 designation; cylindrical shape."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No capacity explicitly labelled Rated or Nominal is supplied."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No Rated or Nominal capacity basis."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical",
+            "observation": "5000 mAh, explicitly Typical."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V is a separate charge-voltage value."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Minimum",
+            "observation": "4900 mAh, explicitly Minimum."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p50s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical qualification",
+            "observation": "The Typical row includes literal +/- 0.2C notation; its full protocol is not defined by the row."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah remains null.",
+        "Legal manufacturer organization was not separately established for this core-specification batch; manufacturer is null.",
+        "Typical and minimum energy values are not relabelled nominal or rated energy; energy_wh is null.",
+        "Terminal connector, cell configuration, dimensions, mass and maintenance instructions were not selected for this core-specification batch and remain null.",
+        "The source's +/- 0.2C capacity notation is retained literally; temperature and cutoff for the quoted capacity row are not established."
+      ],
+      "notes": [
+        "Public reference product only; not evidence of school inventory or a purchasing recommendation.",
+        "Typical and Minimum values retain manufacturer labels and do not silently populate the application's Rated capacity field.",
+        "The suggested display name is editable; it is not an asset ID."
+      ]
+    },
+    {
+      "catalog_id": "molicel-inr-18650-p22s",
+      "manufacturer": null,
+      "brand": "Molicel",
+      "model": "INR-18650-P22S",
+      "variant_key": "inr-18650-p22s",
+      "variant_description": "Individual INR-18650-P22S cylindrical cell described by the selected manufacturer data-sheet edition; tabbed, protected or assembled variants require their own applicability evidence.",
+      "suggested_display_name": "Molicel INR-18650-P22S",
+      "aliases": [
+        {
+          "value": "INR-18650-P22S",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "P22S",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "18650",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "18650",
+        "description": "Cylindrical 18650 cell; the size code alone does not identify chemistry or an exact product."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 2200,
+      "minimum_capacity_mah": 2000,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-batch2-inr-18650-p22s-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Manufacturer PDF branding and contact footer",
+            "observation": "Molicel identifies the product data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "INR-18650-P22S"
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "The full printed MPN is an exact candidate; shortened model and size terms remain search-only."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 model heading and Cell Characteristics",
+            "observation": "This sheet specifies the named individual cell."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Explicitly classified as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 Cell Characteristics and Physical Characteristics",
+            "observation": "The data sheet describes one cylindrical cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 exact model heading and Physical Characteristics / Shape",
+            "observation": "18650 designation; cylindrical shape."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No capacity explicitly labelled Rated or Nominal is supplied."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No Rated or Nominal capacity basis."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical",
+            "observation": "2200 mAh, explicitly Typical."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V is a separate charge-voltage value."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p22s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Minimum",
+            "observation": "2000 mAh, explicitly Minimum."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah remains null.",
+        "Legal manufacturer organization was not separately established for this core-specification batch; manufacturer is null.",
+        "Typical and minimum energy values are not relabelled nominal or rated energy; energy_wh is null.",
+        "Terminal connector, cell configuration, dimensions, mass and maintenance instructions were not selected for this core-specification batch and remain null.",
+        "The selected capacity table does not define a complete capacity test protocol; chart-specific conditions are not generalized to the capacity rating."
+      ],
+      "notes": [
+        "Public reference product only; not evidence of school inventory or a purchasing recommendation.",
+        "Typical and Minimum values retain manufacturer labels and do not silently populate the application's Rated capacity field.",
+        "The suggested display name is editable; it is not an asset ID."
+      ]
+    },
+    {
+      "catalog_id": "molicel-inr-18650-p30s",
+      "manufacturer": null,
+      "brand": "Molicel",
+      "model": "INR-18650-P30S",
+      "variant_key": "inr-18650-p30s",
+      "variant_description": "Individual INR-18650-P30S cylindrical cell described by the selected manufacturer data-sheet edition; tabbed, protected or assembled variants require their own applicability evidence.",
+      "suggested_display_name": "Molicel INR-18650-P30S",
+      "aliases": [
+        {
+          "value": "INR-18650-P30S",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "P30S",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "18650",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "18650",
+        "description": "Cylindrical 18650 cell; the size code alone does not identify chemistry or an exact product."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 3000,
+      "minimum_capacity_mah": 2900,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The Capacity / Typical row includes the literal qualification '(+/-0.2C)'. This row does not specify a complete numerical test protocol, temperature or cutoff; the notation is preserved without reinterpretation.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-batch2-inr-18650-p30s-datasheet",
+        "molicel-batch2-inr-18650-p30s-product-page"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Manufacturer PDF branding and contact footer",
+            "observation": "Molicel identifies the product data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "INR-18650-P30S"
+          },
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-product-page",
+            "locator": "Model",
+            "observation": "INR-18650-P30S, corroborating the document heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "The full printed MPN is an exact candidate; shortened model and size terms remain search-only."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 model heading and Cell Characteristics",
+            "observation": "This sheet specifies the named individual cell."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Explicitly classified as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 Cell Characteristics and Physical Characteristics",
+            "observation": "The data sheet describes one cylindrical cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 exact model heading and Physical Characteristics / Shape",
+            "observation": "18650 designation; cylindrical shape."
+          },
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-product-page",
+            "locator": "Tab Design and Form",
+            "observation": "18650 cylindrical cell."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No capacity explicitly labelled Rated or Nominal is supplied."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No Rated or Nominal capacity basis."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical",
+            "observation": "3000 mAh, explicitly Typical."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V is a separate charge-voltage value."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Minimum",
+            "observation": "2900 mAh, explicitly Minimum."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p30s-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical qualification",
+            "observation": "The Typical row includes literal +/- 0.2C notation; its full protocol is not defined by the row."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah remains null.",
+        "Legal manufacturer organization was not separately established for this core-specification batch; manufacturer is null.",
+        "Typical and minimum energy values are not relabelled nominal or rated energy; energy_wh is null.",
+        "Terminal connector, cell configuration, dimensions, mass and maintenance instructions were not selected for this core-specification batch and remain null.",
+        "The source's +/- 0.2C capacity notation is retained literally; temperature and cutoff for the quoted capacity row are not established."
+      ],
+      "notes": [
+        "Public reference product only; not evidence of school inventory or a purchasing recommendation.",
+        "Typical and Minimum values retain manufacturer labels and do not silently populate the application's Rated capacity field.",
+        "The suggested display name is editable; it is not an asset ID.",
+        "The PDF URL contains '21700', but the printed model heading identifies INR-18650-P30S on both pages. The separately opened exact product page confirms INR-18650-P30S and 18650 form; the filename is not used as product identity evidence."
+      ]
+    },
+    {
+      "catalog_id": "molicel-inr-21700-m65a",
+      "manufacturer": null,
+      "brand": "Molicel",
+      "model": "INR-21700-M65A",
+      "variant_key": "inr-21700-m65a",
+      "variant_description": "Individual INR-21700-M65A cylindrical cell described by the selected manufacturer data-sheet edition; tabbed, protected or assembled variants require their own applicability evidence.",
+      "suggested_display_name": "Molicel INR-21700-M65A",
+      "aliases": [
+        {
+          "value": "INR-21700-M65A",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "M65A",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "21700",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "21700",
+        "description": "Cylindrical 21700 cell; the size code alone does not identify chemistry or an exact product."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 6500,
+      "minimum_capacity_mah": 6400,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-batch2-inr-21700-m65a-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Manufacturer PDF branding and contact footer",
+            "observation": "Molicel identifies the product data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "INR-21700-M65A"
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "The full printed MPN is an exact candidate; shortened model and size terms remain search-only."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 model heading and Cell Characteristics",
+            "observation": "This sheet specifies the named individual cell."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Explicitly classified as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 Cell Characteristics and Physical Characteristics",
+            "observation": "The data sheet describes one cylindrical cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 exact model heading and Physical Characteristics / Shape",
+            "observation": "21700 designation; cylindrical shape."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No capacity explicitly labelled Rated or Nominal is supplied."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No Rated or Nominal capacity basis."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical",
+            "observation": "6500 mAh, explicitly Typical."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 Cell Characteristics / Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V is a separate charge-voltage value."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-m65a-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Minimum",
+            "observation": "6400 mAh, explicitly Minimum."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah remains null.",
+        "Legal manufacturer organization was not separately established for this core-specification batch; manufacturer is null.",
+        "Typical and minimum energy values are not relabelled nominal or rated energy; energy_wh is null.",
+        "Terminal connector, cell configuration, dimensions, mass and maintenance instructions were not selected for this core-specification batch and remain null.",
+        "The selected capacity table does not define a complete capacity test protocol; chart-specific conditions are not generalized to the capacity rating."
+      ],
+      "notes": [
+        "Public reference product only; not evidence of school inventory or a purchasing recommendation.",
+        "Typical and Minimum values retain manufacturer labels and do not silently populate the application's Rated capacity field.",
+        "The suggested display name is editable; it is not an asset ID.",
+        "This record cites printed data-sheet Version 0.1 dated 2025-08-05. It does not claim that the sheet is the newest available revision."
+      ]
+    },
+    {
+      "catalog_id": "molicel-inr-18650-p28b",
+      "manufacturer": null,
+      "brand": "Molicel",
+      "model": "INR-18650-P28B",
+      "variant_key": "inr-18650-p28b",
+      "variant_description": "Individual INR-18650-P28B cylindrical cell described by the selected manufacturer data-sheet edition; tabbed, protected or assembled variants require their own applicability evidence.",
+      "suggested_display_name": "Molicel INR-18650-P28B",
+      "aliases": [
+        {
+          "value": "INR-18650-P28B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "P28B",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "18650",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "18650",
+        "description": "Cylindrical 18650 cell; the size code alone does not identify chemistry or an exact product."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 2800,
+      "minimum_capacity_mah": 2650,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-batch2-inr-18650-p28b-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Manufacturer PDF branding and contact footer",
+            "observation": "Molicel identifies the product data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "INR-18650-P28B"
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "The full printed MPN is an exact candidate; shortened model and size terms remain search-only."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 model heading and Cell Characteristics",
+            "observation": "This sheet specifies the named individual cell."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Explicitly classified as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 Cell Characteristics and Physical Characteristics",
+            "observation": "The data sheet describes one cylindrical cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 exact model heading and Physical Characteristics / Shape",
+            "observation": "18650 designation; cylindrical shape."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No capacity explicitly labelled Rated or Nominal is supplied."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No Rated or Nominal capacity basis."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical",
+            "observation": "2800 mAh, explicitly Typical."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V is a separate charge-voltage value."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-18650-p28b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Minimum",
+            "observation": "2650 mAh, explicitly Minimum."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah remains null.",
+        "Legal manufacturer organization was not separately established for this core-specification batch; manufacturer is null.",
+        "Typical and minimum energy values are not relabelled nominal or rated energy; energy_wh is null.",
+        "Terminal connector, cell configuration, dimensions, mass and maintenance instructions were not selected for this core-specification batch and remain null.",
+        "The selected capacity table does not define a complete capacity test protocol; chart-specific conditions are not generalized to the capacity rating.",
+        "A printed data-sheet revision was not found."
+      ],
+      "notes": [
+        "Public reference product only; not evidence of school inventory or a purchasing recommendation.",
+        "Typical and Minimum values retain manufacturer labels and do not silently populate the application's Rated capacity field.",
+        "The suggested display name is editable; it is not an asset ID.",
+        "INR-18650-P28B is a separately named product model, not an alias of INR-18650-P28A. Equal or similar typical capacity does not establish equivalence."
+      ]
+    },
+    {
+      "catalog_id": "molicel-inr-21700-p42b",
+      "manufacturer": null,
+      "brand": "Molicel",
+      "model": "INR-21700-P42B",
+      "variant_key": "inr-21700-p42b",
+      "variant_description": "Individual INR-21700-P42B cylindrical cell described by the selected manufacturer data-sheet edition; tabbed, protected or assembled variants require their own applicability evidence.",
+      "suggested_display_name": "Molicel INR-21700-P42B",
+      "aliases": [
+        {
+          "value": "INR-21700-P42B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "P42B",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "21700",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "21700",
+        "description": "Cylindrical 21700 cell; the size code alone does not identify chemistry or an exact product."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 4200,
+      "minimum_capacity_mah": 4000,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "molicel-batch2-inr-21700-p42b-datasheet"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Manufacturer PDF branding and contact footer",
+            "observation": "Molicel identifies the product data sheet."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "INR-21700-P42B"
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 printed model heading",
+            "observation": "The full printed MPN is an exact candidate; shortened model and size terms remain search-only."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 model heading and Cell Characteristics",
+            "observation": "This sheet specifies the named individual cell."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Lithium-ion rechargeable battery."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 battery classification heading",
+            "observation": "Explicitly classified as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 Cell Characteristics and Physical Characteristics",
+            "observation": "The data sheet describes one cylindrical cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 exact model heading and Physical Characteristics / Shape",
+            "observation": "21700 designation; cylindrical shape."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No capacity explicitly labelled Rated or Nominal is supplied."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity",
+            "observation": "No Rated or Nominal capacity basis."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Typical",
+            "observation": "4200 mAh, explicitly Typical."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Cell Voltage / Nominal",
+            "observation": "3.6 V nominal; 4.2 V is a separate charge-voltage value."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "molicel-batch2-inr-21700-p42b-datasheet",
+            "locator": "Page 1 Cell Characteristics / Capacity / Minimum",
+            "observation": "4000 mAh, explicitly Minimum."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Rated or nominal capacity is not explicitly stated; rated_capacity_mah remains null.",
+        "Legal manufacturer organization was not separately established for this core-specification batch; manufacturer is null.",
+        "Typical and minimum energy values are not relabelled nominal or rated energy; energy_wh is null.",
+        "Terminal connector, cell configuration, dimensions, mass and maintenance instructions were not selected for this core-specification batch and remain null.",
+        "The selected capacity table does not define a complete capacity test protocol; chart-specific conditions are not generalized to the capacity rating.",
+        "A printed data-sheet revision was not found."
+      ],
+      "notes": [
+        "Public reference product only; not evidence of school inventory or a purchasing recommendation.",
+        "Typical and Minimum values retain manufacturer labels and do not silently populate the application's Rated capacity field.",
+        "The suggested display name is editable; it is not an asset ID.",
+        "INR-21700-P42B is a separately named product model, not an alias of INR-21700-P42A. Equal nominal voltage and capacity do not establish equivalence."
+      ]
+    }
+  ]
+}

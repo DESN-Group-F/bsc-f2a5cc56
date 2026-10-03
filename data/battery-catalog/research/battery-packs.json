@@ -1,0 +1,949 @@
+{
+  "sources": [
+    {
+      "source_id": "yuasa-np7-12-uk-page",
+      "url": "https://www.yuasa.com/uk/np7-12",
+      "title": "12V 7Ah - Yuasa NP series standby & cyclic AGM VRLA battery",
+      "publisher": "Yuasa",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "NP7-12; standard ABS case; Faston 4.75 mm"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Specification table and linked datasheet SKU NP7-12/187/NF/Box. HTTPS page was read directly when repeated browser text requests timed out."
+    },
+    {
+      "source_id": "yuasa-np7-12-uk-datasheet",
+      "url": "https://www.yuasa.com/uk/datasheet/index/download/?sku=NP7-12%2F187%2FNF%2FBox",
+      "title": "Yuasa Technical Data Sheet: Yuasa NP7-12 12V 7Ah - Yuasa NP series standby & cyclic AGM VRLA battery",
+      "publisher": "Yuasa",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Data Sheet generated on 02/10/2026",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "NP7-12/187/NF/Box; standard case; Faston 4.75 mm"
+      ],
+      "access_status": "opened",
+      "locator_notes": "One-page PDF retrieved from the product-page link and read in memory with pdfplumber after the browser PDF request timed out. Its generation date is not a technical revision number."
+    },
+    {
+      "source_id": "yuasa-np12-12-uk-page",
+      "url": "https://www.yuasa.com/uk/np12-12",
+      "title": "12V 12Ah - Yuasa NP series standby & cyclic AGM VRLA battery",
+      "publisher": "Yuasa",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "NP12-12; standard ABS case; Faston 6.35 mm"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Specification table and linked datasheet SKU NP12-12/250/NF/Box. HTTPS page was read directly."
+    },
+    {
+      "source_id": "yuasa-np12-12-uk-datasheet",
+      "url": "https://www.yuasa.com/uk/datasheet/index/download/?sku=NP12-12%2F250%2FNF%2FBox",
+      "title": "Yuasa Technical Data Sheet: Yuasa NP12-12 12V 12Ah - Yuasa NP series standby & cyclic AGM VRLA battery",
+      "publisher": "Yuasa",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Data Sheet generated on 02/10/2026",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "NP12-12/250/NF/Box; standard case; Faston 6.35 mm"
+      ],
+      "access_status": "opened",
+      "locator_notes": "One-page PDF; Specifications, Dimensions and Terminal Type tables. Its generation date is not a technical revision number."
+    },
+    {
+      "source_id": "yuasa-industrial-vrla-sds-issue24",
+      "url": "https://www.yuasa.com/media/akeneo_connector/asset_files/S/D/SDS_01_UK_Valve_Regulated_Lead_Acid__VRLA__Industrial_Battery_GB_English_issue__fee6.pdf",
+      "title": "Valve Regulated Lead-Acid (VRLA) Industrial Battery: Safety Data Sheet",
+      "publisher": "GS Yuasa Battery Europe Limited",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "SDS 01 UK Issue 24, 07.07.2026",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "NP series, including the cited UK NP7-12 and NP12-12 variants"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Page 1, Section 1.1 names NP among the covered industrial VRLA series. Used only to verify chemistry; no operating procedure or maintenance schedule is imported."
+    },
+    {
+      "source_id": "tattu-taa15504s15x6-eu-page",
+      "url": "https://gensace.de/products/taa15504s15x6",
+      "title": "Tattu 1550mAh 4S 150C 14.8V Lipo Battery | XT60 Plug | R-Line 5.0",
+      "publisher": "Genspow GmbH / Gens ace & Tattu EU Store",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA15504S15X6; R-Line Version 5.0; 1550 mAh minimum; 4S1P; XT60 discharge connector"
+      ],
+      "access_status": "opened",
+      "locator_notes": "SKU, product title and Specifications list. The description contains a conflicting V4 marketing sentence; the title and SKU identify the V5.0 listing. Approximate dimensions and mass are retained as approximate."
+    },
+    {
+      "source_id": "gensace-gea223s30x6gt-eu-page",
+      "url": "https://gensace.de/products/gens-ace-g-tech-soaring-2200mah-11-1v-30c-3s1p-lipo-battery-pack-with-xt60-plug",
+      "title": "Gens ace 2200mAh 3S 30C 11.1V Lipo Battery | XT60 Plug | Soaring",
+      "publisher": "Genspow GmbH / Gens ace & Tattu EU Store",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "GEA223S30X6GT; G-Tech Soaring; 2200 mAh; 3S1P; XT60"
+      ],
+      "access_status": "opened",
+      "locator_notes": "SKU, Description and Specs. The separately named old non-G-Tech SKU GEA22003S30X6 is excluded from this variant."
+    },
+    {
+      "source_id": "gensace-lipo-guide",
+      "url": "https://gensace.de/pages/lipo-battery-guide",
+      "title": "LiPo Battery Guide",
+      "publisher": "Genspow GmbH / Gens ace & Tattu EU Store",
+      "source_type": "manufacturer_manual",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "General Gens ace and Tattu LiPo terminology; applies only in combination with the exact product page"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Sections What's a Lipo battery? and Battery Voltage support chemistry, rechargeability and nominal voltage terminology. The internally inconsistent 3S2P example in Cell Configuration is not used. No safety limits, charge rates or maintenance rules are copied."
+    }
+  ],
+  "models": [
+    {
+      "manufacturer": null,
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "typical_capacity_mah": null,
+      "energy_wh": null,
+      "energy_basis": null,
+      "maintenance_notes": null,
+      "catalog_id": "yuasa-np7-12-faston-475mm-standard",
+      "brand": "Yuasa",
+      "model": "NP7-12",
+      "variant_key": "standard-case-faston-475mm",
+      "variant_description": "Standard ABS case with 4.75 mm Faston terminals; UK product-page variant.",
+      "aliases": [
+        {
+          "value": "NP7-12",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "NP7-12/187/NF/Box",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lead_acid",
+      "form_factor": {
+        "code": "rectangular_block",
+        "description": "Rectangular AGM VRLA battery block; standard ABS case."
+      },
+      "rated_capacity_mah": 7000,
+      "capacity_basis": "rated",
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "minimum_capacity_mah": null,
+      "capacity_test_conditions": "20-hour discharge rate at 20°C to 1.75 V per cell.",
+      "nominal_voltage_v": 12,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Faston 4.75 mm terminals; standard-case variant.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 151,
+        "width": 65,
+        "height": 97.5,
+        "basis": "Manufacturer dimensions: length 151 ±1 mm; width 65 ±1 mm; height 97.5 mm."
+      },
+      "mass_g": 2200,
+      "source_ids": [
+        "yuasa-np7-12-uk-page",
+        "yuasa-np7-12-uk-datasheet",
+        "yuasa-industrial-vrla-sds-issue24"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "yuasa-np7-12-uk-page",
+            "locator": "Product title",
+            "observation": "The product is identified as Yuasa."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "yuasa-np7-12-uk-page",
+            "locator": "Product heading / Short Part Number",
+            "observation": "The exact short part number is NP7-12."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "yuasa-np7-12-uk-page",
+            "locator": "Product heading / Short Part Number",
+            "observation": "The base model name is NP7-12; staff must also confirm the terminal and case variant."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "yuasa-np7-12-uk-page",
+            "locator": "Downloads & datasheets, Datasheet link",
+            "observation": "The linked datasheet SKU is NP7-12/187/NF/Box."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "yuasa-np7-12-uk-page",
+            "locator": "Specification: Terminal Type, Standard or FR Case",
+            "observation": "The selected listing has 4.75 mm Faston terminals and a standard case."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "yuasa-industrial-vrla-sds-issue24",
+            "locator": "Page 1, Section 1.1 Product identifier",
+            "observation": "The NP series is included in the valve-regulated lead-acid industrial battery scope."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Charge Voltage and Charge Current",
+            "observation": "The model has specified float and cyclic charging characteristics."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Specifications and Charge Voltage",
+            "observation": "The source distinguishes the complete battery block from its constituent cells."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Dimensions and Case Material",
+            "observation": "Length, width and height describe a rectangular battery block with an ABS case."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Specifications: 20-hr rate Capacity",
+            "observation": "7 Ah at the stated 20-hour discharge rating converts to 7000 mAh using 1 Ah = 1000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Specifications: 20-hr rate Capacity",
+            "observation": "The source defines a capacity rating with duration, temperature and discharge end voltage."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Specifications: 20-hr rate Capacity",
+            "observation": "The stated conditions are 20 hours, 20°C and an end voltage of 1.75 V per cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Specifications: Nominal Voltage",
+            "observation": "The nominal voltage is 12 V; charge voltages are separate fields and are not imported."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Terminal Type",
+            "observation": "The terminal width is 4.75 mm Faston for this linked SKU."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Dimensions: Length",
+            "observation": "Length is 151 mm with a ±1 mm tolerance."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Dimensions: Width",
+            "observation": "Width is 65 mm with a ±1 mm tolerance."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Dimensions: Height",
+            "observation": "Height is 97.5 mm; this current sheet does not state a height tolerance."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "yuasa-np7-12-uk-datasheet",
+            "locator": "Page 1, Dimensions: Weight",
+            "observation": "2.2 kg converts to 2200 g using 1 kg = 1000 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact legal manufacturing entity and production facility are not established by the cited product specification.",
+        "Internal series/parallel configuration is not explicitly specified in the cited model sheet.",
+        "A nominal energy rating in Wh and connector polarity layout have not been verified."
+      ],
+      "notes": [
+        "Reference product only; no evidence of school ownership or purchasing preference.",
+        "Do not match another terminal or flame-retardant-case variant from nominal voltage, capacity or the base model alone.",
+        "Capacity is a manufacturer discharge rating, not a measured capacity of an individual asset."
+      ]
+    },
+    {
+      "manufacturer": null,
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "typical_capacity_mah": null,
+      "energy_wh": null,
+      "energy_basis": null,
+      "maintenance_notes": null,
+      "catalog_id": "yuasa-np12-12-faston-635mm-standard",
+      "brand": "Yuasa",
+      "model": "NP12-12",
+      "variant_key": "standard-case-faston-635mm",
+      "variant_description": "Standard ABS case with 6.35 mm Faston terminals; UK product-page variant.",
+      "aliases": [
+        {
+          "value": "NP12-12",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "NP12-12/250/NF/Box",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lead_acid",
+      "form_factor": {
+        "code": "rectangular_block",
+        "description": "Rectangular AGM VRLA battery block; standard ABS case."
+      },
+      "rated_capacity_mah": 12000,
+      "capacity_basis": "rated",
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "minimum_capacity_mah": null,
+      "capacity_test_conditions": "20-hour discharge rate at 20°C to 1.75 V per cell.",
+      "nominal_voltage_v": 12,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Faston 6.35 mm terminals; standard-case variant.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 151,
+        "width": 98,
+        "height": 97.5,
+        "basis": "Manufacturer dimensions: length 151 ±1 mm; width 98 ±1 mm; height 97.5 ±1 mm."
+      },
+      "mass_g": 4050,
+      "source_ids": [
+        "yuasa-np12-12-uk-page",
+        "yuasa-np12-12-uk-datasheet",
+        "yuasa-industrial-vrla-sds-issue24"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "yuasa-np12-12-uk-page",
+            "locator": "Product title",
+            "observation": "The product is identified as Yuasa."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "yuasa-np12-12-uk-page",
+            "locator": "Product heading / Short Part Number",
+            "observation": "The exact short part number is NP12-12."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "yuasa-np12-12-uk-page",
+            "locator": "Product heading / Short Part Number",
+            "observation": "The base model name is NP12-12; staff must also confirm the terminal and case variant."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "yuasa-np12-12-uk-page",
+            "locator": "Downloads & datasheets, Datasheet link",
+            "observation": "The linked datasheet SKU is NP12-12/250/NF/Box."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "yuasa-np12-12-uk-page",
+            "locator": "Specification: Terminal Type, Standard or FR Case",
+            "observation": "The selected listing has 6.35 mm Faston terminals and a standard case."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "yuasa-industrial-vrla-sds-issue24",
+            "locator": "Page 1, Section 1.1 Product identifier",
+            "observation": "The NP series is included in the valve-regulated lead-acid industrial battery scope."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Charge Voltage and Charge Current",
+            "observation": "The model has specified float and cyclic charging characteristics."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Specifications and Charge Voltage",
+            "observation": "The source distinguishes the complete battery block from its constituent cells."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Dimensions and Case Material",
+            "observation": "Length, width and height describe a rectangular battery block with an ABS case."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Specifications: 20-hr rate Capacity",
+            "observation": "12 Ah at the stated 20-hour discharge rating converts to 12000 mAh using 1 Ah = 1000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Specifications: 20-hr rate Capacity",
+            "observation": "The source defines a capacity rating with duration, temperature and discharge end voltage."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Specifications: 20-hr rate Capacity",
+            "observation": "The stated conditions are 20 hours, 20°C and an end voltage of 1.75 V per cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Specifications: Nominal Voltage",
+            "observation": "The nominal voltage is 12 V; charge voltages are separate fields and are not imported."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Terminal Type",
+            "observation": "The terminal width is 6.35 mm Faston for this linked SKU."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Dimensions: Length",
+            "observation": "Length is 151 mm with a ±1 mm tolerance."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Dimensions: Width",
+            "observation": "Width is 98 mm with a ±1 mm tolerance."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Dimensions: Height",
+            "observation": "Height is 97.5 mm with a ±1 mm tolerance."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "yuasa-np12-12-uk-datasheet",
+            "locator": "Page 1, Dimensions: Weight",
+            "observation": "4.05 kg converts to 4050 g using 1 kg = 1000 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact legal manufacturing entity and production facility are not established by the cited product specification.",
+        "Internal series/parallel configuration is not explicitly specified in the cited model sheet.",
+        "A nominal energy rating in Wh and connector polarity layout have not been verified."
+      ],
+      "notes": [
+        "Reference product only; no evidence of school ownership or purchasing preference.",
+        "Do not match another terminal or flame-retardant-case variant from nominal voltage, capacity or the base model alone.",
+        "Capacity is a manufacturer discharge rating, not a measured capacity of an individual asset."
+      ]
+    },
+    {
+      "manufacturer": null,
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "typical_capacity_mah": null,
+      "energy_wh": null,
+      "energy_basis": null,
+      "maintenance_notes": null,
+      "catalog_id": "tattu-taa15504s15x6-rline5-xt60",
+      "brand": "Tattu",
+      "model": "TAA15504S15X6",
+      "variant_key": "r-line-5.0-1550mah-4s1p-xt60",
+      "variant_description": "R-Line Version 5.0, 1550 mAh minimum, 4S1P, XT60 discharge connector and JST-XHR-5P charge connector.",
+      "aliases": [
+        {
+          "value": "TAA15504S15X6",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "Tattu R-Line Version 5.0 1550mAh 14.8V 150C 4S1P",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "form_factor": {
+        "code": "rectangular_pack",
+        "description": "Rectangular LiPo battery pack; exact enclosure construction is not verified."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "minimum_capacity_mah": 1550,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 14.8,
+      "configuration": {
+        "series": 4,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT60 discharge connector; JST-XHR-5P charge connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 76,
+        "width": 39,
+        "height": 31,
+        "basis": "Manufacturer approximate L x W x H dimensions."
+      },
+      "mass_g": 173,
+      "source_ids": [
+        "tattu-taa15504s15x6-eu-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Product title",
+            "observation": "The listing is branded Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "SKU",
+            "observation": "The listed SKU is TAA15504S15X6."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "SKU",
+            "observation": "The exact product SKU is TAA15504S15X6."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Description",
+            "observation": "The longer product name is a search aid; it does not replace SKU and connector confirmation."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "SKU, title and Specifications",
+            "observation": "The listing identifies the V5.0 1550 mAh 4S1P product with XT60 and JST-XHR-5P connectors."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Product title and Description",
+            "observation": "The exact product is identified as LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "The brand guide defines LiPo as rechargeable lithium-ion polymer technology."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Description",
+            "observation": "The product is explicitly described as a 4S1P LiPo battery pack."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Specifications: Dimension",
+            "observation": "Approximate L x W x H dimensions describe the rectangular pack; the enclosure material is not inferred."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Specifications: Minimum Capacity",
+            "observation": "The source labels 1550 mAh as Minimum Capacity; it states no separate rated capacity."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Specifications: Configuration",
+            "observation": "The exact product lists 14.8 V and 4S1P."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "Battery Voltage",
+            "observation": "The brand guide identifies 4S LiPo packs as 14.8 V within its nominal-voltage explanation; no maximum charging voltage is imported."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Specifications: Configuration",
+            "observation": "The product explicitly states 4S1P; series count is 4, not inferred from voltage division."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Specifications: Configuration",
+            "observation": "The product explicitly states 4S1P; parallel count is 1."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Specifications: Charge Plug and Discharge Plug",
+            "observation": "The listed connectors are JST-XHR-5P for charging and XT60 for discharge."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Specifications: Dimension",
+            "observation": "The approximate length is 76 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Specifications: Dimension",
+            "observation": "The approximate width is 39 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Specifications: Dimension",
+            "observation": "The approximate height is 31 mm."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Specifications: Weight",
+            "observation": "The approximate pack mass is 173 g."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "tattu-taa15504s15x6-eu-page",
+            "locator": "Specifications: Minimum Capacity",
+            "observation": "The minimum capacity is 1550 mAh; it is not relabeled as rated or typical."
+          }
+        ]
+      },
+      "verification_status": "partial",
+      "conflicts": [
+        "The product title and first description identify R-Line Version 5.0, while one marketing sentence refers to V4. SKU and core electrical specifications are consistent within the listing; physical labels and the exact supplied version require staff confirmation."
+      ],
+      "unknowns": [
+        "The exact legal manufacturing entity is not established by the cited storefront.",
+        "Capacity test duration, current, temperature and cutoff conditions are not stated in the product page.",
+        "No manufacturer Wh rating or connector polarity layout has been verified."
+      ],
+      "notes": [
+        "Reference product only; no evidence of school ownership or purchasing preference.",
+        "The listed 1550 mAh is minimum capacity; there is no verified rated or typical capacity value.",
+        "The generic guide's internally inconsistent 3S2P example is excluded; configuration comes from the exact product description.",
+        "Approximate external dimensions and mass are reference values, not measurements of an asset."
+      ]
+    },
+    {
+      "manufacturer": null,
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "typical_capacity_mah": null,
+      "energy_wh": null,
+      "energy_basis": null,
+      "maintenance_notes": null,
+      "catalog_id": "gensace-gea223s30x6gt-soaring-gtech-xt60",
+      "brand": "Gens ace",
+      "model": "GEA223S30X6GT",
+      "variant_key": "g-tech-soaring-2200mah-3s1p-xt60",
+      "variant_description": "G-Tech Soaring, stated 2200 mAh capacity, 3S1P and XT60 connector.",
+      "aliases": [
+        {
+          "value": "GEA223S30X6GT",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "Gens ace G-Tech Soaring 2200mAh 11.1V 30C 3S1P",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "form_factor": {
+        "code": "rectangular_pack",
+        "description": "Rectangular LiPo battery pack; exact enclosure construction is not verified."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "stated_capacity_mah": 2200,
+      "stated_capacity_label": "Capacity",
+      "minimum_capacity_mah": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 11.1,
+      "configuration": {
+        "series": 3,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT60 connector; balance/charge connector not specified in the cited product page.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 106.5,
+        "width": 35,
+        "height": 21.5,
+        "basis": "Manufacturer approximate L x W x H dimensions."
+      },
+      "mass_g": 174,
+      "source_ids": [
+        "gensace-gea223s30x6gt-eu-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Product title",
+            "observation": "The listing is branded Gens ace."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "SKU",
+            "observation": "The listed SKU is GEA223S30X6GT."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "SKU",
+            "observation": "The exact product SKU is GEA223S30X6GT."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Description",
+            "observation": "The longer product name is a search aid; it does not replace SKU and connector confirmation."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "SKU, Description and product title",
+            "observation": "The listing identifies the G-Tech 2200 mAh 3S1P Soaring product with XT60."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Product title and Description",
+            "observation": "The exact product is identified as LiPo."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "The brand guide defines LiPo as rechargeable lithium-ion polymer technology."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Description",
+            "observation": "The product is explicitly described as a 3S1P LiPo battery pack."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Specs: Dimension",
+            "observation": "Approximate L x W x H dimensions describe the rectangular pack; the enclosure material is not inferred."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Specs: Capacity",
+            "observation": "The source states capacity but does not specify whether it is rated, nominal, typical or minimum."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Specs: Voltage",
+            "observation": "The exact product lists 11.1 V and 3S1P."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "Battery Voltage",
+            "observation": "The brand guide identifies 3S LiPo packs as 11.1 V within its nominal-voltage explanation; no maximum charging voltage is imported."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Description",
+            "observation": "The product explicitly states 3S1P; series count is 3, not inferred from voltage division."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Description",
+            "observation": "The product explicitly states 3S1P; parallel count is 1."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Product title",
+            "observation": "The product title specifies XT60; a balance connector type is not provided."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Specs: Dimension",
+            "observation": "The approximate length is 106.5 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Specs: Dimension",
+            "observation": "The approximate width is 35 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Specs: Dimension",
+            "observation": "The approximate height is 21.5 mm."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Specs: Weight",
+            "observation": "The approximate pack mass is 174 g."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Specs: Capacity",
+            "observation": "The page declares 2200 mAh without defining a capacity basis."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "gensace-gea223s30x6gt-eu-page",
+            "locator": "Specs: Capacity",
+            "observation": "The source label is Capacity."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact legal manufacturing entity is not established by the cited storefront.",
+        "Capacity test duration, current, temperature and cutoff conditions are not stated in the product page.",
+        "No manufacturer Wh rating or connector polarity layout has been verified.",
+        "The cited capacity does not declare a rated, nominal, typical or minimum basis.",
+        "The balance/charge connector is not specified."
+      ],
+      "notes": [
+        "Reference product only; no evidence of school ownership or purchasing preference.",
+        "The older non-G-Tech SKU GEA22003S30X6 is explicitly separate and is not an alias for this variant.",
+        "The generic guide's internally inconsistent 3S2P example is excluded; configuration comes from the exact product description.",
+        "Approximate external dimensions and mass are reference values, not measurements of an asset."
+      ]
+    }
+  ]
+}

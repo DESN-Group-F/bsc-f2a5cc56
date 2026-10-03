@@ -1,0 +1,3603 @@
+{
+  "sources": [
+    {
+      "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+      "url": "https://static.milwaukeetool.eu/NetC.MilwaukeeTools/media/Product-Downloads/542661_doc_fr-fr.pdf?v=1725889503000",
+      "title": "Safety Data Sheet - Milwaukee Lithium Ion Batteries (battery pack with lithium ion cells)",
+      "publisher": "TTI-EMEA / Techtronic Industries GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Revision 15 Aug 2024; Rev. No. 8",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "M18B2: exact rechargeable lithium-ion battery model row in Section 1.1; the correspondingly spaced product-page designation is M18 B2.",
+        "M18B4: exact rechargeable lithium-ion battery model row in Section 1.1; the correspondingly spaced product-page designation is M18 B4.",
+        "M18B5: exact rechargeable lithium-ion battery model row in Section 1.1; the correspondingly spaced product-page designation is M18 B5.",
+        "M18HB3: exact rechargeable lithium-ion battery model row in Section 1.1; the correspondingly spaced product-page designation is M18 HB3.",
+        "M18HB5.5: exact rechargeable lithium-ion battery model row in Section 1.1; the correspondingly spaced product-page designation is M18 HB5.5.",
+        "M18HB8: exact rechargeable lithium-ion battery model row in Section 1.1; the correspondingly spaced product-page designation is M18 HB8.",
+        "M18FB8: exact rechargeable lithium-ion battery model row in Section 1.1; the correspondingly spaced product-page designation is M18 FB8.",
+        "M18FB12: exact rechargeable lithium-ion battery model row in Section 1.1; the correspondingly spaced product-page designation is M18 FB12."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual 12-page English PDF opened and read through the web text reader, despite the fr-fr filename. PDF pages 1-2, Section 1.1: Model designation, Nominal Voltage (V), Rated Capacity (Ah), Rated Energy (Wh). Page 4, Section 3.2: rechargeable lithium-ion battery pack. Page 8, Section 9.1: compact batteries with plastic enclosure and electrical terminals. The supplier identity is not asserted as the physical cell manufacturer. A later in-memory urllib request returned HTTP 403, but the actual PDF text remained opened through the web reader. Screenshot responses did not supply usable page images."
+    },
+    {
+      "source_id": "milwaukee-m18-b2-page-uk",
+      "url": "https://uk.milwaukeetool.eu/en-gb/m18-20-ah-battery/m18-b2/",
+      "title": "M18™ 2.0 Ah battery | Milwaukee Tool UK",
+      "publisher": "Milwaukee Tool Europe",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "M18 B2: selected single-battery model, article 4932430062; charger kits and other battery models are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer product page opened and product-body text read. Use Select Model, the adjacent article number, title, Breakdown (single battery quantity) and Features. Collapsed Specification content is not treated as a read specification table. Nominal voltage and rated capacity/energy are taken from the explicitly labelled SDS model row."
+    },
+    {
+      "source_id": "milwaukee-m18-b4-page-uk",
+      "url": "https://uk.milwaukeetool.eu/en-gb/m18-40-ah-battery/m18-b4/",
+      "title": "M18™ 4.0 Ah battery | Milwaukee Tool UK",
+      "publisher": "Milwaukee Tool Europe",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "M18 B4: selected single-battery model, article 4932430063; charger kits and other battery models are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer product page opened and product-body text read. Use Select Model, the adjacent article number, title, Breakdown (single battery quantity) and Features. Collapsed Specification content is not treated as a read specification table. Nominal voltage and rated capacity/energy are taken from the explicitly labelled SDS model row."
+    },
+    {
+      "source_id": "milwaukee-m18-b5-page-uk",
+      "url": "https://uk.milwaukeetool.eu/en-gb/m18-50-ah-battery/m18-b5/",
+      "title": "M18™ 5.0 Ah battery | Milwaukee Tool UK",
+      "publisher": "Milwaukee Tool Europe",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "M18 B5: selected single-battery model, article 4932430483; charger kits and other battery models are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer product page opened and product-body text read. Use Select Model, the adjacent article number, title, Breakdown (single battery quantity) and Features. Collapsed Specification content is not treated as a read specification table. Nominal voltage and rated capacity/energy are taken from the explicitly labelled SDS model row."
+    },
+    {
+      "source_id": "milwaukee-m18-hb3-page-uk",
+      "url": "https://uk.milwaukeetool.eu/en-gb/m18-high-output-30-ah-battery/m18-hb3/",
+      "title": "M18™ HIGH OUTPUT™ 3.0 Ah battery | Milwaukee Tool UK",
+      "publisher": "Milwaukee Tool Europe",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "M18 HB3: selected single-battery model, article 4932471069; charger kits and other battery models are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer product page opened and product-body text read. Use Select Model, the adjacent article number, title, Breakdown (single battery quantity) and Features. Collapsed Specification content is not treated as a read specification table. Nominal voltage and rated capacity/energy are taken from the explicitly labelled SDS model row."
+    },
+    {
+      "source_id": "milwaukee-m18-hb5-5-page-uk",
+      "url": "https://uk.milwaukeetool.eu/en-gb/m18-high-output-55-ah-battery/m18-hb5-5/",
+      "title": "M18™ HIGH OUTPUT™ 5.5 Ah battery | Milwaukee Tool UK",
+      "publisher": "Milwaukee Tool Europe",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "M18 HB5.5: selected single-battery model, article 4932464712; charger kits and other battery models are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer product page opened and product-body text read. Use Select Model, the adjacent article number, title, Breakdown (single battery quantity) and Features. Collapsed Specification content is not treated as a read specification table. Nominal voltage and rated capacity/energy are taken from the explicitly labelled SDS model row."
+    },
+    {
+      "source_id": "milwaukee-m18-hb8-page-eu",
+      "url": "https://www.milwaukeetool.eu/en-eu/m18-high-output-80-ah-battery/m18-hb8/",
+      "title": "M18™ HIGH OUTPUT™ 8.0 Ah battery | Milwaukee Tool EU",
+      "publisher": "Milwaukee Tool Europe",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "M18 HB8: selected single-battery model, article 4932471070; charger kits and other battery models are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer product page opened and product-body text read. Use Select Model, the adjacent article number, title, Breakdown (single battery quantity) and Features. Collapsed Specification content is not treated as a read specification table. Nominal voltage and rated capacity/energy are taken from the explicitly labelled SDS model row. The UK HB8 URL redirected to a category, so the actual EU single-product page is used for HB8."
+    },
+    {
+      "source_id": "milwaukee-m18-fb8-page-uk",
+      "url": "https://uk.milwaukeetool.eu/en-gb/m18-forge-80-ah-battery/m18-fb8/",
+      "title": "M18™ FORGE™ 8.0 Ah battery | Milwaukee Tool UK",
+      "publisher": "Milwaukee Tool Europe",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "M18 FB8: selected single-battery model, article 4932492131; charger kits and other battery models are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer product page opened and product-body text read. Use Select Model, the adjacent article number, title, Breakdown (single battery quantity) and Features. Collapsed Specification content is not treated as a read specification table. Nominal voltage and rated capacity/energy are taken from the explicitly labelled SDS model row."
+    },
+    {
+      "source_id": "milwaukee-m18-fb12-page-uk",
+      "url": "https://uk.milwaukeetool.eu/en-gb/m18-forge-120-ah-battery/m18-fb12/",
+      "title": "M18™ FORGE™ 12.0 Ah battery | Milwaukee Tool UK",
+      "publisher": "Milwaukee Tool Europe",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "M18 FB12: selected single-battery model, article 4932492651; charger kits and other battery models are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer product page opened and product-body text read. Use Select Model, the adjacent article number, title, Breakdown (single battery quantity) and Features. Collapsed Specification content is not treated as a read specification table. Nominal voltage and rated capacity/energy are taken from the explicitly labelled SDS model row."
+    },
+    {
+      "source_id": "dewalt-batteries-chargers-manual-r04-us",
+      "url": "https://assets.dewalt.com/GLOBALBOM/QU/DCBP320/2/Instruction_Manual/EN/NA407764_r04_man_Dewalt_Batteries_and_Chargers_half_letter_NA_NBC.292806.pdf",
+      "title": "Batteries and Chargers - Instruction Manual",
+      "publisher": "DEWALT",
+      "source_type": "manufacturer_manual",
+      "document_version": "NA407764 r04 08/25",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "DCB203: exact battery model in the PDF page 12 battery-packs table; battery family and MAX/nominal voltage footnote apply.",
+        "DCB205: exact battery model in the PDF page 12 battery-packs table; battery family and MAX/nominal voltage footnote apply.",
+        "DCB210: exact battery model in the PDF page 12 battery-packs table; battery family and MAX/nominal voltage footnote apply.",
+        "DCBP034: exact battery model in the PDF page 12 battery-packs table; battery family and MAX/nominal voltage footnote apply.",
+        "DCBP320: exact battery model in the PDF page 12 battery-packs table; battery family and MAX/nominal voltage footnote apply.",
+        "DCBP520: exact battery model in the PDF page 12 battery-packs table; battery family and MAX/nominal voltage footnote apply.",
+        "DCB2108: exact battery model in the PDF page 12 battery-packs table; battery family and MAX/nominal voltage footnote apply.",
+        "DCB126: exact battery model in the PDF page 12 battery-packs table; battery family and MAX/nominal voltage footnote apply."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual 12-page PDF retrieved with HTTP 200 and read in memory with pdfplumber; also opened through the web reader, whose later text request timed out. PDF page 1: document title and battery/charger figures. Page 2: battery packs, lithium-ion wording, external battery case and charging context. Page 4: Charging a Battery and Li-ion battery charging context. Page 12: exact 12V Max and 20V Max battery-model applicability, MAX/nominal voltage footnote and NA407764 r04 08/25 identifier. This newer manual includes DCBP320 and DCB2108, unlike the older NA407764 12/23 manual linked from some pages. It is linked by the official DCBP320 product page; no compatibility claim for an unlisted battery is inferred."
+    },
+    {
+      "source_id": "dewalt-dcb203-page-us",
+      "url": "https://www.dewalt.com/en-us/product/dcb203/20v-max-2-ah-battery",
+      "title": "20V MAX* 2 Ah Battery | DEWALT",
+      "publisher": "DEWALT",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "DCB203: exact selected SKU and single battery, Total Number of Batteries 1; -2 retail packaging, resistant-housing and other product variants are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual product HTML retrieved with HTTP 200 and parsed in memory. Read the selected model heading, Overview, Features, Total Number of Batteries, Includes and Disclaimer nominal-voltage footnote. Capacity is read from the manufacturer's embedded Product structured data, additionalProperty named Battery Amp Hours; this generic label is not promoted to a rated or nominal capacity. Recommendations for other products and kit/2-pack options are excluded. Product image alt text is corroborative only."
+    },
+    {
+      "source_id": "dewalt-dcb205-page-us",
+      "url": "https://www.dewalt.com/en-us/product/dcb205/20v-max-5ah-battery",
+      "title": "20V MAX* 5Ah Battery | DEWALT",
+      "publisher": "DEWALT",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "DCB205: exact selected SKU and single battery, Total Number of Batteries 1; -2 retail packaging, resistant-housing and other product variants are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual product HTML retrieved with HTTP 200 and parsed in memory. Read the selected model heading, Overview, Features, Total Number of Batteries, Includes and Disclaimer nominal-voltage footnote. Capacity is read from the manufacturer's embedded Product structured data, additionalProperty named Battery Amp Hours; this generic label is not promoted to a rated or nominal capacity. Recommendations for other products and kit/2-pack options are excluded. Product image alt text is corroborative only."
+    },
+    {
+      "source_id": "dewalt-dcb210-page-us",
+      "url": "https://www.dewalt.com/en-us/product/dcb210/20v-max-10ah-battery",
+      "title": "20V MAX* 10Ah Battery | DEWALT",
+      "publisher": "DEWALT",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "DCB210: exact selected SKU and single battery, Total Number of Batteries 1; -2 retail packaging, resistant-housing and other product variants are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual product HTML retrieved with HTTP 200 and parsed in memory. Read the selected model heading, Overview, Features, Total Number of Batteries, Includes and Disclaimer nominal-voltage footnote. Capacity is read from the manufacturer's embedded Product structured data, additionalProperty named Battery Amp Hours; this generic label is not promoted to a rated or nominal capacity. Recommendations for other products and kit/2-pack options are excluded. Product image alt text is corroborative only."
+    },
+    {
+      "source_id": "dewalt-dcbp034-page-us",
+      "url": "https://www.dewalt.com/en-us/product/dcbp034/20v-max-powerstack-compact-battery",
+      "title": "20V MAX* POWERSTACK™ Compact Battery | DEWALT",
+      "publisher": "DEWALT",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "DCBP034: exact selected SKU and single battery, Total Number of Batteries 1; -2 retail packaging, resistant-housing and other product variants are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual product HTML retrieved with HTTP 200 and parsed in memory. Read the selected model heading, Overview, Features, Total Number of Batteries, Includes and Disclaimer nominal-voltage footnote. Capacity is read from the manufacturer's embedded Product structured data, additionalProperty named Battery Amp Hours; this generic label is not promoted to a rated or nominal capacity. Recommendations for other products and kit/2-pack options are excluded. Product image alt text is corroborative only."
+    },
+    {
+      "source_id": "dewalt-dcbp320-page-us",
+      "url": "https://www.dewalt.com/en-us/product/dcbp320/20v-max-xr-35ah-battery",
+      "title": "20V MAX* XR® 3.5Ah Battery | DEWALT",
+      "publisher": "DEWALT",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "DCBP320: exact selected SKU and single battery, Total Number of Batteries 1; -2 retail packaging, resistant-housing and other product variants are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual product HTML retrieved with HTTP 200 and parsed in memory. Read the selected model heading, Overview, Features, Total Number of Batteries, Includes and Disclaimer nominal-voltage footnote. Capacity is read from the manufacturer's embedded Product structured data, additionalProperty named Battery Amp Hours; this generic label is not promoted to a rated or nominal capacity. Recommendations for other products and kit/2-pack options are excluded. Product image alt text is corroborative only. The previous POWERSTACK URL redirected to this current XR product URL; the exact selected SKU is unchanged."
+    },
+    {
+      "source_id": "dewalt-dcbp520-page-us",
+      "url": "https://www.dewalt.com/en-us/product/dcbp520/20v-max-xr-5ah-battery",
+      "title": "20V MAX* XR® 5Ah Battery | DEWALT",
+      "publisher": "DEWALT",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "DCBP520: exact selected SKU and single battery, Total Number of Batteries 1; -2 retail packaging, resistant-housing and other product variants are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual product HTML retrieved with HTTP 200 and parsed in memory. Read the selected model heading, Overview, Features, Total Number of Batteries, Includes and Disclaimer nominal-voltage footnote. Capacity is read from the manufacturer's embedded Product structured data, additionalProperty named Battery Amp Hours; this generic label is not promoted to a rated or nominal capacity. Recommendations for other products and kit/2-pack options are excluded. Product image alt text is corroborative only. The previous POWERSTACK URL redirected to this current XR product URL; the exact selected SKU is unchanged."
+    },
+    {
+      "source_id": "dewalt-dcb2108-page-us",
+      "url": "https://www.dewalt.com/en-us/product/dcb2108/20v-max-xr-80ah-battery",
+      "title": "20V MAX* XR 8.0Ah Battery | DEWALT",
+      "publisher": "DEWALT",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "DCB2108: exact selected SKU and single battery, Total Number of Batteries 1; -2 retail packaging, resistant-housing and other product variants are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual product HTML retrieved with HTTP 200 and parsed in memory. Read the selected model heading, Overview, Features, Total Number of Batteries, Includes and Disclaimer nominal-voltage footnote. Capacity is read from the manufacturer's embedded Product structured data, additionalProperty named Battery Amp Hours; this generic label is not promoted to a rated or nominal capacity. Recommendations for other products and kit/2-pack options are excluded. Product image alt text is corroborative only."
+    },
+    {
+      "source_id": "dewalt-dcb126-page-us",
+      "url": "https://www.dewalt.com/en-us/product/dcb126/12v-max-5ah-battery",
+      "title": "12V MAX* 5Ah Battery | DEWALT",
+      "publisher": "DEWALT",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "DCB126: exact selected SKU and single battery, Total Number of Batteries 1; -2 retail packaging, resistant-housing and other product variants are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual product HTML retrieved with HTTP 200 and parsed in memory. Read the selected model heading, Overview, Features, Total Number of Batteries, Includes and Disclaimer nominal-voltage footnote. Capacity is read from the manufacturer's embedded Product structured data, additionalProperty named Battery Amp Hours; this generic label is not promoted to a rated or nominal capacity. Recommendations for other products and kit/2-pack options are excluded. Product image alt text is corroborative only."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "milwaukee-m18-b2",
+      "manufacturer": null,
+      "brand": "Milwaukee",
+      "model": "M18 B2",
+      "variant_key": "m18-single-battery",
+      "variant_description": "REDLITHIUM M18 nominal 18 V 2 Ah rechargeable lithium-ion tool battery pack, exact model M18 B2, article 4932430062; one battery product.",
+      "suggested_display_name": "Milwaukee M18 B2",
+      "aliases": [
+        {
+          "value": "M18 B2",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "M18B2",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "4932430062",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Compact tool battery pack with a plastic enclosure and electrical terminals; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": 2000,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": 36,
+      "energy_basis": "manufacturer_rated",
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "milwaukee-m18-b2-page-uk",
+        "milwaukee-lithium-ion-batteries-sds-r8-eu"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "milwaukee-m18-b2-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Milwaukee identifies M18 B2 as its battery product."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "milwaukee-m18-b2-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Selected model M18 B2; adjacent article number 4932430062."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "milwaukee-m18-b2-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The selected product is one M18 battery, excluding charger kits and multiple-battery retail packaging."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "milwaukee-m18-b2-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown; Features, REDLITHIUM line",
+            "observation": "M18 B2 is a single REDLITHIUM 2 Ah battery product."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 4 (M18B2), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "M18B2 is explicitly nominal 18 V and rated 2 Ah."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "milwaukee-m18-b2-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Editable suggested name combines Milwaukee and the exact model M18 B2."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "milwaukee-m18-b2-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact model M18 B2 and manufacturer article 4932430062."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 4 (M18B2), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The SDS spells this selected model M18B2."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "milwaukee-m18-b2-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact product model: M18 B2."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 4 (M18B2), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Exact SDS designation: M18B2."
+          }
+        ],
+        "/aliases/2/value": [
+          {
+            "source_id": "milwaukee-m18-b2-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The manufacturer's adjacent article number is 4932430062; it is an alias of this same product, not an additional model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF pages 1 and 4, Section 1.1 M18B2 row and Section 3.2",
+            "observation": "The exact listed model is a lithium-ion battery pack; a narrower electrode chemistry is not resolved."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1 rechargeable battery model table; page 4, Section 3.2",
+            "observation": "The listed lithium-ion battery packs are explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, exact M18B2 row; page 4, Section 3.2",
+            "observation": "This is a battery pack containing lithium-ion cells, rather than an individual exposed cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 4 (M18B2), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Capacity is 2 Ah; 2 Ah multiplied by 1000 equals 2000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 4 (M18B2), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The table explicitly labels this value Rated Capacity; capacity_basis is rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 4 (M18B2), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The exact model row explicitly gives Nominal Voltage 18 V; this is not charging voltage or a MAX label."
+          }
+        ],
+        "/energy_wh": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 4 (M18B2), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Energy is explicitly 36 Wh; it is copied from the manufacturer table rather than calculated."
+          }
+        ],
+        "/energy_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 4 (M18B2), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The source column is Rated Energy, so energy_basis is manufacturer_rated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Minimum and typical capacities and the rated-capacity test conditions are not supplied in the reviewed model rows.",
+        "Series/parallel configuration, exact connector geometry, contact assignment and polarity are not supplied.",
+        "Battery dimensions and battery-only mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The product-page designation M18 B2, SDS designation M18B2 and article 4932430062 refer to this selected product; these aliases are not counted as separate products.",
+        "No serial cell count is inferred from voltage."
+      ]
+    },
+    {
+      "catalog_id": "milwaukee-m18-b4",
+      "manufacturer": null,
+      "brand": "Milwaukee",
+      "model": "M18 B4",
+      "variant_key": "m18-single-battery",
+      "variant_description": "REDLITHIUM M18 nominal 18 V 4 Ah rechargeable lithium-ion tool battery pack, exact model M18 B4, article 4932430063; one battery product.",
+      "suggested_display_name": "Milwaukee M18 B4",
+      "aliases": [
+        {
+          "value": "M18 B4",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "M18B4",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "4932430063",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Compact tool battery pack with a plastic enclosure and electrical terminals; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": 4000,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": 72,
+      "energy_basis": "manufacturer_rated",
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "milwaukee-m18-b4-page-uk",
+        "milwaukee-lithium-ion-batteries-sds-r8-eu"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "milwaukee-m18-b4-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Milwaukee identifies M18 B4 as its battery product."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "milwaukee-m18-b4-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Selected model M18 B4; adjacent article number 4932430063."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "milwaukee-m18-b4-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The selected product is one M18 battery, excluding charger kits and multiple-battery retail packaging."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "milwaukee-m18-b4-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown; Features, REDLITHIUM line",
+            "observation": "M18 B4 is a single REDLITHIUM 4 Ah battery product."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 7 (M18B4), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "M18B4 is explicitly nominal 18 V and rated 4 Ah."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "milwaukee-m18-b4-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Editable suggested name combines Milwaukee and the exact model M18 B4."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "milwaukee-m18-b4-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact model M18 B4 and manufacturer article 4932430063."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 7 (M18B4), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The SDS spells this selected model M18B4."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "milwaukee-m18-b4-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact product model: M18 B4."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 7 (M18B4), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Exact SDS designation: M18B4."
+          }
+        ],
+        "/aliases/2/value": [
+          {
+            "source_id": "milwaukee-m18-b4-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The manufacturer's adjacent article number is 4932430063; it is an alias of this same product, not an additional model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF pages 1 and 4, Section 1.1 M18B4 row and Section 3.2",
+            "observation": "The exact listed model is a lithium-ion battery pack; a narrower electrode chemistry is not resolved."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1 rechargeable battery model table; page 4, Section 3.2",
+            "observation": "The listed lithium-ion battery packs are explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, exact M18B4 row; page 4, Section 3.2",
+            "observation": "This is a battery pack containing lithium-ion cells, rather than an individual exposed cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 7 (M18B4), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Capacity is 4 Ah; 4 Ah multiplied by 1000 equals 4000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 7 (M18B4), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The table explicitly labels this value Rated Capacity; capacity_basis is rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 7 (M18B4), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The exact model row explicitly gives Nominal Voltage 18 V; this is not charging voltage or a MAX label."
+          }
+        ],
+        "/energy_wh": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 7 (M18B4), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Energy is explicitly 72 Wh; it is copied from the manufacturer table rather than calculated."
+          }
+        ],
+        "/energy_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 7 (M18B4), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The source column is Rated Energy, so energy_basis is manufacturer_rated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Minimum and typical capacities and the rated-capacity test conditions are not supplied in the reviewed model rows.",
+        "Series/parallel configuration, exact connector geometry, contact assignment and polarity are not supplied.",
+        "Battery dimensions and battery-only mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The product-page designation M18 B4, SDS designation M18B4 and article 4932430063 refer to this selected product; these aliases are not counted as separate products.",
+        "No serial cell count is inferred from voltage."
+      ]
+    },
+    {
+      "catalog_id": "milwaukee-m18-b5",
+      "manufacturer": null,
+      "brand": "Milwaukee",
+      "model": "M18 B5",
+      "variant_key": "m18-single-battery",
+      "variant_description": "REDLITHIUM M18 nominal 18 V 5 Ah rechargeable lithium-ion tool battery pack, exact model M18 B5, article 4932430483; one battery product.",
+      "suggested_display_name": "Milwaukee M18 B5",
+      "aliases": [
+        {
+          "value": "M18 B5",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "M18B5",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "4932430483",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Compact tool battery pack with a plastic enclosure and electrical terminals; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": 5000,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": 90,
+      "energy_basis": "manufacturer_rated",
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "milwaukee-m18-b5-page-uk",
+        "milwaukee-lithium-ion-batteries-sds-r8-eu"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "milwaukee-m18-b5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Milwaukee identifies M18 B5 as its battery product."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "milwaukee-m18-b5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Selected model M18 B5; adjacent article number 4932430483."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "milwaukee-m18-b5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The selected product is one M18 battery, excluding charger kits and multiple-battery retail packaging."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "milwaukee-m18-b5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown; Features, REDLITHIUM line",
+            "observation": "M18 B5 is a single REDLITHIUM 5 Ah battery product."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 8 (M18B5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "M18B5 is explicitly nominal 18 V and rated 5 Ah."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "milwaukee-m18-b5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Editable suggested name combines Milwaukee and the exact model M18 B5."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "milwaukee-m18-b5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact model M18 B5 and manufacturer article 4932430483."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 8 (M18B5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The SDS spells this selected model M18B5."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "milwaukee-m18-b5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact product model: M18 B5."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 8 (M18B5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Exact SDS designation: M18B5."
+          }
+        ],
+        "/aliases/2/value": [
+          {
+            "source_id": "milwaukee-m18-b5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The manufacturer's adjacent article number is 4932430483; it is an alias of this same product, not an additional model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF pages 1 and 4, Section 1.1 M18B5 row and Section 3.2",
+            "observation": "The exact listed model is a lithium-ion battery pack; a narrower electrode chemistry is not resolved."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1 rechargeable battery model table; page 4, Section 3.2",
+            "observation": "The listed lithium-ion battery packs are explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, exact M18B5 row; page 4, Section 3.2",
+            "observation": "This is a battery pack containing lithium-ion cells, rather than an individual exposed cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 8 (M18B5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Capacity is 5 Ah; 5 Ah multiplied by 1000 equals 5000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 8 (M18B5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The table explicitly labels this value Rated Capacity; capacity_basis is rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 8 (M18B5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The exact model row explicitly gives Nominal Voltage 18 V; this is not charging voltage or a MAX label."
+          }
+        ],
+        "/energy_wh": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 8 (M18B5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Energy is explicitly 90 Wh; it is copied from the manufacturer table rather than calculated."
+          }
+        ],
+        "/energy_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 8 (M18B5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The source column is Rated Energy, so energy_basis is manufacturer_rated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Minimum and typical capacities and the rated-capacity test conditions are not supplied in the reviewed model rows.",
+        "Series/parallel configuration, exact connector geometry, contact assignment and polarity are not supplied.",
+        "Battery dimensions and battery-only mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The product-page designation M18 B5, SDS designation M18B5 and article 4932430483 refer to this selected product; these aliases are not counted as separate products.",
+        "No serial cell count is inferred from voltage."
+      ]
+    },
+    {
+      "catalog_id": "milwaukee-m18-hb3",
+      "manufacturer": null,
+      "brand": "Milwaukee",
+      "model": "M18 HB3",
+      "variant_key": "m18-single-battery",
+      "variant_description": "HIGH OUTPUT M18 nominal 18 V 3 Ah rechargeable lithium-ion tool battery pack, exact model M18 HB3, article 4932471069; one battery product.",
+      "suggested_display_name": "Milwaukee M18 HB3",
+      "aliases": [
+        {
+          "value": "M18 HB3",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "M18HB3",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "4932471069",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Compact tool battery pack with a plastic enclosure and electrical terminals; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": 3000,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": 54,
+      "energy_basis": "manufacturer_rated",
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "milwaukee-m18-hb3-page-uk",
+        "milwaukee-lithium-ion-batteries-sds-r8-eu"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "milwaukee-m18-hb3-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Milwaukee identifies M18 HB3 as its battery product."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "milwaukee-m18-hb3-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Selected model M18 HB3; adjacent article number 4932471069."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "milwaukee-m18-hb3-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The selected product is one M18 battery, excluding charger kits and multiple-battery retail packaging."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "milwaukee-m18-hb3-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown; Features, HIGH OUTPUT line",
+            "observation": "M18 HB3 is a single HIGH OUTPUT 3 Ah battery product."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 6 (M18HB3), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "M18HB3 is explicitly nominal 18 V and rated 3 Ah."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "milwaukee-m18-hb3-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Editable suggested name combines Milwaukee and the exact model M18 HB3."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "milwaukee-m18-hb3-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact model M18 HB3 and manufacturer article 4932471069."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 6 (M18HB3), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The SDS spells this selected model M18HB3."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "milwaukee-m18-hb3-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact product model: M18 HB3."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 6 (M18HB3), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Exact SDS designation: M18HB3."
+          }
+        ],
+        "/aliases/2/value": [
+          {
+            "source_id": "milwaukee-m18-hb3-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The manufacturer's adjacent article number is 4932471069; it is an alias of this same product, not an additional model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF pages 1 and 4, Section 1.1 M18HB3 row and Section 3.2",
+            "observation": "The exact listed model is a lithium-ion battery pack; a narrower electrode chemistry is not resolved."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1 rechargeable battery model table; page 4, Section 3.2",
+            "observation": "The listed lithium-ion battery packs are explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, exact M18HB3 row; page 4, Section 3.2",
+            "observation": "This is a battery pack containing lithium-ion cells, rather than an individual exposed cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 6 (M18HB3), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Capacity is 3 Ah; 3 Ah multiplied by 1000 equals 3000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 6 (M18HB3), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The table explicitly labels this value Rated Capacity; capacity_basis is rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 6 (M18HB3), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The exact model row explicitly gives Nominal Voltage 18 V; this is not charging voltage or a MAX label."
+          }
+        ],
+        "/energy_wh": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 6 (M18HB3), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Energy is explicitly 54 Wh; it is copied from the manufacturer table rather than calculated."
+          }
+        ],
+        "/energy_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 6 (M18HB3), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The source column is Rated Energy, so energy_basis is manufacturer_rated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Minimum and typical capacities and the rated-capacity test conditions are not supplied in the reviewed model rows.",
+        "Series/parallel configuration, exact connector geometry, contact assignment and polarity are not supplied.",
+        "Battery dimensions and battery-only mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The product-page designation M18 HB3, SDS designation M18HB3 and article 4932471069 refer to this selected product; these aliases are not counted as separate products.",
+        "No serial cell count is inferred from voltage."
+      ]
+    },
+    {
+      "catalog_id": "milwaukee-m18-hb5-5",
+      "manufacturer": null,
+      "brand": "Milwaukee",
+      "model": "M18 HB5.5",
+      "variant_key": "m18-single-battery",
+      "variant_description": "HIGH OUTPUT M18 nominal 18 V 5.5 Ah rechargeable lithium-ion tool battery pack, exact model M18 HB5.5, article 4932464712; one battery product.",
+      "suggested_display_name": "Milwaukee M18 HB5.5",
+      "aliases": [
+        {
+          "value": "M18 HB5.5",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "M18HB5.5",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "4932464712",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Compact tool battery pack with a plastic enclosure and electrical terminals; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": 5500,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": 99,
+      "energy_basis": "manufacturer_rated",
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "milwaukee-m18-hb5-5-page-uk",
+        "milwaukee-lithium-ion-batteries-sds-r8-eu"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "milwaukee-m18-hb5-5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Milwaukee identifies M18 HB5.5 as its battery product."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "milwaukee-m18-hb5-5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Selected model M18 HB5.5; adjacent article number 4932464712."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "milwaukee-m18-hb5-5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The selected product is one M18 battery, excluding charger kits and multiple-battery retail packaging."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "milwaukee-m18-hb5-5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown; Features, HIGH OUTPUT line",
+            "observation": "M18 HB5.5 is a single HIGH OUTPUT 5.5 Ah battery product."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 9 (M18HB5.5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "M18HB5.5 is explicitly nominal 18 V and rated 5.5 Ah."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "milwaukee-m18-hb5-5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Editable suggested name combines Milwaukee and the exact model M18 HB5.5."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "milwaukee-m18-hb5-5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact model M18 HB5.5 and manufacturer article 4932464712."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 9 (M18HB5.5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The SDS spells this selected model M18HB5.5."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "milwaukee-m18-hb5-5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact product model: M18 HB5.5."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 9 (M18HB5.5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Exact SDS designation: M18HB5.5."
+          }
+        ],
+        "/aliases/2/value": [
+          {
+            "source_id": "milwaukee-m18-hb5-5-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The manufacturer's adjacent article number is 4932464712; it is an alias of this same product, not an additional model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF pages 1 and 4, Section 1.1 M18HB5.5 row and Section 3.2",
+            "observation": "The exact listed model is a lithium-ion battery pack; a narrower electrode chemistry is not resolved."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1 rechargeable battery model table; page 4, Section 3.2",
+            "observation": "The listed lithium-ion battery packs are explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, exact M18HB5.5 row; page 4, Section 3.2",
+            "observation": "This is a battery pack containing lithium-ion cells, rather than an individual exposed cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 9 (M18HB5.5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Capacity is 5.5 Ah; 5.5 Ah multiplied by 1000 equals 5500 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 9 (M18HB5.5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The table explicitly labels this value Rated Capacity; capacity_basis is rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 9 (M18HB5.5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The exact model row explicitly gives Nominal Voltage 18 V; this is not charging voltage or a MAX label."
+          }
+        ],
+        "/energy_wh": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 9 (M18HB5.5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Energy is explicitly 99 Wh; it is copied from the manufacturer table rather than calculated."
+          }
+        ],
+        "/energy_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 1, Section 1.1, row 9 (M18HB5.5), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The source column is Rated Energy, so energy_basis is manufacturer_rated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Minimum and typical capacities and the rated-capacity test conditions are not supplied in the reviewed model rows.",
+        "Series/parallel configuration, exact connector geometry, contact assignment and polarity are not supplied.",
+        "Battery dimensions and battery-only mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The product-page designation M18 HB5.5, SDS designation M18HB5.5 and article 4932464712 refer to this selected product; these aliases are not counted as separate products.",
+        "No serial cell count is inferred from voltage."
+      ]
+    },
+    {
+      "catalog_id": "milwaukee-m18-hb8",
+      "manufacturer": null,
+      "brand": "Milwaukee",
+      "model": "M18 HB8",
+      "variant_key": "m18-single-battery",
+      "variant_description": "HIGH OUTPUT M18 nominal 18 V 8 Ah rechargeable lithium-ion tool battery pack, exact model M18 HB8, article 4932471070; one battery product.",
+      "suggested_display_name": "Milwaukee M18 HB8",
+      "aliases": [
+        {
+          "value": "M18 HB8",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "M18HB8",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "4932471070",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Compact tool battery pack with a plastic enclosure and electrical terminals; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": 8000,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": 144,
+      "energy_basis": "manufacturer_rated",
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "milwaukee-m18-hb8-page-eu",
+        "milwaukee-lithium-ion-batteries-sds-r8-eu"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "milwaukee-m18-hb8-page-eu",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Milwaukee identifies M18 HB8 as its battery product."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "milwaukee-m18-hb8-page-eu",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Selected model M18 HB8; adjacent article number 4932471070."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "milwaukee-m18-hb8-page-eu",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The selected product is one M18 battery, excluding charger kits and multiple-battery retail packaging."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "milwaukee-m18-hb8-page-eu",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown; Features, HIGH OUTPUT line",
+            "observation": "M18 HB8 is a single HIGH OUTPUT 8 Ah battery product."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 12 (M18HB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "M18HB8 is explicitly nominal 18 V and rated 8 Ah."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "milwaukee-m18-hb8-page-eu",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Editable suggested name combines Milwaukee and the exact model M18 HB8."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "milwaukee-m18-hb8-page-eu",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact model M18 HB8 and manufacturer article 4932471070."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 12 (M18HB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The SDS spells this selected model M18HB8."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "milwaukee-m18-hb8-page-eu",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact product model: M18 HB8."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 12 (M18HB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Exact SDS designation: M18HB8."
+          }
+        ],
+        "/aliases/2/value": [
+          {
+            "source_id": "milwaukee-m18-hb8-page-eu",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The manufacturer's adjacent article number is 4932471070; it is an alias of this same product, not an additional model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF pages 2 and 4, Section 1.1 M18HB8 row and Section 3.2",
+            "observation": "The exact listed model is a lithium-ion battery pack; a narrower electrode chemistry is not resolved."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1 rechargeable battery model table; page 4, Section 3.2",
+            "observation": "The listed lithium-ion battery packs are explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, exact M18HB8 row; page 4, Section 3.2",
+            "observation": "This is a battery pack containing lithium-ion cells, rather than an individual exposed cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 12 (M18HB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Capacity is 8 Ah; 8 Ah multiplied by 1000 equals 8000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 12 (M18HB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The table explicitly labels this value Rated Capacity; capacity_basis is rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 12 (M18HB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The exact model row explicitly gives Nominal Voltage 18 V; this is not charging voltage or a MAX label."
+          }
+        ],
+        "/energy_wh": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 12 (M18HB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Energy is explicitly 144 Wh; it is copied from the manufacturer table rather than calculated."
+          }
+        ],
+        "/energy_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 12 (M18HB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The source column is Rated Energy, so energy_basis is manufacturer_rated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Minimum and typical capacities and the rated-capacity test conditions are not supplied in the reviewed model rows.",
+        "Series/parallel configuration, exact connector geometry, contact assignment and polarity are not supplied.",
+        "Battery dimensions and battery-only mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The product-page designation M18 HB8, SDS designation M18HB8 and article 4932471070 refer to this selected product; these aliases are not counted as separate products.",
+        "No serial cell count is inferred from voltage."
+      ]
+    },
+    {
+      "catalog_id": "milwaukee-m18-fb8",
+      "manufacturer": null,
+      "brand": "Milwaukee",
+      "model": "M18 FB8",
+      "variant_key": "m18-single-battery",
+      "variant_description": "FORGE M18 nominal 18 V 8 Ah rechargeable lithium-ion tool battery pack, exact model M18 FB8, article 4932492131; one battery product.",
+      "suggested_display_name": "Milwaukee M18 FB8",
+      "aliases": [
+        {
+          "value": "M18 FB8",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "M18FB8",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "4932492131",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Compact tool battery pack with a plastic enclosure and electrical terminals; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": 8000,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": 144,
+      "energy_basis": "manufacturer_rated",
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "milwaukee-m18-fb8-page-uk",
+        "milwaukee-lithium-ion-batteries-sds-r8-eu"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "milwaukee-m18-fb8-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Milwaukee identifies M18 FB8 as its battery product."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "milwaukee-m18-fb8-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Selected model M18 FB8; adjacent article number 4932492131."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "milwaukee-m18-fb8-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The selected product is one M18 battery, excluding charger kits and multiple-battery retail packaging."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "milwaukee-m18-fb8-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown; Features, FORGE line",
+            "observation": "M18 FB8 is a single FORGE 8 Ah battery product."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 38 (M18FB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "M18FB8 is explicitly nominal 18 V and rated 8 Ah."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "milwaukee-m18-fb8-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Editable suggested name combines Milwaukee and the exact model M18 FB8."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "milwaukee-m18-fb8-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact model M18 FB8 and manufacturer article 4932492131."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 38 (M18FB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The SDS spells this selected model M18FB8."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "milwaukee-m18-fb8-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact product model: M18 FB8."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 38 (M18FB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Exact SDS designation: M18FB8."
+          }
+        ],
+        "/aliases/2/value": [
+          {
+            "source_id": "milwaukee-m18-fb8-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The manufacturer's adjacent article number is 4932492131; it is an alias of this same product, not an additional model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF pages 2 and 4, Section 1.1 M18FB8 row and Section 3.2",
+            "observation": "The exact listed model is a lithium-ion battery pack; a narrower electrode chemistry is not resolved."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1 rechargeable battery model table; page 4, Section 3.2",
+            "observation": "The listed lithium-ion battery packs are explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, exact M18FB8 row; page 4, Section 3.2",
+            "observation": "This is a battery pack containing lithium-ion cells, rather than an individual exposed cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 38 (M18FB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Capacity is 8 Ah; 8 Ah multiplied by 1000 equals 8000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 38 (M18FB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The table explicitly labels this value Rated Capacity; capacity_basis is rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 38 (M18FB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The exact model row explicitly gives Nominal Voltage 18 V; this is not charging voltage or a MAX label."
+          }
+        ],
+        "/energy_wh": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 38 (M18FB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Energy is explicitly 144 Wh; it is copied from the manufacturer table rather than calculated."
+          }
+        ],
+        "/energy_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 38 (M18FB8), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The source column is Rated Energy, so energy_basis is manufacturer_rated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Minimum and typical capacities and the rated-capacity test conditions are not supplied in the reviewed model rows.",
+        "Series/parallel configuration, exact connector geometry, contact assignment and polarity are not supplied.",
+        "Battery dimensions and battery-only mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The product-page designation M18 FB8, SDS designation M18FB8 and article 4932492131 refer to this selected product; these aliases are not counted as separate products.",
+        "No serial cell count is inferred from voltage.",
+        "FORGE is an explicitly named battery product line with a different exact designation from the HIGH OUTPUT line; it is not a connector-only or retail quantity variant."
+      ]
+    },
+    {
+      "catalog_id": "milwaukee-m18-fb12",
+      "manufacturer": null,
+      "brand": "Milwaukee",
+      "model": "M18 FB12",
+      "variant_key": "m18-single-battery",
+      "variant_description": "FORGE M18 nominal 18 V 12 Ah rechargeable lithium-ion tool battery pack, exact model M18 FB12, article 4932492651; one battery product.",
+      "suggested_display_name": "Milwaukee M18 FB12",
+      "aliases": [
+        {
+          "value": "M18 FB12",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "M18FB12",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "4932492651",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Compact tool battery pack with a plastic enclosure and electrical terminals; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": 12000,
+      "capacity_basis": "rated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": 216,
+      "energy_basis": "manufacturer_rated",
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "milwaukee-m18-fb12-page-uk",
+        "milwaukee-lithium-ion-batteries-sds-r8-eu"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "milwaukee-m18-fb12-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Milwaukee identifies M18 FB12 as its battery product."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "milwaukee-m18-fb12-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Selected model M18 FB12; adjacent article number 4932492651."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "milwaukee-m18-fb12-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The selected product is one M18 battery, excluding charger kits and multiple-battery retail packaging."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "milwaukee-m18-fb12-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown; Features, FORGE line",
+            "observation": "M18 FB12 is a single FORGE 12 Ah battery product."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 39 (M18FB12), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "M18FB12 is explicitly nominal 18 V and rated 12 Ah."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "milwaukee-m18-fb12-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Editable suggested name combines Milwaukee and the exact model M18 FB12."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "milwaukee-m18-fb12-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact model M18 FB12 and manufacturer article 4932492651."
+          },
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 39 (M18FB12), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The SDS spells this selected model M18FB12."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "milwaukee-m18-fb12-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "Exact product model: M18 FB12."
+          }
+        ],
+        "/aliases/1/value": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 39 (M18FB12), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Exact SDS designation: M18FB12."
+          }
+        ],
+        "/aliases/2/value": [
+          {
+            "source_id": "milwaukee-m18-fb12-page-uk",
+            "locator": "Product heading, Select Model and adjacent article number; Breakdown",
+            "observation": "The manufacturer's adjacent article number is 4932492651; it is an alias of this same product, not an additional model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF pages 2 and 4, Section 1.1 M18FB12 row and Section 3.2",
+            "observation": "The exact listed model is a lithium-ion battery pack; a narrower electrode chemistry is not resolved."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1 rechargeable battery model table; page 4, Section 3.2",
+            "observation": "The listed lithium-ion battery packs are explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, exact M18FB12 row; page 4, Section 3.2",
+            "observation": "This is a battery pack containing lithium-ion cells, rather than an individual exposed cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 8, Section 9.1, Form; Section 1.1 exact model applicability",
+            "observation": "The source describes compact batteries with a plastic enclosure and electrical terminals; internal cell layout is not supplied."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 39 (M18FB12), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Capacity is 12 Ah; 12 Ah multiplied by 1000 equals 12000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 39 (M18FB12), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The table explicitly labels this value Rated Capacity; capacity_basis is rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 39 (M18FB12), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The exact model row explicitly gives Nominal Voltage 18 V; this is not charging voltage or a MAX label."
+          }
+        ],
+        "/energy_wh": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 39 (M18FB12), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "Rated Energy is explicitly 216 Wh; it is copied from the manufacturer table rather than calculated."
+          }
+        ],
+        "/energy_basis": [
+          {
+            "source_id": "milwaukee-lithium-ion-batteries-sds-r8-eu",
+            "locator": "PDF page 2, Section 1.1, row 39 (M18FB12), Nominal Voltage / Rated Capacity / Rated Energy",
+            "observation": "The source column is Rated Energy, so energy_basis is manufacturer_rated."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Minimum and typical capacities and the rated-capacity test conditions are not supplied in the reviewed model rows.",
+        "Series/parallel configuration, exact connector geometry, contact assignment and polarity are not supplied.",
+        "Battery dimensions and battery-only mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The product-page designation M18 FB12, SDS designation M18FB12 and article 4932492651 refer to this selected product; these aliases are not counted as separate products.",
+        "No serial cell count is inferred from voltage.",
+        "FORGE is an explicitly named battery product line with a different exact designation from the HIGH OUTPUT line; it is not a connector-only or retail quantity variant."
+      ]
+    },
+    {
+      "catalog_id": "dewalt-dcb203",
+      "manufacturer": null,
+      "brand": "DEWALT",
+      "model": "DCB203",
+      "variant_key": "20v-max-single-battery",
+      "variant_description": "20V MAX 20 V MAX labelled, nominal 18 V 2 Ah rechargeable lithium-ion tool battery pack; exact single-battery SKU DCB203.",
+      "suggested_display_name": "DEWALT DCB203",
+      "aliases": [
+        {
+          "value": "DCB203",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Removable tool battery pack with an external case; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 2000,
+      "stated_capacity_label": "Battery Amp Hours",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "dewalt-dcb203-page-us",
+        "dewalt-batteries-chargers-manual-r04-us"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "dewalt-dcb203-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The manufacturer product page identifies this as a DEWALT battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "dewalt-dcb203-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact selected Product SKU DCB203; the selected product includes one battery."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "dewalt-dcb203-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The selected 20V MAX battery product has quantity one; no -2 multi-battery retail SKU is imported."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "dewalt-dcb203-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes; Overview; Product Battery Amp Hours; Disclaimer",
+            "observation": "DCB203 is the single 20V MAX 2 Ah product. Its own disclaimer explicitly states nominal 18 V."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB203 entry",
+            "observation": "The exact model is listed as a battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "dewalt-dcb203-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Editable suggested name combines DEWALT and exact SKU DCB203."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "dewalt-dcb203-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Only exact selected battery SKU DCB203 is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "dewalt-dcb203-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact manufacturer Product SKU: DCB203."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCB203 battery-pack applicability; page 2, lithium-ion battery-pack wording; page 4, Li-ion charging context",
+            "observation": "The manual's listed battery packs use lithium-ion chemistry; pouch construction alone is not used to classify lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCB203 battery-pack applicability; pages 2 and 4, batteries and Charging a Battery",
+            "observation": "The exact listed battery pack is covered by charging and recharge instructions."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB203 entry",
+            "observation": "The manufacturer lists DCB203 in Battery Packs, rather than as an individual cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB203 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB203 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB203 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "dewalt-dcb203-page-us",
+            "locator": "Embedded Product structured data, SKU DCB203, additionalProperty / Battery Amp Hours",
+            "observation": "Battery Amp Hours is 2 Ah; 2 Ah multiplied by 1000 equals 2000 mAh. The field has no rated, nominal, minimum or typical qualifier."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "dewalt-dcb203-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The original source property name is Battery Amp Hours."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "dewalt-dcb203-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The capacity label is unqualified; rated_capacity_mah remains null and its canonical basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "dewalt-dcb203-page-us",
+            "locator": "Disclaimer, maximum initial battery voltage and nominal-voltage footnote",
+            "observation": "The selected product page states maximum initial voltage 20 V and nominal voltage 18 V. The nominal value is directly stated, not inferred from cell count."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB203 entry; adjacent MAX/nominal footnote",
+            "observation": "The exact 20V Max battery family is paired with nominal 18 V in the official footnote."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Rated, minimum and typical capacities and capacity test conditions are not explicitly established by the generic Battery Amp Hours field.",
+        "Internal series/parallel configuration and exact connector contact geometry, assignment and polarity are not stated in the reviewed exact-model specifications.",
+        "Manufacturer nominal/rated energy, battery-only dimensions and mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The 20 V MAX marking is a maximum initial battery voltage; nominal_voltage_v uses the directly stated 18 V value.",
+        "No series/parallel configuration is calculated from voltage."
+      ]
+    },
+    {
+      "catalog_id": "dewalt-dcb205",
+      "manufacturer": null,
+      "brand": "DEWALT",
+      "model": "DCB205",
+      "variant_key": "20v-max-single-battery",
+      "variant_description": "20V MAX 20 V MAX labelled, nominal 18 V 5 Ah rechargeable lithium-ion tool battery pack; exact single-battery SKU DCB205.",
+      "suggested_display_name": "DEWALT DCB205",
+      "aliases": [
+        {
+          "value": "DCB205",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Removable tool battery pack with an external case; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 5000,
+      "stated_capacity_label": "Battery Amp Hours",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "dewalt-dcb205-page-us",
+        "dewalt-batteries-chargers-manual-r04-us"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "dewalt-dcb205-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The manufacturer product page identifies this as a DEWALT battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "dewalt-dcb205-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact selected Product SKU DCB205; the selected product includes one battery."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "dewalt-dcb205-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The selected 20V MAX battery product has quantity one; no -2 multi-battery retail SKU is imported."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "dewalt-dcb205-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes; Overview; Product Battery Amp Hours; Disclaimer",
+            "observation": "DCB205 is the single 20V MAX 5 Ah product. Its own disclaimer explicitly states nominal 18 V."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB205 entry",
+            "observation": "The exact model is listed as a battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "dewalt-dcb205-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Editable suggested name combines DEWALT and exact SKU DCB205."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "dewalt-dcb205-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Only exact selected battery SKU DCB205 is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "dewalt-dcb205-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact manufacturer Product SKU: DCB205."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCB205 battery-pack applicability; page 2, lithium-ion battery-pack wording; page 4, Li-ion charging context",
+            "observation": "The manual's listed battery packs use lithium-ion chemistry; pouch construction alone is not used to classify lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCB205 battery-pack applicability; pages 2 and 4, batteries and Charging a Battery",
+            "observation": "The exact listed battery pack is covered by charging and recharge instructions."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB205 entry",
+            "observation": "The manufacturer lists DCB205 in Battery Packs, rather than as an individual cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB205 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB205 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB205 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "dewalt-dcb205-page-us",
+            "locator": "Embedded Product structured data, SKU DCB205, additionalProperty / Battery Amp Hours",
+            "observation": "Battery Amp Hours is 5 Ah; 5 Ah multiplied by 1000 equals 5000 mAh. The field has no rated, nominal, minimum or typical qualifier."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "dewalt-dcb205-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The original source property name is Battery Amp Hours."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "dewalt-dcb205-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The capacity label is unqualified; rated_capacity_mah remains null and its canonical basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "dewalt-dcb205-page-us",
+            "locator": "Disclaimer, maximum initial battery voltage and nominal-voltage footnote",
+            "observation": "The selected product page states maximum initial voltage 20 V and nominal voltage 18 V. The nominal value is directly stated, not inferred from cell count."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB205 entry; adjacent MAX/nominal footnote",
+            "observation": "The exact 20V Max battery family is paired with nominal 18 V in the official footnote."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Rated, minimum and typical capacities and capacity test conditions are not explicitly established by the generic Battery Amp Hours field.",
+        "Internal series/parallel configuration and exact connector contact geometry, assignment and polarity are not stated in the reviewed exact-model specifications.",
+        "Manufacturer nominal/rated energy, battery-only dimensions and mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The 20 V MAX marking is a maximum initial battery voltage; nominal_voltage_v uses the directly stated 18 V value.",
+        "No series/parallel configuration is calculated from voltage."
+      ]
+    },
+    {
+      "catalog_id": "dewalt-dcb210",
+      "manufacturer": null,
+      "brand": "DEWALT",
+      "model": "DCB210",
+      "variant_key": "20v-max-single-battery",
+      "variant_description": "20V MAX 20 V MAX labelled, nominal 18 V 10 Ah rechargeable lithium-ion tool battery pack; exact single-battery SKU DCB210.",
+      "suggested_display_name": "DEWALT DCB210",
+      "aliases": [
+        {
+          "value": "DCB210",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Removable tool battery pack with an external case; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 10000,
+      "stated_capacity_label": "Battery Amp Hours",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "dewalt-dcb210-page-us",
+        "dewalt-batteries-chargers-manual-r04-us"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "dewalt-dcb210-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The manufacturer product page identifies this as a DEWALT battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "dewalt-dcb210-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact selected Product SKU DCB210; the selected product includes one battery."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "dewalt-dcb210-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The selected 20V MAX battery product has quantity one; no -2 multi-battery retail SKU is imported."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "dewalt-dcb210-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes; Overview; Product Battery Amp Hours; Disclaimer",
+            "observation": "DCB210 is the single 20V MAX 10 Ah product. Its own disclaimer explicitly states nominal 18 V."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB210 entry",
+            "observation": "The exact model is listed as a battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "dewalt-dcb210-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Editable suggested name combines DEWALT and exact SKU DCB210."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "dewalt-dcb210-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Only exact selected battery SKU DCB210 is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "dewalt-dcb210-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact manufacturer Product SKU: DCB210."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCB210 battery-pack applicability; page 2, lithium-ion battery-pack wording; page 4, Li-ion charging context",
+            "observation": "The manual's listed battery packs use lithium-ion chemistry; pouch construction alone is not used to classify lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCB210 battery-pack applicability; pages 2 and 4, batteries and Charging a Battery",
+            "observation": "The exact listed battery pack is covered by charging and recharge instructions."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB210 entry",
+            "observation": "The manufacturer lists DCB210 in Battery Packs, rather than as an individual cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB210 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB210 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB210 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "dewalt-dcb210-page-us",
+            "locator": "Embedded Product structured data, SKU DCB210, additionalProperty / Battery Amp Hours",
+            "observation": "Battery Amp Hours is 10 Ah; 10 Ah multiplied by 1000 equals 10000 mAh. The field has no rated, nominal, minimum or typical qualifier."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "dewalt-dcb210-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The original source property name is Battery Amp Hours."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "dewalt-dcb210-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The capacity label is unqualified; rated_capacity_mah remains null and its canonical basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "dewalt-dcb210-page-us",
+            "locator": "Disclaimer, maximum initial battery voltage and nominal-voltage footnote",
+            "observation": "The selected product page states maximum initial voltage 20 V and nominal voltage 18 V. The nominal value is directly stated, not inferred from cell count."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB210 entry; adjacent MAX/nominal footnote",
+            "observation": "The exact 20V Max battery family is paired with nominal 18 V in the official footnote."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Rated, minimum and typical capacities and capacity test conditions are not explicitly established by the generic Battery Amp Hours field.",
+        "Internal series/parallel configuration and exact connector contact geometry, assignment and polarity are not stated in the reviewed exact-model specifications.",
+        "Manufacturer nominal/rated energy, battery-only dimensions and mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The 20 V MAX marking is a maximum initial battery voltage; nominal_voltage_v uses the directly stated 18 V value.",
+        "No series/parallel configuration is calculated from voltage."
+      ]
+    },
+    {
+      "catalog_id": "dewalt-dcbp034",
+      "manufacturer": null,
+      "brand": "DEWALT",
+      "model": "DCBP034",
+      "variant_key": "20v-max-single-battery",
+      "variant_description": "POWERSTACK 20 V MAX labelled, nominal 18 V 1.7 Ah rechargeable lithium-ion tool battery pack; exact single-battery SKU DCBP034.",
+      "suggested_display_name": "DEWALT DCBP034",
+      "aliases": [
+        {
+          "value": "DCBP034",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Removable enclosed tool battery pack using pouch cells; internal series/parallel layout is not stated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 1700,
+      "stated_capacity_label": "Battery Amp Hours",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "dewalt-dcbp034-page-us",
+        "dewalt-batteries-chargers-manual-r04-us"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The manufacturer product page identifies this as a DEWALT battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact selected Product SKU DCBP034; the selected product includes one battery."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The selected 20V MAX battery product has quantity one; no -2 multi-battery retail SKU is imported."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes; Overview; Product Battery Amp Hours; Disclaimer",
+            "observation": "DCBP034 is the single POWERSTACK 1.7 Ah product. Its own disclaimer explicitly states nominal 18 V."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCBP034 entry",
+            "observation": "The exact model is listed as a battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Editable suggested name combines DEWALT and exact SKU DCBP034."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Only exact selected battery SKU DCBP034 is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact manufacturer Product SKU: DCBP034."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCBP034 battery-pack applicability; page 2, lithium-ion battery-pack wording; page 4, Li-ion charging context",
+            "observation": "The manual's listed battery packs use lithium-ion chemistry; pouch construction alone is not used to classify lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCBP034 battery-pack applicability; pages 2 and 4, batteries and Charging a Battery",
+            "observation": "The exact listed battery pack is covered by charging and recharge instructions."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCBP034 entry",
+            "observation": "The manufacturer lists DCBP034 in Battery Packs, rather than as an individual cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCBP034 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          },
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Overview, exact selected battery product",
+            "observation": "The exact product is explicitly engineered with pouch cell technology; its internal S/P layout is not stated."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCBP034 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          },
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Overview, exact selected battery product",
+            "observation": "The exact product is explicitly engineered with pouch cell technology; its internal S/P layout is not stated."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCBP034 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          },
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Overview, exact selected battery product",
+            "observation": "The exact product is explicitly engineered with pouch cell technology; its internal S/P layout is not stated."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Embedded Product structured data, SKU DCBP034, additionalProperty / Battery Amp Hours",
+            "observation": "Battery Amp Hours is 1.7 Ah; 1.7 Ah multiplied by 1000 equals 1700 mAh. The field has no rated, nominal, minimum or typical qualifier."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The original source property name is Battery Amp Hours."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The capacity label is unqualified; rated_capacity_mah remains null and its canonical basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "dewalt-dcbp034-page-us",
+            "locator": "Disclaimer, maximum initial battery voltage and nominal-voltage footnote",
+            "observation": "The selected product page states maximum initial voltage 20 V and nominal voltage 18 V. The nominal value is directly stated, not inferred from cell count."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCBP034 entry; adjacent MAX/nominal footnote",
+            "observation": "The exact 20V Max battery family is paired with nominal 18 V in the official footnote."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Rated, minimum and typical capacities and capacity test conditions are not explicitly established by the generic Battery Amp Hours field.",
+        "Internal series/parallel configuration and exact connector contact geometry, assignment and polarity are not stated in the reviewed exact-model specifications.",
+        "Manufacturer nominal/rated energy, battery-only dimensions and mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The 20 V MAX marking is a maximum initial battery voltage; nominal_voltage_v uses the directly stated 18 V value.",
+        "No series/parallel configuration is calculated from voltage.",
+        "The source explicitly identifies pouch cells within an enclosed tool battery pack. The supported chemistry remains lithium_ion; polymer chemistry is not inferred from cell shape."
+      ]
+    },
+    {
+      "catalog_id": "dewalt-dcbp320",
+      "manufacturer": null,
+      "brand": "DEWALT",
+      "model": "DCBP320",
+      "variant_key": "20v-max-single-battery",
+      "variant_description": "XR / POWERSTACK 20 V MAX labelled, nominal 18 V 3.5 Ah rechargeable lithium-ion tool battery pack; exact single-battery SKU DCBP320.",
+      "suggested_display_name": "DEWALT DCBP320",
+      "aliases": [
+        {
+          "value": "DCBP320",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Removable enclosed tool battery pack using pouch cells; internal series/parallel layout is not stated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 3500,
+      "stated_capacity_label": "Battery Amp Hours",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "dewalt-dcbp320-page-us",
+        "dewalt-batteries-chargers-manual-r04-us"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The manufacturer product page identifies this as a DEWALT battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact selected Product SKU DCBP320; the selected product includes one battery."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The selected 20V MAX battery product has quantity one; no -2 multi-battery retail SKU is imported."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes; Overview; Product Battery Amp Hours; Disclaimer",
+            "observation": "DCBP320 is the single XR / POWERSTACK 3.5 Ah product. Its own disclaimer explicitly states nominal 18 V."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCBP320 entry",
+            "observation": "The exact model is listed as a battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Editable suggested name combines DEWALT and exact SKU DCBP320."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Only exact selected battery SKU DCBP320 is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact manufacturer Product SKU: DCBP320."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCBP320 battery-pack applicability; page 2, lithium-ion battery-pack wording; page 4, Li-ion charging context",
+            "observation": "The manual's listed battery packs use lithium-ion chemistry; pouch construction alone is not used to classify lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCBP320 battery-pack applicability; pages 2 and 4, batteries and Charging a Battery",
+            "observation": "The exact listed battery pack is covered by charging and recharge instructions."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCBP320 entry",
+            "observation": "The manufacturer lists DCBP320 in Battery Packs, rather than as an individual cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCBP320 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          },
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Overview, exact selected battery product",
+            "observation": "The exact product is explicitly engineered with pouch cell technology; its internal S/P layout is not stated."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCBP320 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          },
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Overview, exact selected battery product",
+            "observation": "The exact product is explicitly engineered with pouch cell technology; its internal S/P layout is not stated."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCBP320 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          },
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Overview, exact selected battery product",
+            "observation": "The exact product is explicitly engineered with pouch cell technology; its internal S/P layout is not stated."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Embedded Product structured data, SKU DCBP320, additionalProperty / Battery Amp Hours",
+            "observation": "Battery Amp Hours is 3.5 Ah; 3.5 Ah multiplied by 1000 equals 3500 mAh. The field has no rated, nominal, minimum or typical qualifier."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The original source property name is Battery Amp Hours."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The capacity label is unqualified; rated_capacity_mah remains null and its canonical basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Disclaimer, maximum initial battery voltage and nominal-voltage footnote",
+            "observation": "The selected product page states maximum initial voltage 20 V and nominal voltage 18 V. The nominal value is directly stated, not inferred from cell count."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCBP320 entry; adjacent MAX/nominal footnote",
+            "observation": "The exact 20V Max battery family is paired with nominal 18 V in the official footnote."
+          }
+        ],
+        "/notes/4": [
+          {
+            "source_id": "dewalt-dcbp320-page-us",
+            "locator": "Alternate product image alt text versus selected Product SKU, Total Number of Batteries and Includes",
+            "observation": "An alternate-image alt text refers to DCBP320-2; selected SKU, quantity one and Includes resolve this record to DCBP320."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Rated, minimum and typical capacities and capacity test conditions are not explicitly established by the generic Battery Amp Hours field.",
+        "Internal series/parallel configuration and exact connector contact geometry, assignment and polarity are not stated in the reviewed exact-model specifications.",
+        "Manufacturer nominal/rated energy, battery-only dimensions and mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The 20 V MAX marking is a maximum initial battery voltage; nominal_voltage_v uses the directly stated 18 V value.",
+        "No series/parallel configuration is calculated from voltage.",
+        "The source explicitly identifies pouch cells within an enclosed tool battery pack. The supported chemistry remains lithium_ion; polymer chemistry is not inferred from cell shape.",
+        "One alternate-image alt text names DCBP320-2. Exact selected page SKU, Includes, Total Number of Batteries 1 and the official manual identify DCBP320. The image alt text is not used for identity and no -2 packaging is imported."
+      ]
+    },
+    {
+      "catalog_id": "dewalt-dcbp520",
+      "manufacturer": null,
+      "brand": "DEWALT",
+      "model": "DCBP520",
+      "variant_key": "20v-max-single-battery",
+      "variant_description": "XR / POWERSTACK 20 V MAX labelled, nominal 18 V 5 Ah rechargeable lithium-ion tool battery pack; exact single-battery SKU DCBP520.",
+      "suggested_display_name": "DEWALT DCBP520",
+      "aliases": [
+        {
+          "value": "DCBP520",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Removable enclosed tool battery pack using pouch cells; internal series/parallel layout is not stated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 5000,
+      "stated_capacity_label": "Battery Amp Hours",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "dewalt-dcbp520-page-us",
+        "dewalt-batteries-chargers-manual-r04-us"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The manufacturer product page identifies this as a DEWALT battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact selected Product SKU DCBP520; the selected product includes one battery."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The selected 20V MAX battery product has quantity one; no -2 multi-battery retail SKU is imported."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes; Overview; Product Battery Amp Hours; Disclaimer",
+            "observation": "DCBP520 is the single XR / POWERSTACK 5 Ah product. Its own disclaimer explicitly states nominal 18 V."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCBP520 entry",
+            "observation": "The exact model is listed as a battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Editable suggested name combines DEWALT and exact SKU DCBP520."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Only exact selected battery SKU DCBP520 is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact manufacturer Product SKU: DCBP520."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCBP520 battery-pack applicability; page 2, lithium-ion battery-pack wording; page 4, Li-ion charging context",
+            "observation": "The manual's listed battery packs use lithium-ion chemistry; pouch construction alone is not used to classify lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCBP520 battery-pack applicability; pages 2 and 4, batteries and Charging a Battery",
+            "observation": "The exact listed battery pack is covered by charging and recharge instructions."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCBP520 entry",
+            "observation": "The manufacturer lists DCBP520 in Battery Packs, rather than as an individual cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCBP520 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          },
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Overview, exact selected battery product",
+            "observation": "The exact product is explicitly engineered with pouch cell technology; its internal S/P layout is not stated."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCBP520 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          },
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Overview, exact selected battery product",
+            "observation": "The exact product is explicitly engineered with pouch cell technology; its internal S/P layout is not stated."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCBP520 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          },
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Overview, exact selected battery product",
+            "observation": "The exact product is explicitly engineered with pouch cell technology; its internal S/P layout is not stated."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Embedded Product structured data, SKU DCBP520, additionalProperty / Battery Amp Hours",
+            "observation": "Battery Amp Hours is 5 Ah; 5 Ah multiplied by 1000 equals 5000 mAh. The field has no rated, nominal, minimum or typical qualifier."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The original source property name is Battery Amp Hours."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The capacity label is unqualified; rated_capacity_mah remains null and its canonical basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "dewalt-dcbp520-page-us",
+            "locator": "Disclaimer, maximum initial battery voltage and nominal-voltage footnote",
+            "observation": "The selected product page states maximum initial voltage 20 V and nominal voltage 18 V. The nominal value is directly stated, not inferred from cell count."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCBP520 entry; adjacent MAX/nominal footnote",
+            "observation": "The exact 20V Max battery family is paired with nominal 18 V in the official footnote."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Rated, minimum and typical capacities and capacity test conditions are not explicitly established by the generic Battery Amp Hours field.",
+        "Internal series/parallel configuration and exact connector contact geometry, assignment and polarity are not stated in the reviewed exact-model specifications.",
+        "Manufacturer nominal/rated energy, battery-only dimensions and mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The 20 V MAX marking is a maximum initial battery voltage; nominal_voltage_v uses the directly stated 18 V value.",
+        "No series/parallel configuration is calculated from voltage.",
+        "The source explicitly identifies pouch cells within an enclosed tool battery pack. The supported chemistry remains lithium_ion; polymer chemistry is not inferred from cell shape."
+      ]
+    },
+    {
+      "catalog_id": "dewalt-dcb2108",
+      "manufacturer": null,
+      "brand": "DEWALT",
+      "model": "DCB2108",
+      "variant_key": "20v-max-single-battery",
+      "variant_description": "XR / POWERPACK 20 V MAX labelled, nominal 18 V 8 Ah rechargeable lithium-ion tool battery pack; exact single-battery SKU DCB2108.",
+      "suggested_display_name": "DEWALT DCB2108",
+      "aliases": [
+        {
+          "value": "DCB2108",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Removable tool battery pack with an external case; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 8000,
+      "stated_capacity_label": "Battery Amp Hours",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "dewalt-dcb2108-page-us",
+        "dewalt-batteries-chargers-manual-r04-us"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "dewalt-dcb2108-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The manufacturer product page identifies this as a DEWALT battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "dewalt-dcb2108-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact selected Product SKU DCB2108; the selected product includes one battery."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "dewalt-dcb2108-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The selected 20V MAX battery product has quantity one; no -2 multi-battery retail SKU is imported."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "dewalt-dcb2108-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes; Overview; Product Battery Amp Hours; Disclaimer",
+            "observation": "DCB2108 is the single XR / POWERPACK 8 Ah product. Its own disclaimer explicitly states nominal 18 V."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB2108 entry",
+            "observation": "The exact model is listed as a battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "dewalt-dcb2108-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Editable suggested name combines DEWALT and exact SKU DCB2108."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "dewalt-dcb2108-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Only exact selected battery SKU DCB2108 is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "dewalt-dcb2108-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact manufacturer Product SKU: DCB2108."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCB2108 battery-pack applicability; page 2, lithium-ion battery-pack wording; page 4, Li-ion charging context",
+            "observation": "The manual's listed battery packs use lithium-ion chemistry; pouch construction alone is not used to classify lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCB2108 battery-pack applicability; pages 2 and 4, batteries and Charging a Battery",
+            "observation": "The exact listed battery pack is covered by charging and recharge instructions."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB2108 entry",
+            "observation": "The manufacturer lists DCB2108 in Battery Packs, rather than as an individual cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB2108 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB2108 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB2108 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "dewalt-dcb2108-page-us",
+            "locator": "Embedded Product structured data, SKU DCB2108, additionalProperty / Battery Amp Hours",
+            "observation": "Battery Amp Hours is 8 Ah; 8 Ah multiplied by 1000 equals 8000 mAh. The field has no rated, nominal, minimum or typical qualifier."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "dewalt-dcb2108-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The original source property name is Battery Amp Hours."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "dewalt-dcb2108-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The capacity label is unqualified; rated_capacity_mah remains null and its canonical basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "dewalt-dcb2108-page-us",
+            "locator": "Disclaimer, maximum initial battery voltage and nominal-voltage footnote",
+            "observation": "The selected product page states maximum initial voltage 20 V and nominal voltage 18 V. The nominal value is directly stated, not inferred from cell count."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 20V Max Battery Packs table, exact DCB2108 entry; adjacent MAX/nominal footnote",
+            "observation": "The exact 20V Max battery family is paired with nominal 18 V in the official footnote."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Rated, minimum and typical capacities and capacity test conditions are not explicitly established by the generic Battery Amp Hours field.",
+        "Internal series/parallel configuration and exact connector contact geometry, assignment and polarity are not stated in the reviewed exact-model specifications.",
+        "Manufacturer nominal/rated energy, battery-only dimensions and mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The 20 V MAX marking is a maximum initial battery voltage; nominal_voltage_v uses the directly stated 18 V value.",
+        "No series/parallel configuration is calculated from voltage.",
+        "The exact product Overview explicitly identifies tabless cell technology; generic POWERSTACK pouch illustrations elsewhere on the page are not applied to this model."
+      ]
+    },
+    {
+      "catalog_id": "dewalt-dcb126",
+      "manufacturer": null,
+      "brand": "DEWALT",
+      "model": "DCB126",
+      "variant_key": "12v-max-single-battery",
+      "variant_description": "12V MAX 12 V MAX labelled, nominal 10.8 V 5 Ah rechargeable lithium-ion tool battery pack; exact single-battery SKU DCB126.",
+      "suggested_display_name": "DEWALT DCB126",
+      "aliases": [
+        {
+          "value": "DCB126",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "enclosed_tool_battery_pack",
+        "description": "Removable tool battery pack with an external case; internal cell layout is not stated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 5000,
+      "stated_capacity_label": "Battery Amp Hours",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 10.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "dewalt-dcb126-page-us",
+        "dewalt-batteries-chargers-manual-r04-us"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "dewalt-dcb126-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The manufacturer product page identifies this as a DEWALT battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "dewalt-dcb126-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact selected Product SKU DCB126; the selected product includes one battery."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "dewalt-dcb126-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "The selected 12V MAX battery product has quantity one; no -2 multi-battery retail SKU is imported."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "dewalt-dcb126-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes; Overview; Product Battery Amp Hours; Disclaimer",
+            "observation": "DCB126 is the single 12V MAX 5 Ah product. Its own disclaimer explicitly states nominal 10.8 V."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 12V Max Battery Packs table, exact DCB126 entry",
+            "observation": "The exact model is listed as a battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "dewalt-dcb126-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Editable suggested name combines DEWALT and exact SKU DCB126."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "dewalt-dcb126-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Only exact selected battery SKU DCB126 is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "dewalt-dcb126-page-us",
+            "locator": "Selected product heading and embedded Product SKU; Total Number of Batteries and Includes",
+            "observation": "Exact manufacturer Product SKU: DCB126."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCB126 battery-pack applicability; page 2, lithium-ion battery-pack wording; page 4, Li-ion charging context",
+            "observation": "The manual's listed battery packs use lithium-ion chemistry; pouch construction alone is not used to classify lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, exact DCB126 battery-pack applicability; pages 2 and 4, batteries and Charging a Battery",
+            "observation": "The exact listed battery pack is covered by charging and recharge instructions."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 12V Max Battery Packs table, exact DCB126 entry",
+            "observation": "The manufacturer lists DCB126 in Battery Packs, rather than as an individual cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB126 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB126 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, DCB126 applicability; page 2, battery pack case wording",
+            "observation": "This is an enclosed tool battery pack with an external case."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "dewalt-dcb126-page-us",
+            "locator": "Embedded Product structured data, SKU DCB126, additionalProperty / Battery Amp Hours",
+            "observation": "Battery Amp Hours is 5 Ah; 5 Ah multiplied by 1000 equals 5000 mAh. The field has no rated, nominal, minimum or typical qualifier."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "dewalt-dcb126-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The original source property name is Battery Amp Hours."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "dewalt-dcb126-page-us",
+            "locator": "Embedded Product structured data, additionalProperty / Battery Amp Hours",
+            "observation": "The capacity label is unqualified; rated_capacity_mah remains null and its canonical basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "dewalt-dcb126-page-us",
+            "locator": "Disclaimer, maximum initial battery voltage and nominal-voltage footnote",
+            "observation": "The selected product page states maximum initial voltage 12 V and nominal voltage 10.8 V. The nominal value is directly stated, not inferred from cell count."
+          },
+          {
+            "source_id": "dewalt-batteries-chargers-manual-r04-us",
+            "locator": "PDF page 12, 12V Max Battery Packs table, exact DCB126 entry; adjacent MAX/nominal footnote",
+            "observation": "The exact 12V Max battery family is paired with nominal 10.8 V in the official footnote."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Physical cell manufacturer and narrower electrode chemistry are not resolved.",
+        "Rated, minimum and typical capacities and capacity test conditions are not explicitly established by the generic Battery Amp Hours field.",
+        "Internal series/parallel configuration and exact connector contact geometry, assignment and polarity are not stated in the reviewed exact-model specifications.",
+        "Manufacturer nominal/rated energy, battery-only dimensions and mass are not curated; no maintenance schedule is inferred."
+      ],
+      "notes": [
+        "Public product reference only; this does not establish school ownership, purchasing preference or device compatibility.",
+        "The 12 V MAX marking is a maximum initial battery voltage; nominal_voltage_v uses the directly stated 10.8 V value.",
+        "No series/parallel configuration is calculated from voltage."
+      ]
+    }
+  ]
+}

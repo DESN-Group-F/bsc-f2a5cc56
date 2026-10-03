@@ -1,0 +1,58 @@
+{
+  "plan_version": "2026.10.02.1",
+  "status": "user_approved_completed",
+  "target_verified_independent_products": 200,
+  "target_includes_existing_models": true,
+  "published_baseline_version": "2026.10.02.2",
+  "baseline_independent_products": 44,
+  "baseline_verified_independent_products": 42,
+  "checkpoints_verified_independent_products": [
+    60,
+    100,
+    150,
+    200
+  ],
+  "superseded_proposal": {
+    "initial_broad_range": [
+      100,
+      150
+    ],
+    "workload_reference": 120,
+    "stop_around": 60,
+    "status": "superseded_by_user_200_target"
+  },
+  "primary_category_priority": [
+    "tool_platform",
+    "prototype_pouch_1s",
+    "general_finished_lithium_pack",
+    "standalone_lithium_cell",
+    "supplementary"
+  ],
+  "planned_verified_products_by_primary_category": {
+    "tool_platform": 40,
+    "prototype_pouch_1s": 40,
+    "general_finished_lithium_pack": 55,
+    "standalone_lithium_cell": 40,
+    "supplementary": 25
+  },
+  "allocation_adjustments": [],
+  "fragment_primary_category_overrides": {
+    "batch3-tool-packs.json": "tool_platform",
+    "batch3-prototype-eemb.json": "prototype_pouch_1s",
+    "batch3-prototype-other.json": "prototype_pouch_1s",
+    "batch4-prototype-eemb.json": "prototype_pouch_1s",
+    "batch4-prototype-jauch.json": "prototype_pouch_1s",
+    "batch5-tool-packs-a.json": "tool_platform",
+    "batch5-tool-packs-b.json": "tool_platform",
+    "batch5-prototype-jauch.json": "prototype_pouch_1s",
+    "batch5-prototype-mixed.json": "prototype_pouch_1s"
+  },
+  "independent_sampling": {
+    "minimum_fraction_new_verified": 0.2,
+    "rounding": "ceiling",
+    "include_all_major_conflicts": true,
+    "expand_same_source_or_method_on_error": true
+  },
+  "scope": "public product research only; not school inventory, compatibility approval or procurement recommendation",
+  "school_procurement_coverage": "unknown; no actual school purchasing list or label sample supplied"
+}

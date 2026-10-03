@@ -71,6 +71,41 @@
       "when": 1790947155735,
       "tag": "0009_optional_task_completion_notes",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1791014400000,
+      "tag": "0010_battery_models",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "6",
+      "when": 1791032400000,
+      "tag": "0011_batch_intake",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "6",
+      "when": 1791043200000,
+      "tag": "0012_battery_lifecycle",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1791046800000,
+      "tag": "0013_optional_removal_reason",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "6",
+      "when": 1791050400000,
+      "tag": "0014_personal_teaching_groups",
+      "breakpoints": true
     }
   ]
 }

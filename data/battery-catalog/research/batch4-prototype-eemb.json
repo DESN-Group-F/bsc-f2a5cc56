@@ -1,0 +1,1602 @@
+{
+  "sources": [
+    {
+      "source_id": "eemb-lithium-polymer-standard-page-batch4",
+      "url": "https://www.eemb.com/products-55",
+      "title": "Lithium Polymer Standard Type Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP452235; LP Lithium Polymer-Standard cell",
+        "LP652438; LP Lithium Polymer-Standard cell",
+        "LP702030; LP Lithium Polymer-Standard cell",
+        "LP822245; LP Lithium Polymer-Standard cell",
+        "LP803450; LP Lithium Polymer-Standard cell",
+        "LP603030; LP Lithium Polymer-Standard cell",
+        "LP402030; LP Lithium Polymer-Standard cell",
+        "LP401730; LP Lithium Polymer-Standard cell"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual official page reopened on 2026-10-03 Australia/Sydney. Main Features identifies lithium-ion polymer foil-type (polymer laminate) case and nominal 3.7 V; exact selected LP models occur in the standard-type table. No custom assembled-pack option is selected."
+    },
+    {
+      "source_id": "eemb-lp452235-bare-cell-page",
+      "url": "https://www.eemb.com/product-225",
+      "title": "LP452235-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP452235 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer page opened through web and direct HTTPS 200. Product Detail, Description and Other Information were read and cross-checked with the exact linked PDF. Core fields: Bare Cell, exact model, Lithium Polymer, Rechargeable, Nominal Voltage, Nominal Capacity and Solder Tab. Only expressly labelled typical/minimum values are retained."
+    },
+    {
+      "source_id": "eemb-lp452235-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230315/d73857d07eb2fe96ec7289bdc3c33d39.pdf",
+      "title": "EEMB LP452235 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H0804; 2019-6-25",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP452235 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the corresponding official model page. Direct HTTPS 200; nine-page PDF actually opened and extracted in memory using pypdf. Page 1 model/document number/date; page 3 rechargeable polymer lithium-ion Scope, Model, Nominal/Minimum Capacity and Nominal Voltage. Page 6 general test conditions. Document number/date are recorded; no separate revision or latest-version claim is made."
+    },
+    {
+      "source_id": "eemb-lp652438-bare-cell-page",
+      "url": "https://www.eemb.com/product-223",
+      "title": "LP652438-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP652438 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer page opened through web and direct HTTPS 200. Product Detail, Description and Other Information were read and cross-checked with the exact linked PDF. Core fields: Bare Cell, exact model, Lithium Polymer, Rechargeable, Nominal Voltage, Nominal Capacity and Solder Tab. Only expressly labelled typical/minimum values are retained."
+    },
+    {
+      "source_id": "eemb-lp652438-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230315/450b7abc5019bc383e8c0e640579abd4.pdf",
+      "title": "EEMB LP652438 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H1229; 2019-12-14",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP652438 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the corresponding official model page. Direct HTTPS 200; nine-page PDF actually opened and extracted in memory using pypdf. Page 1 model/document number/date; page 3 rechargeable polymer lithium-ion Scope, Model, Nominal/Minimum Capacity and Nominal Voltage. Page 6 general test conditions. Document number/date are recorded; no separate revision or latest-version claim is made."
+    },
+    {
+      "source_id": "eemb-lp702030-bare-cell-page",
+      "url": "https://www.eemb.com/product-220",
+      "title": "LP702030-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP702030 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer page opened through web and direct HTTPS 200. Product Detail, Description and Other Information were read and cross-checked with the exact linked PDF. Core fields: Bare Cell, exact model, Lithium Polymer, Rechargeable, Nominal Voltage, Nominal Capacity and Solder Tab. Only expressly labelled typical/minimum values are retained."
+    },
+    {
+      "source_id": "eemb-lp702030-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230315/3d2059f3e5129238bb116849b1280078.pdf",
+      "title": "EEMB LP702030 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H2309; 2022-10-25",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP702030 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the corresponding official model page. Direct HTTPS 200; nine-page PDF actually opened and extracted in memory using pypdf. Page 1 model/document number/date; page 3 rechargeable polymer lithium-ion Scope, Model, Nominal/Minimum Capacity and Nominal Voltage. Page 6 general test conditions. Document number/date are recorded; no separate revision or latest-version claim is made."
+    },
+    {
+      "source_id": "eemb-lp822245-bare-cell-page",
+      "url": "https://www.eemb.com/product-218",
+      "title": "LP822245-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP822245 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer page opened through web and direct HTTPS 200. Product Detail, Description and Other Information were read and cross-checked with the exact linked PDF. Core fields: Bare Cell, exact model, Lithium Polymer, Rechargeable, Nominal Voltage, Nominal Capacity and Solder Tab. Only expressly labelled typical/minimum values are retained."
+    },
+    {
+      "source_id": "eemb-lp822245-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230315/e3372c05e90b7f060674a5102e6865df.pdf",
+      "title": "EEMB LP822245 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H1224; 2019-12-14",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP822245 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the corresponding official model page. Direct HTTPS 200; nine-page PDF actually opened and extracted in memory using pypdf. Page 1 model/document number/date; page 3 rechargeable polymer lithium-ion Scope, Model, Nominal/Minimum Capacity and Nominal Voltage. Page 6 general test conditions. Document number/date are recorded; no separate revision or latest-version claim is made."
+    },
+    {
+      "source_id": "eemb-lp803450-bare-cell-page",
+      "url": "https://www.eemb.com/product-215",
+      "title": "LP803450-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP803450 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer page opened through web and direct HTTPS 200. Product Detail, Description and Other Information were read and cross-checked with the exact linked PDF. Core fields: Bare Cell, exact model, Lithium Polymer, Rechargeable, Nominal Voltage, Nominal Capacity and Solder Tab. Only expressly labelled typical/minimum values are retained."
+    },
+    {
+      "source_id": "eemb-lp803450-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230315/96e2500b3a1d5bd3eca5146796ad93fb.pdf",
+      "title": "EEMB LP803450 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H0763; 2020-04-24",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP803450 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the corresponding official model page. Direct HTTPS 200; nine-page PDF actually opened and extracted in memory using pypdf. Page 1 model/document number/date; page 3 rechargeable polymer lithium-ion Scope, Model, Nominal/Minimum Capacity and Nominal Voltage. Page 6 general test conditions. Document number/date are recorded; no separate revision or latest-version claim is made."
+    },
+    {
+      "source_id": "eemb-lp603030-bare-cell-page",
+      "url": "https://www.eemb.com/product-145",
+      "title": "LP603030-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP603030 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer page opened through web and direct HTTPS 200. Product Detail, Description and Other Information were read and cross-checked with the exact linked PDF. Core fields: Bare Cell, exact model, Lithium Polymer, Rechargeable, Nominal Voltage, Nominal Capacity and Solder Tab. Only expressly labelled typical/minimum values are retained."
+    },
+    {
+      "source_id": "eemb-lp603030-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230311/454d0cb2f4f04cd9a1876447f3ebe1de.pdf",
+      "title": "EEMB LP603030 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H1928; 2021-6-18",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP603030 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the corresponding official model page. Direct HTTPS 200; nine-page PDF actually opened and extracted in memory using pypdf. Page 1 model/document number/date; page 3 rechargeable polymer lithium-ion Scope, Model, Nominal/Minimum Capacity and Nominal Voltage. Page 6 general test conditions. Document number/date are recorded; no separate revision or latest-version claim is made."
+    },
+    {
+      "source_id": "eemb-lp402030-bare-cell-page",
+      "url": "https://www.eemb.com/product-128",
+      "title": "LP402030-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP402030 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer page opened through web and direct HTTPS 200. Product Detail, Description and Other Information were read and cross-checked with the exact linked PDF. Core fields: Bare Cell, exact model, Lithium Polymer, Rechargeable, Nominal Voltage, Nominal Capacity and Solder Tab. Only expressly labelled typical/minimum values are retained."
+    },
+    {
+      "source_id": "eemb-lp402030-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230309/c67568920283be08e6dc2fcfb59fcdf7.pdf",
+      "title": "EEMB LP402030 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H2213; 2022-8-9",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP402030 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the corresponding official model page. Direct HTTPS 200; nine-page PDF actually opened and extracted in memory using pypdf. Page 1 model/document number/date; page 3 rechargeable polymer lithium-ion Scope, Model, Nominal/Minimum Capacity and Nominal Voltage. Page 6 general test conditions. Document number/date are recorded; no separate revision or latest-version claim is made."
+    },
+    {
+      "source_id": "eemb-lp401730-bare-cell-page",
+      "url": "https://www.eemb.com/product-125",
+      "title": "LP401730-Standard Type Lithium Polymer Battery",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP401730 bare cell with solder tabs; LP Lithium Polymer-Standard"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer page opened through web and direct HTTPS 200. Product Detail, Description and Other Information were read and cross-checked with the exact linked PDF. Core fields: Bare Cell, exact model, Lithium Polymer, Rechargeable, Nominal Voltage, Nominal Capacity and Solder Tab. Only expressly labelled typical/minimum values are retained."
+    },
+    {
+      "source_id": "eemb-lp401730-specification",
+      "url": "https://eemb.oss-accelerate.aliyuncs.com//uploads/20230309/202fb8205636483684d73d1caac2e13b.pdf",
+      "title": "EEMB LP401730 Polymer Li-ion Battery Specification",
+      "publisher": "EEMB",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "ZJQM-RD-SPC-H0510; 2019-4-23",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP401730 cell; page 3 Battery Cell Basic Characteristics"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Exact Datasheet link from the corresponding official model page. Direct HTTPS 200; nine-page PDF actually opened and extracted in memory using pypdf. Page 1 model/document number/date; page 3 rechargeable polymer lithium-ion Scope, Model, Nominal/Minimum Capacity and Nominal Voltage. Page 6 general test conditions. Document number/date are recorded; no separate revision or latest-version claim is made."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "eemb-lp452235-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP452235",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP452235 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP452235",
+      "aliases": [
+        {
+          "value": "LP452235",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 280,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": 280,
+      "minimum_capacity_mah": 250,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified here.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp452235-bare-cell-page",
+        "eemb-lp452235-specification",
+        "eemb-lithium-polymer-standard-page-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp452235-bare-cell-page",
+            "locator": "Official product title and EEMB branding",
+            "observation": "The official page identifies the EEMB brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp452235-specification",
+            "locator": "PDF page 3, section 2.1 Model",
+            "observation": "Exact model LP452235."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp452235-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact manufacturer model is used; numeric size code is not an identity alias."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp452235-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected product is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp452235-specification",
+            "locator": "PDF page 1 title; page 3 introductory Scope",
+            "observation": "The document explicitly identifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp452235-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is expressly labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp452235-bare-cell-page",
+            "locator": "Description; Product Detail: Product Categories",
+            "observation": "The product is expressly identified as Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch4",
+            "locator": "Main Features: foil-type polymer laminate case; exact standard-series model row",
+            "observation": "The standard series uses a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp452235-specification",
+            "locator": "PDF page 3, section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V; charging voltage is not substituted."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp452235-specification",
+            "locator": "PDF page 3, section 2.2 Nominal Capacity row",
+            "observation": "The explicit nominal capacity is 280 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp452235-specification",
+            "locator": "PDF page 3, section 2.2 Nominal and Minimum rows",
+            "observation": "The selected default retains the source nominal label, not the minimum or typical label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp452235-specification",
+            "locator": "PDF page 3, section 2.2 Minimum Capacity row",
+            "observation": "Minimum capacity is 250 mAh at 0.2C5A."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "eemb-lp452235-bare-cell-page",
+            "locator": "Other Information: Typical capacity",
+            "observation": "The page separately labels typical capacity 280 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp452235-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test-condition note",
+            "observation": "Capacity rows state 0.2C5A. Discharge cutoff is 2.750 +/- 0.005 V; general tests use 23 +/- 2 degrees Celsius and 25-85% RH unless otherwise specified. No particular charge/rest protocol is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp452235-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is stated; no plug pinout or lead polarity is supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; the source supplier name is not substituted for a factory claim.",
+        "Series and parallel assembly counts are not stated or inferred from cell classification or nominal voltage.",
+        "Plug model, lead polarity and protection-board-equipped assembly details are not selected; the reference is the bare solder-tab cell.",
+        "Dimensions and optional mass are not populated; no measurements are inferred from a numeric model code.",
+        "Manufacturer energy and an operational maintenance schedule are not imported.",
+        "The official product page Dimension field contains the model string rather than measurements. No dimensions are imported from that malformed field."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Product Detail, Other Information and the linked PDF were individually read. Nominal, minimum and any expressly stated typical capacities remain separate.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Bare-cell identity does not establish equivalence to a PCM-equipped, wired or plug-equipped assembly."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp652438-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP652438",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP652438 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP652438",
+      "aliases": [
+        {
+          "value": "LP652438",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 540,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": 540,
+      "minimum_capacity_mah": 520,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified here.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp652438-bare-cell-page",
+        "eemb-lp652438-specification",
+        "eemb-lithium-polymer-standard-page-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp652438-bare-cell-page",
+            "locator": "Official product title and EEMB branding",
+            "observation": "The official page identifies the EEMB brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp652438-specification",
+            "locator": "PDF page 3, section 2.1 Model",
+            "observation": "Exact model LP652438."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp652438-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact manufacturer model is used; numeric size code is not an identity alias."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp652438-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected product is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp652438-specification",
+            "locator": "PDF page 1 title; page 3 introductory Scope",
+            "observation": "The document explicitly identifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp652438-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is expressly labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp652438-bare-cell-page",
+            "locator": "Description; Product Detail: Product Categories",
+            "observation": "The product is expressly identified as Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch4",
+            "locator": "Main Features: foil-type polymer laminate case; exact standard-series model row",
+            "observation": "The standard series uses a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp652438-specification",
+            "locator": "PDF page 3, section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V; charging voltage is not substituted."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp652438-specification",
+            "locator": "PDF page 3, section 2.2 Nominal Capacity row",
+            "observation": "The explicit nominal capacity is 540 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp652438-specification",
+            "locator": "PDF page 3, section 2.2 Nominal and Minimum rows",
+            "observation": "The selected default retains the source nominal label, not the minimum or typical label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp652438-specification",
+            "locator": "PDF page 3, section 2.2 Minimum Capacity row",
+            "observation": "Minimum capacity is 520 mAh at 0.2C5A."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "eemb-lp652438-bare-cell-page",
+            "locator": "Other Information: Typical capacity",
+            "observation": "The page separately labels typical capacity 540 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp652438-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test-condition note",
+            "observation": "Capacity rows state 0.2C5A. Discharge cutoff is 2.750 +/- 0.005 V; general tests use 23 +/- 2 degrees Celsius and 25-85% RH unless otherwise specified. No particular charge/rest protocol is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp652438-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is stated; no plug pinout or lead polarity is supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; the source supplier name is not substituted for a factory claim.",
+        "Series and parallel assembly counts are not stated or inferred from cell classification or nominal voltage.",
+        "Plug model, lead polarity and protection-board-equipped assembly details are not selected; the reference is the bare solder-tab cell.",
+        "Dimensions and optional mass are not populated; no measurements are inferred from a numeric model code.",
+        "Manufacturer energy and an operational maintenance schedule are not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Product Detail, Other Information and the linked PDF were individually read. Nominal, minimum and any expressly stated typical capacities remain separate.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Bare-cell identity does not establish equivalence to a PCM-equipped, wired or plug-equipped assembly."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp702030-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP702030",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP702030 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP702030",
+      "aliases": [
+        {
+          "value": "LP702030",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 350,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": 350,
+      "minimum_capacity_mah": 330,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified here.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp702030-bare-cell-page",
+        "eemb-lp702030-specification",
+        "eemb-lithium-polymer-standard-page-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp702030-bare-cell-page",
+            "locator": "Official product title and EEMB branding",
+            "observation": "The official page identifies the EEMB brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp702030-specification",
+            "locator": "PDF page 3, section 2.1 Model",
+            "observation": "Exact model LP702030."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp702030-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact manufacturer model is used; numeric size code is not an identity alias."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp702030-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected product is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp702030-specification",
+            "locator": "PDF page 1 title; page 3 introductory Scope",
+            "observation": "The document explicitly identifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp702030-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is expressly labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp702030-bare-cell-page",
+            "locator": "Description; Product Detail: Product Categories",
+            "observation": "The product is expressly identified as Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch4",
+            "locator": "Main Features: foil-type polymer laminate case; exact standard-series model row",
+            "observation": "The standard series uses a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp702030-specification",
+            "locator": "PDF page 3, section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V; charging voltage is not substituted."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp702030-specification",
+            "locator": "PDF page 3, section 2.2 Nominal Capacity row",
+            "observation": "The explicit nominal capacity is 350 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp702030-specification",
+            "locator": "PDF page 3, section 2.2 Nominal and Minimum rows",
+            "observation": "The selected default retains the source nominal label, not the minimum or typical label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp702030-specification",
+            "locator": "PDF page 3, section 2.2 Minimum Capacity row",
+            "observation": "Minimum capacity is 330 mAh at 0.2C5A."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "eemb-lp702030-bare-cell-page",
+            "locator": "Other Information: Typical capacity",
+            "observation": "The page separately labels typical capacity 350 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp702030-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test-condition note",
+            "observation": "Capacity rows state 0.2C5A. Discharge cutoff is 2.750 +/- 0.005 V; general tests use 23 +/- 2 degrees Celsius and 25-85% RH unless otherwise specified. No particular charge/rest protocol is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp702030-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is stated; no plug pinout or lead polarity is supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; the source supplier name is not substituted for a factory claim.",
+        "Series and parallel assembly counts are not stated or inferred from cell classification or nominal voltage.",
+        "Plug model, lead polarity and protection-board-equipped assembly details are not selected; the reference is the bare solder-tab cell.",
+        "Dimensions and optional mass are not populated; no measurements are inferred from a numeric model code.",
+        "Manufacturer energy and an operational maintenance schedule are not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Product Detail, Other Information and the linked PDF were individually read. Nominal, minimum and any expressly stated typical capacities remain separate.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Bare-cell identity does not establish equivalence to a PCM-equipped, wired or plug-equipped assembly."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp822245-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP822245",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP822245 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP822245",
+      "aliases": [
+        {
+          "value": "LP822245",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 750,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": 750,
+      "minimum_capacity_mah": 720,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified here.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp822245-bare-cell-page",
+        "eemb-lp822245-specification",
+        "eemb-lithium-polymer-standard-page-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp822245-bare-cell-page",
+            "locator": "Official product title and EEMB branding",
+            "observation": "The official page identifies the EEMB brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp822245-specification",
+            "locator": "PDF page 3, section 2.1 Model",
+            "observation": "Exact model LP822245."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp822245-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact manufacturer model is used; numeric size code is not an identity alias."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp822245-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected product is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp822245-specification",
+            "locator": "PDF page 1 title; page 3 introductory Scope",
+            "observation": "The document explicitly identifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp822245-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is expressly labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp822245-bare-cell-page",
+            "locator": "Description; Product Detail: Product Categories",
+            "observation": "The product is expressly identified as Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch4",
+            "locator": "Main Features: foil-type polymer laminate case; exact standard-series model row",
+            "observation": "The standard series uses a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp822245-specification",
+            "locator": "PDF page 3, section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V; charging voltage is not substituted."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp822245-specification",
+            "locator": "PDF page 3, section 2.2 Nominal Capacity row",
+            "observation": "The explicit nominal capacity is 750 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp822245-specification",
+            "locator": "PDF page 3, section 2.2 Nominal and Minimum rows",
+            "observation": "The selected default retains the source nominal label, not the minimum or typical label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp822245-specification",
+            "locator": "PDF page 3, section 2.2 Minimum Capacity row",
+            "observation": "Minimum capacity is 720 mAh at 0.2C5A."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "eemb-lp822245-bare-cell-page",
+            "locator": "Other Information: Typical capacity",
+            "observation": "The page separately labels typical capacity 750 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp822245-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test-condition note",
+            "observation": "Capacity rows state 0.2C5A. Discharge cutoff is 2.750 +/- 0.005 V; general tests use 23 +/- 2 degrees Celsius and 25-85% RH unless otherwise specified. No particular charge/rest protocol is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp822245-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is stated; no plug pinout or lead polarity is supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; the source supplier name is not substituted for a factory claim.",
+        "Series and parallel assembly counts are not stated or inferred from cell classification or nominal voltage.",
+        "Plug model, lead polarity and protection-board-equipped assembly details are not selected; the reference is the bare solder-tab cell.",
+        "Dimensions and optional mass are not populated; no measurements are inferred from a numeric model code.",
+        "Manufacturer energy and an operational maintenance schedule are not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Product Detail, Other Information and the linked PDF were individually read. Nominal, minimum and any expressly stated typical capacities remain separate.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Bare-cell identity does not establish equivalence to a PCM-equipped, wired or plug-equipped assembly."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp803450-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP803450",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP803450 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP803450",
+      "aliases": [
+        {
+          "value": "LP803450",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 1400,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": 1400,
+      "minimum_capacity_mah": 1300,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified here.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp803450-bare-cell-page",
+        "eemb-lp803450-specification",
+        "eemb-lithium-polymer-standard-page-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp803450-bare-cell-page",
+            "locator": "Official product title and EEMB branding",
+            "observation": "The official page identifies the EEMB brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp803450-specification",
+            "locator": "PDF page 3, section 2.1 Model",
+            "observation": "Exact model LP803450."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp803450-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact manufacturer model is used; numeric size code is not an identity alias."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp803450-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected product is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp803450-specification",
+            "locator": "PDF page 1 title; page 3 introductory Scope",
+            "observation": "The document explicitly identifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp803450-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is expressly labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp803450-bare-cell-page",
+            "locator": "Description; Product Detail: Product Categories",
+            "observation": "The product is expressly identified as Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch4",
+            "locator": "Main Features: foil-type polymer laminate case; exact standard-series model row",
+            "observation": "The standard series uses a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp803450-specification",
+            "locator": "PDF page 3, section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V; charging voltage is not substituted."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp803450-specification",
+            "locator": "PDF page 3, section 2.2 Nominal Capacity row",
+            "observation": "The explicit nominal capacity is 1400 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp803450-specification",
+            "locator": "PDF page 3, section 2.2 Nominal and Minimum rows",
+            "observation": "The selected default retains the source nominal label, not the minimum or typical label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp803450-specification",
+            "locator": "PDF page 3, section 2.2 Minimum Capacity row",
+            "observation": "Minimum capacity is 1300 mAh at 0.2C5A."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "eemb-lp803450-bare-cell-page",
+            "locator": "Other Information: Typical capacity",
+            "observation": "The page separately labels typical capacity 1400 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp803450-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test-condition note",
+            "observation": "Capacity rows state 0.2C5A. Discharge cutoff is 2.750 +/- 0.005 V; general tests use 23 +/- 2 degrees Celsius and 25-85% RH unless otherwise specified. No particular charge/rest protocol is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp803450-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is stated; no plug pinout or lead polarity is supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; the source supplier name is not substituted for a factory claim.",
+        "Series and parallel assembly counts are not stated or inferred from cell classification or nominal voltage.",
+        "Plug model, lead polarity and protection-board-equipped assembly details are not selected; the reference is the bare solder-tab cell.",
+        "Dimensions and optional mass are not populated; no measurements are inferred from a numeric model code.",
+        "Manufacturer energy and an operational maintenance schedule are not imported."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Product Detail, Other Information and the linked PDF were individually read. Nominal, minimum and any expressly stated typical capacities remain separate.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Bare-cell identity does not establish equivalence to a PCM-equipped, wired or plug-equipped assembly."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp603030-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP603030",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP603030 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP603030",
+      "aliases": [
+        {
+          "value": "LP603030",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 480,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 460,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified here.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp603030-bare-cell-page",
+        "eemb-lp603030-specification",
+        "eemb-lithium-polymer-standard-page-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp603030-bare-cell-page",
+            "locator": "Official product title and EEMB branding",
+            "observation": "The official page identifies the EEMB brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp603030-specification",
+            "locator": "PDF page 3, section 2.1 Model",
+            "observation": "Exact model LP603030."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp603030-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact manufacturer model is used; numeric size code is not an identity alias."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp603030-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected product is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp603030-specification",
+            "locator": "PDF page 1 title; page 3 introductory Scope",
+            "observation": "The document explicitly identifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp603030-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is expressly labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp603030-bare-cell-page",
+            "locator": "Description; Product Detail: Product Categories",
+            "observation": "The product is expressly identified as Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch4",
+            "locator": "Main Features: foil-type polymer laminate case; exact standard-series model row",
+            "observation": "The standard series uses a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp603030-specification",
+            "locator": "PDF page 3, section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V; charging voltage is not substituted."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp603030-specification",
+            "locator": "PDF page 3, section 2.2 Nominal Capacity row",
+            "observation": "The explicit nominal capacity is 480 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp603030-specification",
+            "locator": "PDF page 3, section 2.2 Nominal and Minimum rows",
+            "observation": "The selected default retains the source nominal label, not the minimum or typical label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp603030-specification",
+            "locator": "PDF page 3, section 2.2 Minimum Capacity row",
+            "observation": "Minimum capacity is 460 mAh at 0.2C5A."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp603030-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test-condition note",
+            "observation": "Capacity rows state 0.2C5A. Discharge cutoff is 2.750 +/- 0.005 V; general tests use 23 +/- 2 degrees Celsius and 25-85% RH unless otherwise specified. No particular charge/rest protocol is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp603030-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is stated; no plug pinout or lead polarity is supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; the source supplier name is not substituted for a factory claim.",
+        "Series and parallel assembly counts are not stated or inferred from cell classification or nominal voltage.",
+        "Plug model, lead polarity and protection-board-equipped assembly details are not selected; the reference is the bare solder-tab cell.",
+        "Dimensions and optional mass are not populated; no measurements are inferred from a numeric model code.",
+        "Manufacturer energy and an operational maintenance schedule are not imported.",
+        "No separate typical-capacity label is stated in the selected sources; typical_capacity_mah remains null."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Product Detail, Other Information and the linked PDF were individually read. Nominal, minimum and any expressly stated typical capacities remain separate.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Bare-cell identity does not establish equivalence to a PCM-equipped, wired or plug-equipped assembly."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp402030-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP402030",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP402030 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP402030",
+      "aliases": [
+        {
+          "value": "LP402030",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 190,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 180,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified here.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp402030-bare-cell-page",
+        "eemb-lp402030-specification",
+        "eemb-lithium-polymer-standard-page-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp402030-bare-cell-page",
+            "locator": "Official product title and EEMB branding",
+            "observation": "The official page identifies the EEMB brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp402030-specification",
+            "locator": "PDF page 3, section 2.1 Model",
+            "observation": "Exact model LP402030."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp402030-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact manufacturer model is used; numeric size code is not an identity alias."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp402030-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected product is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp402030-specification",
+            "locator": "PDF page 1 title; page 3 introductory Scope",
+            "observation": "The document explicitly identifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp402030-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is expressly labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp402030-bare-cell-page",
+            "locator": "Description; Product Detail: Product Categories",
+            "observation": "The product is expressly identified as Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch4",
+            "locator": "Main Features: foil-type polymer laminate case; exact standard-series model row",
+            "observation": "The standard series uses a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp402030-specification",
+            "locator": "PDF page 3, section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V; charging voltage is not substituted."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp402030-specification",
+            "locator": "PDF page 3, section 2.2 Nominal Capacity row",
+            "observation": "The explicit nominal capacity is 190 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp402030-specification",
+            "locator": "PDF page 3, section 2.2 Nominal and Minimum rows",
+            "observation": "The selected default retains the source nominal label, not the minimum or typical label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp402030-specification",
+            "locator": "PDF page 3, section 2.2 Minimum Capacity row",
+            "observation": "Minimum capacity is 180 mAh at 0.2C5A."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp402030-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test-condition note",
+            "observation": "Capacity rows state 0.2C5A. Discharge cutoff is 2.750 +/- 0.005 V; general tests use 23 +/- 2 degrees Celsius and 25-85% RH unless otherwise specified. No particular charge/rest protocol is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp402030-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is stated; no plug pinout or lead polarity is supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; the source supplier name is not substituted for a factory claim.",
+        "Series and parallel assembly counts are not stated or inferred from cell classification or nominal voltage.",
+        "Plug model, lead polarity and protection-board-equipped assembly details are not selected; the reference is the bare solder-tab cell.",
+        "Dimensions and optional mass are not populated; no measurements are inferred from a numeric model code.",
+        "Manufacturer energy and an operational maintenance schedule are not imported.",
+        "No separate typical-capacity label is stated in the selected sources; typical_capacity_mah remains null."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Product Detail, Other Information and the linked PDF were individually read. Nominal, minimum and any expressly stated typical capacities remain separate.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Bare-cell identity does not establish equivalence to a PCM-equipped, wired or plug-equipped assembly."
+      ]
+    },
+    {
+      "catalog_id": "eemb-lp401730-bare-cell-solder-tab",
+      "manufacturer": null,
+      "brand": "EEMB",
+      "model": "LP401730",
+      "variant_key": "bare-cell-solder-tab",
+      "variant_description": "LP401730 LP Lithium Polymer-Standard bare cell with solder tabs; no wired, plug-equipped or protected assembly variant is selected.",
+      "suggested_display_name": "EEMB LP401730",
+      "aliases": [
+        {
+          "value": "LP401730",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Foil-type polymer laminate cell case; dimensions are not inferred from the LP code."
+      },
+      "rated_capacity_mah": 150,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 140,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Section 2.2 nominal and minimum rows state 0.2C5A. Section 2.8 lists discharge cutoff 2.750 +/- 0.005 V. Page 6 general test conditions are 23 +/- 2 degrees Celsius and 25-85% relative humidity unless otherwise specified. A charge/rest sequence specifically for the section 2.2 capacity rating is not separately identified here.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Solder tabs; no wire lead or plug-equipped variant is selected.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "eemb-lp401730-bare-cell-page",
+        "eemb-lp401730-specification",
+        "eemb-lithium-polymer-standard-page-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "eemb-lp401730-bare-cell-page",
+            "locator": "Official product title and EEMB branding",
+            "observation": "The official page identifies the EEMB brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "eemb-lp401730-specification",
+            "locator": "PDF page 3, section 2.1 Model",
+            "observation": "Exact model LP401730."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "eemb-lp401730-bare-cell-page",
+            "locator": "Model and Battery Model fields",
+            "observation": "Only the exact manufacturer model is used; numeric size code is not an identity alias."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "eemb-lp401730-bare-cell-page",
+            "locator": "Description; Product Categories; Termination Style",
+            "observation": "The selected product is a bare cell with solder tabs."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "eemb-lp401730-specification",
+            "locator": "PDF page 1 title; page 3 introductory Scope",
+            "observation": "The document explicitly identifies polymer lithium-ion chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "eemb-lp401730-bare-cell-page",
+            "locator": "Product Detail: Rechargeable/Non-Rechargeable",
+            "observation": "The exact product is expressly labelled Rechargeable (Secondary)."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "eemb-lp401730-bare-cell-page",
+            "locator": "Description; Product Detail: Product Categories",
+            "observation": "The product is expressly identified as Bare Cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "eemb-lithium-polymer-standard-page-batch4",
+            "locator": "Main Features: foil-type polymer laminate case; exact standard-series model row",
+            "observation": "The standard series uses a foil-type polymer laminate case."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "eemb-lp401730-specification",
+            "locator": "PDF page 3, section 2.3 Nominal Voltage",
+            "observation": "Nominal voltage is 3.7 V; charging voltage is not substituted."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "eemb-lp401730-specification",
+            "locator": "PDF page 3, section 2.2 Nominal Capacity row",
+            "observation": "The explicit nominal capacity is 150 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "eemb-lp401730-specification",
+            "locator": "PDF page 3, section 2.2 Nominal and Minimum rows",
+            "observation": "The selected default retains the source nominal label, not the minimum or typical label."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "eemb-lp401730-specification",
+            "locator": "PDF page 3, section 2.2 Minimum Capacity row",
+            "observation": "Minimum capacity is 140 mAh at 0.2C5A."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "eemb-lp401730-specification",
+            "locator": "PDF page 3 sections 2.2/2.8; page 6 general test-condition note",
+            "observation": "Capacity rows state 0.2C5A. Discharge cutoff is 2.750 +/- 0.005 V; general tests use 23 +/- 2 degrees Celsius and 25-85% RH unless otherwise specified. No particular charge/rest protocol is inferred."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "eemb-lp401730-bare-cell-page",
+            "locator": "Product Detail: Termination Style",
+            "observation": "Solder Tab is stated; no plug pinout or lead polarity is supplied."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Legal factory/manufacturer identity is not separately established; the source supplier name is not substituted for a factory claim.",
+        "Series and parallel assembly counts are not stated or inferred from cell classification or nominal voltage.",
+        "Plug model, lead polarity and protection-board-equipped assembly details are not selected; the reference is the bare solder-tab cell.",
+        "Dimensions and optional mass are not populated; no measurements are inferred from a numeric model code.",
+        "Manufacturer energy and an operational maintenance schedule are not imported.",
+        "No separate typical-capacity label is stated in the selected sources; typical_capacity_mah remains null."
+      ],
+      "notes": [
+        "Public product reference only; school stock and purchasing coverage are unknown.",
+        "Product Detail, Other Information and the linked PDF were individually read. Nominal, minimum and any expressly stated typical capacities remain separate.",
+        "Suggested display name is editable. Prototype pouch is an editorial research grouping, not a school purchasing requirement.",
+        "Bare-cell identity does not establish equivalence to a PCM-equipped, wired or plug-equipped assembly."
+      ]
+    }
+  ]
+}

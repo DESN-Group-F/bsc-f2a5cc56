@@ -9,8 +9,8 @@ import { z } from "zod";
 export const dynamic = "force-dynamic";
 const formatSchema = z.enum(["xlsx", "csv", "json"]);
 async function attachmentResponse(document: ExportDocument, input: unknown, dataset: Dataset, format: z.infer<typeof formatSchema>) {
-    const requested = input as { batteryId?: string; mode: string; kind?: string };
-    if (format === "csv" && requested.mode === "detail") throw new DomainError(400, "Detailed exports contain multiple tables. Choose Excel or JSON to retain all selected information.");
+    const requested = input as { batteryId?: string; mode: string; kind?: string; activityDepth?: string };
+    if (format === "csv" && (requested.mode === "detail" || requested.mode === "activity" && requested.activityDepth === "battery_details")) throw new DomainError(400, "Detailed exports contain multiple tables. Choose Excel or JSON to retain all selected information.");
     const date = new Date().toISOString().replace(/[:.]/g, "-"), label = `${requested.batteryId ?? requested.kind ?? requested.mode}`.replace(/[^A-Za-z0-9._-]/g, "_");
     const type = format === "xlsx" ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" : format === "csv" ? "text/csv;charset=utf-8" : "application/json";
     const body = format === "xlsx" ? Uint8Array.from(await excelBuffer(document)).buffer : format === "csv" ? summaryCsv(document) : JSON.stringify(document, null, 2);

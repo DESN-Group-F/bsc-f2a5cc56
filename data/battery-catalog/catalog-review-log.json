@@ -1,0 +1,126 @@
+{
+  "scope": "Independent source samples; automatic checks only verify recorded identifiers and sample size.",
+  "releases": [
+    {
+      "catalog_version": "2026.10.03.1",
+      "new_verified_independent_products": 18,
+      "independently_reviewed_catalog_ids": [
+        "makita-bl1815n",
+        "makita-bl1820b",
+        "makita-bl1830b",
+        "makita-bl1840b",
+        "makita-bl1850b",
+        "makita-bl1860b",
+        "makita-bl1430b",
+        "makita-bl1440",
+        "eemb-lp604765-bare-cell-solder-tab",
+        "jauch-lp305166jh-248237",
+        "jauch-lp735977jh-246524"
+      ],
+      "audit_files": [
+        "research/batch3-audit-root-review.json"
+      ],
+      "summary": "11 of18 newly verified products independently checked; all eight tool nominal rows reviewed. Conflicted EEMB andXGT candidates excluded."
+    },
+    {
+      "catalog_version": "2026.10.03.2",
+      "new_verified_independent_products": 40,
+      "independently_reviewed_catalog_ids": [
+        "murata-us18650vtc4",
+        "murata-us18650vtc4a",
+        "murata-us18650vtc5",
+        "murata-us18650vtc5a",
+        "murata-us18650vtc5d",
+        "murata-us18650nc1",
+        "murata-us18650vtc6",
+        "murata-us18650vc7",
+        "murata-us18650ftc1",
+        "murata-us21700vtc6a",
+        "murata-us26650ftc1a",
+        "panasonic-ur14500ac",
+        "panasonic-ur18650a",
+        "panasonic-ur18650aa",
+        "panasonic-ur1865zm2",
+        "panasonic-ur1865zp",
+        "panasonic-ur18650rx",
+        "panasonic-ncr1865k",
+        "panasonic-ncr2270a",
+        "panasonic-ncr2270b",
+        "panasonic-cga103450a",
+        "panasonic-cga573442",
+        "panasonic-uf103450pn",
+        "panasonic-uf463443gum",
+        "panasonic-uf463450fp",
+        "eemb-lp452235-bare-cell-solder-tab",
+        "eemb-lp652438-bare-cell-solder-tab",
+        "jauch-lp851719ju-237924",
+        "jauch-lp504783ju-246521"
+      ],
+      "audit_files": [
+        "research/batch4-audit-standalone-review.json",
+        "research/batch4-audit-root-review.json"
+      ],
+      "summary": "29 of40 newly verified products independently checked: all25 standalone cells andtwo EEMB plus two Jauch pouches. Major source qualification limits documented."
+    },
+    {
+      "catalog_version": "2026.10.03.3",
+      "new_verified_independent_products": 50,
+      "independently_reviewed_catalog_ids": [
+        "milwaukee-m18-hb8",
+        "milwaukee-m18-fb8",
+        "dewalt-dcb126",
+        "dewalt-dcbp320",
+        "jauch-lp503759ju-246517",
+        "jauch-lp906090jh-246525",
+        "eemb-lp583759-bare-cell-solder-tab",
+        "eemb-lp604040-bare-cell-solder-tab",
+        "sparkfun-prt-13855-protected-jst-ph",
+        "adafruit-1317-150mah-protected-jst-ph",
+        "milwaukee-m14-b",
+        "milwaukee-m14-bx",
+        "milwaukee-m18-b",
+        "milwaukee-m18-bx",
+        "milwaukee-m18-b6",
+        "milwaukee-m18-fb6",
+        "dewalt-dcb124",
+        "dewalt-dcb2104",
+        "dewalt-dcb204",
+        "tenergy-31003-protected-pack",
+        "tenergy-31001-protected-pack",
+        "tenergy-31012-protected-pack"
+      ],
+      "audit_files": [
+        "research/batch5-audit-root-review.json",
+        "research/batch5-audit-general-root-review.json"
+      ],
+      "summary": "22 of 50 newly verified products independently source-checked, including 13 tool packs, six prototype pouches and all three Tenergy packs. Source identity metadata conflicts and capacity qualifications are disclosed; no received-version or current-availability claims are inferred."
+    },
+    {
+      "catalog_version": "2026.10.03.4",
+      "new_verified_independent_products": 50,
+      "independently_reviewed_catalog_ids": [
+        "jauch-li18650jls-hb-2s1p-250481",
+        "rrc-rrc2040-2-1005590",
+        "rrc-rrc2054-1005680",
+        "rrc-rrc2130-110088",
+        "inspired-energy-nf3040hd34-standard-assembly",
+        "inspired-energy-nh2057hd34-standard-assembly",
+        "tenergy-31044-protected-bare-leads",
+        "tenergy-31094-protected-pack-connector-unspecified",
+        "tenergy-31802-protected-bare-leads",
+        "hacker-92400331-mtag-xt60-xh",
+        "hacker-96100521-mtag-xt60-xh",
+        "duracell-mn1500-us-flat-cell",
+        "duracell-mx2500-us-flat-cell",
+        "power-sonic-ps-640-f1",
+        "power-sonic-ps-1208-wl"
+      ],
+      "audit_files": [
+        "research/batch6-audit-general-jauch-root-review.json",
+        "research/batch6-audit-general-mixed-review.json",
+        "research/batch6-audit-supplementary-review.json"
+      ],
+      "summary": "15 of 50 newly verified products independently source-checked: six Jauch/RRC/Inspired Energy packs, five Tenergy/Hacker packs and four supplementary products. A chemistry-citation precision issue was expanded and corrected across all five new Duracell cells; the extra chemistry-only reviews do not increase the full-core sample count. Qualified capacity thresholds, the Inspired Energy date conflict, source-access limitations and missing alkaline capacity scalars remain disclosed."
+    }
+  ]
+}

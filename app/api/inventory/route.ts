@@ -2,6 +2,7 @@ import { requestUser } from "@/lib/api";
 import { sharedInventoryScope } from "@/lib/shared-inventory";
 import { getD1Database } from "@/db";
 import { InventoryStore } from "@/lib/store";
+import { IntakeStore } from "@/lib/intake-store";
 import { datasetSchema, identifier, DomainError } from "@/lib/domain";
 import { z } from "zod";
 export const dynamic = "force-dynamic";
@@ -10,7 +11,8 @@ async function context(request: Request, dataset: unknown) {
     const actor = await requestUser(request);
     const mode = datasetSchema.parse(dataset ?? "demo");
     const db = getD1Database();
-    return { actor, store: new InventoryStore(db, await sharedInventoryScope(db, mode), mode, { id: actor.id, name: actor.displayName, role: actor.role, authVersion: actor.authVersion }) };
+    const scope = await sharedInventoryScope(db, mode);
+    return { actor, store: new InventoryStore(db, scope, mode, { id: actor.id, name: actor.displayName, role: actor.role, authVersion: actor.authVersion }), intake: new IntakeStore(db, scope, mode, actor) };
 }
 function fail(error: unknown) {
     if (error instanceof DomainError)
@@ -50,7 +52,7 @@ export async function POST(request: Request) {
             throw new DomainError(400, "The request is not valid JSON.");
         }
         const body = z.object({ dataset: datasetSchema.default("demo"), action: z.string(), payload: z.unknown().optional(), update: z.boolean().optional(), kind: z.string().optional(), records: z.array(z.unknown()).optional() }).parse(raw);
-        const { store } = await context(request, body.dataset), payload = body.payload;
+        const { store, intake } = await context(request, body.dataset), payload = body.payload;
         let result;
         switch (body.action) {
             case "initialize_demo":
@@ -61,6 +63,15 @@ export async function POST(request: Request) {
                 break;
             case "scan_lookup":
                 result = await store.scanLookup(payload);
+                break;
+            case "intake":
+                result = await intake.register(payload);
+                break;
+            case "lifecycle":
+                result = await store.lifecycle(payload);
+                break;
+            case "group_maintenance":
+                result = await store.groupMaintenance(payload);
                 break;
             case "person":
                 result = await store.savePerson(payload, body.update === true);

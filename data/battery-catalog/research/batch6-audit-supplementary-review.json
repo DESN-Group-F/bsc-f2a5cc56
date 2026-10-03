@@ -1,0 +1,259 @@
+{
+  "reviewed_on": "2026-10-03",
+  "timezone": "Australia/Sydney",
+  "reviewed_fragment": "research/batch6-supplementary-root.json",
+  "scope": "Independent full core audit of four selected models; expanded chemistry-evidence applicability review of all five Duracell rows; schema and semantic validation of all eleven fragment models.",
+  "verdict": "pass",
+  "sources": [
+    {
+      "source_id": "duracell-alkaline-ais-20260101-batch6",
+      "url": "https://cdn.prod.website-files.com/6835fa821f0f20d8b0b5850b/697c718ead9dc0a3e1481cb5_2026%20Duracell%20Alkaline%20AIS_English%20%281%29.pdf",
+      "access_status": "opened",
+      "accessed_on": "2026-10-03",
+      "access_method": "Direct HTTPS with urllib; actual PDF parsed in memory using pypdf after web open failure or timeout.",
+      "http_status": 200,
+      "bytes": 247031,
+      "page_count": 3
+    },
+    {
+      "source_id": "duracell-mn1500-us-datasheet-batch6",
+      "url": "https://cdn.prod.website-files.com/6835fa821f0f20d8b0b5851c/6899e006fd5a5101be9743f8_MN15USCT0122.pdf",
+      "access_status": "opened",
+      "accessed_on": "2026-10-03",
+      "access_method": "Direct HTTPS with urllib; actual PDF parsed in memory using pypdf after web open failure or timeout.",
+      "http_status": 200,
+      "bytes": 1224550,
+      "page_count": 2
+    },
+    {
+      "source_id": "duracell-mx2500-us-datasheet-batch6",
+      "url": "https://cdn.prod.website-files.com/6835fa821f0f20d8b0b5851c/6899e1afd98b2d5f2fde3306_MX25US02166.pdf",
+      "access_status": "opened",
+      "accessed_on": "2026-10-03",
+      "access_method": "Direct HTTPS with urllib; actual PDF parsed in memory using pypdf after web open failure or timeout.",
+      "http_status": 200,
+      "bytes": 877358,
+      "page_count": 2
+    },
+    {
+      "source_id": "power-sonic-ps-640-datasheet-batch6",
+      "url": "https://www.power-sonic.com/wp-content/uploads/datasheets/ps-640.pdf",
+      "access_status": "opened",
+      "accessed_on": "2026-10-03",
+      "access_method": "Direct HTTPS with urllib; actual PDF parsed in memory using pypdf after web open failure or timeout.",
+      "http_status": 200,
+      "bytes": 3387162,
+      "page_count": 3
+    },
+    {
+      "source_id": "power-sonic-ps-1208-datasheet-batch6",
+      "url": "https://www.power-sonic.com/wp-content/uploads/datasheets/ps-1208.pdf",
+      "access_status": "opened",
+      "accessed_on": "2026-10-03",
+      "access_method": "Direct HTTPS with urllib; actual PDF parsed in memory using pypdf after web open failure or timeout.",
+      "http_status": 200,
+      "bytes": 2898687,
+      "page_count": 3
+    },
+    {
+      "source_id": "duracell-technical-library-batch6",
+      "url": "https://duracell.com/techlibrary/product-technical-data-sheets",
+      "access_status": "opened",
+      "accessed_on": "2026-10-03",
+      "access_method": "web open and direct HTTPS HTML; actual product-link and region contexts read."
+    }
+  ],
+  "model_reviews": [
+    {
+      "catalog_id": "duracell-mn1500-us-flat-cell",
+      "verdict": "pass",
+      "checked_fields": [
+        "brand",
+        "model",
+        "aliases",
+        "chemistry",
+        "rechargeable",
+        "unit_kind",
+        "form_factor",
+        "nominal_voltage_v",
+        "capacity fields and basis",
+        "connector",
+        "manufacturer uncertainty"
+      ],
+      "observations": [
+        {
+          "source_id": "duracell-mn1500-us-datasheet-batch6",
+          "locator": "PDF page 1 heading and specifications; pages 1-2 performance notice",
+          "observation": "Duracell MN1500 AA, alkaline manganese dioxide, nominal 1.5 V and flat terminals. Delivered capacity depends on load, temperature and cutoff; no scalar capacity was taken from a chart. All capacity fields remain null."
+        },
+        {
+          "source_id": "duracell-alkaline-ais-20260101-batch6",
+          "locator": "Page 1 Sections 3, 4 and 7",
+          "observation": "Major AA cells fall within the described alkaline family. Composition specifies zinc negative electrode and manganese dioxide positive electrode; recharge is identified as abusive handling. Regional company contacts do not establish an exact factory."
+        }
+      ]
+    },
+    {
+      "catalog_id": "duracell-mx2500-us-flat-cell",
+      "verdict": "pass",
+      "checked_fields": [
+        "brand",
+        "model",
+        "aliases",
+        "chemistry",
+        "rechargeable",
+        "unit_kind",
+        "form_factor",
+        "nominal_voltage_v",
+        "capacity fields and basis",
+        "connector",
+        "manufacturer uncertainty"
+      ],
+      "observations": [
+        {
+          "source_id": "duracell-mx2500-us-datasheet-batch6",
+          "locator": "PDF page 1 heading and specifications; pages 1-2 capacity dependence notice and footer",
+          "observation": "Duracell Ultra MX2500 AAAA, alkaline manganese dioxide, nominal 1.5 V and flat terminals. No chart-derived scalar capacity is imported. Footer code MX25US0216 is retained; the URL filename has an extra final digit, which is not used as a document revision."
+        },
+        {
+          "source_id": "duracell-alkaline-ais-20260101-batch6",
+          "locator": "Page 1 Sections 3, 4 and 7",
+          "observation": "Specialty AAAA cells are covered by physical description. Recharge warning supports non-rechargeable classification. Ultra is not separately enumerated in the Global Sub-brands list; applicability uses the explicit specialty AAAA physical description."
+        },
+        {
+          "source_id": "duracell-technical-library-batch6",
+          "locator": "HTML product rows linking MX25US02166.pdf",
+          "observation": "The exact MX2500 PDF is linked for North America and also Europe/Africa. Selection of the North America listing is supported; no exclusive regional product claim is made."
+        }
+      ]
+    },
+    {
+      "catalog_id": "power-sonic-ps-640-f1",
+      "verdict": "pass",
+      "checked_fields": [
+        "brand",
+        "model",
+        "aliases",
+        "chemistry",
+        "rechargeable",
+        "unit_kind",
+        "form_factor",
+        "nominal_voltage_v",
+        "rated_capacity_mah",
+        "capacity_basis",
+        "capacity_test_conditions",
+        "variant_description",
+        "connector",
+        "document_version",
+        "manufacturer uncertainty"
+      ],
+      "observations": [
+        {
+          "source_id": "power-sonic-ps-640-datasheet-batch6",
+          "locator": "PDF page 1 Performance Specs, Configuration Options and Dimensions; page 3 Charging and footer",
+          "observation": "Exact PS-640 is a general-purpose sealed lead-acid assembled battery. Nominal voltage is 6.0 V, distinct from charging instructions. Nominal capacity is 4.5 Ah at the 20-hour row, 0.23 A to 5.25 V, so 4500 mAh with nominal basis is correct. Other rate rows are neither minimum nor typical capacity. F1 is the explicit listed configuration. Page 3 charging supports rechargeable classification. Version 1.2, updated 8/18/2026 4:24 PM, matches the actual opened PDF; older search results are not substituted."
+        }
+      ]
+    },
+    {
+      "catalog_id": "power-sonic-ps-1208-wl",
+      "verdict": "pass",
+      "checked_fields": [
+        "brand",
+        "model",
+        "aliases",
+        "chemistry",
+        "rechargeable",
+        "unit_kind",
+        "form_factor",
+        "nominal_voltage_v",
+        "rated_capacity_mah",
+        "capacity_basis",
+        "capacity_test_conditions",
+        "variant_description",
+        "connector",
+        "document_version",
+        "manufacturer uncertainty"
+      ],
+      "observations": [
+        {
+          "source_id": "power-sonic-ps-1208-datasheet-batch6",
+          "locator": "PDF page 1 Performance Specs, Configuration Options and Dimensions; page 3 Charging and footer",
+          "observation": "Exact PS-1208 is a sealed lead-acid assembled battery. Nominal voltage is 12.0 V. Nominal capacity is 0.8 Ah at the 20-hour row, 0.04 A to 10.5 V, so 800 mAh with nominal basis is correct. Configuration Options separately lists PS-1208 WL, PS-1208 FR WL and PS-1208 JST VHR-2N. The selected WL option is explicit; JST/FR is not selected. Pin polarity and detailed terminal dimensions remain unknown. Version 1.2, updated 8/18/2026 4:29 PM, matches the actual PDF."
+        }
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "severity": "minor",
+      "status": "resolved_and_independently_checked",
+      "affected_fields": [
+        "Duracell /chemistry evidence observation"
+      ],
+      "observation": "The chemistry observation refers to the zinc negative electrode and AIS corroboration, but currently cites only the product PDF chemical-system locator. AIS page 1 Section 4 explicitly states the electrode composition.",
+      "recommended_action": "Add an AIS page 1 Section 4 evidence entry to /chemistry, or limit the product-PDF observation to its stated alkaline manganese dioxide/Zn-MnO2 chemical system. No numeric or chemistry classification correction is needed.",
+      "resolution": "All five Duracell chemistry evidence arrays now include AIS page 1 Sections 3/4, with product-PDF observation limited to its stated chemical system. This chemistry-only expansion does not increase the four full core samples."
+    }
+  ],
+  "validation": {
+    "fragment_models": 11,
+    "fragment_sources": 13,
+    "independently_audited_models": 4,
+    "schema_definition_errors": [],
+    "catalog_semantic_errors": [],
+    "method": "Current catalog_tool.py schema_errors on each source/model and validate_data on an in-memory catalog plus fragment, with in-memory published_on 2026-10-03. No canonical or report file written."
+  },
+  "limitations": [
+    "The other seven product data sheets were not independently reopened for full core audit. All eleven rows received local schema/semantic checks; the three additional Duracell rows received chemistry-evidence applicability review only.",
+    "Duracell MN1500 and MX2500 have no curated scalar capacity. Their verified identity/chemistry/voltage does not imply known capacity or a complete numeric capacity prefill.",
+    "The AIS does not separately list Ultra in its sub-brand list; the exact specialty AAAA physical-description coverage and product-specific alkaline sheet support MX2500 classification.",
+    "PDF text, specification tables and variant-option text were read; graphical capacity points and terminal diagrams were not digitized. No capacity or detailed connector geometry is claimed from them.",
+    "The selected Power-Sonic capacity rows do not separately state test temperature. Charging temperature and generic 12 V charging guidance are not substituted as capacity conditions or PS-640 nominal voltage.",
+    "No source establishes a particular received battery, factory, school purchase, condition or compatibility. Publisher identification is not used to fill manufacturer."
+  ],
+  "notes": [
+    "No core discrepancy or alias product conflation was found in the four full samples. A chemistry citation precision issue was expanded to all five Duracell rows, corrected by the root researcher, and independently checked in the current fragment.",
+    "Actual opened current Power-Sonic PDF version 1.2 takes precedence over search-engine older version 1.1 snippets.",
+    "This audit edits only its new review artifact."
+  ],
+  "reviewed_fragment_sha256": "8a9d1d1787f883e8d9f97282fe73492cedc60e5d2ea813f83adb7f5c02e7a52a",
+  "expanded_chemistry_evidence_reviews": [
+    {
+      "catalog_id": "duracell-mn1500-us-flat-cell",
+      "scope": "Chemistry evidence applicability and locator only",
+      "verdict": "pass",
+      "observation": "Updated product-PDF observation states alkaline manganese dioxide. AIS page 1 Sections 3/4 now separately support applicable major-cell size or specialty AAAA coverage and zinc/manganese dioxide electrode composition."
+    },
+    {
+      "catalog_id": "duracell-mn2400-us-flat-cell",
+      "scope": "Chemistry evidence applicability and locator only",
+      "verdict": "pass",
+      "observation": "Updated product-PDF observation states alkaline manganese dioxide. AIS page 1 Sections 3/4 now separately support applicable major-cell size or specialty AAAA coverage and zinc/manganese dioxide electrode composition."
+    },
+    {
+      "catalog_id": "duracell-mn1400-us-flat-cell",
+      "scope": "Chemistry evidence applicability and locator only",
+      "verdict": "pass",
+      "observation": "Updated product-PDF observation states alkaline manganese dioxide. AIS page 1 Sections 3/4 now separately support applicable major-cell size or specialty AAAA coverage and zinc/manganese dioxide electrode composition."
+    },
+    {
+      "catalog_id": "duracell-mn1300-us-flat-cell",
+      "scope": "Chemistry evidence applicability and locator only",
+      "verdict": "pass",
+      "observation": "Updated product-PDF observation states alkaline manganese dioxide. AIS page 1 Sections 3/4 now separately support applicable major-cell size or specialty AAAA coverage and zinc/manganese dioxide electrode composition."
+    },
+    {
+      "catalog_id": "duracell-mx2500-us-flat-cell",
+      "scope": "Chemistry evidence applicability and locator only",
+      "verdict": "pass",
+      "observation": "Updated product-PDF observation states alkaline manganese dioxide. AIS page 1 Sections 3/4 now separately support applicable major-cell size or specialty AAAA coverage and zinc/manganese dioxide electrode composition."
+    }
+  ],
+  "independently_reviewed_catalog_ids": [
+    "duracell-mn1500-us-flat-cell",
+    "duracell-mx2500-us-flat-cell",
+    "power-sonic-ps-640-f1",
+    "power-sonic-ps-1208-wl"
+  ]
+}

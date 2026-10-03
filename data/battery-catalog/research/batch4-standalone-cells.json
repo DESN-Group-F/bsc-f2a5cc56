@@ -1,0 +1,4113 @@
+{
+  "sources": [
+    {
+      "source_id": "murata-cylindrical-lineup-batch4",
+      "url": "https://www.murata.com/en-us/products/batteries/cylindrical/products-search",
+      "title": "Cylindrical Type Lithium Ion Secondary Batteries Select / Search",
+      "publisher": "Murata Manufacturing Co., Ltd.",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "US18650VTC4 individual cell from the published product lineup; no reseller modification or assembled pack",
+        "US18650VTC4A individual cell from the published product lineup; no reseller modification or assembled pack",
+        "US18650VTC5 individual cell from the published product lineup; no reseller modification or assembled pack",
+        "US18650VTC5A individual cell from the published product lineup; no reseller modification or assembled pack",
+        "US18650VTC5D individual cell from the published product lineup; no reseller modification or assembled pack",
+        "US18650NC1 individual cell from the published product lineup; no reseller modification or assembled pack",
+        "US18650VTC6 individual cell from the published product lineup; no reseller modification or assembled pack",
+        "US18650VC7 individual cell from the published product lineup; no reseller modification or assembled pack",
+        "US18650FTC1 individual cell from the published product lineup; no reseller modification or assembled pack",
+        "US21700VTC6A individual cell from the published product lineup; no reseller modification or assembled pack",
+        "US26650FTC1A individual cell from the published product lineup; no reseller modification or assembled pack"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual web page opened. Product Lineup model rows and explicit Nominal Capacity / Nominal (Rated) Voltage headings inspected. Six selected models are marked NRND; current production or consumer retail suitability is not asserted. Optional rated/minimum values in separate sheets are not curated by this table-only reference."
+    },
+    {
+      "source_id": "panasonic-industrial-short-form-catalog-batch4",
+      "url": "https://energy.panasonic.com/dam/master/pdf/eu/catalog/Panasonic_Industrial-Batteries-For-Professionals_Short-Form-Catalog.pdf",
+      "title": "Industrial Batteries for Professionals - Short Form Catalog",
+      "publisher": "Panasonic Energy Co., Ltd.",
+      "source_type": "manufacturer_datasheet",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "UR14500AC cylindrical single cell from the selected catalog tables",
+        "UR18650A cylindrical single cell from the selected catalog tables",
+        "UR18650AA cylindrical single cell from the selected catalog tables",
+        "UR1865ZM2 cylindrical single cell from the selected catalog tables",
+        "UR1865ZP cylindrical single cell from the selected catalog tables",
+        "UR18650RX cylindrical single cell from the selected catalog tables",
+        "NCR1865K cylindrical single cell from the selected catalog tables",
+        "NCR2270A cylindrical single cell from the selected catalog tables",
+        "NCR2270B cylindrical single cell from the selected catalog tables",
+        "CGA103450A prismatic single cell from the selected catalog tables",
+        "CGA573442 prismatic single cell from the selected catalog tables",
+        "UF103450PN prismatic single cell from the selected catalog tables",
+        "UF463443GUM prismatic single cell from the selected catalog tables",
+        "UF463450FP prismatic single cell from the selected catalog tables"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Direct HTTPS 200; 25,249,153-byte PDF actually read in memory using pypdf. 34 PDF pages; pages 18 and 19 contain printed pages 34-37 and the selected model rows. Web reader refused the document size. Page 34 prints both Germany 2024 and Germany 2026 lines, so no technical revision is asserted. The actual downloaded tables differ from search-result excerpts; only the actual PDF was used."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "murata-us18650vtc4",
+      "manufacturer": "Murata Manufacturing Co., Ltd.",
+      "brand": "Murata",
+      "model": "US18650VTC4",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Murata US18650VTC4",
+      "aliases": [
+        {
+          "value": "US18650VTC4",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": 2100,
+      "capacity_basis": "nominal",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "murata-cylindrical-lineup-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "Murata product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Official publisher and product-family heading",
+            "observation": "Murata Manufacturing Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "US18650VTC4"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "Secondary battery family."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC4 / Nominal Capacity (mAh)",
+            "observation": "Nominal capacity 2100 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC4 / Nominal Capacity (mAh)",
+            "observation": "Explicit Nominal Capacity heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "Exact manufacturer model US18650VTC4."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "Exact manufacturer model US18650VTC4."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4 row and column headings",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated.",
+        "Separate rated/minimum capacity and a complete nominal-capacity test protocol are not selected from this lineup."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "The manufacturer lineup marks this model NRND (not recommended for new designs); it remains a historical/reference identity, not a new-purchase recommendation."
+      ]
+    },
+    {
+      "catalog_id": "murata-us18650vtc4a",
+      "manufacturer": "Murata Manufacturing Co., Ltd.",
+      "brand": "Murata",
+      "model": "US18650VTC4A",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Murata US18650VTC4A",
+      "aliases": [
+        {
+          "value": "US18650VTC4A",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": 2100,
+      "capacity_basis": "nominal",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "murata-cylindrical-lineup-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "Murata product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Official publisher and product-family heading",
+            "observation": "Murata Manufacturing Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "US18650VTC4A"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "Secondary battery family."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "Nominal voltage 3.7 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC4A / Nominal Capacity (mAh)",
+            "observation": "Nominal capacity 2100 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC4A / Nominal Capacity (mAh)",
+            "observation": "Explicit Nominal Capacity heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "Exact manufacturer model US18650VTC4A."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "Exact manufacturer model US18650VTC4A."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC4A row and column headings",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated.",
+        "Separate rated/minimum capacity and a complete nominal-capacity test protocol are not selected from this lineup."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "The manufacturer lineup marks this model NRND (not recommended for new designs); it remains a historical/reference identity, not a new-purchase recommendation."
+      ]
+    },
+    {
+      "catalog_id": "murata-us18650vtc5",
+      "manufacturer": "Murata Manufacturing Co., Ltd.",
+      "brand": "Murata",
+      "model": "US18650VTC5",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Murata US18650VTC5",
+      "aliases": [
+        {
+          "value": "US18650VTC5",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": 2600,
+      "capacity_basis": "nominal",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "murata-cylindrical-lineup-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "Murata product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Official publisher and product-family heading",
+            "observation": "Murata Manufacturing Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "US18650VTC5"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "Secondary battery family."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC5 / Nominal Capacity (mAh)",
+            "observation": "Nominal capacity 2600 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC5 / Nominal Capacity (mAh)",
+            "observation": "Explicit Nominal Capacity heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "Exact manufacturer model US18650VTC5."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "Exact manufacturer model US18650VTC5."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5 row and column headings",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated.",
+        "Separate rated/minimum capacity and a complete nominal-capacity test protocol are not selected from this lineup."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack."
+      ]
+    },
+    {
+      "catalog_id": "murata-us18650vtc5a",
+      "manufacturer": "Murata Manufacturing Co., Ltd.",
+      "brand": "Murata",
+      "model": "US18650VTC5A",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Murata US18650VTC5A",
+      "aliases": [
+        {
+          "value": "US18650VTC5A",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": 2600,
+      "capacity_basis": "nominal",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "murata-cylindrical-lineup-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "Murata product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Official publisher and product-family heading",
+            "observation": "Murata Manufacturing Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "US18650VTC5A"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "Secondary battery family."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC5A / Nominal Capacity (mAh)",
+            "observation": "Nominal capacity 2600 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC5A / Nominal Capacity (mAh)",
+            "observation": "Explicit Nominal Capacity heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "Exact manufacturer model US18650VTC5A."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "Exact manufacturer model US18650VTC5A."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5A row and column headings",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated.",
+        "Separate rated/minimum capacity and a complete nominal-capacity test protocol are not selected from this lineup."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack."
+      ]
+    },
+    {
+      "catalog_id": "murata-us18650vtc5d",
+      "manufacturer": "Murata Manufacturing Co., Ltd.",
+      "brand": "Murata",
+      "model": "US18650VTC5D",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Murata US18650VTC5D",
+      "aliases": [
+        {
+          "value": "US18650VTC5D",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": 2800,
+      "capacity_basis": "nominal",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "murata-cylindrical-lineup-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "Murata product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Official publisher and product-family heading",
+            "observation": "Murata Manufacturing Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "US18650VTC5D"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "Secondary battery family."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC5D / Nominal Capacity (mAh)",
+            "observation": "Nominal capacity 2800 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC5D / Nominal Capacity (mAh)",
+            "observation": "Explicit Nominal Capacity heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "Exact manufacturer model US18650VTC5D."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "Exact manufacturer model US18650VTC5D."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC5D row and column headings",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated.",
+        "Separate rated/minimum capacity and a complete nominal-capacity test protocol are not selected from this lineup."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack."
+      ]
+    },
+    {
+      "catalog_id": "murata-us18650nc1",
+      "manufacturer": "Murata Manufacturing Co., Ltd.",
+      "brand": "Murata",
+      "model": "US18650NC1",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Murata US18650NC1",
+      "aliases": [
+        {
+          "value": "US18650NC1",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": 2900,
+      "capacity_basis": "nominal",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "murata-cylindrical-lineup-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "Murata product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Official publisher and product-family heading",
+            "observation": "Murata Manufacturing Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "US18650NC1"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "Secondary battery family."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650NC1 / Nominal Capacity (mAh)",
+            "observation": "Nominal capacity 2900 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650NC1 / Nominal Capacity (mAh)",
+            "observation": "Explicit Nominal Capacity heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "Exact manufacturer model US18650NC1."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "Exact manufacturer model US18650NC1."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650NC1 row and column headings",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated.",
+        "Separate rated/minimum capacity and a complete nominal-capacity test protocol are not selected from this lineup."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "The manufacturer lineup marks this model NRND (not recommended for new designs); it remains a historical/reference identity, not a new-purchase recommendation."
+      ]
+    },
+    {
+      "catalog_id": "murata-us18650vtc6",
+      "manufacturer": "Murata Manufacturing Co., Ltd.",
+      "brand": "Murata",
+      "model": "US18650VTC6",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Murata US18650VTC6",
+      "aliases": [
+        {
+          "value": "US18650VTC6",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": 3120,
+      "capacity_basis": "nominal",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "murata-cylindrical-lineup-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "Murata product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Official publisher and product-family heading",
+            "observation": "Murata Manufacturing Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "US18650VTC6"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "Secondary battery family."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC6 / Nominal Capacity (mAh)",
+            "observation": "Nominal capacity 3120 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VTC6 / Nominal Capacity (mAh)",
+            "observation": "Explicit Nominal Capacity heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "Exact manufacturer model US18650VTC6."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "Exact manufacturer model US18650VTC6."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VTC6 row and column headings",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated.",
+        "Separate rated/minimum capacity and a complete nominal-capacity test protocol are not selected from this lineup."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack."
+      ]
+    },
+    {
+      "catalog_id": "murata-us18650vc7",
+      "manufacturer": "Murata Manufacturing Co., Ltd.",
+      "brand": "Murata",
+      "model": "US18650VC7",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Murata US18650VC7",
+      "aliases": [
+        {
+          "value": "US18650VC7",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": 3500,
+      "capacity_basis": "nominal",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "murata-cylindrical-lineup-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "Murata product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Official publisher and product-family heading",
+            "observation": "Murata Manufacturing Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "US18650VC7"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "Secondary battery family."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VC7 / Nominal Capacity (mAh)",
+            "observation": "Nominal capacity 3500 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650VC7 / Nominal Capacity (mAh)",
+            "observation": "Explicit Nominal Capacity heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "Exact manufacturer model US18650VC7."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "Exact manufacturer model US18650VC7."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650VC7 row and column headings",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated.",
+        "Separate rated/minimum capacity and a complete nominal-capacity test protocol are not selected from this lineup."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "The manufacturer lineup marks this model NRND (not recommended for new designs); it remains a historical/reference identity, not a new-purchase recommendation."
+      ]
+    },
+    {
+      "catalog_id": "murata-us18650ftc1",
+      "manufacturer": "Murata Manufacturing Co., Ltd.",
+      "brand": "Murata",
+      "model": "US18650FTC1",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Murata US18650FTC1",
+      "aliases": [
+        {
+          "value": "US18650FTC1",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_iron_phosphate",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": 1100,
+      "capacity_basis": "nominal",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "murata-cylindrical-lineup-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "Murata product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Official publisher and product-family heading",
+            "observation": "Murata Manufacturing Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "US18650FTC1"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "LFP positive-electrode row; categorized as lithium iron phosphate."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "Secondary battery family."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "Nominal voltage 3.2 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650FTC1 / Nominal Capacity (mAh)",
+            "observation": "Nominal capacity 1100 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US18650FTC1 / Nominal Capacity (mAh)",
+            "observation": "Explicit Nominal Capacity heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "Exact manufacturer model US18650FTC1."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "Exact manufacturer model US18650FTC1."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US18650FTC1 row and column headings",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated.",
+        "Separate rated/minimum capacity and a complete nominal-capacity test protocol are not selected from this lineup."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "The manufacturer lineup marks this model NRND (not recommended for new designs); it remains a historical/reference identity, not a new-purchase recommendation."
+      ]
+    },
+    {
+      "catalog_id": "murata-us21700vtc6a",
+      "manufacturer": "Murata Manufacturing Co., Ltd.",
+      "brand": "Murata",
+      "model": "US21700VTC6A",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Murata US21700VTC6A",
+      "aliases": [
+        {
+          "value": "US21700VTC6A",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": 4100,
+      "capacity_basis": "nominal",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "murata-cylindrical-lineup-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "Murata product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Official publisher and product-family heading",
+            "observation": "Murata Manufacturing Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "US21700VTC6A"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "Secondary battery family."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US21700VTC6A / Nominal Capacity (mAh)",
+            "observation": "Nominal capacity 4100 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US21700VTC6A / Nominal Capacity (mAh)",
+            "observation": "Explicit Nominal Capacity heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "Exact manufacturer model US21700VTC6A."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "Exact manufacturer model US21700VTC6A."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US21700VTC6A row and column headings",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated.",
+        "Separate rated/minimum capacity and a complete nominal-capacity test protocol are not selected from this lineup."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack."
+      ]
+    },
+    {
+      "catalog_id": "murata-us26650ftc1a",
+      "manufacturer": "Murata Manufacturing Co., Ltd.",
+      "brand": "Murata",
+      "model": "US26650FTC1A",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Murata US26650FTC1A",
+      "aliases": [
+        {
+          "value": "US26650FTC1A",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_iron_phosphate",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": 3000,
+      "capacity_basis": "nominal",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "murata-cylindrical-lineup-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "Murata product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Official publisher and product-family heading",
+            "observation": "Murata Manufacturing Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "US26650FTC1A"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "LFP positive-electrode row; categorized as lithium iron phosphate."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "Secondary battery family."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "Nominal voltage 3.2 V."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US26650FTC1A / Nominal Capacity (mAh)",
+            "observation": "Nominal capacity 3000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, US26650FTC1A / Nominal Capacity (mAh)",
+            "observation": "Explicit Nominal Capacity heading."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "Exact manufacturer model US26650FTC1A."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "Exact manufacturer model US26650FTC1A."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "murata-cylindrical-lineup-batch4",
+            "locator": "Product Lineup, exact US26650FTC1A row and column headings",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated.",
+        "Separate rated/minimum capacity and a complete nominal-capacity test protocol are not selected from this lineup."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "The manufacturer lineup marks this model NRND (not recommended for new designs); it remains a historical/reference identity, not a new-purchase recommendation."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-ur14500ac",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "UR14500AC",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic UR14500AC",
+      "aliases": [
+        {
+          "value": "UR14500AC",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 800,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "UR14500AC"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 800 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "Exact manufacturer model UR14500AC."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "Exact manufacturer model UR14500AC."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR14500AC row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-ur18650a",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "UR18650A",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic UR18650A",
+      "aliases": [
+        {
+          "value": "UR18650A",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 2250,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "UR18650A"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 2250 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "Exact manufacturer model UR18650A."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "Exact manufacturer model UR18650A."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650A row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-ur18650aa",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "UR18650AA",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic UR18650AA",
+      "aliases": [
+        {
+          "value": "UR18650AA",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 2250,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "UR18650AA"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 2250 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "Exact manufacturer model UR18650AA."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "Exact manufacturer model UR18650AA."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR18650AA row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-ur1865zm2",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "UR1865ZM2",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic UR1865ZM2",
+      "aliases": [
+        {
+          "value": "UR1865ZM2",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 2550,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "UR1865ZM2"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 2550 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "Exact manufacturer model UR1865ZM2."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "Exact manufacturer model UR1865ZM2."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZM2 row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-ur1865zp",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "UR1865ZP",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic UR1865ZP",
+      "aliases": [
+        {
+          "value": "UR1865ZP",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 2600,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "UR1865ZP"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 2600 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "Exact manufacturer model UR1865ZP."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "Exact manufacturer model UR1865ZP."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 18 (printed pages 34-35), CYLINDRICAL SINGLE CELL table, exact UR1865ZP row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-ur18650rx",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "UR18650RX",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic UR18650RX",
+      "aliases": [
+        {
+          "value": "UR18650RX",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 2050,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "UR18650RX"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 2050 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "Exact manufacturer model UR18650RX."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "Exact manufacturer model UR18650RX."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact UR18650RX row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-ncr1865k",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "NCR1865K",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic NCR1865K",
+      "aliases": [
+        {
+          "value": "NCR1865K",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 3100,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "NCR1865K"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 3100 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "Exact manufacturer model NCR1865K."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "Exact manufacturer model NCR1865K."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR1865K row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-ncr2270a",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "NCR2270A",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic NCR2270A",
+      "aliases": [
+        {
+          "value": "NCR2270A",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 5635,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "NCR2270A"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 5635 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "Exact manufacturer model NCR2270A."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "Exact manufacturer model NCR2270A."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270A row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-ncr2270b",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "NCR2270B",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual cylindrical cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic NCR2270B",
+      "aliases": [
+        {
+          "value": "NCR2270B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "cylindrical",
+        "description": "Individual cylindrical lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 6000,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "NCR2270B"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "cylindrical cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "cylindrical single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "Nominal voltage 3.6 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 6000 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "Exact manufacturer model NCR2270B."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "Exact manufacturer model NCR2270B."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), CYLINDRICAL SINGLE CELL table, exact NCR2270B row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-cga103450a",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "CGA103450A",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual prismatic cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic CGA103450A",
+      "aliases": [
+        {
+          "value": "CGA103450A",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "prismatic",
+        "description": "Individual prismatic lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 1950,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "CGA103450A"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "prismatic cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "prismatic cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "prismatic single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "Nominal voltage 3.7 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 1950 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "Exact manufacturer model CGA103450A."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "Exact manufacturer model CGA103450A."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA103450A row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-cga573442",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "CGA573442",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual prismatic cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic CGA573442",
+      "aliases": [
+        {
+          "value": "CGA573442",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "prismatic",
+        "description": "Individual prismatic lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 960,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "CGA573442"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "prismatic cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "prismatic cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "prismatic single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "Nominal voltage 3.7 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 960 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "Exact manufacturer model CGA573442."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "Exact manufacturer model CGA573442."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact CGA573442 row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-uf103450pn",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "UF103450PN",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual prismatic cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic UF103450PN",
+      "aliases": [
+        {
+          "value": "UF103450PN",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "prismatic",
+        "description": "Individual prismatic lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 2000,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "UF103450PN"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "prismatic cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "prismatic cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "prismatic single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "Nominal voltage 3.7 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 2000 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "Exact manufacturer model UF103450PN."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "Exact manufacturer model UF103450PN."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF103450PN row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-uf463443gum",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "UF463443GUM",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual prismatic cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic UF463443GUM",
+      "aliases": [
+        {
+          "value": "UF463443GUM",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "prismatic",
+        "description": "Individual prismatic lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 850,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "UF463443GUM"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "prismatic cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "prismatic cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "prismatic single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "Nominal voltage 3.7 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 850 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "Exact manufacturer model UF463443GUM."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "Exact manufacturer model UF463443GUM."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463443GUM row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-uf463450fp",
+      "manufacturer": "Panasonic Energy Co., Ltd.",
+      "brand": "Panasonic",
+      "model": "UF463450FP",
+      "variant_key": "individual-cell-catalog-reference",
+      "variant_description": "Individual prismatic cell; terminal, tab, wrapping and reseller modifications are not selected.",
+      "suggested_display_name": "Panasonic UF463450FP",
+      "aliases": [
+        {
+          "value": "UF463450FP",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "prismatic",
+        "description": "Individual prismatic lithium cell from the manufacturer catalog."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "minimum_capacity_mah": null,
+      "typical_capacity_mah": 960,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "The selected table footnote specifies 4.20 V charge. Discharge current, cutoff and temperature are not stated in this short-form table.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-industrial-short-form-catalog-batch4"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "Panasonic product identity."
+          }
+        ],
+        "/manufacturer": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 34: Notice to Readers and copyright identify manufacturer",
+            "observation": "Panasonic Energy Co., Ltd."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "UF463450FP"
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "Lithium-ion product family."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "Lithium-ion table includes a 4.20 V charge condition."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "Individual single cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "prismatic cell category."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "prismatic cell category."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "prismatic single cell."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "Nominal voltage 3.7 V."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row; Typical capacity heading and footnote *1",
+            "observation": "Typical capacity 960 mAh."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row; Typical capacity heading and footnote *1",
+            "observation": "Table footnote: 4.20 V charge; complete discharge protocol not provided."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "Exact manufacturer model UF463450FP."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "Exact manufacturer model UF463450FP."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-industrial-short-form-catalog-batch4",
+            "locator": "PDF page 19 (printed pages 36-37), PRISMATIC SINGLE CELL table, exact UF463450FP row",
+            "observation": "Base single-cell model; terminal/tab/wrapping options are not selected from the table."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "Exact terminal/tab/wrapping options and any assembled protection circuitry are not established; this record is a base cell reference.",
+        "Optional dimensions, mass, energy, detailed capacity test protocol and legal retail availability were not comprehensively curated."
+      ],
+      "notes": [
+        "Public manufacturer product reference only; no school procurement, stock, compatibility or purchasing recommendation is asserted.",
+        "Research category is editorial; a cell is not treated as a finished tool-platform pack.",
+        "Model spelling is copied from the actually opened manufacturer PDF, not a search-result excerpt or inferred size code."
+      ]
+    }
+  ]
+}

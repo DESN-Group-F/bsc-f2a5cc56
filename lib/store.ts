@@ -2,6 +2,14 @@ import { batterySchema, personSchema, buildingSchema, roomSchema, movementSchema
 import { demoBatteries } from "./fixtures";
 import { PLACEHOLDER_ROOMS, REFERENCE_BUILDINGS, isSupportedBuilding } from "./location-catalog";
 import type { StaffRole } from "./accounts";
+import { modelSelectionSchema, modelFieldNames, canonicalModelJson } from "./battery-models";
+import { lifecyclePayloadSchema, type LifecyclePayload, type LifecycleReceipt } from "./lifecycle-session";
+import { BatteryModelStore } from "./battery-model-store";
+import { resolveReferenceModel } from "./battery-reference-catalog";
+import { teachingGroupSchema } from "./teaching-groups";
+import { teachingGroupReferenceSchema, type TeachingGroupReference, type TeachingGroupEvidence } from "./teaching-context";
+import { groupMaintenanceSchema } from "./group-maintenance";
+type ResolvedGroup = { evidence: TeachingGroupEvidence; guard: string; values: unknown[] };
 export type Actor = {
     id: string;
     name: string;
@@ -18,6 +26,18 @@ export class InventoryStore {
     private statement(sql: string, ...values: unknown[]) { return this.db.prepare(sql).bind(...values); }
     private async rows(sql: string, ...values: unknown[]): Promise<Row[]> { return (await this.statement(sql, ...values).all<Row>()).results; }
     private async first(sql: string, ...values: unknown[]) { return this.statement(sql, ...values).first<Row>(); }
+    private async resolveGroup(reference: TeachingGroupReference | undefined, ids: string[], operationId: string): Promise<ResolvedGroup | undefined> {
+        if (!reference) return;
+        const ref = teachingGroupReferenceSchema.parse(reference);
+        if (this.actor.authVersion === undefined) throw new DomainError(403, "Sign in before using your teaching groups.");
+        const row = await this.first("SELECT * FROM teaching_groups WHERE scope=? AND owner_account_id=? AND id=? AND state='active' AND version=?", this.scope, this.actor.id, ref.id, ref.version);
+        if (!row) throw new DomainError(409, "This teaching group changed or is unavailable. Reopen the group and review its current members.", "group_conflict");
+        const members = JSON.parse(String(row.member_ids_json)) as string[];
+        if (ids.some(id => !members.includes(id))) throw new DomainError(409, "Every selected battery must belong to the reviewed teaching group. No operation was saved.", "group_conflict");
+        return { evidence: { ...ref, name: String(row.name), ownerAccountId: this.actor.id, operationId, batteryIds: uniqueIds(ids) },
+            guard: "EXISTS(SELECT 1 FROM teaching_groups WHERE scope=? AND owner_account_id=? AND id=? AND version=? AND state='active')",
+            values: [this.scope, this.actor.id, ref.id, ref.version] };
+    }
     private async ensureReferenceData() {
         // Reference configuration and explicit account projections are not location evidence.
         // Existing labels are never replaced by these idempotent inserts.
@@ -40,16 +60,29 @@ export class InventoryStore {
             throw new DomainError(404, "Battery not found in this inventory.");
         return b;
     }
+    private requireActiveBattery(battery: Row) {
+        if (battery.lifecycle_status !== "active") throw new DomainError(409, "This battery has been scrapped or permanently removed. Its saved record and history are read-only.", "battery_inactive");
+    }
+    private async requireLifecycleActor() {
+        if (this.actor.authVersion === undefined) throw new DomainError(401, "Sign in with an active staff account before removing batteries.");
+        const account = await this.first("SELECT display_name FROM staff_accounts WHERE id=? AND active=1 AND auth_version=? AND role=? AND role IN ('admin','staff')", this.actor.id, this.actor.authVersion, this.actor.role);
+        if (!account) throw new DomainError(403, "Your staff account access changed. Sign in again before removing batteries.");
+        this.actor = { ...this.actor, name: String(account.display_name) };
+    }
     private async replay(requestId: string, kind: string, fingerprint: string) {
         const old = await this.first("SELECT * FROM operations WHERE id=? AND scope=?", this.key(requestId), this.scope);
         if (!old)
             return null;
         const result = JSON.parse(String(old.result_json));
         const rejectedMovement = old.kind === "movement_rejected" && result.rejected === true && result.kind === kind;
-        if ((!rejectedMovement && old.kind !== kind) || old.fingerprint !== fingerprint)
-            throw new DomainError(409, "This request identifier was already used for a different operation.");
+        const rejectedLifecycle = old.kind === "battery_lifecycle_rejected" && result.rejected === true && kind === "battery_lifecycle";
+        const rejectedGroup = old.kind === "group_maintenance_rejected" && result.rejected === true && kind === "group_maintenance";
+        if ((!rejectedMovement && !rejectedLifecycle && !rejectedGroup && old.kind !== kind) || old.fingerprint !== fingerprint)
+            throw new DomainError(409, "This request identifier was already used for a different operation.", kind === "battery_lifecycle" ? "idempotency_conflict" : undefined);
         if (rejectedMovement)
             throw new DomainError(Number(result.status), String(result.error), "movement_rejected_final");
+        if (rejectedLifecycle) throw new DomainError(Number(result.status), String(result.error), "lifecycle_rejected_final");
+        if (rejectedGroup) throw new DomainError(Number(result.status), String(result.error), "group_operation_rejected_final");
         return { ...result, replayed: true };
     }
     private async rejectMovement(requestId: string, kind: "checkout" | "return", fingerprint: string, rejection: DomainError) {
@@ -68,7 +101,22 @@ export class InventoryStore {
         }
         throw new DomainError(rejection.status, rejection.message, "movement_rejected_final");
     }
-    private async atomic(requestId: string, kind: string, fingerprint: string, result: unknown, at: string, guardSql: string, guardValues: unknown[], writes: D1PreparedStatement[], conflictMessage = "The records changed or conflict with this operation. Refresh and review the batteries again. Nothing in this batch was saved.", conflictCode?: string) {
+    private async rejectLifecycle(payload: LifecyclePayload, fingerprint: string, rejection: DomainError): Promise<LifecycleReceipt> {
+        await this.requireLifecycleActor();
+        const result = { kind: payload.kind, rejected: true, status: rejection.status, error: rejection.message, reasonCode: rejection.code ?? null };
+        try {
+            await this.db.batch([this.statement("INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) SELECT ?,?,'battery_lifecycle_rejected',?,?,?,CASE WHEN EXISTS(SELECT 1 FROM staff_accounts WHERE id=? AND active=1 AND auth_version=? AND role=? AND role IN ('admin','staff')) THEN 1 ELSE 0 END", this.key(payload.requestId), this.scope, fingerprint, JSON.stringify(result), this.clock().toISOString(), this.actor.id, this.actor.authVersion, this.actor.role)]);
+        } catch (error) {
+            const committed = await this.replay(payload.requestId, "battery_lifecycle", fingerprint);
+            if (committed) return committed as LifecycleReceipt;
+            await this.requireLifecycleActor();
+            // A failed reservation cannot establish a delayed request's outcome.
+            throw error;
+        }
+        throw new DomainError(rejection.status, rejection.message, "lifecycle_rejected_final");
+    }
+    private async atomic(requestId: string, kind: string, fingerprint: string, result: unknown, at: string, guardSql: string, guardValues: unknown[], writes: D1PreparedStatement[], conflictMessage = "The records changed or conflict with this operation. Refresh and review the batteries again. Nothing in this batch was saved.", conflictCode?: string, group?: ResolvedGroup) {
+        if (group) { guardSql = `(${guardSql}) AND (${group.guard})`; guardValues = [...guardValues, ...group.values]; }
         if (this.actor.authVersion !== undefined) {
             guardSql = `(${guardSql}) AND EXISTS(SELECT 1 FROM staff_accounts WHERE id=? AND active=1 AND auth_version=? AND role=?)`;
             guardValues = [...guardValues, this.actor.id, this.actor.authVersion, this.actor.role];
@@ -101,11 +149,11 @@ export class InventoryStore {
             throw new DomainError(409, "This record changed since you opened it. Your edits were not saved. Load the latest record and review your input before saving.", "record_conflict");
         return expectedVersion + 1;
     }
-    private metadataWrite(table: "people" | "buildings" | "rooms" | "batteries", kind: string, id: string, data: unknown, before: Row | null, version: number, at: string, writes: D1PreparedStatement[], relatedGuard = "1", relatedValues: unknown[] = []) {
-        const guard = before ? `(SELECT COUNT(*) FROM ${table} WHERE scope=? AND id=? AND version=?)=1` : `(SELECT COUNT(*) FROM ${table} WHERE scope=? AND id=?)=0`;
+    private metadataWrite(table: "people" | "buildings" | "rooms" | "batteries", kind: string, id: string, data: unknown, before: Row | null, version: number, at: string, writes: D1PreparedStatement[], relatedGuard = "1", relatedValues: unknown[] = [], group?: ResolvedGroup) {
+        const guard = before ? `(SELECT COUNT(*) FROM ${table} WHERE scope=? AND id=? AND version=?${table === "batteries" ? " AND lifecycle_status='active'" : ""})=1` : `(SELECT COUNT(*) FROM ${table} WHERE scope=? AND id=?)=0`;
         const values = before ? [this.scope, id, version - 1] : [this.scope, id];
         return this.atomic(crypto.randomUUID(), kind, JSON.stringify(data), { id, version }, at, `(${guard}) AND (${relatedGuard})`, [...values, ...relatedValues], writes,
-            "This record or its related information changed. Your edits were not saved. Load the latest record and review your input before saving.", "record_conflict");
+            "This record or its related information changed. Your edits were not saved. Load the latest record and review your input before saving.", "record_conflict", group);
     }
     async initializeDemo() {
         if (this.dataset !== "demo")
@@ -135,7 +183,8 @@ export class InventoryStore {
     private snapshotStatements(tagIds?: string[], batteryId?: string) {
         return [
             this.statement(`SELECT b.id,b.version,b.name,b.chemistry,b.model,b.capacity_mah AS capacityMah,b.voltage,b.tag_id AS tagId,
-        b.manufactured_on AS manufacturedOn,b.first_used_on AS firstUsedOn,
+        b.lifecycle_status AS lifecycleStatus,b.lifecycle_at AS lifecycleAt,b.lifecycle_reason AS lifecycleReason,b.lifecycle_destination AS lifecycleDestination,
+        b.manufactured_on AS manufacturedOn,b.first_used_on AS firstUsedOn,b.created_at AS registeredAt,
         own.id AS ownerId,COALESCE(ownerAccount.display_name,own.name) AS ownerName,own.account_id AS ownerAccountId,
         home.id AS homeRoomId,home.name AS homeRoomName,home.number AS homeRoomNumber,home.is_placeholder AS homeRoomIsPlaceholder,home.selectable AS homeRoomSelectable,
         homeBuilding.id AS homeBuildingId,homeBuilding.name AS homeBuildingName,
@@ -143,6 +192,7 @@ export class InventoryStore {
         CASE WHEN l.id IS NULL THEN NULL WHEN l.borrower_account_id IS NULL THEN 'legacy' ELSE 'staff' END AS borrowerKind,
         l.checked_out_at AS checkedOutAt,
         (SELECT checked_out_at FROM loans WHERE battery_key=b.key AND scope=b.scope AND cancelled_at IS NULL ORDER BY checked_out_at DESC,rowid DESC LIMIT 1) AS lastCheckedOutAt,
+        observedRoom.id AS observedRoomId,
         CASE WHEN o.id IS NULL THEN NULL ELSE COALESCE(o.room_name,'Room ID: ' || observedRoom.id) END AS observedRoom,
         o.room_building AS observedBuilding,CASE WHEN o.id IS NULL THEN NULL WHEN o.room_name IS NULL THEN 'unavailable' ELSE 'recorded' END AS observationRoomSnapshot,
         o.observed_at AS observedAt,o.source AS observationSource,
@@ -161,15 +211,17 @@ export class InventoryStore {
             this.statement("SELECT r.id,r.version,r.name,r.number,r.is_placeholder AS isPlaceholder,r.selectable,b.id AS buildingId,COALESCE(b.id || ' - ' || b.name,r.building) AS building FROM rooms r LEFT JOIN buildings b ON b.key=r.building_key WHERE r.scope=? ORDER BY b.id,r.number,r.name", this.scope),
             this.statement("SELECT id,action,battery_id AS batteryId,actor_name AS actorName,at,details_json FROM audit_events WHERE scope=? ORDER BY at DESC,rowid DESC LIMIT 200", this.scope),
             this.statement("SELECT id,display_name AS displayName,username,active FROM staff_accounts ORDER BY display_name,username"),
+            this.statement("SELECT id,version,name,notes,member_ids_json,owner_account_id AS ownerAccountId,state,created_at AS createdAt,updated_at AS updatedAt FROM teaching_groups WHERE scope=? AND owner_account_id=? AND state='active' ORDER BY name COLLATE NOCASE,id", this.scope, this.actor.id),
         ];
     }
     private snapshotResult(result: Row[][]) {
-        const [batteries, people, buildings, rooms, events, staffDirectory] = result;
+        const [batteries, people, buildings, rooms, events, staffDirectory, groups = []] = result;
         return {
             dataset: this.dataset,
             batteries: batteries.map<Row>(battery => ({ ...battery, homeRoomIsPlaceholder: battery.homeRoomIsPlaceholder === null ? null : battery.homeRoomIsPlaceholder === 1, homeRoomSelectable: battery.homeRoomSelectable === null ? null : battery.homeRoomSelectable === 1 })),
             people, buildings, rooms: rooms.map<Row>(room => ({ ...room, isPlaceholder: room.isPlaceholder === 1, selectable: room.selectable === 1 })),
             staffDirectory: staffDirectory.map<Row>(account => ({ ...account, active: account.active === 1 })),
+            teachingGroups: groups.map(({ member_ids_json, ...group }) => teachingGroupSchema.parse({ ...group, batteryIds: JSON.parse(String(member_ids_json)) })),
             events: events.map(({ details_json, ...event }) => ({ ...event, details: JSON.parse(String(details_json)) })),
             actor: this.actor.name, hardwareConnected: false,
         };
@@ -181,7 +233,7 @@ export class InventoryStore {
     async exportData() {
         await this.ensureReferenceData();
         const result = (await this.db.batch<Row>([...this.snapshotStatements(), ...["batteries", "people", "buildings", "rooms", "loans", "charges", "observations", "audit_events"].map(table => this.statement(`SELECT * FROM ${table} WHERE scope=? ORDER BY rowid`, this.scope))])).map(item => item.results);
-        return { snapshot: this.snapshotResult(result), raw: Object.fromEntries(["batteries", "people", "buildings", "rooms", "loans", "charges", "observations", "audit_events"].map((name, index) => [name, result[index + 6]])) };
+        return { snapshot: this.snapshotResult(result), raw: Object.fromEntries(["batteries", "people", "buildings", "rooms", "loans", "charges", "observations", "audit_events"].map((name, index) => [name, result[index + 7]])) };
     }
     async fullActivity(activityScope: "all" | "mine" = "all") {
         if (activityScope !== "all" && activityScope !== "mine")
@@ -212,32 +264,69 @@ export class InventoryStore {
         const batteries = this.snapshotResult([rows, [], [], [], [], []]).batteries as unknown as BatteryRecord[];
         return { source: value.source, results: tagIds.map(tagId => ({ tagId, battery: batteries.find(battery => battery.tagId === tagId) ?? null })) };
     }
+    async lifecycle(input: unknown): Promise<LifecycleReceipt> {
+        await this.requireLifecycleActor();
+        const payload = lifecyclePayloadSchema.parse(input), fingerprint = canonicalModelJson({ actorAccountId: this.actor.id, dataset: this.dataset, payload });
+        const previous = await this.replay(payload.requestId, "battery_lifecycle", fingerprint);
+        if (previous) return previous as LifecycleReceipt;
+        try {
+            const group = await this.resolveGroup(payload.teachingGroup, payload.items.map(item => item.batteryId), payload.requestId);
+            const bindingsJson = JSON.stringify(payload.items), keysJson = JSON.stringify(payload.items.map(item => this.key(item.batteryId)));
+            const batteries = await this.rows("SELECT b.*,p.id AS ownerId,COALESCE(a.display_name,p.name) AS ownerName,p.account_id AS ownerAccountId,building.id AS homeBuildingId,building.name AS homeBuildingName,room.id AS homeRoomId,room.name AS homeRoomName,room.number AS homeRoomNumber,room.is_placeholder AS homeRoomIsPlaceholder FROM batteries b JOIN people p ON p.key=b.owner_key LEFT JOIN staff_accounts a ON a.id=p.account_id LEFT JOIN buildings building ON building.key=b.home_building_key LEFT JOIN rooms room ON room.key=b.home_room_key WHERE b.scope=? AND b.key IN (SELECT value FROM json_each(?))", this.scope, keysJson);
+            if (batteries.length !== payload.items.length) throw new DomainError(404, "One or more reviewed batteries are not registered in this inventory.");
+            for (const item of payload.items) {
+                const battery = batteries.find(row => row.id === item.batteryId)!;
+                this.requireActiveBattery(battery);
+                if (battery.version !== item.version || battery.tag_id !== item.tagId) throw new DomainError(409, "A reviewed battery version or exact tag changed. No batteries were removed. Review the current records.", "lifecycle_conflict");
+            }
+            if (await this.first("SELECT id FROM loans WHERE scope=? AND battery_key IN (SELECT value FROM json_each(?)) AND returned_at IS NULL AND cancelled_at IS NULL LIMIT 1", this.scope, keysJson)) throw new DomainError(409, "Return every selected battery's active loan before scrapping or permanently removing it.", "lifecycle_loan_active");
+            const at = this.clock().toISOString(), savedReason = payload.reason || null;
+            const result: LifecycleReceipt = { requestId: payload.requestId, dataset: this.dataset, actorAccountId: this.actor.id, kind: payload.kind, reason: payload.reason, destination: payload.destination, source: payload.source, at, items: payload.items.map(item => ({ batteryId: item.batteryId, tagId: item.tagId, version: item.version + 1, status: payload.kind })), replayed: false, ...(group ? { teachingGroup: group.evidence } : {}) };
+            const writes: D1PreparedStatement[] = [];
+            for (const item of payload.items) {
+                const before = batteries.find(row => row.id === item.batteryId)!;
+                const after = { ...before, lifecycle_status: payload.kind, lifecycle_at: at, lifecycle_reason: savedReason, lifecycle_destination: payload.destination, version: item.version + 1 };
+                writes.push(this.statement("UPDATE batteries SET lifecycle_status=?,lifecycle_at=?,lifecycle_reason=?,lifecycle_destination=?,version=version+1 WHERE scope=? AND id=? AND version=? AND tag_id IS ? AND lifecycle_status='active'", payload.kind, at, savedReason, payload.destination, this.scope, item.batteryId, item.version, item.tagId));
+                writes.push(this.event(payload.kind === "scrapped" ? "battery_scrapped" : "battery_permanently_removed", item.batteryId, { requestId: payload.requestId, kind: payload.kind, reason: payload.reason, destination: payload.destination, source: payload.source, reviewedBinding: item, before, after, ...(group ? { teachingGroup: group.evidence } : {}) }, at));
+            }
+            const guard = "(SELECT COUNT(*) FROM batteries b JOIN json_each(?) j ON b.id=json_extract(j.value,'$.batteryId') AND b.version=json_extract(j.value,'$.version') AND b.tag_id IS json_extract(j.value,'$.tagId') WHERE b.scope=? AND b.lifecycle_status='active')=? AND NOT EXISTS(SELECT 1 FROM loans WHERE scope=? AND battery_key IN (SELECT value FROM json_each(?)) AND returned_at IS NULL AND cancelled_at IS NULL)";
+            return await this.atomic(payload.requestId, "battery_lifecycle", fingerprint, result, at, guard, [bindingsJson, this.scope, payload.items.length, this.scope, keysJson], writes, "A reviewed battery, tag, loan, teaching group or staff account changed. No batteries were removed. Review the current records.", "lifecycle_conflict", group) as LifecycleReceipt;
+        } catch (error) {
+            const committed = await this.replay(payload.requestId, "battery_lifecycle", fingerprint);
+            if (committed) return committed as LifecycleReceipt;
+            if (error instanceof DomainError && [400, 404, 409, 422].includes(error.status) && !["idempotency_conflict", "lifecycle_rejected_final"].includes(error.code ?? "")) return this.rejectLifecycle(payload, fingerprint, error);
+            throw error;
+        }
+    }
     async movement(input: unknown) {
         const v = movementSchema.parse(input), ids = uniqueIds(v.batteryIds);
         const scan = v.scan ? { ...v.scan, bindings: [...v.scan.bindings].sort((a, b) => a.batteryId.localeCompare(b.batteryId)) } : null;
         const returnRoom = v.kind === "return" ? v.returnRoom : undefined;
         if (scan?.source === "simulated" && this.dataset !== "demo") throw new DomainError(400, "Simulated scans are available only in the demonstration inventory.");
         if (scan && this.actor.authVersion === undefined) throw new DomainError(401, "Sign in with a staff account before confirming scanned batteries.");
-        if (scan && (scan.bindings.length !== ids.length || new Set(scan.bindings.map(binding => binding.batteryId)).size !== ids.length || new Set(scan.bindings.map(binding => binding.tagId)).size !== ids.length || scan.bindings.some(binding => !ids.includes(binding.batteryId)))) throw new DomainError(400, "The reviewed tag bindings must match every selected battery exactly once.");
+        const taggedBindings = scan?.bindings.filter(binding => binding.tagId !== null) ?? [];
+        if (scan && (scan.bindings.length !== ids.length || new Set(scan.bindings.map(binding => binding.batteryId)).size !== ids.length || new Set(taggedBindings.map(binding => binding.tagId)).size !== taggedBindings.length || scan.bindings.some(binding => !ids.includes(binding.batteryId)))) throw new DomainError(400, "The reviewed battery bindings must match every selected battery exactly once, without duplicate registered tags.");
         if (returnRoom && !scan) throw new DomainError(400, "A return-room confirmation requires a reviewed scan session.");
         const expected = v.kind === "return" ? [...v.expectedLoans].sort((a, b) => a.batteryId.localeCompare(b.batteryId)) : [];
         if (v.kind === "return" && (expected.length !== ids.length || new Set(expected.map(item => item.batteryId)).size !== ids.length || new Set(expected.map(item => item.loanId)).size !== ids.length || expected.some(item => !ids.includes(item.batteryId))))
             throw new DomainError(400, "The reviewed loan IDs must match every selected battery exactly once.");
-        const fingerprint = JSON.stringify({ kind: v.kind, ids, actorId: this.actor.id, borrowerAccountId: v.kind === "checkout" ? this.actor.id : null, expectedLoans: expected, ...(scan ? { scan, ...(returnRoom ? { returnRoom } : {}) } : {}) });
+        const fingerprint = JSON.stringify({ kind: v.kind, ids, actorId: this.actor.id, borrowerAccountId: v.kind === "checkout" ? this.actor.id : null, expectedLoans: expected, ...(scan ? { scan, ...(returnRoom ? { returnRoom } : {}) } : {}), ...(v.teachingGroup ? { teachingGroup: v.teachingGroup } : {}) });
         const old = await this.replay(v.requestId, v.kind, fingerprint);
         if (old)
             return { ...old, requestId: v.requestId };
         try {
             const at = this.clock().toISOString(), keysJson = JSON.stringify(ids.map(id => this.key(id)));
+            const group = await this.resolveGroup(v.teachingGroup, ids, v.requestId);
             // JSON carries the batch as one bound parameter, including 100-battery batches.
-            const bs = await this.rows("SELECT key,id,tag_id,version FROM batteries WHERE scope=? AND key IN (SELECT value FROM json_each(?))", this.scope, keysJson);
+            const bs = await this.rows("SELECT key,id,tag_id,version,lifecycle_status FROM batteries WHERE scope=? AND key IN (SELECT value FROM json_each(?))", this.scope, keysJson);
             if (bs.length !== ids.length)
                 throw new DomainError(404, "One or more batteries are not registered in this inventory.");
-            let evidenceGuard = "1";
-            const evidenceValues: unknown[] = [];
+            for (const battery of bs) this.requireActiveBattery(battery);
+            let evidenceGuard = "(SELECT COUNT(*) FROM batteries WHERE scope=? AND key IN (SELECT value FROM json_each(?)) AND lifecycle_status='active')=?";
+            const evidenceValues: unknown[] = [this.scope, keysJson, ids.length];
             if (scan) {
                 if (scan.bindings.some(binding => !bs.some(battery => battery.id === binding.batteryId && battery.tag_id === binding.tagId && battery.version === binding.version))) throw new DomainError(409, "A scanned tag binding or battery record changed. Nothing was saved. Review the latest records before confirming.", "scan_conflict");
-                evidenceGuard = "(SELECT COUNT(*) FROM batteries b JOIN json_each(?) reviewed ON b.id=json_extract(reviewed.value,'$.batteryId') AND b.tag_id=json_extract(reviewed.value,'$.tagId') AND b.version=json_extract(reviewed.value,'$.version') WHERE b.scope=?)=?";
+                evidenceGuard += " AND (SELECT COUNT(*) FROM batteries b JOIN json_each(?) reviewed ON b.id=json_extract(reviewed.value,'$.batteryId') AND b.tag_id IS json_extract(reviewed.value,'$.tagId') AND b.version=json_extract(reviewed.value,'$.version') WHERE b.scope=?)=?";
                 evidenceValues.push(JSON.stringify(scan.bindings), this.scope, ids.length);
             }
             let returnPlacement: ReturnPlacement | undefined, placementRoomKey: string | undefined;
@@ -251,8 +340,8 @@ export class InventoryStore {
                 evidenceGuard += " AND EXISTS(SELECT 1 FROM rooms r JOIN buildings building ON building.key=r.building_key WHERE r.key=? AND r.scope=? AND r.version=? AND r.selectable=1 AND building.id='J18' AND building.version=? AND (?=0 OR r.is_placeholder=0))";
                 evidenceValues.push(room.key, this.scope, returnRoom.version, room.building_version, Number(this.dataset === "live"));
             }
-            const scanDetails = (batteryId: string) => ({ requestId: v.requestId, ...(scan ? { scan: { ...scan, bindings: scan.bindings.filter(binding => binding.batteryId === batteryId) } } : {}) });
-            const receiptDetails = { requestId: v.requestId, ...(scan ? { scan, ...(returnPlacement ? { returnPlacement } : {}) } : {}) };
+            const scanDetails = (batteryId: string) => ({ requestId: v.requestId, ...(scan ? { scan: { ...scan, bindings: scan.bindings.filter(binding => binding.batteryId === batteryId) } } : {}), ...(group ? { teachingGroup: group.evidence } : {}) });
+            const receiptDetails = { requestId: v.requestId, ...(scan ? { scan, ...(returnPlacement ? { returnPlacement } : {}) } : {}), ...(group ? { teachingGroup: group.evidence } : {}) };
             const writes: D1PreparedStatement[] = [];
             if (v.kind === "checkout") {
                 if (this.actor.authVersion === undefined)
@@ -274,7 +363,7 @@ export class InventoryStore {
                 }
                 return await this.atomic(v.requestId, v.kind, fingerprint, { kind: v.kind, batteryIds: ids, count: ids.length, borrower: account.display_name, borrowerAccountId: this.actor.id, at, ...receiptDetails }, at,
                     "NOT EXISTS(SELECT 1 FROM loans WHERE scope=? AND battery_key IN (SELECT value FROM json_each(?)) AND returned_at IS NULL AND cancelled_at IS NULL) AND EXISTS(SELECT 1 FROM staff_accounts WHERE id=? AND version=? AND display_name=?) AND (" + evidenceGuard + ")",
-                    [this.scope, keysJson, this.actor.id, account.version, account.display_name, ...evidenceValues], writes, scan ? "The scanned battery bindings, loan state or account access changed. Nothing in this batch was saved. Review the latest records before confirming." : undefined, scan ? "scan_conflict" : undefined);
+                    [this.scope, keysJson, this.actor.id, account.version, account.display_name, ...evidenceValues], writes, group ? "The reviewed batteries, teaching group, loan state or account access changed. Nothing in this batch was saved. Review the latest records before confirming." : scan ? "The scanned battery bindings, loan state or account access changed. Nothing in this batch was saved. Review the latest records before confirming." : undefined, scan ? "scan_conflict" : undefined, group);
             }
             const expectedJson = JSON.stringify(expected.map(item => ({ key: this.key(item.batteryId), loanId: item.loanId })));
             const reviewedSql = "SELECT l.id,l.battery_key,l.borrower_name,l.borrower_account_id FROM loans l JOIN json_each(?) reviewed ON l.id=json_extract(reviewed.value,'$.loanId') AND l.battery_key=json_extract(reviewed.value,'$.key') WHERE l.scope=? AND l.returned_at IS NULL AND l.cancelled_at IS NULL";
@@ -288,7 +377,7 @@ export class InventoryStore {
                 if (returnPlacement) writes.push(this.statement("INSERT INTO observations(id,scope,battery_key,room_key,observed_at,received_at,source,room_name,room_building) VALUES(?,?,?,?,?,?,?,?,?)", observationId, this.scope, b.key, placementRoomKey, at, at, returnPlacement.source, returnPlacement.roomName, returnPlacement.building));
                 writes.push(this.event("return", String(b.id), { loanId: l.id, borrower: l.borrower_name, borrowerAccountId: l.borrower_account_id, receivedByAccountId: this.actor.id, ...scanDetails(String(b.id)), ...(returnPlacement ? { observationId, returnPlacement } : {}) }, at));
             }
-            return await this.atomic(v.requestId, v.kind, fingerprint, { kind: v.kind, batteryIds: ids, count: ids.length, at, ...receiptDetails }, at, `(SELECT COUNT(*) FROM (${reviewedSql}))=? AND (${evidenceGuard})`, [expectedJson, this.scope, ids.length, ...evidenceValues], writes, scan ? "The reviewed loan, scanned binding, return room or account access changed. Nothing in this batch was saved. Review the latest records before confirming." : undefined, scan ? "scan_conflict" : undefined);
+            return await this.atomic(v.requestId, v.kind, fingerprint, { kind: v.kind, batteryIds: ids, count: ids.length, at, ...receiptDetails }, at, `(SELECT COUNT(*) FROM (${reviewedSql}))=? AND (${evidenceGuard})`, [expectedJson, this.scope, ids.length, ...evidenceValues], writes, group ? "The reviewed loan, battery, teaching group, return room or account access changed. Nothing in this batch was saved. Review the latest records before confirming." : scan ? "The reviewed loan, scanned binding, return room or account access changed. Nothing in this batch was saved. Review the latest records before confirming." : undefined, scan ? "scan_conflict" : undefined, group);
         } catch (error) {
             // Another execution of this exact request may commit after the first receipt read.
             const committed = await this.replay(v.requestId, v.kind, fingerprint);
@@ -342,8 +431,25 @@ export class InventoryStore {
     async saveBattery(input: unknown, update = false) {
         if (update) this.requireAdmin();
         await this.ensureReferenceData();
-        const b = batterySchema.parse(input), at = this.clock().toISOString();
+        const { modelSelection, ...b } = batterySchema.extend({ modelSelection: modelSelectionSchema.optional() }).parse(input);
+        if (update && modelSelection) throw new DomainError(400, "Model suggestions are used when registering new batteries. Review saved specifications directly when editing a battery.");
+        const at = this.clock().toISOString();
         validateBatteryDates(b, new Date(at));
+        let modelReference: Record<string, unknown> | null = null;
+        let modelGuard = "1";
+        let modelGuardValues: unknown[] = [];
+        if (modelSelection) {
+            if (this.actor.authVersion === undefined) throw new DomainError(401, "Sign in with a staff account before using a model suggestion.");
+            const resolved = modelSelection.origin === "reference"
+                ? await resolveReferenceModel(modelSelection).then(({ choice, provenance }) => ({ snapshot: { model: choice, provenance }, guardSql: "1", guardValues: [] as unknown[] }))
+                : await new BatteryModelStore(this.db, this.scope, this.dataset, { id: this.actor.id, displayName: this.actor.name, role: this.actor.role, authVersion: this.actor.authVersion }, this.clock).resolve(modelSelection);
+            const suggestion = resolved.snapshot.model;
+            const appliedFields = modelSelection.appliedFields.filter(field => b[field] === suggestion[field]);
+            const overrides = modelFieldNames.filter(field => b[field] !== suggestion[field]);
+            modelReference = { ...resolved.snapshot, confirmed: true, chosenFields: modelSelection.appliedFields, appliedFields, overrides };
+            modelGuard = resolved.guardSql;
+            modelGuardValues = resolved.guardValues;
+        }
         const [owner, building, room, before] = await Promise.all([
             this.first("SELECT p.key,p.account_id,a.active AS accountActive FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.scope=? AND p.id=? AND p.role='staff'", this.scope, b.ownerId),
             b.homeBuildingId ? this.first("SELECT key FROM buildings WHERE scope=? AND id=?", this.scope, b.homeBuildingId) : null,
@@ -351,6 +457,7 @@ export class InventoryStore {
             this.first("SELECT * FROM batteries WHERE scope=? AND id=?", this.scope, b.id),
         ]);
         const retainedOwner = update && !!owner && before?.owner_key === owner.key;
+        if (update && before) this.requireActiveBattery(before);
         if (!owner || owner.accountActive !== 1 && !retainedOwner || !building || !isSupportedBuilding(b.homeBuildingId))
             throw new DomainError(400, "Select an active staff account as the responsible owner and J18 as the storage building. The room can stay unspecified.");
         if (b.homeRoomId && (!room || room.building_key !== building.key || room.selectable !== 1))
@@ -360,11 +467,12 @@ export class InventoryStore {
         if (!update && before)
             throw new DomainError(409, "That battery ID is already registered.");
         const version = this.editVersion(before, b.expectedVersion), kind = update ? "battery_updated" : "battery_registered";
+        const group = await this.resolveGroup(b.teachingGroup, [b.id], crypto.randomUUID());
         const values = [b.name, b.chemistry, b.model, b.capacityMah, b.voltage, b.tagId, owner.key, building?.key ?? null, room?.key ?? null, b.manufacturedOn, b.firstUsedOn];
         const write = update ? this.statement("UPDATE batteries SET name=?,chemistry=?,model=?,capacity_mah=?,voltage=?,tag_id=?,owner_key=?,home_building_key=?,home_room_key=?,manufactured_on=?,first_used_on=?,version=version+1 WHERE key=? AND scope=? AND version=?", ...values, this.key(b.id), this.scope, b.expectedVersion) : this.statement("INSERT INTO batteries(key,scope,id,name,chemistry,model,capacity_mah,voltage,tag_id,owner_key,home_building_key,home_room_key,manufactured_on,first_used_on,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", this.key(b.id), this.scope, b.id, ...values, at);
         try {
-            return await this.metadataWrite("batteries", kind, b.id, b, before, version, at, [write, this.event(kind, b.id, { before, after: { ...b, version } }, at)],
-                "EXISTS(SELECT 1 FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.key=? AND p.scope=? AND p.role='staff' AND p.account_id=? AND (a.active=1 OR ?=1)) AND (? IS NULL OR EXISTS(SELECT 1 FROM rooms WHERE key=? AND scope=? AND building_key=? AND selectable=1))", [owner.key, this.scope, owner.account_id, Number(retainedOwner), room?.key ?? null, room?.key ?? null, this.scope, building.key]);
+            return await this.metadataWrite("batteries", kind, b.id, b, before, version, at, [write, this.event(kind, b.id, { before, after: { ...b, version }, ...(modelReference ? { modelReference } : {}), ...(group ? { teachingGroup: group.evidence } : {}) }, at)],
+                `EXISTS(SELECT 1 FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.key=? AND p.scope=? AND p.role='staff' AND p.account_id=? AND (a.active=1 OR ?=1)) AND (? IS NULL OR EXISTS(SELECT 1 FROM rooms WHERE key=? AND scope=? AND building_key=? AND selectable=1)) AND (${modelGuard})`, [owner.key, this.scope, owner.account_id, Number(retainedOwner), room?.key ?? null, room?.key ?? null, this.scope, building.key, ...modelGuardValues], group);
         }
         catch (e) {
             if (/UNIQUE/i.test(String(e)))
@@ -378,10 +486,12 @@ export class InventoryStore {
         if (old)
             return old;
         const b = await this.battery(v.batteryId), at = this.clock().toISOString(), completedAt = validatePastTime(v.completedAt, this.clock()), id = crypto.randomUUID();
-        return this.atomic(v.requestId, "charge", fingerprint, { id, batteryId: v.batteryId }, at, "1", [], [
+        this.requireActiveBattery(b);
+        const group = await this.resolveGroup(v.teachingGroup, [v.batteryId], v.requestId);
+        return this.atomic(v.requestId, "charge", fingerprint, { id, batteryId: v.batteryId }, at, "EXISTS(SELECT 1 FROM batteries WHERE key=? AND scope=? AND lifecycle_status='active')", [b.key, this.scope], [
             this.statement("INSERT INTO charges(id,scope,battery_key,completed_at,duration_minutes,recorded_at,actor_id,actor_name) VALUES(?,?,?,?,?,?,?,?)", id, this.scope, b.key, completedAt, v.durationMinutes, at, this.actor.id, this.actor.name),
-            this.event("charge_recorded", v.batteryId, { completedAt, durationMinutes: v.durationMinutes, source: "Manual record" }, at),
-        ]);
+            this.event("charge_recorded", v.batteryId, { completedAt, durationMinutes: v.durationMinutes, source: "Manual record", ...(group ? { teachingGroup: group.evidence } : {}) }, at),
+        ], undefined, undefined, group);
     }
     async observation(input: unknown) {
         this.requireAdmin();
@@ -391,22 +501,25 @@ export class InventoryStore {
         if (old)
             return old;
         const b = await this.battery(v.batteryId), r = await this.first("SELECT r.*,building.id AS building_id,building.version AS building_version,COALESCE(building.id || ' - ' || building.name,r.building) AS building_label,CASE WHEN r.is_placeholder=1 THEN r.name || ' — Placeholder' WHEN r.number IS NULL THEN r.name ELSE r.number || ' - ' || r.name END AS room_label FROM rooms r LEFT JOIN buildings building ON building.key=r.building_key WHERE r.scope=? AND r.id=?", this.scope, v.roomId);
+        this.requireActiveBattery(b);
         if (!r || !isSupportedBuilding(String(r.building_id)) || r.selectable !== 1)
             throw new DomainError(400, "Select an available J18 room.");
         const at = this.clock().toISOString(), observedAt = validatePastTime(v.observedAt, this.clock()), id = crypto.randomUUID();
-        return this.atomic(v.requestId, "observation", fingerprint, { id, batteryId: v.batteryId }, at, "(SELECT COUNT(*) FROM rooms r LEFT JOIN buildings building ON building.key=r.building_key WHERE r.key=? AND r.scope=? AND r.version=? AND r.selectable=1 AND building.id='J18' AND building.version IS ?)=1", [r.key, this.scope, r.version, r.building_version], [
+        const group = await this.resolveGroup(v.teachingGroup, [v.batteryId], v.requestId);
+        return this.atomic(v.requestId, "observation", fingerprint, { id, batteryId: v.batteryId }, at, "(SELECT COUNT(*) FROM rooms r LEFT JOIN buildings building ON building.key=r.building_key WHERE r.key=? AND r.scope=? AND r.version=? AND r.selectable=1 AND building.id='J18' AND building.version IS ?)=1 AND EXISTS(SELECT 1 FROM batteries WHERE key=? AND scope=? AND lifecycle_status='active')", [r.key, this.scope, r.version, r.building_version, b.key, this.scope], [
             this.statement("INSERT INTO observations(id,scope,battery_key,room_key,observed_at,received_at,source,room_name,room_building) VALUES(?,?,?,?,?,?,?,?,?)", id, this.scope, b.key, r.key, observedAt, at, "Demo observation", r.room_label, r.building_label),
-            this.event("demo_observation", v.batteryId, { observationId: id, room: r.room_label, building: r.building_label, roomId: r.id, observedAt, source: "Demo observation" }, at),
-        ]);
+            this.event("demo_observation", v.batteryId, { observationId: id, room: r.room_label, building: r.building_label, roomId: r.id, observedAt, source: "Demo observation", ...(group ? { teachingGroup: group.evidence } : {}) }, at),
+        ], undefined, undefined, group);
     }
     async correctLoan(input: unknown) {
         this.requireAdmin();
         const v = correctionSchema.parse(input), fingerprint = JSON.stringify({ ...v, actorId: this.actor.id }), old = await this.replay(v.requestId, "correction", fingerprint);
         if (old)
             return old;
-        const l = await this.first("SELECT l.*,b.id AS battery_id FROM loans l JOIN batteries b ON b.key=l.battery_key WHERE l.scope=? AND l.id=?", this.scope, v.loanId);
+        const l = await this.first("SELECT l.*,b.id AS battery_id,b.lifecycle_status AS battery_lifecycle_status FROM loans l JOIN batteries b ON b.key=l.battery_key WHERE l.scope=? AND l.id=?", this.scope, v.loanId);
         if (!l || l.cancelled_at)
             throw new DomainError(409, "This loan is unavailable for correction.");
+        this.requireActiveBattery({ lifecycle_status: l.battery_lifecycle_status });
         const latest = await this.first("SELECT id FROM loans WHERE scope=? AND battery_key=? ORDER BY checked_out_at DESC,rowid DESC LIMIT 1", this.scope, l.battery_key);
         if (latest?.id !== l.id)
             throw new DomainError(409, "Only the most recent loan can be corrected. Later movements must remain intact.");
@@ -414,8 +527,81 @@ export class InventoryStore {
         if (l.returned_at !== v.expectedReturnedAt || reopen !== (v.expectedReturnedAt !== null))
             throw new DomainError(409, "The reviewed loan state changed. This correction was not saved. Review the loan and choose the intended correction again.");
         const at = this.clock().toISOString();
+        const group = await this.resolveGroup(v.teachingGroup, [String(l.battery_id)], v.requestId);
         const write = reopen ? this.statement("UPDATE loans SET returned_at=NULL,return_actor_id=NULL,return_actor_name=NULL,correction_reason=? WHERE id=? AND scope=?", v.reason, l.id, this.scope) : this.statement("UPDATE loans SET cancelled_at=?,correction_reason=? WHERE id=? AND scope=?", at, v.reason, l.id, this.scope);
-        return this.atomic(v.requestId, "correction", fingerprint, { id: l.id, action: v.action }, at, "(SELECT COUNT(*) FROM loans WHERE id=? AND scope=? AND returned_at IS ? AND cancelled_at IS NULL)=1 AND (SELECT id FROM loans WHERE scope=? AND battery_key=? ORDER BY checked_out_at DESC,rowid DESC LIMIT 1)=?", [l.id, this.scope, v.expectedReturnedAt, this.scope, l.battery_key, l.id], [write, this.event(v.action, String(l.battery_id), { loanId: l.id, reason: v.reason, intendedAction: v.action, expectedReturnedAt: v.expectedReturnedAt, before: l }, at)]);
+        return this.atomic(v.requestId, "correction", fingerprint, { id: l.id, action: v.action }, at, "(SELECT COUNT(*) FROM loans WHERE id=? AND scope=? AND returned_at IS ? AND cancelled_at IS NULL)=1 AND (SELECT id FROM loans WHERE scope=? AND battery_key=? ORDER BY checked_out_at DESC,rowid DESC LIMIT 1)=? AND EXISTS(SELECT 1 FROM batteries WHERE key=? AND scope=? AND lifecycle_status='active')", [l.id, this.scope, v.expectedReturnedAt, this.scope, l.battery_key, l.id, l.battery_key, this.scope], [write, this.event(v.action, String(l.battery_id), { loanId: l.id, reason: v.reason, intendedAction: v.action, expectedReturnedAt: v.expectedReturnedAt, before: l, ...(group ? { teachingGroup: group.evidence } : {}) }, at)], undefined, undefined, group);
+    }
+    async groupMaintenance(input: unknown) {
+        this.requireAdmin();
+        await this.requireLifecycleActor();
+        const payload = groupMaintenanceSchema.parse(input), kind = "group_maintenance";
+        const fingerprint = canonicalModelJson({ actorAccountId: this.actor.id, dataset: this.dataset, payload });
+        const previous = await this.replay(payload.requestId, kind, fingerprint);
+        if (previous) return previous;
+        try {
+            const ids = payload.items.map(item => item.batteryId), group = (await this.resolveGroup(payload.teachingGroup, ids, payload.requestId))!;
+            const bindings = JSON.stringify(payload.items), at = this.clock().toISOString();
+            const batteries = await this.rows("SELECT * FROM batteries WHERE scope=? AND id IN (SELECT value FROM json_each(?))", this.scope, JSON.stringify(ids));
+            for (const item of payload.items) {
+                const battery = batteries.find(row => row.id === item.batteryId);
+                if (!battery || battery.version !== item.version || battery.tag_id !== item.tagId || battery.lifecycle_status !== "active") throw new DomainError(409, "A reviewed battery changed or is retired. No group changes were saved.");
+            }
+            let relatedGuard = "1", relatedValues: unknown[] = [], owner: Row | null = null, room: Row | null = null;
+            if (payload.kind === "owner") {
+                owner = await this.first("SELECT p.* FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.scope=? AND p.id=? AND p.role='staff' AND a.active=1", this.scope, payload.ownerId);
+                if (!owner) throw new DomainError(400, "Select an active responsible staff owner.");
+                relatedGuard = "EXISTS(SELECT 1 FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.key=? AND p.scope=? AND p.version=? AND a.active=1)";
+                relatedValues = [owner.key, this.scope, owner.version];
+            }
+            if (payload.kind === "storage" || payload.kind === "observation") {
+                const roomId = payload.kind === "storage" ? payload.homeRoomId : payload.roomId;
+                if (payload.kind === "observation" && this.dataset !== "demo") throw new DomainError(501, "Room observations remain demonstration-only until hardware is validated.");
+                if (roomId) {
+                    room = await this.first("SELECT r.*,b.id AS building_id,b.version AS building_version,b.name AS building_name FROM rooms r JOIN buildings b ON b.key=r.building_key WHERE r.scope=? AND r.id=? AND r.selectable=1 AND b.id='J18'", this.scope, roomId);
+                    if (!room) throw new DomainError(400, "Select an available J18 room.");
+                    relatedGuard = "EXISTS(SELECT 1 FROM rooms r JOIN buildings b ON b.key=r.building_key WHERE r.key=? AND r.scope=? AND r.version=? AND r.selectable=1 AND b.id='J18' AND b.version=?)";
+                    relatedValues = [room.key, this.scope, room.version, room.building_version];
+                } else {
+                    if (!await this.first("SELECT key FROM buildings WHERE scope=? AND id='J18'", this.scope)) throw new DomainError(400, "J18 is unavailable in this inventory.");
+                    relatedGuard = "EXISTS(SELECT 1 FROM buildings WHERE scope=? AND id='J18')"; relatedValues = [this.scope];
+                }
+            }
+            const evidenceAt = payload.kind === "charge" ? validatePastTime(payload.completedAt, this.clock()) : payload.kind === "observation" ? validatePastTime(payload.observedAt, this.clock()) : null;
+            const writes: D1PreparedStatement[] = [];
+            for (const item of payload.items) {
+                const before = batteries.find(row => row.id === item.batteryId)!;
+                const details: Record<string, unknown> = { requestId: payload.requestId, teachingGroup: group.evidence, reviewedBinding: item };
+                let action: string;
+                if (payload.kind === "owner" || payload.kind === "storage") {
+                    action = "battery_updated";
+                    const after = payload.kind === "owner" ? { ...before, owner_key: owner!.key, version: item.version + 1 } : { ...before, home_building_key: this.key("J18"), home_room_key: room?.key ?? null, version: item.version + 1 };
+                    if (payload.kind === "owner") writes.push(this.statement("UPDATE batteries SET owner_key=?,version=version+1 WHERE key=? AND scope=? AND version=?", owner!.key, before.key, this.scope, item.version));
+                    else writes.push(this.statement("UPDATE batteries SET home_building_key=?,home_room_key=?,version=version+1 WHERE key=? AND scope=? AND version=?", this.key("J18"), room?.key ?? null, before.key, this.scope, item.version));
+                    Object.assign(details, { changedField: payload.kind, before, after });
+                } else if (payload.kind === "charge") {
+                    action = "charge_recorded";
+                    writes.push(this.statement("INSERT INTO charges(id,scope,battery_key,completed_at,duration_minutes,recorded_at,actor_id,actor_name) VALUES(?,?,?,?,?,?,?,?)", crypto.randomUUID(), this.scope, before.key, evidenceAt, payload.durationMinutes, at, this.actor.id, this.actor.name));
+                    Object.assign(details, { completedAt: evidenceAt, durationMinutes: payload.durationMinutes, source: "Manual record" });
+                } else {
+                    action = "demo_observation";
+                    const roomLabel = room!.is_placeholder === 1 ? `${room!.name} — Placeholder` : `${room!.number} - ${room!.name}`, buildingLabel = `J18 - ${room!.building_name}`;
+                    writes.push(this.statement("INSERT INTO observations(id,scope,battery_key,room_key,observed_at,received_at,source,room_name,room_building) VALUES(?,?,?,?,?,?,?,?,?)", crypto.randomUUID(), this.scope, before.key, room!.key, evidenceAt, at, "Demo observation", roomLabel, buildingLabel));
+                    Object.assign(details, { roomId: room!.id, room: roomLabel, building: buildingLabel, observedAt: evidenceAt, source: "Demo observation" });
+                }
+                writes.push(this.event(action, item.batteryId, details, at));
+            }
+            const result = { requestId: payload.requestId, dataset: this.dataset, actorAccountId: this.actor.id, kind: payload.kind, batteryIds: ids, at, teachingGroup: group.evidence, replayed: false };
+            const guard = "(SELECT COUNT(*) FROM batteries b JOIN json_each(?) j ON b.id=json_extract(j.value,'$.batteryId') AND b.version=json_extract(j.value,'$.version') AND b.tag_id IS json_extract(j.value,'$.tagId') WHERE b.scope=? AND b.lifecycle_status='active')=?";
+            return await this.atomic(payload.requestId, kind, fingerprint, result, at, `(${guard}) AND (${relatedGuard})`, [bindings, this.scope, ids.length, ...relatedValues], writes, "A battery, teaching group, directory or staff account changed. No group changes were saved.", "group_conflict", group);
+        } catch (error) {
+            const committed = await this.replay(payload.requestId, kind, fingerprint); if (committed) return committed;
+            if (!(error instanceof DomainError) || ![400, 404, 409, 422].includes(error.status) || error.code === "idempotency_conflict") throw error;
+            await this.requireLifecycleActor();
+            try {
+                await this.db.batch([this.statement("INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) SELECT ?,?,'group_maintenance_rejected',?,?,?,CASE WHEN EXISTS(SELECT 1 FROM staff_accounts WHERE id=? AND active=1 AND auth_version=? AND role='admin') THEN 1 ELSE 0 END", this.key(payload.requestId), this.scope, fingerprint, JSON.stringify({ rejected: true, status: error.status, error: error.message }), this.clock().toISOString(), this.actor.id, this.actor.authVersion)]);
+            } catch (reservationError) { const committed = await this.replay(payload.requestId, kind, fingerprint); if (committed) return committed; throw reservationError; }
+            throw new DomainError(error.status, error.message, "group_operation_rejected_final");
+        }
     }
     async importRecords(kind: string, records: unknown[]) {
         if (kind !== "batteries") this.requireAdmin();

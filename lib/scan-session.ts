@@ -1,22 +1,25 @@
 import type { BatteryRecord, Room } from "./domain";
+import { isActiveBattery } from "./battery-lifecycle";
+import { teachingGroupReferenceSchema, type TeachingGroupReference, type TeachingGroupEvidence } from "./teaching-context";
 
-export type ScanSource = "manual" | "simulated";
+export type ScanSource = "manual" | "simulated" | "selection";
 export type ScanMode = "continuous" | "batch";
-export type ScanRead = { battery: BatteryRecord; tagId: string; source: ScanSource; readAt: string };
+export type ScanRead = { battery: BatteryRecord; tagId: string | null; source: ScanSource; readAt: string };
 export type ScanRoom = Pick<Room, "id" | "version" | "name" | "isPlaceholder" | "buildingId">;
 export type ScanMovement = {
     requestId: string;
+    teachingGroup?: TeachingGroupReference;
     kind: "checkout" | "return";
     batteryIds: string[];
     expectedLoans?: { batteryId: string; loanId: string }[];
-    scan: { sessionId: string; source: ScanSource; bindings: { batteryId: string; tagId: string; version: number }[] };
+    scan: { sessionId: string; source: ScanSource; bindings: { batteryId: string; tagId: string | null; version: number }[] };
     returnRoom?: { roomId: string; version: number };
 };
-export type ScanReceipt = { kind: "checkout" | "return"; batteryIds: string[]; count: number; at: string; requestId: string; borrower?: string; borrowerAccountId?: string; replayed?: boolean; returnPlacement?: { roomId: string; roomName: string; isPlaceholder: boolean; source: string; observedAt: string } };
+export type ScanReceipt = { kind: "checkout" | "return"; batteryIds: string[]; count: number; at: string; requestId: string; borrower?: string; borrowerAccountId?: string; replayed?: boolean; teachingGroup?: TeachingGroupEvidence; returnPlacement?: { roomId: string; roomName: string; isPlaceholder: boolean; source: string; observedAt: string } };
 export type ScanCompleted = ScanRead & { receipt: ScanReceipt };
 export type ScanIssue = { id: string; tagId: string; category: "unknown" | "state" | "duplicate" | "lookup" | "source" | "limit"; message: string; acknowledged: boolean; resolvedBatteryId?: string };
 export type ScanAttempt = { payload: ScanMovement; reads: ScanRead[]; status: "uncertain" | "rejected"; message: string; statusCode?: number };
-export type ScanSession = { sessionId: string; mode: ScanMode; room: ScanRoom | null; roomConfirmationRequired?: boolean; queue: ScanRead[]; completed: ScanCompleted[]; issues: ScanIssue[]; attempt: ScanAttempt | null };
+export type ScanSession = { sessionId: string; mode: ScanMode; room: ScanRoom | null; roomConfirmationRequired?: boolean; queue: ScanRead[]; completed: ScanCompleted[]; issues: ScanIssue[]; attempt: ScanAttempt | null; teachingGroup?: TeachingGroupReference };
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 /** A verified exact tag lookup resolves only its earlier unregistered-tag issues. */
@@ -31,26 +34,29 @@ export function scanCompletedReadMatches(kind: ScanMovement["kind"], battery: Pi
         ? !battery.loanId || saved.battery.loanId === battery.loanId : !!battery.loanId));
 }
 
-export function scanReadProblem(kind: ScanMovement["kind"], battery: BatteryRecord, tagId: string) {
+export function scanReadProblem(kind: ScanMovement["kind"], battery: BatteryRecord, tagId: string | null) {
+    if (!isActiveBattery(battery)) return "This battery has been retired or permanently removed. No movement was saved.";
     if (battery.tagId !== tagId) return "The registered tag changed. Read and review the current tag before proceeding.";
-    if (kind === "checkout" && battery.loanId) return `Already on loan${battery.borrowerName ? ` to ${battery.borrowerName}` : ""}. No checkout was saved.`;
+    if (kind === "checkout" && battery.loanId) return `Already in use${battery.borrowerName ? ` to ${battery.borrowerName}` : ""}. No checkout was saved.`;
     if (kind === "return" && !battery.loanId) return "No active loan to return. No return was saved.";
     return null;
 }
 
 /** Capture exact tag/version/loan bindings once; retries must retain this payload. */
-export function scanMovementPayload(kind: ScanMovement["kind"], reads: readonly ScanRead[], sessionId: string, room: ScanRoom | null, requestId: string): ScanMovement {
+export function scanMovementPayload(kind: ScanMovement["kind"], reads: readonly ScanRead[], sessionId: string, room: ScanRoom | null, requestId: string, teachingGroup?: TeachingGroupReference): ScanMovement {
     if (!uuid.test(sessionId) || !uuid.test(requestId)) throw new Error("Use valid scan-session and request identifiers.");
     if (!reads.length || reads.length > 100) throw new Error("Confirm between 1 and 100 batteries at a time.");
     const ids = reads.map(read => read.battery.id);
     if (new Set(ids).size !== ids.length) throw new Error("A battery can occur only once in a scan movement.");
-    if (reads.some(read => read.source !== reads[0].source)) throw new Error("Manual and simulated reads need separate batches. Confirm or clear the current batch first.");
+    if (reads.some(read => read.source !== reads[0].source)) throw new Error("Different input sources need separate batches. Confirm or clear the current batch first.");
+    if (reads.some(read => read.source !== "selection" && read.tagId === null)) throw new Error("Tag reads require registered tags; select the battery manually when it has no tag.");
     for (const read of reads) { const problem = scanReadProblem(kind, read.battery, read.tagId); if (problem) throw new Error(`${read.battery.id}: ${problem}`); }
     return {
         requestId, kind, batteryIds: ids,
         ...(kind === "return" ? { expectedLoans: reads.map(read => ({ batteryId: read.battery.id, loanId: read.battery.loanId! })) } : {}),
         scan: { sessionId, source: reads[0].source, bindings: reads.map(read => ({ batteryId: read.battery.id, tagId: read.tagId, version: read.battery.version })) },
         ...(kind === "return" && room ? { returnRoom: { roomId: room.id, version: room.version } } : {}),
+        ...(teachingGroup ? { teachingGroup: teachingGroupReferenceSchema.parse(teachingGroup) } : {}),
     };
 }
 
@@ -64,7 +70,7 @@ export function scanFailureStatus(error: unknown, alreadyUncertain = false): Sca
 function isRead(value: unknown): value is ScanRead {
     if (!value || typeof value !== "object") return false;
     const read = value as Partial<ScanRead>, battery = read.battery;
-    return (read.source === "manual" || read.source === "simulated") && typeof read.tagId === "string" && typeof read.readAt === "string" && !!battery
+    return (read.source === "manual" || read.source === "simulated" || read.source === "selection") && (typeof read.tagId === "string" || read.source === "selection" && read.tagId === null) && typeof read.readAt === "string" && !!battery
         && typeof battery.id === "string" && !!battery.id && typeof battery.name === "string" && typeof battery.ownerName === "string" && Number.isInteger(battery.version) && battery.version > 0
         && (typeof battery.loanId === "string" || battery.loanId === null) && battery.tagId === read.tagId;
 }
@@ -74,6 +80,7 @@ export function recoverScanSession(raw: string | null, kind: ScanMovement["kind"
     if (!raw) return null;
     try {
         const saved = JSON.parse(raw) as ScanSession;
+        if (saved?.teachingGroup !== undefined && !teachingGroupReferenceSchema.safeParse(saved.teachingGroup).success) return null;
         if (!saved || !uuid.test(saved.sessionId) || !["continuous", "batch"].includes(saved.mode) || !Array.isArray(saved.queue) || saved.queue.length > 100 || !saved.queue.every(isRead)
             || !Array.isArray(saved.completed) || !saved.completed.every(read => isRead(read) && read.receipt?.kind === kind && typeof read.receipt.at === "string" && Number.isFinite(Date.parse(read.receipt.at)) && uuid.test(read.receipt.requestId) && Array.isArray(read.receipt.batteryIds) && read.receipt.batteryIds.includes(read.battery.id))
             || !Array.isArray(saved.issues) || !saved.issues.every(issue => issue && typeof issue.id === "string" && uuid.test(issue.id) && ["unknown", "state", "duplicate", "lookup", "source", "limit"].includes(issue.category) && typeof issue.tagId === "string" && typeof issue.message === "string" && typeof issue.acknowledged === "boolean"
@@ -87,7 +94,7 @@ export function recoverScanSession(raw: string | null, kind: ScanMovement["kind"
         if (saved.attempt) {
             if (!["uncertain", "rejected"].includes(saved.attempt.status) || saved.attempt.payload?.kind !== kind || saved.attempt.payload.scan?.sessionId !== saved.sessionId
                 || !Array.isArray(saved.attempt.reads) || !saved.attempt.reads.every(isRead) || typeof saved.attempt.message !== "string" || saved.attempt.reads.some(read => !saved.queue.some(queued => JSON.stringify(read) === JSON.stringify(queued)))) return null;
-            const expected = scanMovementPayload(kind, saved.attempt.reads, saved.sessionId, saved.room, saved.attempt.payload.requestId);
+            const expected = scanMovementPayload(kind, saved.attempt.reads, saved.sessionId, saved.room, saved.attempt.payload.requestId, saved.teachingGroup);
             if (JSON.stringify(expected) !== JSON.stringify(saved.attempt.payload)) return null;
         }
         return saved.attempt || saved.queue.length || saved.roomConfirmationRequired || saved.issues.some(issue => !issue.acknowledged) ? saved : null;

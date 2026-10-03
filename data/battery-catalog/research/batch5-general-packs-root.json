@@ -1,0 +1,499 @@
+{
+  "sources": [
+    {
+      "source_id": "tenergy-31003-official-page",
+      "url": "https://power.tenergy.com/tenergy-li-ion-7-4v-2200mah-rechargeable-battery-w-pcb-2s1p-16-25wh-4a-rate/",
+      "title": "Tenergy Li-Ion7.4V2200mAh Rechargeable Battery w/PCB",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "Tenergy exact Item/SKU31003 protected assembled battery; single module, not custom customer configurations orAT-related alternatives"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official product page actually opened with web reader. Exact Item/SKU, chemistry, recharge description, TypePack and Technical Data/Product Highlights nominal voltage and capacity reviewed. Brand-owner evidence; underlying cell manufacturer is not asserted."
+    },
+    {
+      "source_id": "tenergy-31001-official-page",
+      "url": "https://www.tenergy.com/31001",
+      "title": "Tenergy Li-Ion186503.7V5200mAh Rechargeable PCB Protected Battery Pack",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "Tenergy exact Item/SKU31001 protected assembled battery; single module, not custom customer configurations orAT-related alternatives"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official product page actually opened with web reader. Item/SKU and exact product heading, TypePack, chemistry, recharge description and Technical Data/Product Highlights nominal voltage and capacity reviewed. Tenergy is the product brand and official publisher; an underlying physical cell manufacturer is not inferred. The31001DataSheet link resolved to/noData404 and is not recorded as an opened datasheet."
+    },
+    {
+      "source_id": "tenergy-31012-official-page",
+      "url": "https://www.tenergy.com/31012",
+      "title": "Tenergy Li-Ion1865011.1V2200mAh Rechargeable Battery Pack w/PCB Protection",
+      "publisher": "Tenergy",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "Tenergy exact Item/SKU31012 protected assembled battery; single module, not custom customer configurations orAT-related alternatives"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Official product page actually opened with web reader. Exact Item/SKU, chemistry, recharge description, TypePack and Technical Data/Product Highlights nominal voltage and capacity reviewed. Brand-owner evidence; underlying cell manufacturer is not asserted."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "tenergy-31003-protected-pack",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31003",
+      "variant_key": "protected-base-pack",
+      "variant_description": "Tenergy official part31003 protected assembled Li-ion module; single battery, optional related customer assemblies excluded.",
+      "suggested_display_name": "Tenergy 31003",
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "cylindrical_cell_assembled_pack",
+        "description": "Assembled protected battery module built from manufacturer-described cylindrical18650cells; precise dimensions are not curated."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 2200,
+      "stated_capacity_label": "Capacity (mAh)",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 7.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 2,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "Bare leads",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "31003",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "tenergy-31003-official-page"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Tenergy brand in exact product heading and official publisher."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Explicit officialItem/SKU31003."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "The exact official part31003 is an exact candidate, not a physical asset confirmation."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Tenergy official part31003 protected assembled Li-ion module; single battery, optional related customer assemblies excluded."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Chemistry explicitlyLi-ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Exact product is explicitlyRechargeable and source describes recharging."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Source explicitlyTypePack and describes a protected multi-cell assembly."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Source describes assembled cylindrical18650cells, not a bare pouch."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "ExplicitNominal Voltage(V)7.4."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Product Highlights/Technical Specifications, Capacity(mAh)",
+            "observation": "Capacity2200mAh without separately qualified rated/nominal/minimum/typical label."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Product Highlights/Technical Specifications",
+            "observation": "Original unqualified labelCapacity(mAh)."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Selected capacity field",
+            "observation": "Unqualified capacity does not establish rated/nominal basis; rated null."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "SKU attributeSeries Config.",
+            "observation": "Explicit2S; not calculated from voltage."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "SKU attributeParallel Config.",
+            "observation": "Explicit1; not calculated from capacity."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tenergy-31003-official-page",
+            "locator": "Technical Specifications, Connector",
+            "observation": "Bare Leads specified; detailed polarity remains unknown."
+          }
+        ]
+      },
+      "conflicts": [
+        "Page SKU attribute Discharge Rate(A) lists4 while title/Product Highlights/Technical Specifications list3A. Discharge current is not curated; the selected core voltage/capacity/model fields agree."
+      ],
+      "unknowns": [
+        "Legal physical manufacturer, underlying cell supplier, source revision, detailed polarity, dimensions, mass and qualified energy remain unknown or uncurated.",
+        "No separately qualified typical capacity or full capacity test protocol is established in selected fields; capacity_test_conditions remains null.",
+        "Current limits and charger compatibility are not curated into maintenance instructions."
+      ],
+      "notes": [
+        "Public product reference only; not school stock or charger compatibility evidence.",
+        "Independent identity uses the explicitly published official product part/SKU; generic18650cell shape and custom pack combinations are not new models.",
+        "Editable display name is an editorial brand/part suggestion.",
+        "Product capacity is unqualified in this selected official store source, so it isstated rather thannominal."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31001-protected-pack",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31001",
+      "variant_key": "protected-base-pack",
+      "variant_description": "Tenergy official part31001 protected assembled Li-ion module; single battery, optional related customer assemblies excluded.",
+      "suggested_display_name": "Tenergy 31001",
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "cylindrical_cell_assembled_pack",
+        "description": "Assembled protected battery module built from manufacturer-described cylindrical18650cells; precise dimensions are not curated."
+      },
+      "rated_capacity_mah": 5200,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "31001",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "tenergy-31001-official-page"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31001-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Tenergy brand in exact product heading and official publisher."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31001-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Explicit officialItem/SKU31001."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31001-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "The exact official part31001 is an exact candidate, not a physical asset confirmation."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31001-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Tenergy official part31001 protected assembled Li-ion module; single battery, optional related customer assemblies excluded."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31001-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Chemistry explicitlyLi-ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31001-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Exact product is explicitlyRechargeable and source describes recharging."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31001-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Source explicitlyTypePack and describes a protected multi-cell assembly."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31001-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Source describes assembled cylindrical18650cells, not a bare pouch."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31001-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "ExplicitNominal Voltage(V)3.7."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tenergy-31001-official-page",
+            "locator": "Technical Data, Nominal Capacity(mAh)",
+            "observation": "Explicit nominal5200mAh; not relabeled as separate minimum/typical."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31001-official-page",
+            "locator": "Technical Data, Nominal Capacity(mAh)",
+            "observation": "Nominal qualification retained."
+          }
+        ]
+      },
+      "conflicts": [
+        "Page includes generic module-connection language proposing7.4V via parallel connection; this does not establish the base pack voltage or a valid assembly procedure. Explicit base-pack nominal3.7V is retained; configuration remains null and no connection guidance is imported."
+      ],
+      "unknowns": [
+        "Legal physical manufacturer, underlying cell supplier, source revision, detailed polarity, dimensions, mass and qualified energy remain unknown or uncurated.",
+        "No separately qualified typical capacity or full capacity test protocol is established in selected fields; capacity_test_conditions remains null.",
+        "Current limits and charger compatibility are not curated into maintenance instructions."
+      ],
+      "notes": [
+        "Public product reference only; not school stock or charger compatibility evidence.",
+        "Independent identity uses the explicitly published official product part/SKU; generic18650cell shape and custom pack combinations are not new models.",
+        "Editable display name is an editorial brand/part suggestion."
+      ]
+    },
+    {
+      "catalog_id": "tenergy-31012-protected-pack",
+      "manufacturer": null,
+      "brand": "Tenergy",
+      "model": "31012",
+      "variant_key": "protected-base-pack",
+      "variant_description": "Tenergy official part31012 protected assembled Li-ion module; single battery, optional related customer assemblies excluded.",
+      "suggested_display_name": "Tenergy 31012",
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "cylindrical_cell_assembled_pack",
+        "description": "Assembled protected battery module built from manufacturer-described cylindrical18650cells; precise dimensions are not curated."
+      },
+      "rated_capacity_mah": 2200,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 2090,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 11.1,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "verification_status": "verified_core",
+      "aliases": [
+        {
+          "value": "31012",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "source_ids": [
+        "tenergy-31012-official-page"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Tenergy brand in exact product heading and official publisher."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Explicit officialItem/SKU31012."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "The exact official part31012 is an exact candidate, not a physical asset confirmation."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Tenergy official part31012 protected assembled Li-ion module; single battery, optional related customer assemblies excluded."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Chemistry explicitlyLi-ion."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Exact product is explicitlyRechargeable and source describes recharging."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Source explicitlyTypePack and describes a protected multi-cell assembly."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "Source describes assembled cylindrical18650cells, not a bare pouch."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Exact product heading andTechnical Data/Product Highlights",
+            "observation": "ExplicitNominal Voltage(V)11.1."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Technical Data, Nominal Capacity(mAh)",
+            "observation": "Explicit nominal2200mAh; not relabeled as separate minimum/typical."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Technical Data, Nominal Capacity(mAh)",
+            "observation": "Nominal qualification retained."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "tenergy-31012-official-page",
+            "locator": "Technical Data, Minimum Capacity",
+            "observation": "Explicit2090mAh minimum retained separately."
+          }
+        ]
+      },
+      "conflicts": [
+        "Generic application/build text mentions10.8V while exact product heading andTechnical Data specify11.1V nominal. Only explicit selected-product nominal11.1V is curated; custom combination/application language is excluded."
+      ],
+      "unknowns": [
+        "Legal physical manufacturer, underlying cell supplier, source revision, detailed polarity, dimensions, mass and qualified energy remain unknown or uncurated.",
+        "No separately qualified typical capacity or full capacity test protocol is established in selected fields; capacity_test_conditions remains null.",
+        "Current limits and charger compatibility are not curated into maintenance instructions.",
+        "Internal series/parallel topology is not explicitly specified in selected base-product fields and is not inferred from voltage or cell count."
+      ],
+      "notes": [
+        "Public product reference only; not school stock or charger compatibility evidence.",
+        "Independent identity uses the explicitly published official product part/SKU; generic18650cell shape and custom pack combinations are not new models.",
+        "Editable display name is an editorial brand/part suggestion."
+      ]
+    }
+  ]
+}

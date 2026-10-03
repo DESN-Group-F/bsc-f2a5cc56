@@ -1,0 +1,340 @@
+{
+  "audit_id": "batch5-independent-root-review",
+  "reviewed_on": "2026-10-03",
+  "reviewer_role": "Organizer independently reopening agent-selected sources",
+  "status": "pass_core_with_disclosed_limits",
+  "reviewed_fragment_names": [
+    "batch5-tool-packs-a.json",
+    "batch5-prototype-jauch.json",
+    "batch5-prototype-mixed.json",
+    "batch5-tool-packs-b.json"
+  ],
+  "reviewed_fragment_sha256": {
+    "batch5-tool-packs-a.json": "8b5a40d1ea967a8b34fe5eff84d1f7b11fb713a2b3ba206197788bc10d243965",
+    "batch5-prototype-jauch.json": "bbe80120b1ce8d548f07296f160324eaf910f72c36bbc48a8bcafbd20178138b",
+    "batch5-prototype-mixed.json": "332ffcd216ee0a5b1f4757cef1105faf826c6acba851794ca7a08ed32f8703a1",
+    "batch5-tool-packs-b.json": "2bcdd3d4e37203827ffbba79a3658964707384b6e0ed6de998f7aa5a387618a5"
+  },
+  "independently_reviewed_catalog_ids": [
+    "milwaukee-m18-hb8",
+    "milwaukee-m18-fb8",
+    "dewalt-dcb126",
+    "dewalt-dcbp320",
+    "jauch-lp503759ju-246517",
+    "jauch-lp906090jh-246525",
+    "eemb-lp583759-bare-cell-solder-tab",
+    "eemb-lp604040-bare-cell-solder-tab",
+    "sparkfun-prt-13855-protected-jst-ph",
+    "adafruit-1317-150mah-protected-jst-ph",
+    "milwaukee-m14-b",
+    "milwaukee-m14-bx",
+    "milwaukee-m18-b",
+    "milwaukee-m18-bx",
+    "milwaukee-m18-b6",
+    "milwaukee-m18-fb6",
+    "dewalt-dcb124",
+    "dewalt-dcb2104",
+    "dewalt-dcb204"
+  ],
+  "source_reviews": [
+    {
+      "catalog_id": "milwaukee-m18-hb8",
+      "fragment": "batch5-tool-packs-a.json",
+      "source_ids": [
+        "milwaukee-m18-hb8-page-eu",
+        "milwaukee-lithium-ion-batteries-sds-r8-eu"
+      ],
+      "actual_access": "Official exact product page and actual 12-page SDS opened with web PDF/text reader.",
+      "locator": "Exact Select Model and article number; SDS revision 8 dated 15 Aug 2024, pages 1-2, identification table; page 4 rechargeable battery class.",
+      "finding": "M18 HB8 / 4932471070 is one selected battery. SDS exact designation states nominal 18 V, rated 8.0 Ah and rated 144 Wh, rechargeable lithium-ion pack. HIGH OUTPUT and FORGE are separately named product designs; shared voltage and capacity do not make them retail duplicates.",
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": "No internal topology or cell factory inferred. Rated-capacity test conditions are not supplied. Product-page dynamic specification sections are not required for the explicit SDS values."
+    },
+    {
+      "catalog_id": "milwaukee-m18-fb8",
+      "fragment": "batch5-tool-packs-a.json",
+      "source_ids": [
+        "milwaukee-m18-fb8-page-uk",
+        "milwaukee-lithium-ion-batteries-sds-r8-eu"
+      ],
+      "actual_access": "Official exact product page and actual 12-page SDS opened with web PDF/text reader.",
+      "locator": "Exact Select Model and article number; SDS revision 8 dated 15 Aug 2024, pages 1-2, identification table; page 4 rechargeable battery class.",
+      "finding": "M18 FB8 / 4932492131 is one selected battery. SDS exact designation states nominal 18 V, rated 8.0 Ah and rated 144 Wh, rechargeable lithium-ion pack. HIGH OUTPUT and FORGE are separately named product designs; shared voltage and capacity do not make them retail duplicates.",
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": "No internal topology or cell factory inferred. Rated-capacity test conditions are not supplied. Product-page dynamic specification sections are not required for the explicit SDS values."
+    },
+    {
+      "catalog_id": "dewalt-dcb126",
+      "fragment": "batch5-tool-packs-a.json",
+      "source_ids": [
+        "dewalt-dcb126-page-us",
+        "dewalt-batteries-chargers-manual-r04-us"
+      ],
+      "actual_access": "Web reader returned 403 for both product URLs; official URLs were successfully opened via in-memory HTTPS urllib (HTTP 200, 797248 and 888201 bytes). Official manual HTTPS 200, 1839256 bytes, 12 PDF pages read.",
+      "locator": "Exact page SKU, Includes and Total Number of Batteries; embedded Product PropertyValue Battery Amp Hours; footnote; manual NA407764 r04 08/25 page 12 exact product list and maximum/nominal mapping.",
+      "finding": "DEWALT DCB126 is one battery; generic Battery Amp Hours value supports stated 5000 mAh and rated null. The directly stated nominal value is 10.8 V. Manual covers the exact selected SKU and lithium-ion rechargeable battery packs. DCBP320 page explicitly states pouch-cell technology; polymer chemistry is not inferred. DCBP320-2 alternate-image text is excluded because SKU, Included quantity 1 and manual identify DCBP320.",
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": "No charging compatibility or maintenance rule imported. Capacity is not relabelled rated. Product attributes come from actual official HTML, including structured data; images were not visually inspected."
+    },
+    {
+      "catalog_id": "dewalt-dcbp320",
+      "fragment": "batch5-tool-packs-a.json",
+      "source_ids": [
+        "dewalt-dcbp320-page-us",
+        "dewalt-batteries-chargers-manual-r04-us"
+      ],
+      "actual_access": "Web reader returned 403 for both product URLs; official URLs were successfully opened via in-memory HTTPS urllib (HTTP 200, 797248 and 888201 bytes). Official manual HTTPS 200, 1839256 bytes, 12 PDF pages read.",
+      "locator": "Exact page SKU, Includes and Total Number of Batteries; embedded Product PropertyValue Battery Amp Hours; footnote; manual NA407764 r04 08/25 page 12 exact product list and maximum/nominal mapping.",
+      "finding": "DEWALT DCBP320 is one battery; generic Battery Amp Hours value supports stated 3500 mAh and rated null. The directly stated nominal value is 18 V. Manual covers the exact selected SKU and lithium-ion rechargeable battery packs. DCBP320 page explicitly states pouch-cell technology; polymer chemistry is not inferred. DCBP320-2 alternate-image text is excluded because SKU, Included quantity 1 and manual identify DCBP320.",
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": "No charging compatibility or maintenance rule imported. Capacity is not relabelled rated. Product attributes come from actual official HTML, including structured data; images were not visually inspected."
+    },
+    {
+      "catalog_id": "jauch-lp503759ju-246517",
+      "fragment": "batch5-prototype-jauch.json",
+      "source_ids": [
+        "jauch-lp503759ju-246517-datasheet",
+        "jauch-lithium-polymer-family-page-batch5",
+        "jauch-ju-psds-20240307-batch5"
+      ],
+      "actual_access": "Exact official linked PDFs opened via HTTPS urllib (200; 671928 and 674541 bytes); both pages extracted with pypdf. Official family HTML HTTPS 200, 116231 bytes, relevant row read. Official JU and JH PSDS independently reopened by HTTPS 200 (452974 / 437060 bytes, 10 / 9 pages); page 1 product classification/nominal voltage and page 9 selected-model annex rows read.",
+      "locator": "PDF model/part header, revision 1.1 Aug 2024, capacity/nominal rows page 1; page 2 single-cell rechargeable lithium-ion polymer description; family row.",
+      "finding": "Jauch LP503759JU part 246517: nominal 3.7 V, typical 1350 mAh and minimum 1300 mAh at 0.2C to 3.0 V. PCM single-cell assembly is a pack, with 1S1P describing the explicitly single-cell assembly. The model datasheet single-cell text supplies that topology; the PSDS filename alone is not evidence of a numeric topology. Rated/nominal capacity is absent and stays null. LP503759JU family tooltip wrongly names LP502030JH; exact row/model and retrieved PDF body agree on LP503759JU/246517, so tooltip is not identity evidence.",
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": "No capacity test temperature inferred from cycle-life data. Underlying factory and physical received label are not established."
+    },
+    {
+      "catalog_id": "jauch-lp906090jh-246525",
+      "fragment": "batch5-prototype-jauch.json",
+      "source_ids": [
+        "jauch-lp906090jh-246525-datasheet",
+        "jauch-lithium-polymer-family-page-batch5",
+        "jauch-jh-psds-20240307-batch5"
+      ],
+      "actual_access": "Exact official linked PDFs opened via HTTPS urllib (200; 671928 and 674541 bytes); both pages extracted with pypdf. Official family HTML HTTPS 200, 116231 bytes, relevant row read. Official JU and JH PSDS independently reopened by HTTPS 200 (452974 / 437060 bytes, 10 / 9 pages); page 1 product classification/nominal voltage and page 9 selected-model annex rows read.",
+      "locator": "PDF model/part header, revision 1.1 Aug 2024, capacity/nominal rows page 1; page 2 single-cell rechargeable lithium-ion polymer description; family row.",
+      "finding": "Jauch LP906090JH part 246525: nominal 3.7 V, typical 6020 mAh and minimum 6000 mAh at 0.2C to 3.0 V. PCM single-cell assembly is a pack, with 1S1P describing the explicitly single-cell assembly. The model datasheet single-cell text supplies that topology; the PSDS filename alone is not evidence of a numeric topology. Rated/nominal capacity is absent and stays null. LP503759JU family tooltip wrongly names LP502030JH; exact row/model and retrieved PDF body agree on LP503759JU/246517, so tooltip is not identity evidence.",
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": "No capacity test temperature inferred from cycle-life data. Underlying factory and physical received label are not established."
+    },
+    {
+      "catalog_id": "eemb-lp583759-bare-cell-solder-tab",
+      "fragment": "batch5-prototype-mixed.json",
+      "source_ids": [
+        "eemb-lp583759-bare-cell-page",
+        "eemb-lp583759-specification",
+        "eemb-lithium-polymer-standard-page-batch5"
+      ],
+      "actual_access": "Exact official product pages and standard-family HTML opened; exact PDFs HTTPS 200 (300084 and 473415 bytes), pages 1-3 and 6 actually read.",
+      "locator": "Product Detail nominal rows and Other Information typical/minimum; PDF sections 1, 2.1-2.3 and 2.8 page 3; page 6 general test conditions; family foil case description.",
+      "finding": "EEMB LP583759 is a rechargeable bare solder-tab polymer cell: nominal 3.7 V, nominal 1350 mAh, minimum 1250 mAh, and separately page-labelled typical 1350 mAh. Foil/polymer laminate case is stated by the official family. No plug/PCM pack is substituted. LP583759 printed date 2019-8-50 is invalid and preserved as literal metadata.",
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": "Capacity row 0.2C5A and generic test 23 +/- 2 C are kept with their scope. No correction of invalid date or dimensions from model code."
+    },
+    {
+      "catalog_id": "eemb-lp604040-bare-cell-solder-tab",
+      "fragment": "batch5-prototype-mixed.json",
+      "source_ids": [
+        "eemb-lp604040-bare-cell-page",
+        "eemb-lp604040-specification",
+        "eemb-lithium-polymer-standard-page-batch5"
+      ],
+      "actual_access": "Exact official product pages and standard-family HTML opened; exact PDFs HTTPS 200 (300084 and 473415 bytes), pages 1-3 and 6 actually read.",
+      "locator": "Product Detail nominal rows and Other Information typical/minimum; PDF sections 1, 2.1-2.3 and 2.8 page 3; page 6 general test conditions; family foil case description.",
+      "finding": "EEMB LP604040 is a rechargeable bare solder-tab polymer cell: nominal 3.7 V, nominal 950 mAh, minimum 920 mAh, and separately page-labelled typical 950 mAh. Foil/polymer laminate case is stated by the official family. No plug/PCM pack is substituted. LP583759 printed date 2019-8-50 is invalid and preserved as literal metadata.",
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": "Capacity row 0.2C5A and generic test 23 +/- 2 C are kept with their scope. No correction of invalid date or dimensions from model code."
+    },
+    {
+      "catalog_id": "sparkfun-prt-13855-protected-jst-ph",
+      "fragment": "batch5-prototype-mixed.json",
+      "source_ids": [
+        "sparkfun-prt-13855-official-page",
+        "sparkfun-prt-13855-linked-msds",
+        "sparkfun-lipo-pouch-support-batch5"
+      ],
+      "actual_access": "Actual official current product HTML, linked 7-page MSDS HTTPS 200 (792298 bytes), and official support discussion opened. MSDS pages 1-3 read.",
+      "locator": "PRT-13855 exact SKU and Product Overview; linked MSDS GST160122006S pages 1-2; official support response September 13, 2019.",
+      "finding": "SparkFun PRT-13855 is the selected protected JST-PH single-cell commercial assembly. Current page says nominal 3.7 V; linked DTP605068 MSDS explicitly labels Norminal Capacity 2000 mAh and Lithium Ion Polymer. Nominal capacity 2000 and lithium_ion_polymer are supported. Support text classifies SparkFun LiPo offerings as pouch cells, with cylindrical 18650 exceptions; this is family-level textual classification.",
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": "Factory model in the historical linked report does not prove the current received product factory. Retail SKU stays the brand/model identity. Old MSDS operational/disposal guidance is not imported or endorsed; no maintenance field is populated. The additional single-cell guide is researcher evidence, not a source independently reopened in this audit.",
+      "attached_source_ids": [
+        "sparkfun-prt-13855-official-page",
+        "sparkfun-prt-13855-linked-msds",
+        "sparkfun-lipo-pouch-support-batch5",
+        "sparkfun-single-cell-lipo-guide-batch5"
+      ]
+    },
+    {
+      "catalog_id": "adafruit-1317-150mah-protected-jst-ph",
+      "fragment": "batch5-prototype-mixed.json",
+      "source_ids": [
+        "adafruit-1317-official-page",
+        "adafruit-1317-linked-specification",
+        "adafruit-lipoly-soft-case-guide-batch5"
+      ],
+      "actual_access": "Actual official product HTML and linked five-page PDF HTTPS 200 (258363 bytes), PDF pages 1-3 read; official LiPoly naming guide opened.",
+      "locator": "Product ID 1317; Description and Technical Details; PDF QA.S.0228 edition A 2014-07-28 sections 2 and 3 page 2; family guide soft-shell text.",
+      "finding": "Adafruit 1317 is a protected JST-PH assembly. Exact linked specification identifies LP-402025 with PCM, nominal 150 mAh, minimum 142 mAh and nominal 3.7 V. Source also gives explicit polymer class and rechargeable use. Pouch grouping uses official family soft-shell silvery-bag text; current exact product page alone does not state pouch. Capacity labels remain nominal and minimum.",
+      "decision": "pass_core_with_disclosed_limits",
+      "limitations": "Linked document is historical and current page records a January 2024 cable placement change. Exact received version/factory remains unverified; optional dimensions stay null. General LiPoly shape language is an editorial grouping basis, not a physical inspection."
+    },
+    {
+      "catalog_id": "milwaukee-m14-b",
+      "fragment": "batch5-tool-packs-b.json",
+      "attached_source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b",
+        "milwaukee-accessories-catalogue-2016-17-uk-batch5b"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b",
+        "milwaukee-accessories-catalogue-2016-17-uk-batch5b"
+      ],
+      "actual_access": "Actual official 12-page SDS reopened with PDF/text reader; pages 1-2 exact identification rows read, with chemical/rechargeable class and enclosed-pack description. Historical official UK accessories catalogue HTTPS 200, 8238718 bytes, 192 PDF pages; page 150 battery table actually read.",
+      "locator": "SDS revision 8 dated 15 Aug 2024; pages 1-2 exact Battery designation, Nominal Voltage and Rated Capacity rows; chemistry/rechargeable description and plastic-enclosed pack text. Catalogue page 150 exact model/article table.",
+      "finding": "Milwaukee M14 B: directly labelled nominal 14.4 V and rated 1500 mAh; rechargeable lithium-ion pack. Exact SDS designation supports the core identity. No charge/max voltage was substituted.",
+      "limitations": "No internal topology, received factory, charger compatibility or current market availability inferred. Same-capacity standard, HIGH OUTPUT and FORGE designs retain separate exact product identities. Only source_ids listed here were independently reopened; attached_source_ids also includes the researcher evidence where present."
+    },
+    {
+      "catalog_id": "milwaukee-m14-bx",
+      "fragment": "batch5-tool-packs-b.json",
+      "attached_source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b"
+      ],
+      "actual_access": "Actual official 12-page SDS reopened with PDF/text reader; pages 1-2 exact identification rows read, with chemical/rechargeable class and enclosed-pack description.",
+      "locator": "SDS revision 8 dated 15 Aug 2024; pages 1-2 exact Battery designation, Nominal Voltage and Rated Capacity rows; chemistry/rechargeable description and plastic-enclosed pack text.",
+      "finding": "Milwaukee M14BX: directly labelled nominal 14.4 V and rated 3000 mAh; rechargeable lithium-ion pack. Exact SDS designation supports the core identity. No charge/max voltage was substituted.",
+      "limitations": "No internal topology, received factory, charger compatibility or current market availability inferred. Same-capacity standard, HIGH OUTPUT and FORGE designs retain separate exact product identities. Only source_ids listed here were independently reopened; attached_source_ids also includes the researcher evidence where present."
+    },
+    {
+      "catalog_id": "milwaukee-m18-b",
+      "fragment": "batch5-tool-packs-b.json",
+      "attached_source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b"
+      ],
+      "actual_access": "Actual official 12-page SDS reopened with PDF/text reader; pages 1-2 exact identification rows read, with chemical/rechargeable class and enclosed-pack description.",
+      "locator": "SDS revision 8 dated 15 Aug 2024; pages 1-2 exact Battery designation, Nominal Voltage and Rated Capacity rows; chemistry/rechargeable description and plastic-enclosed pack text.",
+      "finding": "Milwaukee M18B: directly labelled nominal 18 V and rated 1500 mAh; rechargeable lithium-ion pack. Exact SDS designation supports the core identity. No charge/max voltage was substituted.",
+      "limitations": "No internal topology, received factory, charger compatibility or current market availability inferred. Same-capacity standard, HIGH OUTPUT and FORGE designs retain separate exact product identities. Only source_ids listed here were independently reopened; attached_source_ids also includes the researcher evidence where present."
+    },
+    {
+      "catalog_id": "milwaukee-m18-bx",
+      "fragment": "batch5-tool-packs-b.json",
+      "attached_source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b",
+        "milwaukee-m12-18ac-fc-manual-au-batch5b"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b"
+      ],
+      "actual_access": "Actual official 12-page SDS reopened with PDF/text reader; pages 1-2 exact identification rows read, with chemical/rechargeable class and enclosed-pack description.",
+      "locator": "SDS revision 8 dated 15 Aug 2024; pages 1-2 exact Battery designation, Nominal Voltage and Rated Capacity rows; chemistry/rechargeable description and plastic-enclosed pack text.",
+      "finding": "Milwaukee M18 BX: directly labelled nominal 18 V and rated 3000 mAh; rechargeable lithium-ion pack. Exact SDS designation supports the core identity. No charge/max voltage was substituted.",
+      "limitations": "No internal topology, received factory, charger compatibility or current market availability inferred. Same-capacity standard, HIGH OUTPUT and FORGE designs retain separate exact product identities. Only source_ids listed here were independently reopened; attached_source_ids also includes the researcher evidence where present."
+    },
+    {
+      "catalog_id": "milwaukee-m18-b6",
+      "fragment": "batch5-tool-packs-b.json",
+      "attached_source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b",
+        "milwaukee-accessories-catalogue-2016-17-uk-batch5b"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b",
+        "milwaukee-accessories-catalogue-2016-17-uk-batch5b"
+      ],
+      "actual_access": "Actual official 12-page SDS reopened with PDF/text reader; pages 1-2 exact identification rows read, with chemical/rechargeable class and enclosed-pack description. Historical official UK accessories catalogue HTTPS 200, 8238718 bytes, 192 PDF pages; page 150 battery table actually read.",
+      "locator": "SDS revision 8 dated 15 Aug 2024; pages 1-2 exact Battery designation, Nominal Voltage and Rated Capacity rows; chemistry/rechargeable description and plastic-enclosed pack text. Catalogue page 150 exact model/article table.",
+      "finding": "Milwaukee M18 B6: directly labelled nominal 18 V and rated 6000 mAh; rechargeable lithium-ion pack. Exact SDS designation supports the core identity. No charge/max voltage was substituted.",
+      "limitations": "No internal topology, received factory, charger compatibility or current market availability inferred. Same-capacity standard, HIGH OUTPUT and FORGE designs retain separate exact product identities. Only source_ids listed here were independently reopened; attached_source_ids also includes the researcher evidence where present."
+    },
+    {
+      "catalog_id": "milwaukee-m18-fb6",
+      "fragment": "batch5-tool-packs-b.json",
+      "attached_source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b",
+        "milwaukee-m18-fb6-page-eu-batch5b"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "source_ids": [
+        "milwaukee-lithium-ion-batteries-sds-r8-batch5b",
+        "milwaukee-m18-fb6-page-eu-batch5b"
+      ],
+      "actual_access": "Actual official 12-page SDS reopened with PDF/text reader; pages 1-2 exact identification rows read, with chemical/rechargeable class and enclosed-pack description. Exact EU product HTML HTTPS 200, 1487665 bytes; Select Model M18 FB6, article 4932492533 and quantity 1 read.",
+      "locator": "SDS revision 8 dated 15 Aug 2024; pages 1-2 exact Battery designation, Nominal Voltage and Rated Capacity rows; chemistry/rechargeable description and plastic-enclosed pack text. Exact EU Select Model, article and selected battery quantity.",
+      "finding": "Milwaukee M18 FB6: directly labelled nominal 18 V and rated 6000 mAh; rechargeable lithium-ion pack. Exact SDS designation supports the core identity. No charge/max voltage was substituted.",
+      "limitations": "No internal topology, received factory, charger compatibility or current market availability inferred. Same-capacity standard, HIGH OUTPUT and FORGE designs retain separate exact product identities. Only source_ids listed here were independently reopened; attached_source_ids also includes the researcher evidence where present."
+    },
+    {
+      "catalog_id": "dewalt-dcb124",
+      "fragment": "batch5-tool-packs-b.json",
+      "attached_source_ids": [
+        "dewalt-dcb124-page-us-batch5b",
+        "dewalt-batteries-chargers-manual-r04-us-batch5b"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "source_ids": [
+        "dewalt-dcb124-page-us-batch5b",
+        "dewalt-batteries-chargers-manual-r04-us-batch5b"
+      ],
+      "actual_access": "Exact official product HTML independently opened by in-memory HTTPS urllib: HTTP 200, 855740 bytes. Exact SKU, quantity/Includes, nominal footnote and embedded Product PropertyValue Battery Amp Hours read. Shared official NA407764 r04 08/25 manual was independently opened: HTTP 200, 1839256 bytes, 12 pages; page 12 exact battery list/maximum-versus-nominal mapping and rechargeable lithium-ion pack description read.",
+      "locator": "Exact SKU, selected quantity 1, Includes, Battery Amp Hours structured attribute, nominal-voltage footnote; manual page 12 exact SKU list and maximum/nominal voltage mapping.",
+      "finding": "DEWALT DCB124: directly stated nominal 10.8 V and generic Battery Amp Hours corresponding to stated 3000 mAh. Rated capacity remains null. DCB204 standard, DCB2104 tabless and other exact named product designs are not counted as connector or retail-quantity variants.",
+      "limitations": "Capacity retains generic stated qualification; full capacity test conditions and factory are unknown. No polymer chemistry inferred from cell-design marketing. Images were not visually inspected and no charging compatibility is imported."
+    },
+    {
+      "catalog_id": "dewalt-dcb2104",
+      "fragment": "batch5-tool-packs-b.json",
+      "attached_source_ids": [
+        "dewalt-dcb2104-page-us-batch5b",
+        "dewalt-batteries-chargers-manual-r04-us-batch5b"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "source_ids": [
+        "dewalt-dcb2104-page-us-batch5b",
+        "dewalt-batteries-chargers-manual-r04-us-batch5b"
+      ],
+      "actual_access": "Exact official product HTML independently opened by in-memory HTTPS urllib: HTTP 200, 882106 bytes. Exact SKU, quantity/Includes, nominal footnote and embedded Product PropertyValue Battery Amp Hours read. Shared official NA407764 r04 08/25 manual was independently opened: HTTP 200, 1839256 bytes, 12 pages; page 12 exact battery list/maximum-versus-nominal mapping and rechargeable lithium-ion pack description read.",
+      "locator": "Exact SKU, selected quantity 1, Includes, Battery Amp Hours structured attribute, nominal-voltage footnote; manual page 12 exact SKU list and maximum/nominal voltage mapping.",
+      "finding": "DEWALT DCB2104: directly stated nominal 18 V and generic Battery Amp Hours corresponding to stated 4000 mAh. Rated capacity remains null. DCB204 standard, DCB2104 tabless and other exact named product designs are not counted as connector or retail-quantity variants.",
+      "limitations": "Capacity retains generic stated qualification; full capacity test conditions and factory are unknown. No polymer chemistry inferred from cell-design marketing. Images were not visually inspected and no charging compatibility is imported."
+    },
+    {
+      "catalog_id": "dewalt-dcb204",
+      "fragment": "batch5-tool-packs-b.json",
+      "attached_source_ids": [
+        "dewalt-dcb204-page-us-batch5b",
+        "dewalt-batteries-chargers-manual-r04-us-batch5b"
+      ],
+      "decision": "pass_core_with_disclosed_limits",
+      "source_ids": [
+        "dewalt-dcb204-page-us-batch5b",
+        "dewalt-batteries-chargers-manual-r04-us-batch5b"
+      ],
+      "actual_access": "Exact official product HTML independently opened by in-memory HTTPS urllib: HTTP 200, 743131 bytes. Exact SKU, quantity/Includes, nominal footnote and embedded Product PropertyValue Battery Amp Hours read. Shared official NA407764 r04 08/25 manual was independently opened: HTTP 200, 1839256 bytes, 12 pages; page 12 exact battery list/maximum-versus-nominal mapping and rechargeable lithium-ion pack description read.",
+      "locator": "Exact SKU, selected quantity 1, Includes, Battery Amp Hours structured attribute, nominal-voltage footnote; manual page 12 exact SKU list and maximum/nominal voltage mapping.",
+      "finding": "DEWALT DCB204: directly stated nominal 18 V and generic Battery Amp Hours corresponding to stated 4000 mAh. Rated capacity remains null. DCB204 standard, DCB2104 tabless and other exact named product designs are not counted as connector or retail-quantity variants.",
+      "limitations": "Capacity retains generic stated qualification; full capacity test conditions and factory are unknown. No polymer chemistry inferred from cell-design marketing. Images were not visually inspected and no charging compatibility is imported."
+    }
+  ],
+  "findings": [
+    "Nineteen full-core independent samples cover Milwaukee, DEWALT, Jauch, EEMB, SparkFun and Adafruit, PDF and HTML sources, rated/nominal/minimum/typical/stated capacity qualifications. Historical battery identities were explicitly checked without claiming current availability.",
+    "Resolved tooltip and alternate-image identity metadata issues were reopened; unsupported specifications remain null.",
+    "Source-access failures are reported separately from successful alternative HTTPS reads. Automatic schema validation is not the independent factual review."
+  ],
+  "limitations": [
+    "Public product research does not establish school stock, procurement coverage, charger/device compatibility or the version of a received physical battery.",
+    "Source statements and manufacturer-family descriptions retain their exact scope."
+  ]
+}

@@ -1,0 +1,950 @@
+{
+  "sources": [
+    {
+      "source_id": "energizer-e91-e91na0323",
+      "url": "https://data.energizer.com/pdfs/e91_max_na.pdf",
+      "title": "Energizer E91 Product Datasheet",
+      "publisher": "Energizer",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "E91NA0323",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "E91 AA flat-contact cell described in source edition E91NA0323"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Page 1: Specifications; milliamp-hours chart; footer form number."
+    },
+    {
+      "source_id": "energizer-e92-ebc1103m",
+      "url": "https://data.energizer.com/pdfs/e92.pdf",
+      "title": "Energizer E92 Product Datasheet",
+      "publisher": "Energizer",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "EBC - 1103-M",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "E92 AAA flat-contact cell described in source edition EBC - 1103-M"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Page 1: Specifications; Industry Standard Dimensions; capacity chart; footer form number."
+    },
+    {
+      "source_id": "energizer-l91-l91gl1222",
+      "url": "https://data.energizer.com/pdfs/l91.pdf",
+      "title": "Energizer L91 Product Datasheet",
+      "publisher": "Energizer",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "L91GL1222",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "L91 Ultimate Lithium AA cell described in edition L91GL1222"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Page 1: Specifications and constant-current capacity curves. Page 2: performance curves. Footer form number on both pages."
+    },
+    {
+      "source_id": "energizer-l92-l92gl0725",
+      "url": "https://data.energizer.com/pdfs/L92GL0725.pdf",
+      "title": "Energizer L92 Product Datasheet",
+      "publisher": "Energizer",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "L92GL0725",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "L92 Ultimate Lithium AAA cell described in edition L92GL0725"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Page 1: Specifications, two dimension drawings and constant-current capacity curves. Page 2: performance curves. Footer form number on both pages."
+    },
+    {
+      "source_id": "energizer-l92-l92gl1222",
+      "url": "https://data.energizer.com/pdfs/l92.pdf",
+      "title": "Energizer L92 Product Datasheet",
+      "publisher": "Energizer",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "L92GL1222",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "L92 Ultimate Lithium AAA cell described in edition L92GL1222"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Page 1: earlier specification edition used only to record an edition conflict; not treated as a separate product variant."
+    },
+    {
+      "source_id": "energizer-glossary-primary",
+      "url": "https://data.energizer.com/battery-glossary-faq/",
+      "title": "FAQs/Glossary",
+      "publisher": "Energizer",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "Energizer alkaline primary cells E91 and E92; classification terminology only"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Glossary entries Alkaline Battery and Primary. Combined with the model-specific alkaline classification, these explain rechargeable:false."
+    },
+    {
+      "source_id": "energizer-lifes2-handbook-12004a",
+      "url": "https://data.energizer.com/pdfs/lithiuml91l92_appman.pdf",
+      "title": "Cylindrical Primary Lithium Handbook and Application Manual: Lithium/Iron Disulfide",
+      "publisher": "Energizer",
+      "source_type": "manufacturer_manual",
+      "document_version": "Form No. 12004-A",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "Energizer cylindrical Li/FeS2 AA and AAA cells, including L91 and L92; chemistry-level rechargeable status only"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Page 16, Testing / Care / Warnings: the charging bullet identifies Li/FeS2 batteries as non-rechargeable. Older manual limits are not imported as current model ratings."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "energizer-e91-standard-flat-contact",
+      "manufacturer": null,
+      "brand": "Energizer",
+      "model": "E91",
+      "variant_key": "standard-flat-contact",
+      "variant_description": "E91 AA flat-contact cell; reference source specification edition E91NA0323.",
+      "aliases": [
+        {
+          "value": "E91",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "AA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "IEC-LR6",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "ANSI-15A",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "alkaline_zinc_manganese_dioxide",
+      "rechargeable": false,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AA",
+        "description": "AA cell size; chemistry is stored separately."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Flat contact",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": 23,
+      "maintenance_notes": "Non-rechargeable cell. Do not charge. This note is a manufacturer classification, not an automatically enabled maintenance plan.",
+      "source_ids": [
+        "energizer-e91-e91na0323",
+        "energizer-glossary-primary"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, model heading",
+            "observation": "Heading identifies Energizer."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, model heading",
+            "observation": "Exact model is E91."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, model heading, size and Specifications",
+            "observation": "Identifies the E91 AA cell described by this edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, size heading and Designation",
+            "observation": "Model, AA, IEC-LR6 and ANSI-15A appear. Size and standard designations are generic search terms, not exact model matches."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, Chemical System",
+            "observation": "Specifies zinc-manganese dioxide alkaline chemistry."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, model Specifications and single-cell dimension drawing",
+            "observation": "Describes one physical cell, not a connected pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, size heading",
+            "observation": "Identifies the AA size."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, Nominal Voltage",
+            "observation": "Specified nominal voltage is 1.5 V."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, Typical Weight",
+            "observation": "Published typical mass is 23 g; it is not an actual asset measurement."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "Only discharge-conditioned capacity curves or bars are supplied; no single scalar rated capacity is stated."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "No single scalar typical capacity is stated."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "No single scalar minimum capacity is stated."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "A scalar capacity rating basis is not stated."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "Chart test conditions exist, but there is no scalar capacity rating to which a capacity test condition can be attached."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, Classification",
+            "observation": "The model is classified as alkaline."
+          },
+          {
+            "source_id": "energizer-glossary-primary",
+            "locator": "Glossary, Alkaline Battery and Primary entries",
+            "observation": "Manufacturer definitions classify alkaline as primary and primary as not designed for recharging."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "energizer-e91-e91na0323",
+            "locator": "Page 1, Terminal",
+            "observation": "Terminal style is flat contact; no external cable connector or polarity specification is imported."
+          }
+        ],
+        "/maintenance_notes": [
+          {
+            "source_id": "energizer-glossary-primary",
+            "locator": "Glossary, Primary entry",
+            "observation": "Primary batteries are not designed to be recharged."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact legal manufacturing entity is not established by the selected model datasheets; manufacturer is null while brand is verified.",
+        "No single rated, typical or minimum capacity is stated. All capacity scalars and capacity_test_conditions are null; no chart value has been digitized.",
+        "Energy in Wh and an explicit series/parallel configuration are not stated in the selected sources.",
+        "No asset manufacture date, age, condition, location, owner or maintenance interval can be inferred from this product reference.",
+        "Dimensions are not populated from the drawing in this seed record; physical fit remains subject to the manufacturer drawing and the exact received variant."
+      ],
+      "notes": [
+        "Public reference product only; this is neither evidence of school stock nor a purchase recommendation.",
+        "The exact received label, regional edition and terminal variant must be checked before prefill.",
+        "Generic size, standard designation, voltage and appearance do not establish an exact model match.",
+        "Published capacity performance depends on load and cutoff voltage; capacity curves are retained as contextual source evidence only.",
+        "Mass is a published typical value and must not be presented as a measured asset value."
+      ]
+    },
+    {
+      "catalog_id": "energizer-e92-standard-flat-contact",
+      "manufacturer": null,
+      "brand": "Energizer",
+      "model": "E92",
+      "variant_key": "standard-flat-contact",
+      "variant_description": "E92 AAA flat-contact cell; reference source specification edition EBC - 1103-M.",
+      "aliases": [
+        {
+          "value": "E92",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "AAA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "IEC-LR03",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "ANSI-24A",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "alkaline_zinc_manganese_dioxide",
+      "rechargeable": false,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AAA",
+        "description": "AAA cell size; chemistry is stored separately."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Flat contact",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": 10.5,
+        "length": null,
+        "width": null,
+        "height": 44.5,
+        "basis": "Maximum diameter and overall height from the manufacturer dimension drawing; not measured nominal dimensions."
+      },
+      "mass_g": 11.5,
+      "maintenance_notes": "Non-rechargeable cell. Do not charge. This note is a manufacturer classification, not an automatically enabled maintenance plan.",
+      "source_ids": [
+        "energizer-e92-ebc1103m",
+        "energizer-glossary-primary"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, model heading",
+            "observation": "Heading identifies Energizer."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, model heading",
+            "observation": "Exact model is E92."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, model heading, size and Specifications",
+            "observation": "Identifies the E92 AAA cell described by this edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, size heading and Designation",
+            "observation": "Model, AAA, IEC-LR03 and ANSI-24A appear. Size and standard designations are generic search terms, not exact model matches."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Chemical System",
+            "observation": "Specifies zinc-manganese dioxide alkaline chemistry."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, model Specifications and single-cell dimension drawing",
+            "observation": "Describes one physical cell, not a connected pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, size heading",
+            "observation": "Identifies the AAA size."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Nominal Voltage",
+            "observation": "Specified nominal voltage is 1.5 V."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Typical Weight",
+            "observation": "Published typical mass is 11.5 g; it is not an actual asset measurement."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "Only discharge-conditioned capacity curves or bars are supplied; no single scalar rated capacity is stated."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "No single scalar typical capacity is stated."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "No single scalar minimum capacity is stated."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "A scalar capacity rating basis is not stated."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "Chart test conditions exist, but there is no scalar capacity rating to which a capacity test condition can be attached."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Classification",
+            "observation": "The model is classified as alkaline."
+          },
+          {
+            "source_id": "energizer-glossary-primary",
+            "locator": "Glossary, Alkaline Battery and Primary entries",
+            "observation": "Manufacturer definitions classify alkaline as primary and primary as not designed for recharging."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Terminal",
+            "observation": "Terminal style is flat contact; no external cable connector or polarity specification is imported."
+          }
+        ],
+        "/maintenance_notes": [
+          {
+            "source_id": "energizer-glossary-primary",
+            "locator": "Glossary, Primary entry",
+            "observation": "Primary batteries are not designed to be recharged."
+          }
+        ],
+        "/dimensions_mm/diameter": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Industry Standard Dimensions drawing",
+            "observation": "Maximum outside diameter is 10.50 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Industry Standard Dimensions drawing",
+            "observation": "Maximum overall cell height is 44.50 mm."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "energizer-e92-ebc1103m",
+            "locator": "Page 1, Industry Standard Dimensions drawing",
+            "observation": "Drawing limits are reference envelopes rather than measured asset dimensions."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact legal manufacturing entity is not established by the selected model datasheets; manufacturer is null while brand is verified.",
+        "No single rated, typical or minimum capacity is stated. All capacity scalars and capacity_test_conditions are null; no chart value has been digitized.",
+        "Energy in Wh and an explicit series/parallel configuration are not stated in the selected sources.",
+        "No asset manufacture date, age, condition, location, owner or maintenance interval can be inferred from this product reference."
+      ],
+      "notes": [
+        "Public reference product only; this is neither evidence of school stock nor a purchase recommendation.",
+        "The exact received label, regional edition and terminal variant must be checked before prefill.",
+        "Generic size, standard designation, voltage and appearance do not establish an exact model match.",
+        "Published capacity performance depends on load and cutoff voltage; capacity curves are retained as contextual source evidence only.",
+        "Mass is a published typical value and must not be presented as a measured asset value."
+      ]
+    },
+    {
+      "catalog_id": "energizer-l91-standard-cell",
+      "manufacturer": null,
+      "brand": "Energizer",
+      "model": "L91",
+      "variant_key": "standard-cell",
+      "variant_description": "L91 Ultimate Lithium AA cell; reference specification edition L91GL1222.",
+      "aliases": [
+        {
+          "value": "L91",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "AA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "IEC-FR14505 (FR6)",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "ANSI 15-LF",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "Ultimate Lithium",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_iron_disulfide",
+      "rechargeable": false,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AA",
+        "description": "AA cell size; chemistry is stored separately."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": 15,
+      "maintenance_notes": "Non-rechargeable cell. Do not charge. This note is a manufacturer classification, not an automatically enabled maintenance plan.",
+      "source_ids": [
+        "energizer-l91-l91gl1222",
+        "energizer-lifes2-handbook-12004a"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, model heading",
+            "observation": "Heading identifies Energizer."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, model heading",
+            "observation": "Exact model is L91."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, model heading, size and Specifications",
+            "observation": "Identifies the L91 AA cell described by this edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, size heading and Designation",
+            "observation": "Model, AA, IEC-FR14505 (FR6) and ANSI 15-LF appear. Size and standard designations are generic search terms, not exact model matches."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, Chemical System",
+            "observation": "Specifies lithium/iron disulfide chemistry."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, Max Discharge (single battery only) and cell Specifications",
+            "observation": "Describes one physical cell, not a connected pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, size heading",
+            "observation": "Identifies the AA size."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, Nominal Voltage",
+            "observation": "Specified nominal voltage is 1.5 V."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, Typical Weight",
+            "observation": "Published typical mass is 15 g; it is not an actual asset measurement."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "Only discharge-conditioned capacity curves or bars are supplied; no single scalar rated capacity is stated."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "No single scalar typical capacity is stated."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "No single scalar minimum capacity is stated."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "A scalar capacity rating basis is not stated."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "energizer-l91-l91gl1222",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "Chart test conditions exist, but there is no scalar capacity rating to which a capacity test condition can be attached."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "energizer-lifes2-handbook-12004a",
+            "locator": "Page 16, Testing / Care / Warnings, charging bullet",
+            "observation": "Manufacturer says Li/FeS2 batteries are not designed for recharging."
+          }
+        ],
+        "/maintenance_notes": [
+          {
+            "source_id": "energizer-lifes2-handbook-12004a",
+            "locator": "Page 16, Testing / Care / Warnings, charging bullet",
+            "observation": "Manufacturer instructs users to avoid charging these Li/FeS2 batteries."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The exact legal manufacturing entity is not established by the selected model datasheets; manufacturer is null while brand is verified.",
+        "No single rated, typical or minimum capacity is stated. All capacity scalars and capacity_test_conditions are null; no chart value has been digitized.",
+        "Energy in Wh and an explicit series/parallel configuration are not stated in the selected sources.",
+        "No asset manufacture date, age, condition, location, owner or maintenance interval can be inferred from this product reference.",
+        "Dimensions are not populated from the drawing in this seed record; physical fit remains subject to the manufacturer drawing and the exact received variant.",
+        "Connector and contact polarity details are not populated for this cell variant."
+      ],
+      "notes": [
+        "Public reference product only; this is neither evidence of school stock nor a purchase recommendation.",
+        "The exact received label, regional edition and terminal variant must be checked before prefill.",
+        "Generic size, standard designation, voltage and appearance do not establish an exact model match.",
+        "Published capacity performance depends on load and cutoff voltage; capacity curves are retained as contextual source evidence only.",
+        "Mass is a published typical value and must not be presented as a measured asset value."
+      ]
+    },
+    {
+      "catalog_id": "energizer-l92-standard-cell",
+      "manufacturer": null,
+      "brand": "Energizer",
+      "model": "L92",
+      "variant_key": "standard-cell",
+      "variant_description": "L92 Ultimate Lithium AAA cell; reference specification edition L92GL0725.",
+      "aliases": [
+        {
+          "value": "L92",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "AAA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "IEC-FR03",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "ANSI 24-LF",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "Ultimate Lithium",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "chemistry": "lithium_iron_disulfide",
+      "rechargeable": false,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AAA",
+        "description": "AAA cell size; chemistry is stored separately."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": 10.5,
+        "length": null,
+        "width": null,
+        "height": 44.5,
+        "basis": "Maximum diameter and overall height, common to both manufacturer drawings on page 1; minimum drawing dimensions are not used."
+      },
+      "mass_g": 7.6,
+      "maintenance_notes": "Non-rechargeable cell. Do not charge. This note is a manufacturer classification, not an automatically enabled maintenance plan.",
+      "source_ids": [
+        "energizer-l92-l92gl0725",
+        "energizer-lifes2-handbook-12004a",
+        "energizer-l92-l92gl1222"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, model heading",
+            "observation": "Heading identifies Energizer."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, model heading",
+            "observation": "Exact model is L92."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, model heading, size and Specifications",
+            "observation": "Identifies the L92 AAA cell described by this edition."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, size heading and Designation",
+            "observation": "Model, AAA, IEC-FR03 and ANSI 24-LF appear. Size and standard designations are generic search terms, not exact model matches."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Chemical System",
+            "observation": "Specifies lithium/iron disulfide chemistry."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Max Discharge (single battery only) and cell Specifications",
+            "observation": "Describes one physical cell, not a connected pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, size heading",
+            "observation": "Identifies the AAA size."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Nominal Voltage",
+            "observation": "Specified nominal voltage is 1.5 V."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Typical Weight",
+            "observation": "Published typical mass is 7.6 g; it is not an actual asset measurement."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "Only discharge-conditioned capacity curves or bars are supplied; no single scalar rated capacity is stated."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "No single scalar typical capacity is stated."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "No single scalar minimum capacity is stated."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "A scalar capacity rating basis is not stated."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Milliamp-Hours Capacity chart",
+            "observation": "Chart test conditions exist, but there is no scalar capacity rating to which a capacity test condition can be attached."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "energizer-lifes2-handbook-12004a",
+            "locator": "Page 16, Testing / Care / Warnings, charging bullet",
+            "observation": "Manufacturer says Li/FeS2 batteries are not designed for recharging."
+          }
+        ],
+        "/maintenance_notes": [
+          {
+            "source_id": "energizer-lifes2-handbook-12004a",
+            "locator": "Page 16, Testing / Care / Warnings, charging bullet",
+            "observation": "Manufacturer instructs users to avoid charging these Li/FeS2 batteries."
+          }
+        ],
+        "/dimensions_mm/diameter": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Industry Standard Dimensions drawing",
+            "observation": "Maximum outside diameter is 10.50 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Industry Standard Dimensions drawing",
+            "observation": "Maximum overall cell height is 44.50 mm."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "energizer-l92-l92gl0725",
+            "locator": "Page 1, Industry Standard Dimensions drawing",
+            "observation": "Drawing limits are reference envelopes rather than measured asset dimensions."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [
+        "L92GL1222 lists typical internal resistance as 140-180 milliohms; L92GL0725 lists 140-300 milliohms. Internal resistance is omitted, so neither edition is silently used as a current operational limit.",
+        "Page 1 of L92GL0725 includes two drawings with different minimum diameter and height limits. Only the common maximum 10.50 mm diameter and 44.50 mm overall height are recorded; minimum limits remain unresolved."
+      ],
+      "unknowns": [
+        "The exact legal manufacturing entity is not established by the selected model datasheets; manufacturer is null while brand is verified.",
+        "No single rated, typical or minimum capacity is stated. All capacity scalars and capacity_test_conditions are null; no chart value has been digitized.",
+        "Energy in Wh and an explicit series/parallel configuration are not stated in the selected sources.",
+        "No asset manufacture date, age, condition, location, owner or maintenance interval can be inferred from this product reference.",
+        "Connector and contact polarity details are not populated for this cell variant."
+      ],
+      "notes": [
+        "Public reference product only; this is neither evidence of school stock nor a purchase recommendation.",
+        "The exact received label, regional edition and terminal variant must be checked before prefill.",
+        "Generic size, standard designation, voltage and appearance do not establish an exact model match.",
+        "Published capacity performance depends on load and cutoff voltage; capacity curves are retained as contextual source evidence only.",
+        "Mass is a published typical value and must not be presented as a measured asset value."
+      ]
+    }
+  ]
+}

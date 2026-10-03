@@ -1,0 +1,1753 @@
+{
+  "sources": [
+    {
+      "source_id": "makita-cf101d-dcf102-manual-hk",
+      "url": "https://www.makita.com.hk/upload/product/560/file_en/5b70f516e89fc.pdf",
+      "title": "CF101D / DCF102 Cordless Fan Instruction Manual",
+      "publisher": "Makita Corporation / Makita Hong Kong",
+      "source_type": "manufacturer_manual",
+      "document_version": "DCF102-9L(Non-CE)-1807",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "BL1815N: the exact battery cartridge in the specifications table.",
+        "BL1820B: the exact battery cartridge in the specifications table.",
+        "BL1830B: the exact battery cartridge in the specifications table.",
+        "BL1840B: the exact battery cartridge in the specifications table.",
+        "BL1850B: the exact battery cartridge in the specifications table.",
+        "BL1860B: the exact battery cartridge in the specifications table.",
+        "BL1430B: the exact battery cartridge in the specifications table.",
+        "BL1440: the exact battery cartridge in the specifications table."
+      ],
+      "access_status": "opened",
+      "locator_notes": "PDF pages 7, 14 and 21: battery-cartridge specifications. The Portuguese and Spanish versions explicitly label the battery-voltage rows nominal; the English equivalent says Rated voltage. Read the battery-model row, not fan dimensions, AC-adapter voltage or tool model identity. Pages 5-8 support rechargeable lithium-ion cartridge terminology and the slide-in interface. PDF page 68 supplies the document identifier and publisher. Screenshot retrieval timed out; the actual PDF text was opened and read."
+    },
+    {
+      "source_id": "makita-dmr057-mr010g-manual-hk",
+      "url": "https://www.makita.com.hk/upload/product/979/file_en/6492aa8242412.pdf",
+      "title": "DMR057 / MR010G Cordless Radio with Lantern Instruction Manual",
+      "publisher": "Makita Corporation / Makita Hong Kong",
+      "source_type": "manufacturer_manual",
+      "document_version": "DMR057-EN-CS-CT-KO-TH-2203; 3A81f05Z50000 (2022.06.02)",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "BL1815N: an exact LXT battery-pack row in Operating Time.",
+        "BL1820B: an exact LXT battery-pack row in Operating Time.",
+        "BL1830B: an exact LXT battery-pack row in Operating Time.",
+        "BL1840B: an exact LXT battery-pack row in Operating Time.",
+        "BL1850B: an exact LXT battery-pack row in Operating Time.",
+        "BL1860B: an exact LXT battery-pack row in Operating Time.",
+        "BL1430B: an exact LXT battery-pack row in Operating Time.",
+        "BL1440: an exact LXT battery-pack row in Operating Time."
+      ],
+      "access_status": "opened",
+      "locator_notes": "PDF page 7: Operating Time labels the listed units battery packs and gives exact battery cartridge IDs, LXT platform and Battery capacity. PDF pages 5-6 support rechargeability and lithium-ion chemistry; page 8 describes the sliding cartridge interface. PDF page 40 supplies version identifiers and publication date. Runtime estimates and radio dimensions are excluded. The XGT rows are not imported into this batch. Screenshot retrieval timed out; the actual PDF text was opened and read."
+    },
+    {
+      "source_id": "makita-lxt18-battery-comparison-nz",
+      "url": "https://www.makita.co.nz/products/compare/batteries-18v-li-ion/",
+      "title": "Makita - Compare - Batteries & Chargers - 18V LXT",
+      "publisher": "Makita New Zealand Ltd.",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "BL1815N: the exact single battery-model column, excluding other capacity models and kits.",
+        "BL1820B: the exact single battery-model column, excluding other capacity models and kits.",
+        "BL1830B: the exact single battery-model column, excluding other capacity models and kits.",
+        "BL1840B: the exact single battery-model column, excluding other capacity models and kits.",
+        "BL1850B: the exact single battery-model column, excluding other capacity models and kits.",
+        "BL1860B: the exact single battery-model column, excluding other capacity models and kits."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Opened comparison table: exact model-column headings, Lithium-Ion battery descriptions, Battery Platform, Battery Voltage, Battery Capacity and charge-time rows. Only the six selected 18 V LXT columns apply. The 18 V label is corroborative; nominal voltage is taken from explicitly nominal official evidence. Part numbers, Max Energy Capacity, dimensions, weights and charging schedules are not curated."
+    },
+    {
+      "source_id": "makita-bl1430b-page-us",
+      "url": "https://makitatools.com/products/details/BL1430B",
+      "title": "Makita USA - Product Details - BL1430B",
+      "publisher": "Makita U.S.A., Inc.",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "BL1430B: single 14.4 V lithium-ion 3.0 Ah slide-style battery; other model IDs and packaging quantities are excluded."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual product HTML opened with HTTP 200 using an in-memory urllib reader after the browser text fetch timed out. Read product heading, About, Features and technical specifications: Battery Capacity (Ah), Battery Type, Voltage and Package Quantity. Slide-style interface and the outer case are explicit. Shipping weight and packaged dimensions are not battery dimensions and are excluded."
+    },
+    {
+      "source_id": "makita-bl1830b-datasheet-uk",
+      "url": "https://www.makitauk.com/data/sr/productinfo/generated/bl1830b_2.pdf",
+      "title": "BL1830B - Battery LXT",
+      "publisher": "Makita UK Ltd.",
+      "source_type": "manufacturer_datasheet",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BL1830B: the exact LXT lithium-ion battery cartridge in the product heading and technical specifications."
+      ],
+      "access_status": "opened",
+      "locator_notes": "PDF page 1: exact model, Li-ion heading, Nominal Battery Voltage 18 V, Battery Capacity and charging description. Capacity is generic, without a separate rated, minimum or typical qualifier. Optional accessories on page 2 are excluded. Energy, dimensions and mass are not curated. The successful full specification read occurred on 2026-10-02 in Australia/Sydney; later fetches were intermittent."
+    },
+    {
+      "source_id": "makita-bl1840b-datasheet-uk",
+      "url": "https://www.makitauk.com/data/sr/productinfo/generated/bl1840b_2.pdf",
+      "title": "BL1840B - Battery LXT",
+      "publisher": "Makita UK Ltd.",
+      "source_type": "manufacturer_datasheet",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BL1840B: the exact LXT lithium-ion battery cartridge in the product heading and technical specifications."
+      ],
+      "access_status": "opened",
+      "locator_notes": "PDF page 1: exact model, Li-ion heading, Nominal Battery Voltage 18 V, Battery Capacity and charging description. Capacity is generic, without a separate rated, minimum or typical qualifier. Optional accessories on page 2 are excluded. Energy, dimensions and mass are not curated. The successful full specification read occurred on 2026-10-02 in Australia/Sydney; later fetches were intermittent."
+    },
+    {
+      "source_id": "makita-bl1850b-datasheet-uk",
+      "url": "https://www.makitauk.com/data/sr/productinfo/generated/bl1850b_2.pdf",
+      "title": "BL1850B - Battery LXT",
+      "publisher": "Makita UK Ltd.",
+      "source_type": "manufacturer_datasheet",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BL1850B: the exact LXT lithium-ion battery cartridge in the product heading and technical specifications."
+      ],
+      "access_status": "opened",
+      "locator_notes": "PDF page 1: exact model, Li-ion heading, Nominal Battery Voltage 18 V, Battery Capacity and charging description. Capacity is generic, without a separate rated, minimum or typical qualifier. Optional accessories on page 2 are excluded. Energy, dimensions and mass are not curated. The successful full specification read occurred on 2026-10-02 in Australia/Sydney; later fetches were intermittent."
+    },
+    {
+      "source_id": "makita-bl1860b-datasheet-uk",
+      "url": "https://www.makitauk.com/data/sr/productinfo/generated/bl1860b_2.pdf",
+      "title": "BL1860B - Battery LXT",
+      "publisher": "Makita UK Ltd.",
+      "source_type": "manufacturer_datasheet",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BL1860B: the exact LXT lithium-ion battery cartridge in the product heading and technical specifications."
+      ],
+      "access_status": "opened",
+      "locator_notes": "PDF page 1: exact model, Li-ion heading, Nominal Battery Voltage 18 V, Battery Capacity and charging description. Capacity is generic, without a separate rated, minimum or typical qualifier. Optional accessories on page 2 are excluded. Energy, dimensions and mass are not curated. The successful full specification read occurred on 2026-10-02 in Australia/Sydney; later fetches were intermittent."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "makita-bl1815n",
+      "manufacturer": null,
+      "brand": "Makita",
+      "model": "BL1815N",
+      "variant_key": "lxt-18v-single-battery",
+      "variant_description": "LXT 18 V 1.5 Ah removable lithium-ion battery cartridge, exact model BL1815N; single battery reference.",
+      "suggested_display_name": "Makita BL1815N",
+      "aliases": [
+        {
+          "value": "BL1815N",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "tool_battery_cartridge",
+        "description": "Removable slide-in tool battery cartridge; internal cell geometry is not specified."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 1500,
+      "stated_capacity_label": "Battery capacity",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Makita LXT sliding battery cartridge interface; contact pin assignment is unspecified.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "makita-lxt18-battery-comparison-nz",
+        "makita-dmr057-mr010g-manual-hk",
+        "makita-cf101d-dcf102-manual-hk"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1815N column and product description",
+            "observation": "Makita identifies the BL1815N battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1815N column and product description",
+            "observation": "The battery model is exactly BL1815N."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1815N row",
+            "observation": "LXT 18 V battery cartridge; the selected model is not a multi-battery retail kit."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1815N row; page 8, sliding battery cartridge",
+            "observation": "The exact model is an LXT 18 V 1.5 Ah removable sliding battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1815N column and product description",
+            "observation": "Editable catalog name combines Makita and exact model BL1815N."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1815N column and product description",
+            "observation": "Only the exact model BL1815N is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1815N column and product description",
+            "observation": "Exact model: BL1815N."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1815N Lithium-Ion battery description",
+            "observation": "The exact battery is identified as lithium-ion; a narrower electrode chemistry is not specified."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 5, Important Safety Instructions, paragraph 5; page 7, BL1815N battery-pack row",
+            "observation": "The listed separate battery packs are rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, introduction and BL1815N row",
+            "observation": "The manufacturer calls the listed units battery packs and identifies this exact cartridge."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1815N battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1815N battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1815N battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1815N row / Battery capacity",
+            "observation": "The source states 1.5 Ah under Battery capacity; 1.5 Ah × 1000 = 1500 mAh. No rated, nominal, minimum or typical capacity qualifier is given."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1815N row / Battery capacity",
+            "observation": "The original capacity field label is Battery capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1815N row / Battery capacity",
+            "observation": "The capacity field has no rated or nominal qualifier; rated_capacity_mah remains null and its basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "makita-cf101d-dcf102-manual-hk",
+            "locator": "PDF page 14, PTBR Specifications, nominal battery row; PDF page 21, Spanish Specifications, nominal battery row, BL1815N",
+            "observation": "The nominal battery-voltage row explicitly lists BL1815N under 18 V. The English parallel table uses Rated voltage. This is the listed battery row, not the fan or AC adapter voltage."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1815N cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "The removable battery uses a slide-in tongue/groove cartridge interface. Contact pin assignment and polarity are not specified."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1815N cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "Makita LXT sliding battery cartridge interface; the record does not infer a contact count."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The physical manufacturing entity and underlying cell supplier are not established in this reference.",
+        "Separate rated, nominal, minimum and typical capacities and capacity test conditions are not stated in the selected capacity fields.",
+        "Internal series/parallel configuration and individual cell geometry are not specified in the selected sources and are not inferred from voltage.",
+        "Electrical contact pin assignment and polarity are not established.",
+        "Battery dimensions, mass and a qualified energy rating are not curated; the optional fields remain null.",
+        "Regional availability and compatibility with any particular school tool or asset have not been established."
+      ],
+      "notes": [
+        "Public product reference only; no school inventory, purchase preference or received-asset condition is asserted.",
+        "Capacity retains its original unqualified manufacturer label as stated capacity; it is not promoted to rated capacity.",
+        "The display name is an editable suggestion formed from brand and exact battery model.",
+        "The record represents one battery model, not a connector-only alternative, charger, tool, kit or retail multi-pack.",
+        "Nominal voltage is supported by the exact battery-model row in the official multi-language specifications; no division by cell voltage is used.",
+        "A slide-in cartridge interface describes the supplied battery form; it does not authorize a general compatibility rule."
+      ]
+    },
+    {
+      "catalog_id": "makita-bl1820b",
+      "manufacturer": null,
+      "brand": "Makita",
+      "model": "BL1820B",
+      "variant_key": "lxt-18v-single-battery",
+      "variant_description": "LXT 18 V 2 Ah removable lithium-ion battery cartridge, exact model BL1820B; single battery reference.",
+      "suggested_display_name": "Makita BL1820B",
+      "aliases": [
+        {
+          "value": "BL1820B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "tool_battery_cartridge",
+        "description": "Removable slide-in tool battery cartridge; internal cell geometry is not specified."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 2000,
+      "stated_capacity_label": "Battery capacity",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Makita LXT sliding battery cartridge interface; contact pin assignment is unspecified.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "makita-lxt18-battery-comparison-nz",
+        "makita-dmr057-mr010g-manual-hk",
+        "makita-cf101d-dcf102-manual-hk"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1820B column and product description",
+            "observation": "Makita identifies the BL1820B battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1820B column and product description",
+            "observation": "The battery model is exactly BL1820B."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1820B row",
+            "observation": "LXT 18 V battery cartridge; the selected model is not a multi-battery retail kit."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1820B row; page 8, sliding battery cartridge",
+            "observation": "The exact model is an LXT 18 V 2 Ah removable sliding battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1820B column and product description",
+            "observation": "Editable catalog name combines Makita and exact model BL1820B."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1820B column and product description",
+            "observation": "Only the exact model BL1820B is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1820B column and product description",
+            "observation": "Exact model: BL1820B."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "makita-lxt18-battery-comparison-nz",
+            "locator": "Comparison table, BL1820B Lithium-Ion battery description",
+            "observation": "The exact battery is identified as lithium-ion; a narrower electrode chemistry is not specified."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 5, Important Safety Instructions, paragraph 5; page 7, BL1820B battery-pack row",
+            "observation": "The listed separate battery packs are rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, introduction and BL1820B row",
+            "observation": "The manufacturer calls the listed units battery packs and identifies this exact cartridge."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1820B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1820B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1820B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1820B row / Battery capacity",
+            "observation": "The source states 2.0 Ah under Battery capacity; 2 Ah × 1000 = 2000 mAh. No rated, nominal, minimum or typical capacity qualifier is given."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1820B row / Battery capacity",
+            "observation": "The original capacity field label is Battery capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1820B row / Battery capacity",
+            "observation": "The capacity field has no rated or nominal qualifier; rated_capacity_mah remains null and its basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "makita-cf101d-dcf102-manual-hk",
+            "locator": "PDF page 14, PTBR Specifications, nominal battery row; PDF page 21, Spanish Specifications, nominal battery row, BL1820B",
+            "observation": "The nominal battery-voltage row explicitly lists BL1820B under 18 V. The English parallel table uses Rated voltage. This is the listed battery row, not the fan or AC adapter voltage."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1820B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "The removable battery uses a slide-in tongue/groove cartridge interface. Contact pin assignment and polarity are not specified."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1820B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "Makita LXT sliding battery cartridge interface; the record does not infer a contact count."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The physical manufacturing entity and underlying cell supplier are not established in this reference.",
+        "Separate rated, nominal, minimum and typical capacities and capacity test conditions are not stated in the selected capacity fields.",
+        "Internal series/parallel configuration and individual cell geometry are not specified in the selected sources and are not inferred from voltage.",
+        "Electrical contact pin assignment and polarity are not established.",
+        "Battery dimensions, mass and a qualified energy rating are not curated; the optional fields remain null.",
+        "Regional availability and compatibility with any particular school tool or asset have not been established."
+      ],
+      "notes": [
+        "Public product reference only; no school inventory, purchase preference or received-asset condition is asserted.",
+        "Capacity retains its original unqualified manufacturer label as stated capacity; it is not promoted to rated capacity.",
+        "The display name is an editable suggestion formed from brand and exact battery model.",
+        "The record represents one battery model, not a connector-only alternative, charger, tool, kit or retail multi-pack.",
+        "Nominal voltage is supported by the exact battery-model row in the official multi-language specifications; no division by cell voltage is used.",
+        "A slide-in cartridge interface describes the supplied battery form; it does not authorize a general compatibility rule."
+      ]
+    },
+    {
+      "catalog_id": "makita-bl1830b",
+      "manufacturer": null,
+      "brand": "Makita",
+      "model": "BL1830B",
+      "variant_key": "lxt-18v-single-battery",
+      "variant_description": "LXT 18 V 3 Ah removable lithium-ion battery cartridge, exact model BL1830B; single battery reference.",
+      "suggested_display_name": "Makita BL1830B",
+      "aliases": [
+        {
+          "value": "BL1830B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "tool_battery_cartridge",
+        "description": "Removable slide-in tool battery cartridge; internal cell geometry is not specified."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 3000,
+      "stated_capacity_label": "Battery Capacity",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Makita LXT sliding battery cartridge interface; contact pin assignment is unspecified.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "makita-bl1830b-datasheet-uk",
+        "makita-dmr057-mr010g-manual-hk"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "makita-bl1830b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Makita identifies the BL1830B battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "makita-bl1830b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "The battery model is exactly BL1830B."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1830B row",
+            "observation": "LXT 18 V battery cartridge; the selected model is not a multi-battery retail kit."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1830B row; page 8, sliding battery cartridge",
+            "observation": "The exact model is an LXT 18 V 3 Ah removable sliding battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "makita-bl1830b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Editable catalog name combines Makita and exact model BL1830B."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "makita-bl1830b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Only the exact model BL1830B is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "makita-bl1830b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Exact model: BL1830B."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "makita-bl1830b-datasheet-uk",
+            "locator": "PDF page 1, Li-ion heading and Battery Chemistry",
+            "observation": "The exact battery is identified as lithium-ion; a narrower electrode chemistry is not specified."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 5, Important Safety Instructions, paragraph 5; page 7, BL1830B battery-pack row",
+            "observation": "The listed separate battery packs are rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, introduction and BL1830B row",
+            "observation": "The manufacturer calls the listed units battery packs and identifies this exact cartridge."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1830B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1830B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1830B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "makita-bl1830b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The source states 3.0 Ah under Battery Capacity; 3 Ah × 1000 = 3000 mAh. No rated, nominal, minimum or typical capacity qualifier is given."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "makita-bl1830b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The original capacity field label is Battery Capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "makita-bl1830b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The capacity field has no rated or nominal qualifier; rated_capacity_mah remains null and its basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "makita-bl1830b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Nominal Battery Voltage",
+            "observation": "Nominal Battery Voltage is explicitly 18 V."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1830B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "The removable battery uses a slide-in tongue/groove cartridge interface. Contact pin assignment and polarity are not specified."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1830B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "Makita LXT sliding battery cartridge interface; the record does not infer a contact count."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The physical manufacturing entity and underlying cell supplier are not established in this reference.",
+        "Separate rated, nominal, minimum and typical capacities and capacity test conditions are not stated in the selected capacity fields.",
+        "Internal series/parallel configuration and individual cell geometry are not specified in the selected sources and are not inferred from voltage.",
+        "Electrical contact pin assignment and polarity are not established.",
+        "Battery dimensions, mass and a qualified energy rating are not curated; the optional fields remain null.",
+        "Regional availability and compatibility with any particular school tool or asset have not been established."
+      ],
+      "notes": [
+        "Public product reference only; no school inventory, purchase preference or received-asset condition is asserted.",
+        "Capacity retains its original unqualified manufacturer label as stated capacity; it is not promoted to rated capacity.",
+        "The display name is an editable suggestion formed from brand and exact battery model.",
+        "The record represents one battery model, not a connector-only alternative, charger, tool, kit or retail multi-pack.",
+        "Nominal 18 V is taken from the exact UK battery datasheet, separate from charging descriptions.",
+        "A slide-in cartridge interface describes the supplied battery form; it does not authorize a general compatibility rule."
+      ]
+    },
+    {
+      "catalog_id": "makita-bl1840b",
+      "manufacturer": null,
+      "brand": "Makita",
+      "model": "BL1840B",
+      "variant_key": "lxt-18v-single-battery",
+      "variant_description": "LXT 18 V 4 Ah removable lithium-ion battery cartridge, exact model BL1840B; single battery reference.",
+      "suggested_display_name": "Makita BL1840B",
+      "aliases": [
+        {
+          "value": "BL1840B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "tool_battery_cartridge",
+        "description": "Removable slide-in tool battery cartridge; internal cell geometry is not specified."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 4000,
+      "stated_capacity_label": "Battery Capacity",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Makita LXT sliding battery cartridge interface; contact pin assignment is unspecified.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "makita-bl1840b-datasheet-uk",
+        "makita-dmr057-mr010g-manual-hk"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "makita-bl1840b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Makita identifies the BL1840B battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "makita-bl1840b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "The battery model is exactly BL1840B."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1840B row",
+            "observation": "LXT 18 V battery cartridge; the selected model is not a multi-battery retail kit."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1840B row; page 8, sliding battery cartridge",
+            "observation": "The exact model is an LXT 18 V 4 Ah removable sliding battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "makita-bl1840b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Editable catalog name combines Makita and exact model BL1840B."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "makita-bl1840b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Only the exact model BL1840B is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "makita-bl1840b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Exact model: BL1840B."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "makita-bl1840b-datasheet-uk",
+            "locator": "PDF page 1, Li-ion heading and Battery Chemistry",
+            "observation": "The exact battery is identified as lithium-ion; a narrower electrode chemistry is not specified."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 5, Important Safety Instructions, paragraph 5; page 7, BL1840B battery-pack row",
+            "observation": "The listed separate battery packs are rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, introduction and BL1840B row",
+            "observation": "The manufacturer calls the listed units battery packs and identifies this exact cartridge."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1840B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1840B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1840B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "makita-bl1840b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The source states 4.0 Ah under Battery Capacity; 4 Ah × 1000 = 4000 mAh. No rated, nominal, minimum or typical capacity qualifier is given."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "makita-bl1840b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The original capacity field label is Battery Capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "makita-bl1840b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The capacity field has no rated or nominal qualifier; rated_capacity_mah remains null and its basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "makita-bl1840b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Nominal Battery Voltage",
+            "observation": "Nominal Battery Voltage is explicitly 18 V."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1840B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "The removable battery uses a slide-in tongue/groove cartridge interface. Contact pin assignment and polarity are not specified."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1840B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "Makita LXT sliding battery cartridge interface; the record does not infer a contact count."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The physical manufacturing entity and underlying cell supplier are not established in this reference.",
+        "Separate rated, nominal, minimum and typical capacities and capacity test conditions are not stated in the selected capacity fields.",
+        "Internal series/parallel configuration and individual cell geometry are not specified in the selected sources and are not inferred from voltage.",
+        "Electrical contact pin assignment and polarity are not established.",
+        "Battery dimensions, mass and a qualified energy rating are not curated; the optional fields remain null.",
+        "Regional availability and compatibility with any particular school tool or asset have not been established."
+      ],
+      "notes": [
+        "Public product reference only; no school inventory, purchase preference or received-asset condition is asserted.",
+        "Capacity retains its original unqualified manufacturer label as stated capacity; it is not promoted to rated capacity.",
+        "The display name is an editable suggestion formed from brand and exact battery model.",
+        "The record represents one battery model, not a connector-only alternative, charger, tool, kit or retail multi-pack.",
+        "Nominal 18 V is taken from the exact UK battery datasheet, separate from charging descriptions.",
+        "A slide-in cartridge interface describes the supplied battery form; it does not authorize a general compatibility rule."
+      ]
+    },
+    {
+      "catalog_id": "makita-bl1850b",
+      "manufacturer": null,
+      "brand": "Makita",
+      "model": "BL1850B",
+      "variant_key": "lxt-18v-single-battery",
+      "variant_description": "LXT 18 V 5 Ah removable lithium-ion battery cartridge, exact model BL1850B; single battery reference.",
+      "suggested_display_name": "Makita BL1850B",
+      "aliases": [
+        {
+          "value": "BL1850B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "tool_battery_cartridge",
+        "description": "Removable slide-in tool battery cartridge; internal cell geometry is not specified."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 5000,
+      "stated_capacity_label": "Battery Capacity",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Makita LXT sliding battery cartridge interface; contact pin assignment is unspecified.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "makita-bl1850b-datasheet-uk",
+        "makita-dmr057-mr010g-manual-hk"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "makita-bl1850b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Makita identifies the BL1850B battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "makita-bl1850b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "The battery model is exactly BL1850B."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1850B row",
+            "observation": "LXT 18 V battery cartridge; the selected model is not a multi-battery retail kit."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1850B row; page 8, sliding battery cartridge",
+            "observation": "The exact model is an LXT 18 V 5 Ah removable sliding battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "makita-bl1850b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Editable catalog name combines Makita and exact model BL1850B."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "makita-bl1850b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Only the exact model BL1850B is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "makita-bl1850b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Exact model: BL1850B."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "makita-bl1850b-datasheet-uk",
+            "locator": "PDF page 1, Li-ion heading and Battery Chemistry",
+            "observation": "The exact battery is identified as lithium-ion; a narrower electrode chemistry is not specified."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 5, Important Safety Instructions, paragraph 5; page 7, BL1850B battery-pack row",
+            "observation": "The listed separate battery packs are rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, introduction and BL1850B row",
+            "observation": "The manufacturer calls the listed units battery packs and identifies this exact cartridge."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1850B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1850B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1850B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "makita-bl1850b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The source states 5.0 Ah under Battery Capacity; 5 Ah × 1000 = 5000 mAh. No rated, nominal, minimum or typical capacity qualifier is given."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "makita-bl1850b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The original capacity field label is Battery Capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "makita-bl1850b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The capacity field has no rated or nominal qualifier; rated_capacity_mah remains null and its basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "makita-bl1850b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Nominal Battery Voltage",
+            "observation": "Nominal Battery Voltage is explicitly 18 V."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1850B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "The removable battery uses a slide-in tongue/groove cartridge interface. Contact pin assignment and polarity are not specified."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1850B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "Makita LXT sliding battery cartridge interface; the record does not infer a contact count."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The physical manufacturing entity and underlying cell supplier are not established in this reference.",
+        "Separate rated, nominal, minimum and typical capacities and capacity test conditions are not stated in the selected capacity fields.",
+        "Internal series/parallel configuration and individual cell geometry are not specified in the selected sources and are not inferred from voltage.",
+        "Electrical contact pin assignment and polarity are not established.",
+        "Battery dimensions, mass and a qualified energy rating are not curated; the optional fields remain null.",
+        "Regional availability and compatibility with any particular school tool or asset have not been established."
+      ],
+      "notes": [
+        "Public product reference only; no school inventory, purchase preference or received-asset condition is asserted.",
+        "Capacity retains its original unqualified manufacturer label as stated capacity; it is not promoted to rated capacity.",
+        "The display name is an editable suggestion formed from brand and exact battery model.",
+        "The record represents one battery model, not a connector-only alternative, charger, tool, kit or retail multi-pack.",
+        "Nominal 18 V is taken from the exact UK battery datasheet, separate from charging descriptions.",
+        "A slide-in cartridge interface describes the supplied battery form; it does not authorize a general compatibility rule."
+      ]
+    },
+    {
+      "catalog_id": "makita-bl1860b",
+      "manufacturer": null,
+      "brand": "Makita",
+      "model": "BL1860B",
+      "variant_key": "lxt-18v-single-battery",
+      "variant_description": "LXT 18 V 6 Ah removable lithium-ion battery cartridge, exact model BL1860B; single battery reference.",
+      "suggested_display_name": "Makita BL1860B",
+      "aliases": [
+        {
+          "value": "BL1860B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "tool_battery_cartridge",
+        "description": "Removable slide-in tool battery cartridge; internal cell geometry is not specified."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 6000,
+      "stated_capacity_label": "Battery Capacity",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Makita LXT sliding battery cartridge interface; contact pin assignment is unspecified.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "makita-bl1860b-datasheet-uk",
+        "makita-dmr057-mr010g-manual-hk"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "makita-bl1860b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Makita identifies the BL1860B battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "makita-bl1860b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "The battery model is exactly BL1860B."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1860B row",
+            "observation": "LXT 18 V battery cartridge; the selected model is not a multi-battery retail kit."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1860B row; page 8, sliding battery cartridge",
+            "observation": "The exact model is an LXT 18 V 6 Ah removable sliding battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "makita-bl1860b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Editable catalog name combines Makita and exact model BL1860B."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "makita-bl1860b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Only the exact model BL1860B is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "makita-bl1860b-datasheet-uk",
+            "locator": "PDF page 1, product heading and model identifier",
+            "observation": "Exact model: BL1860B."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "makita-bl1860b-datasheet-uk",
+            "locator": "PDF page 1, Li-ion heading and Battery Chemistry",
+            "observation": "The exact battery is identified as lithium-ion; a narrower electrode chemistry is not specified."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 5, Important Safety Instructions, paragraph 5; page 7, BL1860B battery-pack row",
+            "observation": "The listed separate battery packs are rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, introduction and BL1860B row",
+            "observation": "The manufacturer calls the listed units battery packs and identifies this exact cartridge."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1860B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1860B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1860B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "makita-bl1860b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The source states 6.0 Ah under Battery Capacity; 6 Ah × 1000 = 6000 mAh. No rated, nominal, minimum or typical capacity qualifier is given."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "makita-bl1860b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The original capacity field label is Battery Capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "makita-bl1860b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Battery Capacity",
+            "observation": "The capacity field has no rated or nominal qualifier; rated_capacity_mah remains null and its basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "makita-bl1860b-datasheet-uk",
+            "locator": "PDF page 1, Technical specifications, Nominal Battery Voltage",
+            "observation": "Nominal Battery Voltage is explicitly 18 V."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1860B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "The removable battery uses a slide-in tongue/groove cartridge interface. Contact pin assignment and polarity are not specified."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1860B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "Makita LXT sliding battery cartridge interface; the record does not infer a contact count."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The physical manufacturing entity and underlying cell supplier are not established in this reference.",
+        "Separate rated, nominal, minimum and typical capacities and capacity test conditions are not stated in the selected capacity fields.",
+        "Internal series/parallel configuration and individual cell geometry are not specified in the selected sources and are not inferred from voltage.",
+        "Electrical contact pin assignment and polarity are not established.",
+        "Battery dimensions, mass and a qualified energy rating are not curated; the optional fields remain null.",
+        "Regional availability and compatibility with any particular school tool or asset have not been established."
+      ],
+      "notes": [
+        "Public product reference only; no school inventory, purchase preference or received-asset condition is asserted.",
+        "Capacity retains its original unqualified manufacturer label as stated capacity; it is not promoted to rated capacity.",
+        "The display name is an editable suggestion formed from brand and exact battery model.",
+        "The record represents one battery model, not a connector-only alternative, charger, tool, kit or retail multi-pack.",
+        "Nominal 18 V is taken from the exact UK battery datasheet, separate from charging descriptions.",
+        "A slide-in cartridge interface describes the supplied battery form; it does not authorize a general compatibility rule."
+      ]
+    },
+    {
+      "catalog_id": "makita-bl1430b",
+      "manufacturer": null,
+      "brand": "Makita",
+      "model": "BL1430B",
+      "variant_key": "lxt-14-4v-single-battery",
+      "variant_description": "LXT 14.4 V 3 Ah removable lithium-ion battery cartridge, exact model BL1430B; single battery reference.",
+      "suggested_display_name": "Makita BL1430B",
+      "aliases": [
+        {
+          "value": "BL1430B",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "tool_battery_cartridge",
+        "description": "Removable slide-in tool battery cartridge; internal cell geometry is not specified."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 3000,
+      "stated_capacity_label": "Battery Capacity (Ah)",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 14.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Makita LXT sliding battery cartridge interface; contact pin assignment is unspecified.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "makita-bl1430b-page-us",
+        "makita-dmr057-mr010g-manual-hk",
+        "makita-cf101d-dcf102-manual-hk"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "makita-bl1430b-page-us",
+            "locator": "Product heading and Technical specifications",
+            "observation": "Makita identifies the BL1430B battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "makita-bl1430b-page-us",
+            "locator": "Product heading and Technical specifications",
+            "observation": "The battery model is exactly BL1430B."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1430B row",
+            "observation": "LXT 14.4 V battery cartridge; the selected model is not a multi-battery retail kit."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1430B row; page 8, sliding battery cartridge",
+            "observation": "The exact model is an LXT 14.4 V 3 Ah removable sliding battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "makita-bl1430b-page-us",
+            "locator": "Product heading and Technical specifications",
+            "observation": "Editable catalog name combines Makita and exact model BL1430B."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "makita-bl1430b-page-us",
+            "locator": "Product heading and Technical specifications",
+            "observation": "Only the exact model BL1430B is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "makita-bl1430b-page-us",
+            "locator": "Product heading and Technical specifications",
+            "observation": "Exact model: BL1430B."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "makita-bl1430b-page-us",
+            "locator": "Technical specifications, Battery Type",
+            "observation": "The exact battery is identified as lithium-ion; a narrower electrode chemistry is not specified."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 5, Important Safety Instructions, paragraph 5; page 7, BL1430B battery-pack row",
+            "observation": "The listed separate battery packs are rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, introduction and BL1430B row",
+            "observation": "The manufacturer calls the listed units battery packs and identifies this exact cartridge."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1430B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1430B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1430B battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "makita-bl1430b-page-us",
+            "locator": "Technical specifications, Battery Capacity (Ah)",
+            "observation": "The source states 3.0 Ah under Battery Capacity (Ah); 3 Ah × 1000 = 3000 mAh. No rated, nominal, minimum or typical capacity qualifier is given."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "makita-bl1430b-page-us",
+            "locator": "Technical specifications, Battery Capacity (Ah)",
+            "observation": "The original capacity field label is Battery Capacity (Ah)."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "makita-bl1430b-page-us",
+            "locator": "Technical specifications, Battery Capacity (Ah)",
+            "observation": "The capacity field has no rated or nominal qualifier; rated_capacity_mah remains null and its basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "makita-cf101d-dcf102-manual-hk",
+            "locator": "PDF page 14, PTBR Specifications, nominal battery row; PDF page 21, Spanish Specifications, nominal battery row, BL1430B",
+            "observation": "The nominal battery-voltage row explicitly lists BL1430B under 14.4 V. The English parallel table uses Rated voltage. This is the listed battery row, not the fan or AC adapter voltage."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1430B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "The removable battery uses a slide-in tongue/groove cartridge interface. Contact pin assignment and polarity are not specified."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1430B cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "Makita LXT sliding battery cartridge interface; the record does not infer a contact count."
+          },
+          {
+            "source_id": "makita-bl1430b-page-us",
+            "locator": "About; Features",
+            "observation": "The exact BL1430B product is described as a slide-style battery."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The physical manufacturing entity and underlying cell supplier are not established in this reference.",
+        "Separate rated, nominal, minimum and typical capacities and capacity test conditions are not stated in the selected capacity fields.",
+        "Internal series/parallel configuration and individual cell geometry are not specified in the selected sources and are not inferred from voltage.",
+        "Electrical contact pin assignment and polarity are not established.",
+        "Battery dimensions, mass and a qualified energy rating are not curated; the optional fields remain null.",
+        "Regional availability and compatibility with any particular school tool or asset have not been established."
+      ],
+      "notes": [
+        "Public product reference only; no school inventory, purchase preference or received-asset condition is asserted.",
+        "Capacity retains its original unqualified manufacturer label as stated capacity; it is not promoted to rated capacity.",
+        "The display name is an editable suggestion formed from brand and exact battery model.",
+        "The record represents one battery model, not a connector-only alternative, charger, tool, kit or retail multi-pack.",
+        "Nominal voltage is supported by the exact battery-model row in the official multi-language specifications; no division by cell voltage is used.",
+        "A slide-in cartridge interface describes the supplied battery form; it does not authorize a general compatibility rule."
+      ]
+    },
+    {
+      "catalog_id": "makita-bl1440",
+      "manufacturer": null,
+      "brand": "Makita",
+      "model": "BL1440",
+      "variant_key": "lxt-14-4v-single-battery",
+      "variant_description": "LXT 14.4 V 4 Ah removable lithium-ion battery cartridge, exact model BL1440; single battery reference.",
+      "suggested_display_name": "Makita BL1440",
+      "aliases": [
+        {
+          "value": "BL1440",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "tool_battery_cartridge",
+        "description": "Removable slide-in tool battery cartridge; internal cell geometry is not specified."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": 4000,
+      "stated_capacity_label": "Battery capacity",
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 14.4,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": {
+        "description": "Makita LXT sliding battery cartridge interface; contact pin assignment is unspecified.",
+        "polarity": null
+      },
+      "dimensions_mm": null,
+      "mass_g": null,
+      "maintenance_notes": null,
+      "source_ids": [
+        "makita-dmr057-mr010g-manual-hk",
+        "makita-cf101d-dcf102-manual-hk"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1440 battery cartridge row; page 40, Makita publisher",
+            "observation": "Makita identifies the BL1440 battery."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1440 battery cartridge row; page 40, Makita publisher",
+            "observation": "The battery model is exactly BL1440."
+          }
+        ],
+        "/variant_key": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1440 row",
+            "observation": "LXT 14.4 V battery cartridge; the selected model is not a multi-battery retail kit."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1440 row; page 8, sliding battery cartridge",
+            "observation": "The exact model is an LXT 14.4 V 4 Ah removable sliding battery pack."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1440 battery cartridge row; page 40, Makita publisher",
+            "observation": "Editable catalog name combines Makita and exact model BL1440."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1440 battery cartridge row; page 40, Makita publisher",
+            "observation": "Only the exact model BL1440 is an identity alias."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1440 battery cartridge row; page 40, Makita publisher",
+            "observation": "Exact model: BL1440."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "makita-cf101d-dcf102-manual-hk",
+            "locator": "PDF page 5, Cordless Fan Use and Care; page 7, Specifications, BL1440 row",
+            "observation": "The exact battery is identified as lithium-ion; a narrower electrode chemistry is not specified."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 5, Important Safety Instructions, paragraph 5; page 7, BL1440 battery-pack row",
+            "observation": "The listed separate battery packs are rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, introduction and BL1440 row",
+            "observation": "The manufacturer calls the listed units battery packs and identifies this exact cartridge."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1440 battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1440 battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1440 battery cartridge row; page 8, Installing or removing the sliding battery cartridge",
+            "observation": "A removable slide-in tool battery cartridge; the catalog shape code does not specify internal cell geometry."
+          }
+        ],
+        "/stated_capacity_mah": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1440 row / Battery capacity",
+            "observation": "The source states 4.0 Ah under Battery capacity; 4 Ah × 1000 = 4000 mAh. No rated, nominal, minimum or typical capacity qualifier is given."
+          }
+        ],
+        "/stated_capacity_label": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1440 row / Battery capacity",
+            "observation": "The original capacity field label is Battery capacity."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, Operating Time, BL1440 row / Battery capacity",
+            "observation": "The capacity field has no rated or nominal qualifier; rated_capacity_mah remains null and its basis is not_stated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "makita-cf101d-dcf102-manual-hk",
+            "locator": "PDF page 14, PTBR Specifications, nominal battery row; PDF page 21, Spanish Specifications, nominal battery row, BL1440",
+            "observation": "The nominal battery-voltage row explicitly lists BL1440 under 14.4 V. The English parallel table uses Rated voltage. This is the listed battery row, not the fan or AC adapter voltage."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1440 cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "The removable battery uses a slide-in tongue/groove cartridge interface. Contact pin assignment and polarity are not specified."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "makita-dmr057-mr010g-manual-hk",
+            "locator": "PDF page 7, BL1440 cartridge row; page 8, sliding battery cartridge installation",
+            "observation": "Makita LXT sliding battery cartridge interface; the record does not infer a contact count."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The physical manufacturing entity and underlying cell supplier are not established in this reference.",
+        "Separate rated, nominal, minimum and typical capacities and capacity test conditions are not stated in the selected capacity fields.",
+        "Internal series/parallel configuration and individual cell geometry are not specified in the selected sources and are not inferred from voltage.",
+        "Electrical contact pin assignment and polarity are not established.",
+        "Battery dimensions, mass and a qualified energy rating are not curated; the optional fields remain null.",
+        "Regional availability and compatibility with any particular school tool or asset have not been established."
+      ],
+      "notes": [
+        "Public product reference only; no school inventory, purchase preference or received-asset condition is asserted.",
+        "Capacity retains its original unqualified manufacturer label as stated capacity; it is not promoted to rated capacity.",
+        "The display name is an editable suggestion formed from brand and exact battery model.",
+        "The record represents one battery model, not a connector-only alternative, charger, tool, kit or retail multi-pack.",
+        "Nominal voltage is supported by the exact battery-model row in the official multi-language specifications; no division by cell voltage is used.",
+        "A slide-in cartridge interface describes the supplied battery form; it does not authorize a general compatibility rule."
+      ]
+    }
+  ]
+}

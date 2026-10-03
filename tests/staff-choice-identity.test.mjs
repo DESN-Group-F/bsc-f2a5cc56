@@ -3,9 +3,11 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import ts from "typescript";
 import * as client from "../work/qa/client-utils.mjs";
+import * as lifecycle from "../work/qa/battery-lifecycle.mjs";
 import * as locations from "../work/qa/location-catalog.mjs";
 import * as schedule from "../work/qa/task-schedule.mjs";
-import { defaultInventoryFilter } from "../work/qa/inventory-query.mjs";
+import * as inventoryQuery from "../work/qa/inventory-query.mjs";
+const { defaultInventoryFilter } = inventoryQuery;
 
 // Render the actual component functions with inert UI boundaries. These probes
 // exercise labels and handlers without changing a browser or business database.
@@ -38,11 +40,11 @@ function text(node) {
     if (Array.isArray(node)) return node.map(text).join("");
     return node && typeof node === "object" ? text(node.props?.children) : "";
 }
-const ui = Object.fromEntries(["Search", "X", "CalendarDays", "CheckCircle2", "Button", "Input", "Textarea", "Label", "Checkbox", "RecordPicker", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Select", "SelectTrigger", "SelectContent", "SelectValue", "SelectItem"].map(name => [name, name]));
+const ui = Object.fromEntries(["Search", "X", "CalendarDays", "CheckCircle2", "Battery", "Package", "Plus", "Download", "Upload", "Pencil", "Settings2", "ClipboardList", "Copy", "Button", "Input", "Textarea", "Label", "Checkbox", "RecordPicker", "BatteryModelPicker", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Select", "SelectTrigger", "SelectContent", "SelectValue", "SelectItem", "Tabs", "TabsList", "TabsTrigger", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Skeleton", "InventoryFilterPanel", "AppliedFilters"].map(name => [name, name]));
 async function component(path, exports, state = hooks(), additional = {}) {
     const input = await readFile(path, "utf8");
     const output = ts.transpileModule(input, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export \{[^\n]*\} from [^;]+;\r?\n/gm, "").replace(/^export /gm, "");
-    const bindings = { ...ui, ...client, ...locations, ...schedule, ...state, ...additional, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
+    const bindings = { ...ui, ...client, ...locations, ...lifecycle, ...schedule, ...inventoryQuery, ...state, ...additional, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
     return new Function(...names, "_jsx", "_jsxs", "_Fragment", `${output}\nreturn { ${exports.join(", ")} };`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
 }
 function fixture() {
@@ -128,4 +130,120 @@ test("task staff choices and assignment summaries keep full identity fallbacks a
     assert.equal(nodes(current[0]).find(node => node.type === "Checkbox").props.checked, false);
     assert.equal(nodes(current[1]).find(node => node.type === "Checkbox").props.checked, true);
     assert.equal(assignmentNames(["account-prefix-two", "account-prefix-disabled", "account-prefix-unavailable"], data), "Same Staff (teacher-two), Same Staff (account-prefix-disabled), Unavailable staff account (account-prefix-unavailable)");
+});
+
+function button(tree, label) { return nodes(tree).find(node => node.type === "Button" && text(node) === label); }
+
+test("removal-record exports keep their captured selected IDs and prevent changing to filtered or page scope", async () => {
+    const state = hooks(), downloads = [], closed = [];
+    const { ExportDialog } = await component("components/inventory/export-dialog.tsx", ["ExportDialog"], state, {
+        async downloadExportAttachment(input, format, filename) { downloads.push({ input: structuredClone(input), format, filename }); },
+    });
+    const draft = { selectedOnly: true, selectedIds: ["BAT-REMOVED-1", "BAT-REMOVED-2", "BAT-REMOVED-1"], filter: { ...defaultInventoryFilter(), lifecycle: "all" }, page: 3, pageSize: "25", matching: 58, pageCount: 25 };
+    const render = () => { state.reset(); return ExportDialog({ draft, dataset: "demo", onClose: () => closed.push(true) }); };
+    const initial = render(), range = select(initial, "Export battery range");
+    assert.equal(select(initial, "Export information depth").props.value, "detail");
+    assert.equal(range.props.value, "selected");
+    assert.equal(range.props.disabled, true);
+    assert.deepEqual(options(range), [{ id: "selected", label: "Selected batteries (2)" }]);
+    assert.match(text(initial), /Includes the captured matching removal records only\./);
+    assert.match(text(initial), /2 batteries/);
+    assert.ok(nodes(initial).some(node => node.type === "fieldset"));
+    draft.selectedIds.push("BAT-ADDED-AFTER-DIALOG-OPENED");
+    draft.selectedIds[0] = "BAT-REPLACED-AFTER-DIALOG-OPENED";
+    select(render(), "Export file format").props.onValueChange("json");
+    await button(render(), "Download").props.onClick();
+    assert.equal(downloads.length, 1);
+    assert.equal(downloads[0].input.range, "selected");
+    assert.equal(downloads[0].input.mode, "detail");
+    assert.deepEqual(downloads[0].input.batteryIds, ["BAT-REMOVED-1", "BAT-REMOVED-2"]);
+    assert.equal(downloads[0].input.filter.lifecycle, "all");
+    assert.equal(downloads[0].input.sections.length, inventoryQuery.exportSections.length);
+    assert.equal(downloads[0].format, "json");
+    assert.equal(closed.length, 1);
+});
+
+test("ordinary inventory exports retain their selectable filtered and page ranges", async () => {
+    const state = hooks(), downloads = [];
+    const { ExportDialog } = await component("components/inventory/export-dialog.tsx", ["ExportDialog"], state, {
+        async downloadExportAttachment(input, format) { downloads.push({ input: structuredClone(input), format }); },
+    });
+    const draft = { selectedIds: ["BAT-SELECTED"], filter: defaultInventoryFilter(), page: 2, pageSize: "10", matching: 34, pageCount: 10 };
+    const render = () => { state.reset(); return ExportDialog({ draft, dataset: "demo", onClose() {} }); };
+    const range = select(render(), "Export battery range");
+    assert.equal(range.props.disabled, undefined);
+    assert.deepEqual(options(range).map(option => option.id), ["selected", "filtered", "page"]);
+    range.props.onValueChange("page");
+    assert.match(text(render()), /10 batteriesPage 3/);
+    await button(render(), "Download").props.onClick();
+    assert.equal(downloads[0].input.range, "page");
+    assert.equal(downloads[0].input.mode, "summary");
+    assert.equal(downloads[0].input.batteryIds, undefined);
+    assert.equal(downloads[0].input.page, 2);
+});
+
+function inventoryBattery(id, accountId, extra = {}) {
+    return {
+        id, name: "Personal test battery", chemistry: "", model: "", capacityMah: null, voltage: null,
+        tagId: "DEMO-" + id, manufacturedOn: null, firstUsedOn: null, registeredAt: "2026-10-01T00:00:00.000Z",
+        lifecycleStatus: "active", lifecycleAt: null, lifecycleReason: null, lifecycleDestination: null, version: 1,
+        ownerId: "staff-" + accountId, ownerName: "Responsible staff", ownerAccountId: accountId,
+        homeBuildingId: "J18", homeBuildingName: "Willis Annexe", homeRoomId: null, homeRoomName: null, homeRoomNumber: null,
+        homeRoomIsPlaceholder: null, homeRoomSelectable: null, loanId: null, borrowerId: null, borrowerName: null,
+        borrowerAccountId: null, borrowerKind: null, checkedOutAt: null, lastCheckedOutAt: null,
+        observedRoom: null, observedBuilding: null, observationRoomSnapshot: null, observedAt: null, observationSource: null,
+        chargedAt: null, chargeDurationMinutes: null, ...extra,
+    };
+}
+async function personalTable(scope = "responsible") {
+    const data = fixture(), state = hooks(), exports = [], movements = [];
+    data.batteries = [inventoryBattery("BAT-PERSONAL", data.user.id), inventoryBattery("BAT-OTHER", "other-account")];
+    const { appliedFilterChips } = await component("components/inventory/inventory-filter-panel.tsx", ["appliedFilterChips"]);
+    const { InventoryTable } = await component("components/inventory/views.tsx", ["InventoryTable"], state, { appliedFilterChips });
+    const props = { data, ready: true, personalScope: scope, onEdit() {}, onDetail() {}, onSetup() {}, onMovement: (kind, ids) => movements.push({ kind, ids }), onExport: draft => exports.push(structuredClone(draft)) };
+    return { data, exports, movements, render() { state.reset(); return InventoryTable(props); } };
+}
+
+test("personal responsibility selections remain downloadable after scrap or permanent removal and stay disabled for movements", async () => {
+    for (const lifecycleStatus of ["scrapped", "permanently_removed"]) {
+        const table = await personalTable();
+        nodes(table.render()).find(node => node.type === "Checkbox" && node.props["aria-label"] === "Select BAT-PERSONAL").props.onCheckedChange(true);
+        table.data.batteries[0] = { ...table.data.batteries[0], lifecycleStatus, lifecycleAt: "2026-10-03T00:00:00.000Z", version: 2 };
+        const tree = table.render();
+        assert.match(text(tree), /1 selected · 1 outside current filters/);
+        assert.doesNotMatch(text(tree), /Your selected batteries have changed scope/);
+        assert.equal(button(tree, "Download selected").props.disabled, false);
+        assert.equal(button(tree, "Check out selected").props.disabled, true);
+        assert.equal(button(tree, "Return selected").props.disabled, true);
+        button(tree, "Download selected").props.onClick();
+        assert.equal(table.exports.length, 1);
+        assert.deepEqual(table.exports[0].selectedIds, ["BAT-PERSONAL"]);
+        assert.equal(table.exports[0].filter.personalScope, "responsible");
+        assert.equal(table.exports[0].filter.lifecycle, "active");
+        assert.equal(table.exports[0].matching, 0);
+        assert.equal(table.movements.length, 0);
+        nodes(tree).find(node => node.type === "Button" && node.props["aria-controls"] === "inventory-filter-panel").props.onClick();
+        nodes(table.render()).find(node => node.type === "InventoryFilterPanel").props.onChange({ lifecycle: "all" });
+        const all = table.render();
+        assert.ok(nodes(all).some(node => node.type === "Checkbox" && node.props["aria-label"] === "Select BAT-PERSONAL" && node.props.checked === true));
+        assert.ok(!nodes(all).some(node => node.type === "Checkbox" && node.props["aria-label"] === "Select BAT-OTHER"));
+        assert.match(text(all), lifecycleStatus === "scrapped" ? /Scrapped/ : /Permanently removed/);
+        assert.equal(button(all, "Download selected").props.disabled, false);
+    }
+});
+
+test("real personal ownership or loan scope changes still block captured selections until they are removed", async () => {
+    for (const scope of ["responsible", "borrowed"]) {
+        const table = await personalTable(scope);
+        if (scope === "borrowed") table.data.batteries[0] = { ...table.data.batteries[0], loanId: "loan-personal", borrowerAccountId: table.data.user.id, borrowerKind: "staff" };
+        nodes(table.render()).find(node => node.type === "Checkbox" && node.props["aria-label"] === "Select BAT-PERSONAL").props.onCheckedChange(true);
+        table.data.batteries[0] = { ...table.data.batteries[0], ...(scope === "responsible" ? { ownerAccountId: "other-account" } : { loanId: null, borrowerAccountId: null, borrowerKind: null }), version: 2 };
+        const tree = table.render();
+        assert.match(text(tree), /Your selected batteries have changed scope/);
+        assert.equal(button(tree, "Download selected").props.disabled, true);
+        button(tree, "Download selected").props.onClick();
+        assert.equal(table.exports.length, 0);
+        button(tree, "Remove batteries outside this view").props.onClick();
+        assert.ok(!button(table.render(), "Download selected"));
+    }
 });

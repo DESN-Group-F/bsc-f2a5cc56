@@ -1,0 +1,1126 @@
+{
+  "sources": [
+    {
+      "source_id": "jauch-lithium-polymer-family-page-batch5",
+      "url": "https://www.jauch.com/en-US/products/battery_technology/getPrm/batteries/Lithium%20Polymer%20Batteries/",
+      "title": "Lithium polymer batteries",
+      "publisher": "Jauch",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP503759JU",
+        "LP633750JH",
+        "LP605060JU",
+        "LP103450JH",
+        "LP906090JH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Direct HTTPS HTML: exact Type rows and capacity; Technical info describes soft/pouch cells. The unqualified page capacities equal selected PDF Minimum values. LP503759JU download tooltip incorrectly names LP502030JH, but its Type row and the opened linked PDF both identify LP503759JU; the tooltip is not identity evidence. No globally latest edition is assumed."
+    },
+    {
+      "source_id": "jauch-ju-psds-20240307-batch5",
+      "url": "https://www.jauch.com/downloadfile/5c65204175cdd5d8024de2f8cf993a823/product_safety_data_sheet_lpxxxxxxju_1s1p_3.7v_2019_.pdf",
+      "title": "Product Safety Data Sheet - Lithium Ion (Polymer) Rechargeable Battery",
+      "publisher": "Jauch Quartz GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Edition date: 07.03.2024",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP503759JU",
+        "LP605060JU"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Direct HTTPS PDF: page 1 Section I names manufacturer; page 8 edition date; page 9/10 annex names selected models and their Minimum capacities. These two rows agree with selected individual PDFs. Other JU models are not covered by this source record."
+    },
+    {
+      "source_id": "jauch-jh-psds-20240307-batch5",
+      "url": "https://www.jauch.com/downloadfile/5c651f00637eeb997b85c8a1241fde6d5/product_safety_data_sheet_lpxxxxxxjh_1s1p_3.7v_2019_.pdf",
+      "title": "Product Safety Data Sheet - Lithium Ion (Polymer) Rechargeable Battery",
+      "publisher": "Jauch Quartz GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Edition date: 07.03.2024",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP633750JH",
+        "LP103450JH",
+        "LP906090JH"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Direct HTTPS PDF: page 1 Section I names manufacturer; page 8 edition date; page 9 annex names selected models. Annex Capacity is unqualified and is not relabelled Rated. Individual data sheets supply the curated Typical/Minimum labels."
+    },
+    {
+      "source_id": "jauch-lp503759ju-246517-datasheet",
+      "url": "https://www.jauch.com/downloadfile/66cedeabc43a407b55b3a1fadebb917cc/matd_246517_lp503759jupcm2_wires_70mm.pdf",
+      "title": "Specifications - LP503759JU; Jauch No. 246517",
+      "publisher": "Jauch Quartz GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Rev. 1.1; 08/2024",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP503759JU; Jauch part 246517; selected PCM single-cell assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Opened official PDF by direct HTTPS and in-memory text extraction. Page 1 Specifications identifies exact model, Jauch number, Typical/Minimum capacity, nominal voltage, approximate mass and PCM. Page 2 opening explicitly states rechargeable single-cell lithium-ion polymer pack. Printed footer supplies the selected revision/date; filename dates are not used as edition facts."
+    },
+    {
+      "source_id": "jauch-lp633750jh-246516-datasheet",
+      "url": "https://www.jauch.com/downloadfile/66cedc94582be5090e6306e4214a9822c/matd_246516_lp633750jhpcm2_wires_70mm.pdf",
+      "title": "Specifications - LP633750JH; Jauch No. 246516",
+      "publisher": "Jauch Quartz GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Rev. 1.1; 08/2024",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP633750JH; Jauch part 246516; selected PCM single-cell assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Opened official PDF by direct HTTPS and in-memory text extraction. Page 1 Specifications identifies exact model, Jauch number, Typical/Minimum capacity, nominal voltage, approximate mass and PCM. Page 2 opening explicitly states rechargeable single-cell lithium-ion polymer pack. Printed footer supplies the selected revision/date; filename dates are not used as edition facts."
+    },
+    {
+      "source_id": "jauch-lp605060ju-246519-datasheet",
+      "url": "https://www.jauch.com/downloadfile/677e3c96f12e87c36d9a675bf4d3a4ded/matd_246519_20200507_1850mah_-_lp605060ju_1s1p_2_wire_70mm.pdf",
+      "title": "Specifications - LP605060JU; Jauch No. 246519",
+      "publisher": "Jauch Quartz GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Rev. 1.2; 12/2024",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP605060JU; Jauch part 246519; selected PCM single-cell assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Opened official PDF by direct HTTPS and in-memory text extraction. Page 1 Specifications identifies exact model, Jauch number, Typical/Minimum capacity, nominal voltage, approximate mass and PCM. Page 2 opening explicitly states rechargeable single-cell lithium-ion polymer pack. Printed footer supplies the selected revision/date; filename dates are not used as edition facts."
+    },
+    {
+      "source_id": "jauch-lp103450jh-246520-datasheet",
+      "url": "https://www.jauch.com/downloadfile/66cedf6fabf401098a2fc8d8447d4ce20/matd_246520_lp103450jhpcm2ic2_wires_70mm.pdf",
+      "title": "Specifications - LP103450JH; Jauch No. 246520",
+      "publisher": "Jauch Quartz GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Rev. 1.1; 08/2024",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP103450JH; Jauch part 246520; selected PCM single-cell assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Opened official PDF by direct HTTPS and in-memory text extraction. Page 1 Specifications identifies exact model, Jauch number, Typical/Minimum capacity, nominal voltage, approximate mass and PCM. Page 2 opening explicitly states rechargeable single-cell lithium-ion polymer pack. Printed footer supplies the selected revision/date; filename dates are not used as edition facts."
+    },
+    {
+      "source_id": "jauch-lp906090jh-246525-datasheet",
+      "url": "https://www.jauch.com/downloadfile/677e3f68c583d30f0e3fd6874fe248710/matd_246525_lp906090jh.pdf",
+      "title": "Specifications - LP906090JH; Jauch No. 246525",
+      "publisher": "Jauch Quartz GmbH",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "Rev. 1.1; 08/2024",
+      "accessed_on": "2026-10-03",
+      "applicable_variants": [
+        "LP906090JH; Jauch part 246525; selected PCM single-cell assembly"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Opened official PDF by direct HTTPS and in-memory text extraction. Page 1 Specifications identifies exact model, Jauch number, Typical/Minimum capacity, nominal voltage, approximate mass and PCM. Page 2 opening explicitly states rechargeable single-cell lithium-ion polymer pack. Printed footer supplies the selected revision/date; filename dates are not used as edition facts."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "jauch-lp503759ju-246517",
+      "manufacturer": "Jauch Quartz GmbH",
+      "brand": "Jauch",
+      "model": "LP503759JU",
+      "variant_key": "246517-pcm",
+      "variant_description": "Single-cell lithium-ion polymer pouch assembly with PCM; Jauch part 246517. Selected source edition only; exact connector hardware is not curated.",
+      "suggested_display_name": "Jauch LP503759JU",
+      "aliases": [
+        {
+          "value": "LP503759JU",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "246517",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Single-cell lithium-ion polymer pouch assembly with PCM."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 1350,
+      "minimum_capacity_mah": 1300,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Typical and Minimum capacity: 0.2C discharge to 3.0 V. Capacity-row temperature and full test sequence are not stated.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 1,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": 25,
+      "maintenance_notes": null,
+      "source_ids": [
+        "jauch-lp503759ju-246517-datasheet",
+        "jauch-lithium-polymer-family-page-batch5",
+        "jauch-ju-psds-20240307-batch5"
+      ],
+      "field_evidence": {
+        "/manufacturer": [
+          {
+            "source_id": "jauch-ju-psds-20240307-batch5",
+            "locator": "Page 1 Section I / Manufacturer; page 9 exact model annex row",
+            "observation": "Named manufacturer: Jauch Quartz GmbH."
+          }
+        ],
+        "/brand": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 Jauch Battery Solutions heading",
+            "observation": "Jauch branding."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 Specifications / Model",
+            "observation": "LP503759JU."
+          },
+          {
+            "source_id": "jauch-lithium-polymer-family-page-batch5",
+            "locator": "Exact Type row and associated download link",
+            "observation": "Type and opened PDF agree; mismatched tooltip is excluded."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 Specifications / Model and Jauch No.",
+            "observation": "Exact model and Jauch part 246517."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 Jauch No. and PCM table; page 2 opening",
+            "observation": "Part 246517; PCM single-cell assembly."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 brand heading and Model",
+            "observation": "Editable suggestion combines brand and exact model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Lithium-ion polymer pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Single-cell battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "jauch-lithium-polymer-family-page-batch5",
+            "locator": "Technical info / soft or pouch cells; LP503759JU Type row",
+            "observation": "Named pouch-family product."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 Specifications / Typ. Capacity and Min. Capacity",
+            "observation": "No Rated capacity is labelled."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 Specifications / capacity labels",
+            "observation": "Only Typical and Minimum capacity labels."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 Specifications / Typ. Capacity",
+            "observation": "1350 mAh Typical."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 Specifications / Min. Capacity",
+            "observation": "1300 mAh Minimum."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 Specifications / both capacity-row qualifications",
+            "observation": "0.2C discharge to 3.0V for both capacities."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 Specifications / Nominal Voltage",
+            "observation": "3.7 V Nominal."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 2 Handling and Storage / Rechargeable Single cell Battery",
+            "observation": "Explicit single-cell pack corresponds to 1S1P."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "jauch-lp503759ju-246517-datasheet",
+            "locator": "Page 1 Specifications / Weight",
+            "observation": "Approximate mass 25 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "A Rated or Nominal capacity is not stated; rated_capacity_mah remains null.",
+        "Capacity-row test temperature and complete test sequence are not established; cycle-life conditions are not used as capacity-test conditions.",
+        "Exact plug, lead termination and pin polarity are not curated; connector remains null.",
+        "Dimensions are not independently reconciled for the selected PCM assembly; dimensions_mm remains null.",
+        "Nominal or rated energy is not curated; energy_wh remains null.",
+        "Maintenance intervals are not established; maintenance_notes remains null."
+      ],
+      "notes": [
+        "Public product reference only; no school stock or procurement preference is asserted.",
+        "Research allocation: prototype_pouch_1s; this editorial grouping is not a manufacturer specification.",
+        "Exact base model and selected Jauch part identify one PCM assembly; custom connector variants are not counted as new models.",
+        "Typical and Minimum labels are retained; the application Rated capacity field must remain unknown.",
+        "The suggested display name is editable and is not an asset identifier.",
+        "Mass is approximate.",
+        "The unqualified product-page capacity equals PDF Minimum; it is not promoted to Rated capacity.",
+        "Core fields were self-checked against opened official PDFs. The selected footer edition is recorded without a globally latest-version assertion.",
+        "Resolved page metadata inconsistency: download tooltip says LP502030JH, while the actual Type row and linked PDF Model both say LP503759JU. Identity follows the corroborated row and PDF, not the tooltip."
+      ]
+    },
+    {
+      "catalog_id": "jauch-lp633750jh-246516",
+      "manufacturer": "Jauch Quartz GmbH",
+      "brand": "Jauch",
+      "model": "LP633750JH",
+      "variant_key": "246516-pcm",
+      "variant_description": "Single-cell lithium-ion polymer pouch assembly with PCM; Jauch part 246516. Selected source edition only; exact connector hardware is not curated.",
+      "suggested_display_name": "Jauch LP633750JH",
+      "aliases": [
+        {
+          "value": "LP633750JH",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "246516",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Single-cell lithium-ion polymer pouch assembly with PCM."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 1420,
+      "minimum_capacity_mah": 1400,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Typical and Minimum capacity: 0.2C discharge to 3.0 V. Capacity-row temperature and full test sequence are not stated.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 1,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": 30,
+      "maintenance_notes": null,
+      "source_ids": [
+        "jauch-lp633750jh-246516-datasheet",
+        "jauch-lithium-polymer-family-page-batch5",
+        "jauch-jh-psds-20240307-batch5"
+      ],
+      "field_evidence": {
+        "/manufacturer": [
+          {
+            "source_id": "jauch-jh-psds-20240307-batch5",
+            "locator": "Page 1 Section I / Manufacturer; page 9 exact model annex row",
+            "observation": "Named manufacturer: Jauch Quartz GmbH."
+          }
+        ],
+        "/brand": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 Jauch Battery Solutions heading",
+            "observation": "Jauch branding."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 Specifications / Model",
+            "observation": "LP633750JH."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 Specifications / Model and Jauch No.",
+            "observation": "Exact model and Jauch part 246516."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 Jauch No. and PCM table; page 2 opening",
+            "observation": "Part 246516; PCM single-cell assembly."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 brand heading and Model",
+            "observation": "Editable suggestion combines brand and exact model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Lithium-ion polymer pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Single-cell battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "jauch-lithium-polymer-family-page-batch5",
+            "locator": "Technical info / soft or pouch cells; LP633750JH Type row",
+            "observation": "Named pouch-family product."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 Specifications / Typ. Capacity and Min. Capacity",
+            "observation": "No Rated capacity is labelled."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 Specifications / capacity labels",
+            "observation": "Only Typical and Minimum capacity labels."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 Specifications / Typ. Capacity",
+            "observation": "1420 mAh Typical."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 Specifications / Min. Capacity",
+            "observation": "1400 mAh Minimum."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 Specifications / both capacity-row qualifications",
+            "observation": "0.2C discharge to 3.0V for both capacities."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 Specifications / Nominal Voltage",
+            "observation": "3.7 V Nominal."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 2 Handling and Storage / Rechargeable Single cell Battery",
+            "observation": "Explicit single-cell pack corresponds to 1S1P."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "jauch-lp633750jh-246516-datasheet",
+            "locator": "Page 1 Specifications / Weight",
+            "observation": "Approximate mass 30 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "A Rated or Nominal capacity is not stated; rated_capacity_mah remains null.",
+        "Capacity-row test temperature and complete test sequence are not established; cycle-life conditions are not used as capacity-test conditions.",
+        "Exact plug, lead termination and pin polarity are not curated; connector remains null.",
+        "Dimensions are not independently reconciled for the selected PCM assembly; dimensions_mm remains null.",
+        "Nominal or rated energy is not curated; energy_wh remains null.",
+        "Maintenance intervals are not established; maintenance_notes remains null."
+      ],
+      "notes": [
+        "Public product reference only; no school stock or procurement preference is asserted.",
+        "Research allocation: prototype_pouch_1s; this editorial grouping is not a manufacturer specification.",
+        "Exact base model and selected Jauch part identify one PCM assembly; custom connector variants are not counted as new models.",
+        "Typical and Minimum labels are retained; the application Rated capacity field must remain unknown.",
+        "The suggested display name is editable and is not an asset identifier.",
+        "Mass is approximate.",
+        "The unqualified product-page capacity equals PDF Minimum; it is not promoted to Rated capacity.",
+        "Core fields were self-checked against opened official PDFs. The selected footer edition is recorded without a globally latest-version assertion."
+      ]
+    },
+    {
+      "catalog_id": "jauch-lp605060ju-246519",
+      "manufacturer": "Jauch Quartz GmbH",
+      "brand": "Jauch",
+      "model": "LP605060JU",
+      "variant_key": "246519-pcm",
+      "variant_description": "Single-cell lithium-ion polymer pouch assembly with PCM; Jauch part 246519. Selected source edition only; exact connector hardware is not curated.",
+      "suggested_display_name": "Jauch LP605060JU",
+      "aliases": [
+        {
+          "value": "LP605060JU",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "246519",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Single-cell lithium-ion polymer pouch assembly with PCM."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 1900,
+      "minimum_capacity_mah": 1850,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Typical and Minimum capacity: 0.2C discharge to 3.0 V. Capacity-row temperature and full test sequence are not stated.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 1,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": 45,
+      "maintenance_notes": null,
+      "source_ids": [
+        "jauch-lp605060ju-246519-datasheet",
+        "jauch-lithium-polymer-family-page-batch5",
+        "jauch-ju-psds-20240307-batch5"
+      ],
+      "field_evidence": {
+        "/manufacturer": [
+          {
+            "source_id": "jauch-ju-psds-20240307-batch5",
+            "locator": "Page 1 Section I / Manufacturer; page 10 exact model annex row",
+            "observation": "Named manufacturer: Jauch Quartz GmbH."
+          }
+        ],
+        "/brand": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 Jauch Battery Solutions heading",
+            "observation": "Jauch branding."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 Specifications / Model",
+            "observation": "LP605060JU."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 Specifications / Model and Jauch No.",
+            "observation": "Exact model and Jauch part 246519."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 Jauch No. and PCM table; page 2 opening",
+            "observation": "Part 246519; PCM single-cell assembly."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 brand heading and Model",
+            "observation": "Editable suggestion combines brand and exact model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Lithium-ion polymer pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Single-cell battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "jauch-lithium-polymer-family-page-batch5",
+            "locator": "Technical info / soft or pouch cells; LP605060JU Type row",
+            "observation": "Named pouch-family product."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 Specifications / Typ. Capacity and Min. Capacity",
+            "observation": "No Rated capacity is labelled."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 Specifications / capacity labels",
+            "observation": "Only Typical and Minimum capacity labels."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 Specifications / Typ. Capacity",
+            "observation": "1900 mAh Typical."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 Specifications / Min. Capacity",
+            "observation": "1850 mAh Minimum."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 Specifications / both capacity-row qualifications",
+            "observation": "0.2C discharge to 3.0V for both capacities."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 Specifications / Nominal Voltage",
+            "observation": "3.7 V Nominal."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 2 Handling and Storage / Rechargeable Single cell Battery",
+            "observation": "Explicit single-cell pack corresponds to 1S1P."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "jauch-lp605060ju-246519-datasheet",
+            "locator": "Page 1 Specifications / Weight",
+            "observation": "Approximate mass 45 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "A Rated or Nominal capacity is not stated; rated_capacity_mah remains null.",
+        "Capacity-row test temperature and complete test sequence are not established; cycle-life conditions are not used as capacity-test conditions.",
+        "Exact plug, lead termination and pin polarity are not curated; connector remains null.",
+        "Dimensions are not independently reconciled for the selected PCM assembly; dimensions_mm remains null.",
+        "Nominal or rated energy is not curated; energy_wh remains null.",
+        "Maintenance intervals are not established; maintenance_notes remains null."
+      ],
+      "notes": [
+        "Public product reference only; no school stock or procurement preference is asserted.",
+        "Research allocation: prototype_pouch_1s; this editorial grouping is not a manufacturer specification.",
+        "Exact base model and selected Jauch part identify one PCM assembly; custom connector variants are not counted as new models.",
+        "Typical and Minimum labels are retained; the application Rated capacity field must remain unknown.",
+        "The suggested display name is editable and is not an asset identifier.",
+        "Mass is approximate.",
+        "The unqualified product-page capacity equals PDF Minimum; it is not promoted to Rated capacity.",
+        "Core fields were self-checked against opened official PDFs. The selected footer edition is recorded without a globally latest-version assertion."
+      ]
+    },
+    {
+      "catalog_id": "jauch-lp103450jh-246520",
+      "manufacturer": "Jauch Quartz GmbH",
+      "brand": "Jauch",
+      "model": "LP103450JH",
+      "variant_key": "246520-pcm",
+      "variant_description": "Single-cell lithium-ion polymer pouch assembly with PCM; Jauch part 246520. Selected source edition only; exact connector hardware is not curated.",
+      "suggested_display_name": "Jauch LP103450JH",
+      "aliases": [
+        {
+          "value": "LP103450JH",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "246520",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Single-cell lithium-ion polymer pouch assembly with PCM."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 1920,
+      "minimum_capacity_mah": 1900,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Typical and Minimum capacity: 0.2C discharge to 3.0 V. Capacity-row temperature and full test sequence are not stated.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 1,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": 35,
+      "maintenance_notes": null,
+      "source_ids": [
+        "jauch-lp103450jh-246520-datasheet",
+        "jauch-lithium-polymer-family-page-batch5",
+        "jauch-jh-psds-20240307-batch5"
+      ],
+      "field_evidence": {
+        "/manufacturer": [
+          {
+            "source_id": "jauch-jh-psds-20240307-batch5",
+            "locator": "Page 1 Section I / Manufacturer; page 9 exact model annex row",
+            "observation": "Named manufacturer: Jauch Quartz GmbH."
+          }
+        ],
+        "/brand": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 Jauch Battery Solutions heading",
+            "observation": "Jauch branding."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 Specifications / Model",
+            "observation": "LP103450JH."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 Specifications / Model and Jauch No.",
+            "observation": "Exact model and Jauch part 246520."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 Jauch No. and PCM table; page 2 opening",
+            "observation": "Part 246520; PCM single-cell assembly."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 brand heading and Model",
+            "observation": "Editable suggestion combines brand and exact model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Lithium-ion polymer pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Single-cell battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "jauch-lithium-polymer-family-page-batch5",
+            "locator": "Technical info / soft or pouch cells; LP103450JH Type row",
+            "observation": "Named pouch-family product."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 Specifications / Typ. Capacity and Min. Capacity",
+            "observation": "No Rated capacity is labelled."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 Specifications / capacity labels",
+            "observation": "Only Typical and Minimum capacity labels."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 Specifications / Typ. Capacity",
+            "observation": "1920 mAh Typical."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 Specifications / Min. Capacity",
+            "observation": "1900 mAh Minimum."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 Specifications / both capacity-row qualifications",
+            "observation": "0.2C discharge to 3.0V for both capacities."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 Specifications / Nominal Voltage",
+            "observation": "3.7 V Nominal."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 2 Handling and Storage / Rechargeable Single cell Battery",
+            "observation": "Explicit single-cell pack corresponds to 1S1P."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "jauch-lp103450jh-246520-datasheet",
+            "locator": "Page 1 Specifications / Weight",
+            "observation": "Approximate mass 35 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "A Rated or Nominal capacity is not stated; rated_capacity_mah remains null.",
+        "Capacity-row test temperature and complete test sequence are not established; cycle-life conditions are not used as capacity-test conditions.",
+        "Exact plug, lead termination and pin polarity are not curated; connector remains null.",
+        "Dimensions are not independently reconciled for the selected PCM assembly; dimensions_mm remains null.",
+        "Nominal or rated energy is not curated; energy_wh remains null.",
+        "Maintenance intervals are not established; maintenance_notes remains null."
+      ],
+      "notes": [
+        "Public product reference only; no school stock or procurement preference is asserted.",
+        "Research allocation: prototype_pouch_1s; this editorial grouping is not a manufacturer specification.",
+        "Exact base model and selected Jauch part identify one PCM assembly; custom connector variants are not counted as new models.",
+        "Typical and Minimum labels are retained; the application Rated capacity field must remain unknown.",
+        "The suggested display name is editable and is not an asset identifier.",
+        "Mass is approximate.",
+        "The unqualified product-page capacity equals PDF Minimum; it is not promoted to Rated capacity.",
+        "Core fields were self-checked against opened official PDFs. The selected footer edition is recorded without a globally latest-version assertion."
+      ]
+    },
+    {
+      "catalog_id": "jauch-lp906090jh-246525",
+      "manufacturer": "Jauch Quartz GmbH",
+      "brand": "Jauch",
+      "model": "LP906090JH",
+      "variant_key": "246525-pcm",
+      "variant_description": "Single-cell lithium-ion polymer pouch assembly with PCM; Jauch part 246525. Selected source edition only; exact connector hardware is not curated.",
+      "suggested_display_name": "Jauch LP906090JH",
+      "aliases": [
+        {
+          "value": "LP906090JH",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "246525",
+          "kind": "manufacturer_alias",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "pouch",
+        "description": "Single-cell lithium-ion polymer pouch assembly with PCM."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": 6020,
+      "minimum_capacity_mah": 6000,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Typical and Minimum capacity: 0.2C discharge to 3.0 V. Capacity-row temperature and full test sequence are not stated.",
+      "nominal_voltage_v": 3.7,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 1,
+        "parallel": 1
+      },
+      "connector": null,
+      "dimensions_mm": null,
+      "mass_g": 105,
+      "maintenance_notes": null,
+      "source_ids": [
+        "jauch-lp906090jh-246525-datasheet",
+        "jauch-lithium-polymer-family-page-batch5",
+        "jauch-jh-psds-20240307-batch5"
+      ],
+      "field_evidence": {
+        "/manufacturer": [
+          {
+            "source_id": "jauch-jh-psds-20240307-batch5",
+            "locator": "Page 1 Section I / Manufacturer; page 9 exact model annex row",
+            "observation": "Named manufacturer: Jauch Quartz GmbH."
+          }
+        ],
+        "/brand": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 Jauch Battery Solutions heading",
+            "observation": "Jauch branding."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 Specifications / Model",
+            "observation": "LP906090JH."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 Specifications / Model and Jauch No.",
+            "observation": "Exact model and Jauch part 246525."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 Jauch No. and PCM table; page 2 opening",
+            "observation": "Part 246525; PCM single-cell assembly."
+          }
+        ],
+        "/suggested_display_name": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 brand heading and Model",
+            "observation": "Editable suggestion combines brand and exact model."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Lithium-ion polymer pack."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Explicitly rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 2 Handling and Storage / opening classification",
+            "observation": "Single-cell battery pack."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "jauch-lithium-polymer-family-page-batch5",
+            "locator": "Technical info / soft or pouch cells; LP906090JH Type row",
+            "observation": "Named pouch-family product."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 Specifications / Typ. Capacity and Min. Capacity",
+            "observation": "No Rated capacity is labelled."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 Specifications / capacity labels",
+            "observation": "Only Typical and Minimum capacity labels."
+          }
+        ],
+        "/typical_capacity_mah": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 Specifications / Typ. Capacity",
+            "observation": "6020 mAh Typical."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 Specifications / Min. Capacity",
+            "observation": "6000 mAh Minimum."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 Specifications / both capacity-row qualifications",
+            "observation": "0.2C discharge to 3.0V for both capacities."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 Specifications / Nominal Voltage",
+            "observation": "3.7 V Nominal."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 2 Handling and Storage / Rechargeable Single cell Battery",
+            "observation": "Explicit single-cell pack corresponds to 1S1P."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "jauch-lp906090jh-246525-datasheet",
+            "locator": "Page 1 Specifications / Weight",
+            "observation": "Approximate mass 105 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "A Rated or Nominal capacity is not stated; rated_capacity_mah remains null.",
+        "Capacity-row test temperature and complete test sequence are not established; cycle-life conditions are not used as capacity-test conditions.",
+        "Exact plug, lead termination and pin polarity are not curated; connector remains null.",
+        "Dimensions are not independently reconciled for the selected PCM assembly; dimensions_mm remains null.",
+        "Nominal or rated energy is not curated; energy_wh remains null.",
+        "Maintenance intervals are not established; maintenance_notes remains null."
+      ],
+      "notes": [
+        "Public product reference only; no school stock or procurement preference is asserted.",
+        "Research allocation: prototype_pouch_1s; this editorial grouping is not a manufacturer specification.",
+        "Exact base model and selected Jauch part identify one PCM assembly; custom connector variants are not counted as new models.",
+        "Typical and Minimum labels are retained; the application Rated capacity field must remain unknown.",
+        "The suggested display name is editable and is not an asset identifier.",
+        "Mass is approximate.",
+        "The unqualified product-page capacity equals PDF Minimum; it is not promoted to Rated capacity.",
+        "Core fields were self-checked against opened official PDFs. The selected footer edition is recorded without a globally latest-version assertion."
+      ]
+    }
+  ]
+}

@@ -326,3 +326,80 @@ test("a 100-battery scanned return retains every loan binding and placement atom
     assert.equal((await context.store(other).movement(input)).replayed, true);
     assert.deepEqual(await counts(context), current);
 });
+
+test("manual selection checks out and returns tagged and multiple untagged batteries in both inventories with preserved source and exact replay", async () => {
+    for (const dataset of ["demo", "live"]) {
+        const context = await fixture(`manual-selection-${dataset}`, dataset), ids = ["BAT-ONE", "UNTAGGED-A", "UNTAGGED-B"];
+        for (const id of ids.slice(1)) await context.store().saveBattery({ id, name: "Untagged selected battery", tagId: null, ownerId: `staff-${other.id}`, homeBuildingId: "J18" });
+        const checkout = { requestId: uuid(), kind: "checkout", batteryIds: ids, scan: await scan(context, ids, "selection") };
+        const result = await context.store().movement(checkout);
+        assert.equal(result.borrowerAccountId, self.id);
+        assert.equal(result.scan.source, "selection");
+        assert.equal(result.count, 3);
+        assert.equal(result.scan.bindings.filter(binding => binding.tagId === null).length, 2);
+        const checkedOut = await counts(context);
+        assert.equal(checkedOut.loans.length, 3);
+        assert.equal(checkedOut.checkoutEvents.length, 3);
+        assert.ok(checkedOut.checkoutEvents.every(event => event.actor_id === self.id && JSON.parse(event.details_json).scan.source === "selection"));
+        assert.equal((await context.store().movement(checkout)).replayed, true);
+        assert.deepEqual(await counts(context), checkedOut);
+        assert.ok((await context.store().snapshot()).batteries.filter(battery => ids.includes(battery.id)).every(battery => battery.borrowerAccountId === self.id && battery.ownerAccountId === other.id));
+
+        const input = await returnInput(context, ids, "selection", dataset === "demo");
+        const returned = await context.store(other).movement(input);
+        assert.equal(returned.scan.source, "selection");
+        if (dataset === "demo") assert.equal(returned.returnPlacement.source, "Staff return confirmation");
+        else assert.equal(returned.returnPlacement, undefined);
+        await editBattery(context, "UNTAGGED-A", { tagId: "TAG-ADDED-AFTER-RETURN" });
+        const after = await counts(context), replay = await context.store(other).movement(input);
+        assert.equal(replay.replayed, true);
+        assert.deepEqual({ ...replay, replayed: undefined }, { ...returned, replayed: undefined });
+        assert.deepEqual(await counts(context), after);
+        assert.ok(after.returnEvents.every(event => event.actor_id === other.id && JSON.parse(event.details_json).scan.source === "selection"));
+        assert.equal(after.observations.length, dataset === "demo" ? 3 : 0);
+        await assert.rejects(context.store(other).movement({ ...input, scan: { ...input.scan, sessionId: uuid() } }), status(409));
+    }
+});
+
+test("manual selection does not weaken tag lookup or allow nullable manual/simulated reads and duplicate nonnull tags", async () => {
+    const context = await fixture("selection-contract"), selected = await scan(context, ["BAT-ONE", "BAT-TWO"], "selection"), before = await counts(context);
+    await assert.rejects(context.store().scanLookup({ tagIds: [tagOne], source: "selection" }), invalid);
+    for (const source of ["manual", "simulated"]) {
+        await assert.rejects(context.store().movement({ requestId: uuid(), kind: "checkout", batteryIds: ["BAT-ONE"], scan: {
+            sessionId: uuid(), source, bindings: [{ batteryId: "BAT-ONE", tagId: null, version: 1 }],
+        } }), invalid);
+        await assert.rejects(context.store().scanLookup({ tagIds: [null], source }), invalid);
+    }
+    const duplicateTag = selected.bindings.map(binding => ({ ...binding, tagId: tagOne }));
+    await assert.rejects(context.store().movement({ requestId: uuid(), kind: "checkout", batteryIds: ["BAT-ONE", "BAT-TWO"], scan: { ...selected, bindings: duplicateTag } }), invalid);
+    assert.deepEqual(await counts(context), before);
+});
+
+test("manual selection rejects changed null tags or metadata atomically, including edits at the D1 commit boundary", async () => {
+    for (const change of ["tag", "metadata"]) for (const boundary of ["before", "commit"]) {
+        const context = await fixture(`selection-stale-${change}-${boundary}`, "live"), ids = ["BAT-ONE", "UNTAGGED-A", "UNTAGGED-B"];
+        for (const id of ids.slice(1)) await context.store().saveBattery({ id, name: "Untagged selected battery", ownerId: `staff-${other.id}`, homeBuildingId: "J18" });
+        const input = { requestId: uuid(), kind: "checkout", batteryIds: ids, scan: await scan(context, ids, "selection") };
+        const update = () => editBattery(context, "UNTAGGED-A", change === "tag" ? { tagId: "NEW-REGISTERED-TAG" } : { name: "Updated after selection" });
+        if (boundary === "before") await update();
+        const before = await counts(context);
+        await rejectedScan(context, input, /binding|record changed/i, boundary === "commit" ? beforeAtomicCommit(update) : db);
+        assert.deepEqual(await counts(context), before);
+        assert.ok((await context.store().snapshot()).batteries.filter(battery => ids.includes(battery.id)).every(battery => battery.loanId === null));
+    }
+});
+
+test("manual selection keeps exact return loans and cannot switch to a later borrower after a concurrent return", async () => {
+    const context = await fixture("selection-later-loan", "live"), ids = ["UNTAGGED-A", "UNTAGGED-B"];
+    for (const id of ids) await context.store().saveBattery({ id, name: "Untagged selected battery", ownerId: `staff-${other.id}`, homeBuildingId: "J18" });
+    await ordinaryCheckout(context, ids);
+    const selected = await returnInput(context, ids, "selection", false);
+    await context.store().movement(await returnInput(context, [ids[0]], "selection", false));
+    await ordinaryCheckout(context, [ids[0]], other);
+    const before = await counts(context);
+    await rejectedScan(context, selected, /loan/i);
+    assert.deepEqual(await counts(context), before);
+    const snapshot = await context.store().snapshot();
+    assert.equal(snapshot.batteries.find(battery => battery.id === ids[1]).loanId, selected.expectedLoans[1].loanId);
+    assert.equal(snapshot.batteries.find(battery => battery.id === ids[0]).borrowerAccountId, other.id);
+});

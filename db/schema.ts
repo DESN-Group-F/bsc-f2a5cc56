@@ -38,8 +38,25 @@ export const rooms = sqliteTable("rooms", {
 export const batteries = sqliteTable("batteries", {
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), name: text("name").notNull(), chemistry: text("chemistry").notNull().default(""), model: text("model").notNull().default(""),
     manufacturedOn: text("manufactured_on"), firstUsedOn: text("first_used_on"),
+    lifecycleStatus: text("lifecycle_status").notNull().default("active"), lifecycleAt: text("lifecycle_at"), lifecycleReason: text("lifecycle_reason"), lifecycleDestination: text("lifecycle_destination"),
     capacityMah: real("capacity_mah"), voltage: real("voltage"), tagId: text("tag_id"), ownerKey: text("owner_key").notNull().references(() => people.key), homeBuildingKey: text("home_building_key").references(() => buildings.key), homeRoomKey: text("home_room_key").references(() => rooms.key), createdAt: text("created_at").notNull(), version: integer("version").notNull().default(1),
-}, t => [uniqueIndex("idx_batteries_scope_id").on(t.scope, t.id), uniqueIndex("idx_batteries_scope_tag").on(t.scope, t.tagId), check("battery_storage_required", sql `${t.homeBuildingKey} IS NOT NULL OR ${t.homeRoomKey} IS NOT NULL`), check("positive_capacity", sql `${t.capacityMah} IS NULL OR ${t.capacityMah}>0`), check("positive_voltage", sql `${t.voltage} IS NULL OR ${t.voltage}>0`)]);
+}, t => [uniqueIndex("idx_batteries_scope_id").on(t.scope, t.id), uniqueIndex("idx_batteries_scope_tag").on(t.scope, t.tagId), check("battery_storage_required", sql `${t.homeBuildingKey} IS NOT NULL OR ${t.homeRoomKey} IS NOT NULL`), check("positive_capacity", sql `${t.capacityMah} IS NULL OR ${t.capacityMah}>0`), check("positive_voltage", sql `${t.voltage} IS NULL OR ${t.voltage}>0`), check("battery_lifecycle_status", sql`${t.lifecycleStatus} IN ('active','scrapped','permanently_removed')`)]);
+export const batteryModels = sqliteTable("battery_models", {
+    key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), identityKey: text("identity_key").notNull(),
+    brand: text("brand").notNull().default(""), model: text("model").notNull(), variant: text("variant").notNull().default(""), name: text("name").notNull(), chemistry: text("chemistry").notNull().default(""),
+    capacityMah: real("capacity_mah"), voltage: real("voltage"), notes: text("notes").notNull().default(""), version: integer("version").notNull().default(1), createdAt: text("created_at").notNull(),
+    createdBy: text("created_by").notNull().references(() => staffAccounts.id), actorName: text("actor_name").notNull(),
+    updatedAt: text("updated_at").notNull(), updatedBy: text("updated_by").notNull().references(() => staffAccounts.id), updatedActorName: text("updated_actor_name").notNull(),
+}, t => [uniqueIndex("idx_battery_models_scope_id").on(t.scope, t.id), uniqueIndex("idx_battery_models_identity").on(t.scope, t.identityKey),
+    check("battery_model_lengths", sql`length(${t.brand})<=80 AND length(${t.model}) BETWEEN 1 AND 120 AND length(${t.variant})<=120 AND length(${t.name}) BETWEEN 2 AND 120 AND length(${t.chemistry})<=40 AND length(${t.notes})<=1000`),
+    check("battery_model_capacity", sql`${t.capacityMah} IS NULL OR (${t.capacityMah}>0 AND ${t.capacityMah}<=1000000)`), check("battery_model_voltage", sql`${t.voltage} IS NULL OR (${t.voltage}>0 AND ${t.voltage}<=1000)`), check("battery_model_version", sql`${t.version}>0`)]);
+export const intakeCounters = sqliteTable("intake_counters", {
+    scope: text("scope").primaryKey(), lastNumber: integer("last_number").notNull(),
+}, t => [check("intake_counter_range", sql`${t.lastNumber} BETWEEN 1 AND 99999999`)]);
+export const intakeSessions = sqliteTable("intake_sessions", {
+    key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), actorId: text("actor_id").notNull().references(() => staffAccounts.id),
+    actorName: text("actor_name").notNull(), configurationJson: text("configuration_json").notNull(), contextJson: text("context_json").notNull(), createdAt: text("created_at").notNull(),
+}, t => [uniqueIndex("idx_intake_sessions_scope_id").on(t.scope, t.id), check("intake_session_configuration_json", sql`json_valid(${t.configurationJson})`), check("intake_session_context_json", sql`json_valid(${t.contextJson})`)]);
 export const loans = sqliteTable("loans", {
     borrowerAccountId: text("borrower_account_id").references(() => staffAccounts.id),
     id: text("id").primaryKey(), scope: text("scope").notNull(), batteryKey: text("battery_key").notNull().references(() => batteries.key), borrowerKey: text("borrower_key").notNull().references(() => people.key), borrowerName: text("borrower_name").notNull(),
@@ -76,6 +93,16 @@ export const taskCycles = sqliteTable("task_cycles", {
     dueOn: text("due_on").notNull(), reminderOn: text("reminder_on"), reminderTime: text("reminder_time"), reminderStatus: text("reminder_status").notNull(), reminderAtUtc: text("reminder_at_utc"), status: text("status").notNull().default("open"), version: integer("version").notNull().default(1),
     createdAt: text("created_at").notNull(), completedAt: text("completed_at"), completedBy: text("completed_by").references(() => staffAccounts.id), completedByName: text("completed_by_name"), completionNotes: text("completion_notes"),
 }, t => [uniqueIndex("idx_task_cycles_scope_id").on(t.scope, t.id), index("idx_task_cycles_due").on(t.planKey, t.dueOn), uniqueIndex("idx_task_cycles_one_open").on(t.planKey).where(sql`${t.status}='open'`), check("task_cycle_status", sql`${t.status} IN ('open','completed')`), check("task_cycle_snapshot", sql`json_valid(${t.snapshotJson})`)]);
+export const teachingGroups = sqliteTable("teaching_groups", {
+    key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), ownerAccountId: text("owner_account_id").notNull().references(() => staffAccounts.id),
+    name: text("name").notNull(), notes: text("notes").notNull().default(""), memberIdsJson: text("member_ids_json").notNull(), version: integer("version").notNull().default(1), state: text("state").notNull().default("active"), createdAt: text("created_at").notNull(), updatedAt: text("updated_at").notNull(),
+}, t => [uniqueIndex("teaching_groups_identity").on(t.scope, t.ownerAccountId, t.id), uniqueIndex("teaching_groups_active_name").on(t.scope, t.ownerAccountId, sql`${t.name} COLLATE NOCASE`).where(sql`${t.state}='active'`), check("teaching_group_state", sql`${t.state} IN ('active','archived')`)]);
+export const teachingGroupOperations = sqliteTable("teaching_group_operations", {
+    key: text("key").primaryKey(), scope: text("scope").notNull(), ownerAccountId: text("owner_account_id").notNull().references(() => staffAccounts.id), requestId: text("request_id").notNull(), fingerprint: text("fingerprint").notNull(), outcome: text("outcome").notNull(), resultJson: text("result_json").notNull(), createdAt: text("created_at").notNull(), guard: integer("guard").notNull(),
+}, t => [check("teaching_group_operation_guard", sql`${t.guard}=1`)]);
+export const teachingGroupEvents = sqliteTable("teaching_group_events", {
+    id: text("id").primaryKey(), scope: text("scope").notNull(), ownerAccountId: text("owner_account_id").notNull().references(() => staffAccounts.id), groupKey: text("group_key").notNull().references(() => teachingGroups.key), action: text("action").notNull(), at: text("at").notNull(), beforeJson: text("before_json"), afterJson: text("after_json").notNull(), requestId: text("request_id").notNull(),
+});
 export const taskMessages = sqliteTable("task_messages", {
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), cycleKey: text("cycle_key").notNull().references(() => taskCycles.key), recipientId: text("recipient_id").notNull().references(() => staffAccounts.id), occurrence: text("occurrence").notNull(), title: text("title").notNull(), body: text("body").notNull(), reminderOn: text("reminder_on"), reminderTime: text("reminder_time"), reminderAtUtc: text("reminder_at_utc"), createdAt: text("created_at").notNull(), readAt: text("read_at"),
 }, t => [uniqueIndex("idx_task_messages_scope_id").on(t.scope, t.id), uniqueIndex("idx_task_message_occurrence").on(t.cycleKey, t.recipientId, t.occurrence), index("idx_task_messages_recipient").on(t.scope, t.recipientId, t.createdAt)]);

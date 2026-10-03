@@ -1,0 +1,63 @@
+{
+  "evidence_kind": "Research-priority context; not battery specifications or school procurement evidence",
+  "accessed_on": "2026-10-02",
+  "sources": [
+    {
+      "url": "https://www.making.unsw.edu.au/our-machines/drill/",
+      "title": "Drill (hand held) | UNSW Making",
+      "publisher": "UNSW Making",
+      "access_status": "opened",
+      "locator": "Machine Locations: Engineering Makerspaces / James N. Kirby Makerspace rows",
+      "observation": "The public equipment table lists Makita DDA351, DDF484, DHP483, DHP484, DHP485, DHR243, DHR283, DTD153, DTD155 and DTW285 tools in the James N. Kirby Makerspace. It does not identify purchased battery models."
+    },
+    {
+      "url": "https://www.making.unsw.edu.au/our-machines/powered-hand-tools-saws/",
+      "title": "Powered Hand Tools - Saws | UNSW Making",
+      "publisher": "UNSW Making",
+      "access_status": "opened",
+      "locator": "Machine Locations: Engineering Makerspaces / James N. Kirby Makerspace rows",
+      "observation": "The table lists Makita DCS553Z, DHS781, DJR360, DJV181, DJV182 and DKP180Z tools. These tool identifiers are not catalog battery identifiers."
+    },
+    {
+      "url": "https://www.making.unsw.edu.au/engineering-makerspace/facilities/digfab-lab/",
+      "title": "Elec Makerspace | UNSW Making",
+      "publisher": "UNSW Making",
+      "access_status": "opened",
+      "locator": "Introductory electronics prototyping and testing paragraph",
+      "observation": "The facility describes soldering, inspection and PCB testing resources. This supports research priority for electronics prototype cell references; it does not establish any battery purchase or inventory."
+    },
+    {
+      "url": "https://www.making.unsw.edu.au/engineering-makerspace/about/",
+      "title": "About | UNSW Making",
+      "publisher": "UNSW Making",
+      "access_status": "opened",
+      "locator": "Makerspace descriptions and Find Us",
+      "observation": "The page identifies James N. Kirby with Willis Annex J18, describes Elec electronics prototyping, and describes Renewables student projects ranging from rockets to drones. The current application remains the J18 pilot; no location scope is changed."
+    }
+  ],
+  "interpretation": "Prioritize tool-platform battery packs and single-cell polymer pouch references to address gaps in the 44-model catalog. Public tool or facility listings cannot establish battery procurement distribution, stock quantity or specific battery compatibility.",
+  "proposed_scale": {
+    "status": "superseded_by_user_200_verified_product_plan",
+    "review_checkpoint_independent_models": 60,
+    "initial_broad_reference_range": [
+      100,
+      150
+    ],
+    "workload_reference": 120,
+    "mutually_exclusive_primary_category_plan": {
+      "tool_platform_battery_packs": 20,
+      "electronics_prototype_single_cell_pouches": 25,
+      "general_multicell_lipo_or_liion_finished_packs": 30,
+      "standalone_lithium_cells_other_than_prototype_pouches": 25,
+      "nimh_standard_primary_cells_and_small_lead_acid_combined": 20
+    },
+    "qualification": "Editorial workload plan only; not a UNSW requirement, school-stock estimate, demonstrated sufficiency threshold or procurement-coverage promise. Counts can change with evidence and distinct added value; every product is counted once."
+  },
+  "limitations": [
+    "No actual school purchasing list or physical battery model sample was supplied.",
+    "Adequacy requires lookup results against real label/MPN samples, separately reporting exact verified matches, partial matches and unknowns.",
+    "The four context sources are not canonical product sources and do not increase catalog source or model counts.",
+    "No application features or business database writes are implemented."
+  ],
+  "active_plan_reference": "../catalog-plan.json"
+}

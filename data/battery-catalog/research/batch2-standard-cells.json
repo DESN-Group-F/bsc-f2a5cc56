@@ -1,0 +1,1228 @@
+{
+  "sources": [
+    {
+      "source_id": "panasonic-bk-3hcc-4-spec",
+      "url": "https://panasonic.jp/battery/products/BK-3HCC_4/spec.html",
+      "title": "BK-3HCC/4 specifications: eneloop AA four-cell retail package (high-end model) (English descriptive translation)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-3HCC individual cell, referenced via retail SKU BK-3HCC/4"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer HTML retrieved over HTTPS with status 200; table read in memory. Browser text retrieval intermittently timed out. Specifications table distinguishes cell values from the retail packaging count. No publication or revision date is printed in the selected table."
+    },
+    {
+      "source_id": "panasonic-bk-4hcc-4-spec",
+      "url": "https://panasonic.jp/battery/products/BK-4HCC_4/spec.html",
+      "title": "BK-4HCC/4 specifications: eneloop AAA four-cell retail package (high-end model) (English descriptive translation)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-4HCC individual cell, referenced via retail SKU BK-4HCC/4"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer HTML retrieved over HTTPS with status 200; table read in memory. Browser text retrieval intermittently timed out. Specifications table distinguishes cell values from the retail packaging count. No publication or revision date is printed in the selected table."
+    },
+    {
+      "source_id": "panasonic-bk-3lcc-2-spec",
+      "url": "https://panasonic.jp/battery/products/BK-3LCC_2/spec.html",
+      "title": "BK-3LCC/2 specifications: eneloop AA two-cell retail package (economy model) (English descriptive translation)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-3LCC individual cell, referenced via retail SKU BK-3LCC/2"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer HTML retrieved over HTTPS with status 200; table read in memory. Browser text retrieval intermittently timed out. Specifications table distinguishes cell values from the retail packaging count. No publication or revision date is printed in the selected table."
+    },
+    {
+      "source_id": "panasonic-bk-4lcc-2-spec",
+      "url": "https://panasonic.jp/battery/products/BK-4LCC_2/spec.html",
+      "title": "BK-4LCC/2 specifications: eneloop AAA two-cell retail package (economy model) (English descriptive translation)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-4LCC individual cell, referenced via retail SKU BK-4LCC/2"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer HTML retrieved over HTTPS with status 200; table read in memory. Browser text retrieval intermittently timed out. Specifications table distinguishes cell values from the retail packaging count. No publication or revision date is printed in the selected table."
+    },
+    {
+      "source_id": "panasonic-bk-3mcd-4h-spec",
+      "url": "https://panasonic.jp/battery/products/BK-3MCD_4H/spec.html",
+      "title": "BK-3MCD/4H specifications: eneloop AA four-cell retail package (standard model) (English descriptive translation)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-3MCD individual cell, referenced via retail SKU BK-3MCD/4H"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer HTML retrieved over HTTPS with status 200; table read in memory. Browser text retrieval intermittently timed out. Specifications table distinguishes cell values from the retail packaging count. No publication or revision date is printed in the selected table."
+    },
+    {
+      "source_id": "panasonic-bk-4mcd-4h-spec",
+      "url": "https://panasonic.jp/battery/products/BK-4MCD_4H/spec.html",
+      "title": "BK-4MCD/4H specifications: eneloop AAA four-cell retail package (standard model) (English descriptive translation)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-4MCD individual cell, referenced via retail SKU BK-4MCD/4H"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual manufacturer HTML retrieved over HTTPS with status 200; table read in memory. Browser text retrieval intermittently timed out. Specifications table distinguishes cell values from the retail packaging count. No publication or revision date is printed in the selected table."
+    },
+    {
+      "source_id": "panasonic-nimh-psds-2020-batch2",
+      "url": "https://jpn.faq.panasonic.com/euf/assets/images/panasonic/answer_images/energy/psds/nh_psds_2020_e.pdf",
+      "title": "Product Safety Data Sheet: Nickel-metal Hydride Battery",
+      "publisher": "Panasonic Corporation",
+      "source_type": "manufacturer_datasheet",
+      "document_version": "PNH-PSDS-17E1; effective 2020-01-01",
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-3HCC",
+        "BK-4HCC",
+        "BK-3LCC",
+        "BK-4LCC"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Pages 1 and 3 explicitly list the four base cell models and nominal voltage. Page 2 contains a contradictory generic handling sentence about recharge; model-specific rechargeable product information takes precedence in this catalog. This is the same document URL already used for other models, with additional model applicability."
+    },
+    {
+      "source_id": "panasonic-bk-3hcc-2-4-manual",
+      "url": "https://panasonic.jp/manualdl/p-db/p_/p_bk3hcc24_t_201304181137_0.pdf",
+      "title": "BK-3HCC/2 and BK-3HCC/4 product instructions (English descriptive translation)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_manual",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-3HCC individual cell; /2 and /4 are package counts"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Page 1 identifies the rechargeable cell and minimum-capacity qualification; the footnote cites JIS C 8708 2007 (7.2.1). The filename timestamp is not treated as a document revision."
+    },
+    {
+      "source_id": "panasonic-bk-4hcc-2-4-manual",
+      "url": "https://panasonic.jp/manualdl/p-db/p_/p_bk4hcc42_t_201304181140_0.pdf",
+      "title": "BK-4HCC/2 and BK-4HCC/4 product instructions (English descriptive translation)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_manual",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-4HCC individual cell; /2 and /4 are package counts"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Page 1 identifies the rechargeable cell and minimum-capacity qualification; the footnote cites JIS C 8708 2007 (7.2.1). The filename timestamp is not treated as a document revision."
+    },
+    {
+      "source_id": "panasonic-rechargeable-comparison-batch2",
+      "url": "https://panasonic.jp/battery/comparison/charge.html",
+      "title": "Rechargeable batteries and chargers comparison table (English descriptive translation)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-3MCD individual AA cell in the standard-model column",
+        "BK-4MCD individual AAA cell in the standard-model column"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Rechargeable-cell comparison: lineup, nominal voltage and minimum-capacity rows. Only the MCD standard-model columns are applied here; newer HCD/LCD products in adjacent columns are not substituted for HCC/LCC."
+    },
+    {
+      "source_id": "panasonic-k-kj85mcd40-cell-identity",
+      "url": "https://panasonic.jp/battery/products/K-KJ85MCD40/spec.html",
+      "title": "K-KJ85MCD40 specifications: charger kit with BK-3MCD cells (English descriptive translation)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-3MCD individual cell only; charger enclosure and charge timing excluded"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual HTML table read via direct HTTPS, status 200. Contents and battery-capacity rows explicitly identify BK-3MCD; rechargeable flag applies to the included battery. Charger dimensions and mass are not imported."
+    },
+    {
+      "source_id": "panasonic-k-kj83mcd04-cell-identity",
+      "url": "https://panasonic.jp/battery/products/K-KJ83MCD04/spec.html",
+      "title": "K-KJ83MCD04 specifications: charger kit with BK-4MCD cells (English descriptive translation)",
+      "publisher": "Panasonic",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "BK-4MCD individual cell only; charger enclosure and charge timing excluded"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Actual HTML table read via direct HTTPS, status 200. Contents and battery-capacity rows explicitly identify BK-4MCD; rechargeable flag applies to the included battery. Charger dimensions and mass are not imported."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "panasonic-eneloop-bk-3hcc",
+      "manufacturer": null,
+      "brand": "eneloop",
+      "model": "BK-3HCC",
+      "variant_key": "bk-3hcc-standard-cell",
+      "variant_description": "One AA high-end-model NiMH cell with exact base model BK-3HCC; retail reference BK-3HCC/4 is packaging, not a connected pack.",
+      "aliases": [
+        {
+          "value": "BK-3HCC",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "BK-3HCC/4",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "AA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "suggested_display_name": "eneloop BK-3HCC",
+      "chemistry": "nickel_metal_hydride",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AA",
+        "description": "AA cylindrical single-cell form factor."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 2450,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Minimum capacity referenced to JIS C 8708 2007 (7.2.1); detailed charge/discharge settings not stated here.",
+      "nominal_voltage_v": 1.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": 14.5,
+        "length": null,
+        "width": null,
+        "height": 50.4,
+        "basis": "Approximate manufacturer values per cell; not maximum limits or actual asset measurements."
+      },
+      "mass_g": 30,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-bk-3hcc-4-spec",
+        "panasonic-nimh-psds-2020-batch2",
+        "panasonic-bk-3hcc-2-4-manual"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-bk-3hcc-4-spec",
+            "locator": "Product heading, eneloop product name",
+            "observation": "Identifies the eneloop brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-nimh-psds-2020-batch2",
+            "locator": "Page 1, section 1, Model Number list",
+            "observation": "Explicitly identifies BK-3HCC."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-bk-3hcc-4-spec",
+            "locator": "Product heading and Specifications table, package quantity and per-cell physical entries",
+            "observation": "Describes the high-end AA cell, supplied as retail SKU BK-3HCC/4; package quantity is not a connected battery configuration."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-bk-3hcc-4-spec",
+            "locator": "Product heading and Specifications table",
+            "observation": "Retail SKU BK-3HCC/4 is a packaging identifier; generic size is search-only. The base model is independently identified in the attached model source."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-bk-3hcc-4-spec",
+            "locator": "Specifications table, Type row",
+            "observation": "Identifies nickel-metal hydride chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-bk-3hcc-4-spec",
+            "locator": "Specifications table, Rechargeable row",
+            "observation": "Identifies the cell as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-bk-3hcc-4-spec",
+            "locator": "Specifications table, packaging quantity and per-cell mass",
+            "observation": "The retail package contains separate cells; its per-cell figures describe one tracked cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-bk-3hcc-4-spec",
+            "locator": "Product heading, size designation",
+            "observation": "Identifies the AA cell size."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "panasonic-bk-3hcc-4-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "States minimum capacity 2450 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "panasonic-bk-3hcc-4-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "Capacity is explicitly minimum, not relabelled as rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-nimh-psds-2020-batch2",
+            "locator": "Page 3, section 9, Nominal Voltage list",
+            "observation": "Lists BK-3HCC at nominal 1.2 V."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "panasonic-bk-3hcc-4-spec",
+            "locator": "Specifications table, Dimensions row",
+            "observation": "Approximate cell diameter 14.5 mm and height 50.4 mm; not a tolerance or measured asset value."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "panasonic-bk-3hcc-4-spec",
+            "locator": "Specifications table, Mass row (per cell)",
+            "observation": "Approximate mass 30 g per cell."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-bk-3hcc-2-4-manual",
+            "locator": "Page 1, minimum-capacity footnote",
+            "observation": "Cites JIS C 8708 2007 (7.2.1); detailed settings are not reproduced."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [
+        "The shared PSDS generic handling sentence says not to recharge; model-specific product specifications identify this cell as rechargeable. No operational rule is derived from that generic sentence."
+      ],
+      "unknowns": [
+        "No separately labelled rated, nominal, typical or unqualified capacity is selected; only the minimum-capacity field is populated.",
+        "Manufacturer legal entity is not filled in this narrow batch; the exact source publisher is retained.",
+        "Energy, explicit series/parallel topology, connector/polarity details and maintenance interval are not established by the selected product specifications.",
+        "Actual cell age, condition, owner, dates, location and tag must be recorded from the individual asset."
+      ],
+      "notes": [
+        "Public product reference only; no school stock or purchasing recommendation is asserted.",
+        "This is one independent base model, not an extra catalog entry for a two-cell or four-cell retail package.",
+        "Different HCC, LCC and MCD model codes are not treated as aliases of each other or of BK-3MCC/BK-4MCC.",
+        "The editable display name is a suggestion; staff must confirm the actual received label and exact model.",
+        "Minimum capacity is preserved with its qualification and is not automatically copied into the current application's rated-capacity scalar.",
+        "Specifications were read from actual manufacturer content; browser reader timeout is recorded where direct HTTPS was used."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-eneloop-bk-4hcc",
+      "manufacturer": null,
+      "brand": "eneloop",
+      "model": "BK-4HCC",
+      "variant_key": "bk-4hcc-standard-cell",
+      "variant_description": "One AAA high-end-model NiMH cell with exact base model BK-4HCC; retail reference BK-4HCC/4 is packaging, not a connected pack.",
+      "aliases": [
+        {
+          "value": "BK-4HCC",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "BK-4HCC/4",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "AAA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "suggested_display_name": "eneloop BK-4HCC",
+      "chemistry": "nickel_metal_hydride",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AAA",
+        "description": "AAA cylindrical single-cell form factor."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 900,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": "Minimum capacity referenced to JIS C 8708 2007 (7.2.1); detailed charge/discharge settings not stated here.",
+      "nominal_voltage_v": 1.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": 10.5,
+        "length": null,
+        "width": null,
+        "height": 44.5,
+        "basis": "Approximate manufacturer values per cell; not maximum limits or actual asset measurements."
+      },
+      "mass_g": 13,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-bk-4hcc-4-spec",
+        "panasonic-nimh-psds-2020-batch2",
+        "panasonic-bk-4hcc-2-4-manual"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-bk-4hcc-4-spec",
+            "locator": "Product heading, eneloop product name",
+            "observation": "Identifies the eneloop brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-nimh-psds-2020-batch2",
+            "locator": "Page 1, section 1, Model Number list",
+            "observation": "Explicitly identifies BK-4HCC."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-bk-4hcc-4-spec",
+            "locator": "Product heading and Specifications table, package quantity and per-cell physical entries",
+            "observation": "Describes the high-end AAA cell, supplied as retail SKU BK-4HCC/4; package quantity is not a connected battery configuration."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-bk-4hcc-4-spec",
+            "locator": "Product heading and Specifications table",
+            "observation": "Retail SKU BK-4HCC/4 is a packaging identifier; generic size is search-only. The base model is independently identified in the attached model source."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-bk-4hcc-4-spec",
+            "locator": "Specifications table, Type row",
+            "observation": "Identifies nickel-metal hydride chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-bk-4hcc-4-spec",
+            "locator": "Specifications table, Rechargeable row",
+            "observation": "Identifies the cell as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-bk-4hcc-4-spec",
+            "locator": "Specifications table, packaging quantity and per-cell mass",
+            "observation": "The retail package contains separate cells; its per-cell figures describe one tracked cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-bk-4hcc-4-spec",
+            "locator": "Product heading, size designation",
+            "observation": "Identifies the AAA cell size."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "panasonic-bk-4hcc-4-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "States minimum capacity 900 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "panasonic-bk-4hcc-4-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "Capacity is explicitly minimum, not relabelled as rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-nimh-psds-2020-batch2",
+            "locator": "Page 3, section 9, Nominal Voltage list",
+            "observation": "Lists BK-4HCC at nominal 1.2 V."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "panasonic-bk-4hcc-4-spec",
+            "locator": "Specifications table, Dimensions row",
+            "observation": "Approximate cell diameter 10.5 mm and height 44.5 mm; not a tolerance or measured asset value."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "panasonic-bk-4hcc-4-spec",
+            "locator": "Specifications table, Mass row (per cell)",
+            "observation": "Approximate mass 13 g per cell."
+          }
+        ],
+        "/capacity_test_conditions": [
+          {
+            "source_id": "panasonic-bk-4hcc-2-4-manual",
+            "locator": "Page 1, minimum-capacity footnote",
+            "observation": "Cites JIS C 8708 2007 (7.2.1); detailed settings are not reproduced."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [
+        "The shared PSDS generic handling sentence says not to recharge; model-specific product specifications identify this cell as rechargeable. No operational rule is derived from that generic sentence."
+      ],
+      "unknowns": [
+        "No separately labelled rated, nominal, typical or unqualified capacity is selected; only the minimum-capacity field is populated.",
+        "Manufacturer legal entity is not filled in this narrow batch; the exact source publisher is retained.",
+        "Energy, explicit series/parallel topology, connector/polarity details and maintenance interval are not established by the selected product specifications.",
+        "Actual cell age, condition, owner, dates, location and tag must be recorded from the individual asset."
+      ],
+      "notes": [
+        "Public product reference only; no school stock or purchasing recommendation is asserted.",
+        "This is one independent base model, not an extra catalog entry for a two-cell or four-cell retail package.",
+        "Different HCC, LCC and MCD model codes are not treated as aliases of each other or of BK-3MCC/BK-4MCC.",
+        "The editable display name is a suggestion; staff must confirm the actual received label and exact model.",
+        "Minimum capacity is preserved with its qualification and is not automatically copied into the current application's rated-capacity scalar.",
+        "Specifications were read from actual manufacturer content; browser reader timeout is recorded where direct HTTPS was used."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-eneloop-bk-3lcc",
+      "manufacturer": null,
+      "brand": "eneloop",
+      "model": "BK-3LCC",
+      "variant_key": "bk-3lcc-standard-cell",
+      "variant_description": "One AA economy-model NiMH cell with exact base model BK-3LCC; retail reference BK-3LCC/2 is packaging, not a connected pack.",
+      "aliases": [
+        {
+          "value": "BK-3LCC",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "BK-3LCC/2",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "AA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "suggested_display_name": "eneloop BK-3LCC",
+      "chemistry": "nickel_metal_hydride",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AA",
+        "description": "AA cylindrical single-cell form factor."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 950,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": 14.5,
+        "length": null,
+        "width": null,
+        "height": 50.5,
+        "basis": "Approximate manufacturer values per cell; not maximum limits or actual asset measurements."
+      },
+      "mass_g": 19,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-bk-3lcc-2-spec",
+        "panasonic-nimh-psds-2020-batch2"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-bk-3lcc-2-spec",
+            "locator": "Product heading, eneloop product name",
+            "observation": "Identifies the eneloop brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-nimh-psds-2020-batch2",
+            "locator": "Page 1, section 1, Model Number list",
+            "observation": "Explicitly identifies BK-3LCC."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-bk-3lcc-2-spec",
+            "locator": "Product heading and Specifications table, package quantity and per-cell physical entries",
+            "observation": "Describes the economy AA cell, supplied as retail SKU BK-3LCC/2; package quantity is not a connected battery configuration."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-bk-3lcc-2-spec",
+            "locator": "Product heading and Specifications table",
+            "observation": "Retail SKU BK-3LCC/2 is a packaging identifier; generic size is search-only. The base model is independently identified in the attached model source."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-bk-3lcc-2-spec",
+            "locator": "Specifications table, Type row",
+            "observation": "Identifies nickel-metal hydride chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-bk-3lcc-2-spec",
+            "locator": "Specifications table, Rechargeable row",
+            "observation": "Identifies the cell as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-bk-3lcc-2-spec",
+            "locator": "Specifications table, packaging quantity and per-cell mass",
+            "observation": "The retail package contains separate cells; its per-cell figures describe one tracked cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-bk-3lcc-2-spec",
+            "locator": "Product heading, size designation",
+            "observation": "Identifies the AA cell size."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "panasonic-bk-3lcc-2-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "States minimum capacity 950 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "panasonic-bk-3lcc-2-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "Capacity is explicitly minimum, not relabelled as rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-nimh-psds-2020-batch2",
+            "locator": "Page 3, section 9, Nominal Voltage list",
+            "observation": "Lists BK-3LCC at nominal 1.2 V."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "panasonic-bk-3lcc-2-spec",
+            "locator": "Specifications table, Dimensions row",
+            "observation": "Approximate cell diameter 14.5 mm and height 50.5 mm; not a tolerance or measured asset value."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "panasonic-bk-3lcc-2-spec",
+            "locator": "Specifications table, Mass row (per cell)",
+            "observation": "Approximate mass 19 g per cell."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [
+        "The shared PSDS generic handling sentence says not to recharge; model-specific product specifications identify this cell as rechargeable. No operational rule is derived from that generic sentence."
+      ],
+      "unknowns": [
+        "No separately labelled rated, nominal, typical or unqualified capacity is selected; only the minimum-capacity field is populated.",
+        "Manufacturer legal entity is not filled in this narrow batch; the exact source publisher is retained.",
+        "Energy, explicit series/parallel topology, connector/polarity details and maintenance interval are not established by the selected product specifications.",
+        "Actual cell age, condition, owner, dates, location and tag must be recorded from the individual asset.",
+        "The selected capacity source does not give an unambiguous model-specific test setup; capacity_test_conditions remains null."
+      ],
+      "notes": [
+        "Public product reference only; no school stock or purchasing recommendation is asserted.",
+        "This is one independent base model, not an extra catalog entry for a two-cell or four-cell retail package.",
+        "Different HCC, LCC and MCD model codes are not treated as aliases of each other or of BK-3MCC/BK-4MCC.",
+        "The editable display name is a suggestion; staff must confirm the actual received label and exact model.",
+        "Minimum capacity is preserved with its qualification and is not automatically copied into the current application's rated-capacity scalar.",
+        "Specifications were read from actual manufacturer content; browser reader timeout is recorded where direct HTTPS was used."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-eneloop-bk-4lcc",
+      "manufacturer": null,
+      "brand": "eneloop",
+      "model": "BK-4LCC",
+      "variant_key": "bk-4lcc-standard-cell",
+      "variant_description": "One AAA economy-model NiMH cell with exact base model BK-4LCC; retail reference BK-4LCC/2 is packaging, not a connected pack.",
+      "aliases": [
+        {
+          "value": "BK-4LCC",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "BK-4LCC/2",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "AAA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "suggested_display_name": "eneloop BK-4LCC",
+      "chemistry": "nickel_metal_hydride",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AAA",
+        "description": "AAA cylindrical single-cell form factor."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 550,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": 10.5,
+        "length": null,
+        "width": null,
+        "height": 44.5,
+        "basis": "Approximate manufacturer values per cell; not maximum limits or actual asset measurements."
+      },
+      "mass_g": 11,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-bk-4lcc-2-spec",
+        "panasonic-nimh-psds-2020-batch2"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-bk-4lcc-2-spec",
+            "locator": "Product heading, eneloop product name",
+            "observation": "Identifies the eneloop brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-nimh-psds-2020-batch2",
+            "locator": "Page 1, section 1, Model Number list",
+            "observation": "Explicitly identifies BK-4LCC."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-bk-4lcc-2-spec",
+            "locator": "Product heading and Specifications table, package quantity and per-cell physical entries",
+            "observation": "Describes the economy AAA cell, supplied as retail SKU BK-4LCC/2; package quantity is not a connected battery configuration."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-bk-4lcc-2-spec",
+            "locator": "Product heading and Specifications table",
+            "observation": "Retail SKU BK-4LCC/2 is a packaging identifier; generic size is search-only. The base model is independently identified in the attached model source."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-bk-4lcc-2-spec",
+            "locator": "Specifications table, Type row",
+            "observation": "Identifies nickel-metal hydride chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-bk-4lcc-2-spec",
+            "locator": "Specifications table, Rechargeable row",
+            "observation": "Identifies the cell as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-bk-4lcc-2-spec",
+            "locator": "Specifications table, packaging quantity and per-cell mass",
+            "observation": "The retail package contains separate cells; its per-cell figures describe one tracked cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-bk-4lcc-2-spec",
+            "locator": "Product heading, size designation",
+            "observation": "Identifies the AAA cell size."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "panasonic-bk-4lcc-2-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "States minimum capacity 550 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "panasonic-bk-4lcc-2-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "Capacity is explicitly minimum, not relabelled as rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-nimh-psds-2020-batch2",
+            "locator": "Page 3, section 9, Nominal Voltage list",
+            "observation": "Lists BK-4LCC at nominal 1.2 V."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "panasonic-bk-4lcc-2-spec",
+            "locator": "Specifications table, Dimensions row",
+            "observation": "Approximate cell diameter 10.5 mm and height 44.5 mm; not a tolerance or measured asset value."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "panasonic-bk-4lcc-2-spec",
+            "locator": "Specifications table, Mass row (per cell)",
+            "observation": "Approximate mass 11 g per cell."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [
+        "The shared PSDS generic handling sentence says not to recharge; model-specific product specifications identify this cell as rechargeable. No operational rule is derived from that generic sentence."
+      ],
+      "unknowns": [
+        "No separately labelled rated, nominal, typical or unqualified capacity is selected; only the minimum-capacity field is populated.",
+        "Manufacturer legal entity is not filled in this narrow batch; the exact source publisher is retained.",
+        "Energy, explicit series/parallel topology, connector/polarity details and maintenance interval are not established by the selected product specifications.",
+        "Actual cell age, condition, owner, dates, location and tag must be recorded from the individual asset.",
+        "The selected capacity source does not give an unambiguous model-specific test setup; capacity_test_conditions remains null."
+      ],
+      "notes": [
+        "Public product reference only; no school stock or purchasing recommendation is asserted.",
+        "This is one independent base model, not an extra catalog entry for a two-cell or four-cell retail package.",
+        "Different HCC, LCC and MCD model codes are not treated as aliases of each other or of BK-3MCC/BK-4MCC.",
+        "The editable display name is a suggestion; staff must confirm the actual received label and exact model.",
+        "Minimum capacity is preserved with its qualification and is not automatically copied into the current application's rated-capacity scalar.",
+        "Specifications were read from actual manufacturer content; browser reader timeout is recorded where direct HTTPS was used."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-eneloop-bk-3mcd",
+      "manufacturer": null,
+      "brand": "eneloop",
+      "model": "BK-3MCD",
+      "variant_key": "bk-3mcd-standard-cell",
+      "variant_description": "One AA standard-model NiMH cell with exact base model BK-3MCD; retail reference BK-3MCD/4H is packaging, not a connected pack.",
+      "aliases": [
+        {
+          "value": "BK-3MCD",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "BK-3MCD/4H",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "AA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "suggested_display_name": "eneloop BK-3MCD",
+      "chemistry": "nickel_metal_hydride",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AA",
+        "description": "AA cylindrical single-cell form factor."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 2000,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": 14.5,
+        "length": null,
+        "width": null,
+        "height": 50.5,
+        "basis": "Approximate manufacturer values per cell; not maximum limits or actual asset measurements."
+      },
+      "mass_g": 28,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-bk-3mcd-4h-spec",
+        "panasonic-k-kj85mcd40-cell-identity",
+        "panasonic-rechargeable-comparison-batch2"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-bk-3mcd-4h-spec",
+            "locator": "Product heading, eneloop product name",
+            "observation": "Identifies the eneloop brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-k-kj85mcd40-cell-identity",
+            "locator": "Specifications table, Contents and battery-capacity rows",
+            "observation": "Explicitly identifies BK-3MCD."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-bk-3mcd-4h-spec",
+            "locator": "Product heading and Specifications table, package quantity and per-cell physical entries",
+            "observation": "Describes the standard AA cell, supplied as retail SKU BK-3MCD/4H; package quantity is not a connected battery configuration."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-bk-3mcd-4h-spec",
+            "locator": "Product heading and Specifications table",
+            "observation": "Retail SKU BK-3MCD/4H is a packaging identifier; generic size is search-only. The base model is independently identified in the attached model source."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-bk-3mcd-4h-spec",
+            "locator": "Specifications table, Type row",
+            "observation": "Identifies nickel-metal hydride chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-k-kj85mcd40-cell-identity",
+            "locator": "Specifications table, included battery and Rechargeable row",
+            "observation": "Identifies the cell as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-bk-3mcd-4h-spec",
+            "locator": "Specifications table, packaging quantity and per-cell mass",
+            "observation": "The retail package contains separate cells; its per-cell figures describe one tracked cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-bk-3mcd-4h-spec",
+            "locator": "Product heading, size designation",
+            "observation": "Identifies the AA cell size."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "panasonic-bk-3mcd-4h-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "States minimum capacity 2000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "panasonic-bk-3mcd-4h-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "Capacity is explicitly minimum, not relabelled as rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-rechargeable-comparison-batch2",
+            "locator": "Rechargeable-cell comparison table, standard-model AA column, Nominal voltage row",
+            "observation": "Lists BK-3MCD at nominal 1.2 V."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "panasonic-bk-3mcd-4h-spec",
+            "locator": "Specifications table, Dimensions row",
+            "observation": "Approximate cell diameter 14.5 mm and height 50.5 mm; not a tolerance or measured asset value."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "panasonic-bk-3mcd-4h-spec",
+            "locator": "Specifications table, Mass row (per cell)",
+            "observation": "Approximate mass 28 g per cell."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "No separately labelled rated, nominal, typical or unqualified capacity is selected; only the minimum-capacity field is populated.",
+        "Manufacturer legal entity is not filled in this narrow batch; the exact source publisher is retained.",
+        "Energy, explicit series/parallel topology, connector/polarity details and maintenance interval are not established by the selected product specifications.",
+        "Actual cell age, condition, owner, dates, location and tag must be recorded from the individual asset.",
+        "The selected capacity source does not give an unambiguous model-specific test setup; capacity_test_conditions remains null."
+      ],
+      "notes": [
+        "Public product reference only; no school stock or purchasing recommendation is asserted.",
+        "This is one independent base model, not an extra catalog entry for a two-cell or four-cell retail package.",
+        "Different HCC, LCC and MCD model codes are not treated as aliases of each other or of BK-3MCC/BK-4MCC.",
+        "The editable display name is a suggestion; staff must confirm the actual received label and exact model.",
+        "Minimum capacity is preserved with its qualification and is not automatically copied into the current application's rated-capacity scalar.",
+        "Specifications were read from actual manufacturer content; browser reader timeout is recorded where direct HTTPS was used."
+      ]
+    },
+    {
+      "catalog_id": "panasonic-eneloop-bk-4mcd",
+      "manufacturer": null,
+      "brand": "eneloop",
+      "model": "BK-4MCD",
+      "variant_key": "bk-4mcd-standard-cell",
+      "variant_description": "One AAA standard-model NiMH cell with exact base model BK-4MCD; retail reference BK-4MCD/4H is packaging, not a connected pack.",
+      "aliases": [
+        {
+          "value": "BK-4MCD",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        },
+        {
+          "value": "BK-4MCD/4H",
+          "kind": "manufacturer_alias",
+          "match_policy": "search_only"
+        },
+        {
+          "value": "AAA",
+          "kind": "search_term",
+          "match_policy": "search_only"
+        }
+      ],
+      "suggested_display_name": "eneloop BK-4MCD",
+      "chemistry": "nickel_metal_hydride",
+      "rechargeable": true,
+      "unit_kind": "cell",
+      "form_factor": {
+        "code": "AAA",
+        "description": "AAA cylindrical single-cell form factor."
+      },
+      "rated_capacity_mah": null,
+      "capacity_basis": "not_stated",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": 800,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 1.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": null,
+        "parallel": null
+      },
+      "connector": null,
+      "dimensions_mm": {
+        "diameter": 10.5,
+        "length": null,
+        "width": null,
+        "height": 44.5,
+        "basis": "Approximate manufacturer values per cell; not maximum limits or actual asset measurements."
+      },
+      "mass_g": 13,
+      "maintenance_notes": null,
+      "source_ids": [
+        "panasonic-bk-4mcd-4h-spec",
+        "panasonic-k-kj83mcd04-cell-identity",
+        "panasonic-rechargeable-comparison-batch2"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "panasonic-bk-4mcd-4h-spec",
+            "locator": "Product heading, eneloop product name",
+            "observation": "Identifies the eneloop brand."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "panasonic-k-kj83mcd04-cell-identity",
+            "locator": "Specifications table, Contents and battery-capacity rows",
+            "observation": "Explicitly identifies BK-4MCD."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "panasonic-bk-4mcd-4h-spec",
+            "locator": "Product heading and Specifications table, package quantity and per-cell physical entries",
+            "observation": "Describes the standard AAA cell, supplied as retail SKU BK-4MCD/4H; package quantity is not a connected battery configuration."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "panasonic-bk-4mcd-4h-spec",
+            "locator": "Product heading and Specifications table",
+            "observation": "Retail SKU BK-4MCD/4H is a packaging identifier; generic size is search-only. The base model is independently identified in the attached model source."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "panasonic-bk-4mcd-4h-spec",
+            "locator": "Specifications table, Type row",
+            "observation": "Identifies nickel-metal hydride chemistry."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "panasonic-k-kj83mcd04-cell-identity",
+            "locator": "Specifications table, included battery and Rechargeable row",
+            "observation": "Identifies the cell as rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "panasonic-bk-4mcd-4h-spec",
+            "locator": "Specifications table, packaging quantity and per-cell mass",
+            "observation": "The retail package contains separate cells; its per-cell figures describe one tracked cell."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "panasonic-bk-4mcd-4h-spec",
+            "locator": "Product heading, size designation",
+            "observation": "Identifies the AAA cell size."
+          }
+        ],
+        "/minimum_capacity_mah": [
+          {
+            "source_id": "panasonic-bk-4mcd-4h-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "States minimum capacity 800 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "panasonic-bk-4mcd-4h-spec",
+            "locator": "Specifications table, Battery capacity row",
+            "observation": "Capacity is explicitly minimum, not relabelled as rated."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "panasonic-rechargeable-comparison-batch2",
+            "locator": "Rechargeable-cell comparison table, standard-model AAA column, Nominal voltage row",
+            "observation": "Lists BK-4MCD at nominal 1.2 V."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "panasonic-bk-4mcd-4h-spec",
+            "locator": "Specifications table, Dimensions row",
+            "observation": "Approximate cell diameter 10.5 mm and height 44.5 mm; not a tolerance or measured asset value."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "panasonic-bk-4mcd-4h-spec",
+            "locator": "Specifications table, Mass row (per cell)",
+            "observation": "Approximate mass 13 g per cell."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "No separately labelled rated, nominal, typical or unqualified capacity is selected; only the minimum-capacity field is populated.",
+        "Manufacturer legal entity is not filled in this narrow batch; the exact source publisher is retained.",
+        "Energy, explicit series/parallel topology, connector/polarity details and maintenance interval are not established by the selected product specifications.",
+        "Actual cell age, condition, owner, dates, location and tag must be recorded from the individual asset.",
+        "The selected capacity source does not give an unambiguous model-specific test setup; capacity_test_conditions remains null."
+      ],
+      "notes": [
+        "Public product reference only; no school stock or purchasing recommendation is asserted.",
+        "This is one independent base model, not an extra catalog entry for a two-cell or four-cell retail package.",
+        "Different HCC, LCC and MCD model codes are not treated as aliases of each other or of BK-3MCC/BK-4MCC.",
+        "The editable display name is a suggestion; staff must confirm the actual received label and exact model.",
+        "Minimum capacity is preserved with its qualification and is not automatically copied into the current application's rated-capacity scalar.",
+        "Specifications were read from actual manufacturer content; browser reader timeout is recorded where direct HTTPS was used."
+      ]
+    }
+  ]
+}

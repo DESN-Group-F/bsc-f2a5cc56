@@ -1,0 +1,335 @@
+{
+  "status": "pass",
+  "executed_at_utc": "2026-10-02T15:16:09.881954+00:00",
+  "catalog_version": "2026.10.03.4",
+  "content_sha256": "41be134a1df54e65d4e2d6f7bd9d2bcf4f3f2b586c4621a100402f817a789c87",
+  "runtime": {
+    "python": "3.12.14",
+    "sqlite": "3.53.1"
+  },
+  "counts": {
+    "models": 202,
+    "sources": 253,
+    "unique_source_urls": 244,
+    "evidence_rows": 3573,
+    "chemistries": {
+      "alkaline_zinc_manganese_dioxide": 7,
+      "lead_acid": 8,
+      "lithium_ion": 105,
+      "lithium_ion_polymer": 66,
+      "lithium_iron_disulfide": 2,
+      "lithium_iron_phosphate": 6,
+      "nickel_metal_hydride": 8
+    },
+    "null_rated_capacities": 112,
+    "models_with_conflict_notes": 15
+  },
+  "coverage": {
+    "independent_product_models": 202,
+    "variant_records": 202,
+    "extra_variant_records": 0,
+    "verified_independent_product_models": 200,
+    "five_field_coverage_independent_models": {
+      "brand_and_exact_model": 202,
+      "chemistry": 202,
+      "nominal_voltage": 202,
+      "capacity_scalar_with_original_kind": 193,
+      "editable_name_suggestion": 202
+    },
+    "five_field_coverage_variant_records": {
+      "brand_and_exact_model": 202,
+      "chemistry": 202,
+      "nominal_voltage": 202,
+      "capacity_scalar_with_original_kind": 193,
+      "editable_name_suggestion": 202
+    },
+    "capacity_kind_record_counts": {
+      "rated": 26,
+      "nominal": 64,
+      "minimum": 67,
+      "typical": 66,
+      "stated": 54
+    },
+    "missing_capacity_scalar_catalog_ids": [
+      "duracell-mn1300-us-flat-cell",
+      "duracell-mn1400-us-flat-cell",
+      "duracell-mn1500-us-flat-cell",
+      "duracell-mn2400-us-flat-cell",
+      "duracell-mx2500-us-flat-cell",
+      "energizer-e91-standard-flat-contact",
+      "energizer-e92-standard-flat-contact",
+      "energizer-l91-standard-cell",
+      "energizer-l92-standard-cell"
+    ],
+    "pending_confirmation_catalog_ids": [
+      "eve-lf105-terminal-unspecified",
+      "tattu-taa15504s15x6-rline5-xt60"
+    ],
+    "counting_note": "Independent products use normalized brand plus exact model; aliases, packaging counts and repeated source pages do not increase the count. Capacity-kind counts may overlap."
+  },
+  "primary_category_distribution": {
+    "tool_platform": {
+      "variant_records": 40,
+      "independent_products": 40,
+      "verified_independent_products": 40
+    },
+    "prototype_pouch_1s": {
+      "variant_records": 40,
+      "independent_products": 40,
+      "verified_independent_products": 40
+    },
+    "general_finished_lithium_pack": {
+      "variant_records": 56,
+      "independent_products": 56,
+      "verified_independent_products": 55
+    },
+    "standalone_lithium_cell": {
+      "variant_records": 41,
+      "independent_products": 41,
+      "verified_independent_products": 40
+    },
+    "supplementary": {
+      "variant_records": 25,
+      "independent_products": 25,
+      "verified_independent_products": 25
+    }
+  },
+  "brand_distribution": {
+    "Adafruit": 1,
+    "DEWALT": 15,
+    "Duracell": 5,
+    "EEMB": 20,
+    "EVE": 1,
+    "Energizer": 4,
+    "Gens ace": 1,
+    "Hacker": 12,
+    "Inspired Energy": 4,
+    "Jauch": 19,
+    "Lithium Werks": 3,
+    "Makita": 8,
+    "Milwaukee": 17,
+    "Molicel": 12,
+    "Murata": 11,
+    "Panasonic": 14,
+    "Power-Sonic": 6,
+    "RRC": 11,
+    "SparkFun": 3,
+    "Tattu": 13,
+    "Tenergy": 12,
+    "Yuasa": 2,
+    "eneloop": 8
+  },
+  "research_plan": {
+    "target_verified_independent_products": 200,
+    "planned_category_allocation": {
+      "tool_platform": 40,
+      "prototype_pouch_1s": 40,
+      "general_finished_lithium_pack": 55,
+      "standalone_lithium_cell": 40,
+      "supplementary": 25
+    },
+    "remaining_verified_independent_products": 0
+  },
+  "latest_batch": {
+    "baseline_version": "2026.10.03.3",
+    "coverage": {
+      "independent_product_models": 50,
+      "variant_records": 50,
+      "extra_variant_records": 0,
+      "verified_independent_product_models": 50,
+      "five_field_coverage_independent_models": {
+        "brand_and_exact_model": 50,
+        "chemistry": 50,
+        "nominal_voltage": 50,
+        "capacity_scalar_with_original_kind": 45,
+        "editable_name_suggestion": 50
+      },
+      "five_field_coverage_variant_records": {
+        "brand_and_exact_model": 50,
+        "chemistry": 50,
+        "nominal_voltage": 50,
+        "capacity_scalar_with_original_kind": 45,
+        "editable_name_suggestion": 50
+      },
+      "capacity_kind_record_counts": {
+        "rated": 5,
+        "nominal": 16,
+        "minimum": 4,
+        "typical": 7,
+        "stated": 29
+      },
+      "missing_capacity_scalar_catalog_ids": [
+        "duracell-mn1300-us-flat-cell",
+        "duracell-mn1400-us-flat-cell",
+        "duracell-mn1500-us-flat-cell",
+        "duracell-mn2400-us-flat-cell",
+        "duracell-mx2500-us-flat-cell"
+      ],
+      "pending_confirmation_catalog_ids": [],
+      "counting_note": "Independent products use normalized brand plus exact model; aliases, packaging counts and repeated source pages do not increase the count. Capacity-kind counts may overlap."
+    },
+    "primary_category_distribution": {
+      "tool_platform": {
+        "variant_records": 0,
+        "independent_products": 0,
+        "verified_independent_products": 0
+      },
+      "prototype_pouch_1s": {
+        "variant_records": 0,
+        "independent_products": 0,
+        "verified_independent_products": 0
+      },
+      "general_finished_lithium_pack": {
+        "variant_records": 39,
+        "independent_products": 39,
+        "verified_independent_products": 39
+      },
+      "standalone_lithium_cell": {
+        "variant_records": 0,
+        "independent_products": 0,
+        "verified_independent_products": 0
+      },
+      "supplementary": {
+        "variant_records": 11,
+        "independent_products": 11,
+        "verified_independent_products": 11
+      }
+    },
+    "brand_distribution": {
+      "Duracell": 5,
+      "Hacker": 12,
+      "Inspired Energy": 4,
+      "Jauch": 3,
+      "Power-Sonic": 6,
+      "RRC": 11,
+      "Tenergy": 9
+    }
+  },
+  "independent_source_review": {
+    "new_verified_independent_products": 50,
+    "minimum_sample_required": 10,
+    "independently_reviewed_new_verified_products": 15,
+    "review_record": {
+      "catalog_version": "2026.10.03.4",
+      "new_verified_independent_products": 50,
+      "independently_reviewed_catalog_ids": [
+        "jauch-li18650jls-hb-2s1p-250481",
+        "rrc-rrc2040-2-1005590",
+        "rrc-rrc2054-1005680",
+        "rrc-rrc2130-110088",
+        "inspired-energy-nf3040hd34-standard-assembly",
+        "inspired-energy-nh2057hd34-standard-assembly",
+        "tenergy-31044-protected-bare-leads",
+        "tenergy-31094-protected-pack-connector-unspecified",
+        "tenergy-31802-protected-bare-leads",
+        "hacker-92400331-mtag-xt60-xh",
+        "hacker-96100521-mtag-xt60-xh",
+        "duracell-mn1500-us-flat-cell",
+        "duracell-mx2500-us-flat-cell",
+        "power-sonic-ps-640-f1",
+        "power-sonic-ps-1208-wl"
+      ],
+      "audit_files": [
+        "research/batch6-audit-general-jauch-root-review.json",
+        "research/batch6-audit-general-mixed-review.json",
+        "research/batch6-audit-supplementary-review.json"
+      ],
+      "summary": "15 of 50 newly verified products independently source-checked: six Jauch/RRC/Inspired Energy packs, five Tenergy/Hacker packs and four supplementary products. A chemistry-citation precision issue was expanded and corrected across all five new Duracell cells; the extra chemistry-only reviews do not increase the full-core sample count. Qualified capacity thresholds, the Inspired Energy date conflict, source-access limitations and missing alkaline capacity scalars remain disclosed."
+    },
+    "qualification": "Checks confirm a recorded sample and identifiers, not the scientific accuracy of source interpretation."
+  },
+  "second_batch": {
+    "baseline_version": "2026.10.02.1",
+    "coverage": {
+      "independent_product_models": 32,
+      "variant_records": 32,
+      "extra_variant_records": 0,
+      "verified_independent_product_models": 31,
+      "five_field_coverage_independent_models": {
+        "brand_and_exact_model": 32,
+        "chemistry": 32,
+        "nominal_voltage": 32,
+        "capacity_scalar_with_original_kind": 32,
+        "editable_name_suggestion": 32
+      },
+      "five_field_coverage_variant_records": {
+        "brand_and_exact_model": 32,
+        "chemistry": 32,
+        "nominal_voltage": 32,
+        "capacity_scalar_with_original_kind": 32,
+        "editable_name_suggestion": 32
+      },
+      "capacity_kind_record_counts": {
+        "rated": 0,
+        "nominal": 13,
+        "minimum": 18,
+        "typical": 13,
+        "stated": 0
+      },
+      "missing_capacity_scalar_catalog_ids": [],
+      "pending_confirmation_catalog_ids": [
+        "eve-lf105-terminal-unspecified"
+      ],
+      "counting_note": "Independent products use normalized brand plus exact model; aliases, packaging counts and repeated source pages do not increase the count. Capacity-kind counts may overlap."
+    },
+    "verified_rechargeable_lithium_independent_models": 25,
+    "school_procurement_coverage": "unknown; no actual school purchasing list was supplied"
+  },
+  "checks": {
+    "schema_and_semantic_validation": true,
+    "sqlite_integrity": true,
+    "sqlite_foreign_keys": true,
+    "model_json_roundtrip": true,
+    "source_json_roundtrip": true,
+    "numeric_and_null_roundtrip": true,
+    "prefill_preserves_unknown_capacity": true,
+    "content_hash_matches": true,
+    "byte_identical_rebuilds_same_runtime": true,
+    "all_scalar_capacity_kinds_preserved": true,
+    "reject_duplicate_variant": true,
+    "reject_negative_voltage": true,
+    "reject_unit_change": true,
+    "reject_missing_model_evidence": true,
+    "reject_dangling_source": true,
+    "reject_shape_as_identity": true,
+    "reject_duplicate_alias_key": true,
+    "every_id_retrievable": true,
+    "every_exact_brand_model_retrievable": true,
+    "search_only_alias_not_exact": true,
+    "literal_sql_input_returns_no_match": true,
+    "wildcards_are_literal": true,
+    "original_model_records_unchanged": true,
+    "original_source_records_unchanged": true,
+    "original_release_artifact_hashes_unchanged": true,
+    "primary_classification_matches_catalog": true,
+    "independent_products_have_one_primary_category": true,
+    "release_2026_10_02_1_model_records_unchanged": true,
+    "release_2026_10_02_1_source_records_unchanged": true,
+    "release_2026_10_02_1_artifact_hashes_unchanged": true,
+    "release_2026_10_02_2_model_records_unchanged": true,
+    "release_2026_10_02_2_source_records_unchanged": true,
+    "release_2026_10_02_2_artifact_hashes_unchanged": true,
+    "release_2026_10_03_1_model_records_unchanged": true,
+    "release_2026_10_03_1_source_records_unchanged": true,
+    "release_2026_10_03_1_artifact_hashes_unchanged": true,
+    "release_2026_10_03_2_model_records_unchanged": true,
+    "release_2026_10_03_2_source_records_unchanged": true,
+    "release_2026_10_03_2_artifact_hashes_unchanged": true,
+    "release_2026_10_03_3_model_records_unchanged": true,
+    "release_2026_10_03_3_source_records_unchanged": true,
+    "release_2026_10_03_3_artifact_hashes_unchanged": true,
+    "planned_category_allocation_matches_target": true,
+    "completed_plan_matches_verified_products": true,
+    "independent_sample_record_meets_planned_minimum": true,
+    "independent_sample_ids_exist_in_catalog": true,
+    "independent_audit_files_exist": true,
+    "independent_sample_ids_match_audit_records": true
+  },
+  "network_rechecked_by_validation_script": false,
+  "limitations": [
+    "Sources were opened during research on accessed_on; scripts do not re-fetch them.",
+    "Evidence presence is validated; scientific accuracy still requires human source review.",
+    "Database rebuild byte equality is only asserted for the recorded runtime.",
+    "Application integration and D1 workflow tests have not been performed."
+  ]
+}

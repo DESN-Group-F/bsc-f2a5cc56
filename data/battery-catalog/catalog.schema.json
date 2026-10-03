@@ -1,0 +1,590 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Battery Model Reference Catalog",
+  "description": "Product references, not owned assets. Null means unknown or not confidently resolved.",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "enum": [
+        "1.0.0",
+        "1.1.0"
+      ]
+    },
+    "catalog_version": {
+      "type": "string",
+      "pattern": "^[0-9]{4}\\.[0-9]{2}\\.[0-9]{2}\\.[1-9][0-9]*$"
+    },
+    "published_on": {
+      "type": "string",
+      "format": "date"
+    },
+    "scope": {
+      "type": "string",
+      "enum": [
+        "public_product_references_not_school_inventory"
+      ]
+    },
+    "units": {
+      "type": "object",
+      "properties": {
+        "capacity": {
+          "type": "string",
+          "enum": [
+            "mAh"
+          ]
+        },
+        "voltage": {
+          "type": "string",
+          "enum": [
+            "V"
+          ]
+        },
+        "energy": {
+          "type": "string",
+          "enum": [
+            "Wh"
+          ]
+        },
+        "dimensions": {
+          "type": "string",
+          "enum": [
+            "mm"
+          ]
+        },
+        "mass": {
+          "type": "string",
+          "enum": [
+            "g"
+          ]
+        }
+      },
+      "required": [
+        "capacity",
+        "voltage",
+        "energy",
+        "dimensions",
+        "mass"
+      ],
+      "additionalProperties": false
+    },
+    "display_name_template": {
+      "type": "string",
+      "minLength": 1
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/source"
+      },
+      "minItems": 1
+    },
+    "models": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/model"
+      },
+      "minItems": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "catalog_version",
+    "published_on",
+    "scope",
+    "units",
+    "display_name_template",
+    "sources",
+    "models"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "source": {
+      "type": "object",
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "publisher": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_type": {
+          "type": "string",
+          "enum": [
+            "manufacturer_page",
+            "manufacturer_datasheet",
+            "manufacturer_manual",
+            "secondary_distributor"
+          ]
+        },
+        "document_version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "accessed_on": {
+          "type": "string",
+          "format": "date"
+        },
+        "applicable_variants": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "access_status": {
+          "type": "string",
+          "enum": [
+            "opened"
+          ]
+        },
+        "locator_notes": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "source_id",
+        "url",
+        "title",
+        "publisher",
+        "source_type",
+        "document_version",
+        "accessed_on",
+        "applicable_variants",
+        "access_status",
+        "locator_notes"
+      ],
+      "additionalProperties": false
+    },
+    "model": {
+      "type": "object",
+      "properties": {
+        "catalog_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "manufacturer": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "brand": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "variant_key": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+        },
+        "variant_description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "suggested_display_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "aliases": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "value": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "mpn",
+                  "manufacturer_alias",
+                  "search_term"
+                ]
+              },
+              "match_policy": {
+                "type": "string",
+                "enum": [
+                  "exact_candidate",
+                  "search_only"
+                ]
+              }
+            },
+            "required": [
+              "value",
+              "kind",
+              "match_policy"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "chemistry": {
+          "type": "string",
+          "enum": [
+            "alkaline_zinc_manganese_dioxide",
+            "lithium_iron_disulfide",
+            "nickel_metal_hydride",
+            "lithium_ion",
+            "lithium_ion_polymer",
+            "lithium_iron_phosphate",
+            "lead_acid"
+          ]
+        },
+        "rechargeable": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "unit_kind": {
+          "type": "string",
+          "enum": [
+            "cell",
+            "pack"
+          ]
+        },
+        "form_factor": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "minLength": 1
+            },
+            "description": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "code",
+            "description"
+          ],
+          "additionalProperties": false
+        },
+        "rated_capacity_mah": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0,
+          "maximum": 1000000
+        },
+        "capacity_basis": {
+          "type": "string",
+          "enum": [
+            "rated",
+            "nominal",
+            "not_stated"
+          ]
+        },
+        "typical_capacity_mah": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0,
+          "maximum": 1000000
+        },
+        "minimum_capacity_mah": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0,
+          "maximum": 1000000
+        },
+        "stated_capacity_mah": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0,
+          "maximum": 1000000
+        },
+        "stated_capacity_label": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "capacity_test_conditions": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "nominal_voltage_v": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0,
+          "maximum": 1000
+        },
+        "energy_wh": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "energy_basis": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "manufacturer_nominal",
+            "manufacturer_rated"
+          ]
+        },
+        "configuration": {
+          "type": "object",
+          "properties": {
+            "series": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "parallel": {
+              "type": [
+                "integer",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            }
+          },
+          "required": [
+            "series",
+            "parallel"
+          ],
+          "additionalProperties": false
+        },
+        "connector": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "description": {
+              "type": "string",
+              "minLength": 1
+            },
+            "polarity": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "minLength": 1
+            }
+          },
+          "required": [
+            "description",
+            "polarity"
+          ],
+          "additionalProperties": false
+        },
+        "dimensions_mm": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "properties": {
+            "diameter": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "length": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "width": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "height": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "exclusiveMinimum": 0
+            },
+            "basis": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "diameter",
+            "length",
+            "width",
+            "height",
+            "basis"
+          ],
+          "additionalProperties": false
+        },
+        "mass_g": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "exclusiveMinimum": 0
+        },
+        "maintenance_notes": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "source_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "field_evidence": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "source_id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                },
+                "locator": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "observation": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "source_id",
+                "locator",
+                "observation"
+              ],
+              "additionalProperties": false
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          }
+        },
+        "verification_status": {
+          "type": "string",
+          "enum": [
+            "verified_core",
+            "partial"
+          ]
+        },
+        "conflicts": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "unknowns": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "catalog_id",
+        "manufacturer",
+        "brand",
+        "model",
+        "variant_key",
+        "variant_description",
+        "suggested_display_name",
+        "aliases",
+        "chemistry",
+        "rechargeable",
+        "unit_kind",
+        "form_factor",
+        "rated_capacity_mah",
+        "capacity_basis",
+        "typical_capacity_mah",
+        "minimum_capacity_mah",
+        "stated_capacity_mah",
+        "stated_capacity_label",
+        "capacity_test_conditions",
+        "nominal_voltage_v",
+        "energy_wh",
+        "energy_basis",
+        "configuration",
+        "connector",
+        "dimensions_mm",
+        "mass_g",
+        "maintenance_notes",
+        "source_ids",
+        "field_evidence",
+        "verification_status",
+        "conflicts",
+        "unknowns",
+        "notes"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

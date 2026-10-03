@@ -1,0 +1,3196 @@
+{
+  "sources": [
+    {
+      "source_id": "gensace-lipo-guide",
+      "url": "https://gensace.de/pages/lipo-battery-guide",
+      "title": "LiPo Battery Guide",
+      "publisher": "Genspow GmbH / Gens ace & Tattu EU Store",
+      "source_type": "manufacturer_manual",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "General Gens ace and Tattu LiPo terminology; applies only in combination with the exact product page"
+      ],
+      "access_status": "opened",
+      "locator_notes": "Sections What's a Lipo battery? and Battery Voltage support chemistry, rechargeability and nominal voltage terminology. The internally inconsistent 3S2P example in Cell Configuration is not used. No safety limits, charge rates or maintenance rules are copied."
+    },
+    {
+      "source_id": "tattu-taa3002s75jst-page",
+      "url": "https://www.tattuworld.com/products/tattu-classic-300mah-2s1p-7-6v-hv-75c-fpv-lipo-battery.html",
+      "title": "High C Rate 300mAh 2S1P 7.6V HV 75C FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA3002S75JST: Classic high-voltage (HV) 2S1P soft pack with JST-PHR discharge and JST-XHR balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    },
+    {
+      "source_id": "tattu-taa8504s95xt3l-page",
+      "url": "https://www.tattuworld.com/products/tattu-classic-850mah-4s1p-15-2v-hv-95c-fpv-lipo-battery.html",
+      "title": "High C Rate 850mAh 4S1P 15.2V HV 95C FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA8504S95XT3L: Classic high-voltage (HV) 4S1P soft pack with XT30 discharge and JST-XHR-5P balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    },
+    {
+      "source_id": "tattu-taa10503s75x6-page",
+      "url": "https://www.tattuworld.com/products/tattu-classic-1050mah-3s1p-11-1v-75c-fpv-lipo-battery.html",
+      "title": "High C Rate 1050mAh 3S1P 11.1V 75C FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA10503S75X6: Classic 3S1P soft pack with XT60 discharge and JST-XHR balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    },
+    {
+      "source_id": "tattu-taa8503s15x3-page",
+      "url": "https://www.tattuworld.com/products/tattu-r-line-5-0-850mah-3s1p-11-1v-150c-fpv-lipo-battery.html",
+      "title": "R-Line V5 850mAh 3S1P 11.1V 150C FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA8503S15X3: R-Line V5 3S1P soft pack with XT30 discharge and JST-XHR-4P balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    },
+    {
+      "source_id": "tattu-taa13004s15x6-page",
+      "url": "https://www.tattuworld.com/products/tattu-r-line-5-0-1300mah-4s1p-14-8v-150c-fpv-lipo-battery.html",
+      "title": "R-Line V5 1300mAh 4S1P 14.8V 150C FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA13004S15X6: R-Line V5 4S1P soft pack with XT60 discharge and JST-XHR-5P balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    },
+    {
+      "source_id": "tattu-taa20004s15x6-page",
+      "url": "https://www.tattuworld.com/products/tattu-r-line-5-0-2000mah-4s1p-14-8v-150c-fpv-lipo-battery.html",
+      "title": "R-Line V5 2000mAh 4S1P 14.8V 150C FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA20004S15X6: R-Line V5 4S1P soft pack with XT60 discharge and JST-XHR-5P balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    },
+    {
+      "source_id": "tattu-taa22005s15x6-page",
+      "url": "https://www.tattuworld.com/products/tattu-r-line-5-0-2200mah-5s1p-18-5v-150c-fpv-lipo-battery.html",
+      "title": "R-Line V5 2200mAh 5S1P 18.5V 150C FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA22005S15X6: R-Line V5 5S1P soft pack with XT60 discharge and JST-XHR-6P balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    },
+    {
+      "source_id": "tattu-taa12006s15x6-page",
+      "url": "https://www.tattuworld.com/products/tattu-r-line-5-0-1200mah-6s1p-22-2v-150c-fpv-lipo-battery.html",
+      "title": "R-Line V5 1200mAh 6S1P 22.2V 150C FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA12006S15X6: R-Line V5 6S1P soft pack with XT60 discharge and JST-XHR-7P balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    },
+    {
+      "source_id": "tattu-taa18006s15x6-page",
+      "url": "https://www.tattuworld.com/products/tattu-r-line-5-0-1800mah-6s1p-22-2v-150c-fpv-lipo-battery.html",
+      "title": "R-Line V5 1800mAh 6S1P 22.2V 150C FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA18006S15X6: R-Line V5 6S1P soft pack with XT60 discharge and JST-XHR-7P balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    },
+    {
+      "source_id": "tattu-taa13006s16st-page",
+      "url": "https://www.tattuworld.com/products/tattu-r-line-6-0-1300mah-6s1p-22-2v-160c-st-fpv-lipo-battery.html",
+      "title": "R-Line V6 1300mAh 6S1P 22.2V 160C ST FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA13006S16ST: R-Line V6 ST 6S1P soft pack with XT60U-F discharge and JST-XHR-7P balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    },
+    {
+      "source_id": "tattu-taa14806s16st-page",
+      "url": "https://www.tattuworld.com/products/tattu-r-line-6-0-1480mah-6s1p-22-2v-160c-st-fpv-lipo-battery.html",
+      "title": "R-Line V6 1480mAh 6S1P 22.2V 160C ST FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA14806S16ST: R-Line V6 ST 6S1P soft pack with XT60U-F discharge and JST-XHR-7P balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    },
+    {
+      "source_id": "tattu-taa16006s16st-page",
+      "url": "https://www.tattuworld.com/products/tattu-r-line-6-0-1600mah-6s1p-22-2v-160c-st-fpv-lipo-battery.html",
+      "title": "R-Line V6 1600mAh 6S1P 22.2V 160C ST FPV Battery | Tattu",
+      "publisher": "Tattu",
+      "source_type": "manufacturer_page",
+      "document_version": null,
+      "accessed_on": "2026-10-02",
+      "applicable_variants": [
+        "TAA16006S16ST: R-Line V6 ST 6S1P soft pack with XT60U-F discharge and JST-XHR-7P balance connectors."
+      ],
+      "access_status": "opened",
+      "locator_notes": "Read the exact product Overview and Specs. Specs supplies Product Sku, Nominal Capacity, Nominal Voltage, Configuration, Dimension (LxWxT), Weight, Connector, Balancer Connector Type and Packaging. Generic connector-customization marketing and testimonials about other products are excluded."
+    }
+  ],
+  "models": [
+    {
+      "catalog_id": "tattu-taa3002s75jst",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA3002S75JST",
+      "variant_key": "classic-hv-75c-jst-phr",
+      "variant_description": "Classic high-voltage (HV) 2S1P soft pack with JST-PHR discharge and JST-XHR balance connectors.",
+      "suggested_display_name": "Tattu TAA3002S75JST",
+      "aliases": [
+        {
+          "value": "TAA3002S75JST",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 300,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 7.6,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 2,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "JST-PHR discharge connector; JST-XHR balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 47,
+        "width": 17,
+        "height": 13,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 17,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa3002s75jst-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA3002S75JST."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "Classic HV; 2S1P; JST-PHR and JST-XHR."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA3002S75JST is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA3002S75JST."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 2S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 300 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 7.6 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Configuration",
+            "observation": "2S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Configuration",
+            "observation": "2S1P specifies 2 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Configuration",
+            "observation": "2S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "JST-PHR discharge; JST-XHR balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "JST-PHR discharge; JST-XHR balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 47 x 17 x 13 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 47 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 17 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 13 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa3002s75jst-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 17 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null.",
+        "The balance connector pin count is not stated; it is not inferred from series count.",
+        "The discharge connector pin count is not stated."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU.",
+        "The HV nominal voltage is retained exactly; charging voltage is not imported as nominal voltage."
+      ]
+    },
+    {
+      "catalog_id": "tattu-taa8504s95xt3l",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA8504S95XT3L",
+      "variant_key": "classic-hv-95c-xt30",
+      "variant_description": "Classic high-voltage (HV) 4S1P soft pack with XT30 discharge and JST-XHR-5P balance connectors.",
+      "suggested_display_name": "Tattu TAA8504S95XT3L",
+      "aliases": [
+        {
+          "value": "TAA8504S95XT3L",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 850,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 15.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 4,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT30 discharge connector; JST-XHR-5P balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 73,
+        "width": 17,
+        "height": 30,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 76,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa8504s95xt3l-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA8504S95XT3L."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "Classic HV; 4S1P; XT30 and JST-XHR-5P."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA8504S95XT3L is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA8504S95XT3L."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 4S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 850 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 15.2 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Configuration",
+            "observation": "4S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Configuration",
+            "observation": "4S1P specifies 4 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Configuration",
+            "observation": "4S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT30 discharge; JST-XHR-5P balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT30 discharge; JST-XHR-5P balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 73 x 17 x 30 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 73 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 17 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 30 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa8504s95xt3l-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 76 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU.",
+        "The HV nominal voltage is retained exactly; charging voltage is not imported as nominal voltage."
+      ]
+    },
+    {
+      "catalog_id": "tattu-taa10503s75x6",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA10503S75X6",
+      "variant_key": "classic-75c-xt60",
+      "variant_description": "Classic 3S1P soft pack with XT60 discharge and JST-XHR balance connectors.",
+      "suggested_display_name": "Tattu TAA10503S75X6",
+      "aliases": [
+        {
+          "value": "TAA10503S75X6",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 1050,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 11.1,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 3,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT60 discharge connector; JST-XHR balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 71,
+        "width": 36,
+        "height": 19,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 98,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa10503s75x6-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA10503S75X6."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "Classic; 3S1P; XT60 and JST-XHR."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA10503S75X6 is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA10503S75X6."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 3S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 1050 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 11.1 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "3S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "3S1P specifies 3 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "3S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 71 x 36 x 19 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 71 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 36 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 19 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa10503s75x6-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 98 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null.",
+        "The balance connector pin count is not stated; it is not inferred from series count."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU."
+      ]
+    },
+    {
+      "catalog_id": "tattu-taa8503s15x3",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA8503S15X3",
+      "variant_key": "r-line-v5-150c-xt30",
+      "variant_description": "R-Line V5 3S1P soft pack with XT30 discharge and JST-XHR-4P balance connectors.",
+      "suggested_display_name": "Tattu TAA8503S15X3",
+      "aliases": [
+        {
+          "value": "TAA8503S15X3",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 850,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 11.1,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 3,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT30 discharge connector; JST-XHR-4P balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 58,
+        "width": 30,
+        "height": 23,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 76,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa8503s15x3-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA8503S15X3."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "R-Line V5; 3S1P; XT30 and JST-XHR-4P."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA8503S15X3 is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA8503S15X3."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 3S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 850 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 11.1 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Configuration",
+            "observation": "3S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Configuration",
+            "observation": "3S1P specifies 3 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Configuration",
+            "observation": "3S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT30 discharge; JST-XHR-4P balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT30 discharge; JST-XHR-4P balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 58 x 30 x 23 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 58 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 30 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 23 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa8503s15x3-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 76 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU."
+      ]
+    },
+    {
+      "catalog_id": "tattu-taa13004s15x6",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA13004S15X6",
+      "variant_key": "r-line-v5-150c-xt60",
+      "variant_description": "R-Line V5 4S1P soft pack with XT60 discharge and JST-XHR-5P balance connectors.",
+      "suggested_display_name": "Tattu TAA13004S15X6",
+      "aliases": [
+        {
+          "value": "TAA13004S15X6",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 1300,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 14.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 4,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT60 discharge connector; JST-XHR-5P balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 75,
+        "width": 38,
+        "height": 27,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 156,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa13004s15x6-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA13004S15X6."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "R-Line V5; 4S1P; XT60 and JST-XHR-5P."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA13004S15X6 is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA13004S15X6."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 4S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 1300 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 14.8 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "4S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "4S1P specifies 4 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "4S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR-5P balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR-5P balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 75 x 38 x 27 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 75 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 38 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 27 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa13004s15x6-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 156 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU."
+      ]
+    },
+    {
+      "catalog_id": "tattu-taa20004s15x6",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA20004S15X6",
+      "variant_key": "r-line-v5-150c-xt60",
+      "variant_description": "R-Line V5 4S1P soft pack with XT60 discharge and JST-XHR-5P balance connectors.",
+      "suggested_display_name": "Tattu TAA20004S15X6",
+      "aliases": [
+        {
+          "value": "TAA20004S15X6",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 2000,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 14.8,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 4,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT60 discharge connector; JST-XHR-5P balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 74,
+        "width": 39,
+        "height": 40,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 217,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa20004s15x6-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA20004S15X6."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "R-Line V5; 4S1P; XT60 and JST-XHR-5P."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA20004S15X6 is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA20004S15X6."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 4S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 2000 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 14.8 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "4S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "4S1P specifies 4 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "4S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR-5P balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR-5P balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 74 x 39 x 40 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 74 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 39 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 40 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa20004s15x6-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 217 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU."
+      ]
+    },
+    {
+      "catalog_id": "tattu-taa22005s15x6",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA22005S15X6",
+      "variant_key": "r-line-v5-150c-xt60",
+      "variant_description": "R-Line V5 5S1P soft pack with XT60 discharge and JST-XHR-6P balance connectors.",
+      "suggested_display_name": "Tattu TAA22005S15X6",
+      "aliases": [
+        {
+          "value": "TAA22005S15X6",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 2200,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 18.5,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 5,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT60 discharge connector; JST-XHR-6P balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 107,
+        "width": 34,
+        "height": 40,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 294,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa22005s15x6-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA22005S15X6."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "R-Line V5; 5S1P; XT60 and JST-XHR-6P."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA22005S15X6 is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA22005S15X6."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 5S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 2200 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 18.5 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "5S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "5S1P specifies 5 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "5S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR-6P balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR-6P balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 107 x 34 x 40 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 107 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 34 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 40 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa22005s15x6-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 294 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU."
+      ]
+    },
+    {
+      "catalog_id": "tattu-taa12006s15x6",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA12006S15X6",
+      "variant_key": "r-line-v5-150c-xt60",
+      "variant_description": "R-Line V5 6S1P soft pack with XT60 discharge and JST-XHR-7P balance connectors.",
+      "suggested_display_name": "Tattu TAA12006S15X6",
+      "aliases": [
+        {
+          "value": "TAA12006S15X6",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 1200,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 22.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 6,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT60 discharge connector; JST-XHR-7P balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 78,
+        "width": 39,
+        "height": 35,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 196,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa12006s15x6-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA12006S15X6."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "R-Line V5; 6S1P; XT60 and JST-XHR-7P."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA12006S15X6 is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA12006S15X6."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 6S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 1200 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 22.2 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P specifies 6 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR-7P balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR-7P balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 78 x 39 x 35 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 78 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 39 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 35 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa12006s15x6-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 196 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU."
+      ]
+    },
+    {
+      "catalog_id": "tattu-taa18006s15x6",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA18006S15X6",
+      "variant_key": "r-line-v5-150c-xt60",
+      "variant_description": "R-Line V5 6S1P soft pack with XT60 discharge and JST-XHR-7P balance connectors.",
+      "suggested_display_name": "Tattu TAA18006S15X6",
+      "aliases": [
+        {
+          "value": "TAA18006S15X6",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 1800,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 22.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 6,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT60 discharge connector; JST-XHR-7P balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 77,
+        "width": 38,
+        "height": 46,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 288,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa18006s15x6-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA18006S15X6."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "R-Line V5; 6S1P; XT60 and JST-XHR-7P."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA18006S15X6 is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA18006S15X6."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 6S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 1800 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 22.2 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P specifies 6 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR-7P balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60 discharge; JST-XHR-7P balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 77 x 38 x 46 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 77 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 38 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 46 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa18006s15x6-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 288 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU."
+      ]
+    },
+    {
+      "catalog_id": "tattu-taa13006s16st",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA13006S16ST",
+      "variant_key": "r-line-v6-160c-st-xt60u-f",
+      "variant_description": "R-Line V6 ST 6S1P soft pack with XT60U-F discharge and JST-XHR-7P balance connectors.",
+      "suggested_display_name": "Tattu TAA13006S16ST",
+      "aliases": [
+        {
+          "value": "TAA13006S16ST",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 1300,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 22.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 6,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT60U-F discharge connector; JST-XHR-7P balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 78,
+        "width": 39.5,
+        "height": 33,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 203,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa13006s16st-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA13006S16ST."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "R-Line V6 ST; 6S1P; XT60U-F and JST-XHR-7P."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA13006S16ST is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA13006S16ST."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 6S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 1300 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 22.2 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P specifies 6 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60U-F discharge; JST-XHR-7P balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60U-F discharge; JST-XHR-7P balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 78 x 39.5 x 33 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 78 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 39.5 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 33 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa13006s16st-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 203 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU.",
+        "This is the ST (stick) SKU; SQ alternatives are not counted as additional independent products in this fragment."
+      ]
+    },
+    {
+      "catalog_id": "tattu-taa14806s16st",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA14806S16ST",
+      "variant_key": "r-line-v6-160c-st-xt60u-f",
+      "variant_description": "R-Line V6 ST 6S1P soft pack with XT60U-F discharge and JST-XHR-7P balance connectors.",
+      "suggested_display_name": "Tattu TAA14806S16ST",
+      "aliases": [
+        {
+          "value": "TAA14806S16ST",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 1480,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 22.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 6,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT60U-F discharge connector; JST-XHR-7P balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 77,
+        "width": 37.5,
+        "height": 36.5,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 212,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa14806s16st-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA14806S16ST."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "R-Line V6 ST; 6S1P; XT60U-F and JST-XHR-7P."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA14806S16ST is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA14806S16ST."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 6S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 1480 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 22.2 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P specifies 6 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60U-F discharge; JST-XHR-7P balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60U-F discharge; JST-XHR-7P balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 77 x 37.5 x 36.5 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 77 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 37.5 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 36.5 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa14806s16st-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 212 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU.",
+        "This is the ST (stick) SKU; SQ alternatives are not counted as additional independent products in this fragment."
+      ]
+    },
+    {
+      "catalog_id": "tattu-taa16006s16st",
+      "manufacturer": null,
+      "brand": "Tattu",
+      "model": "TAA16006S16ST",
+      "variant_key": "r-line-v6-160c-st-xt60u-f",
+      "variant_description": "R-Line V6 ST 6S1P soft pack with XT60U-F discharge and JST-XHR-7P balance connectors.",
+      "suggested_display_name": "Tattu TAA16006S16ST",
+      "aliases": [
+        {
+          "value": "TAA16006S16ST",
+          "kind": "mpn",
+          "match_policy": "exact_candidate"
+        }
+      ],
+      "chemistry": "lithium_ion_polymer",
+      "rechargeable": true,
+      "unit_kind": "pack",
+      "form_factor": {
+        "code": "rectangular_soft_pack",
+        "description": "Rectangular soft pack assembled from multiple lithium-polymer cells."
+      },
+      "rated_capacity_mah": 1600,
+      "capacity_basis": "nominal",
+      "typical_capacity_mah": null,
+      "minimum_capacity_mah": null,
+      "stated_capacity_mah": null,
+      "stated_capacity_label": null,
+      "capacity_test_conditions": null,
+      "nominal_voltage_v": 22.2,
+      "energy_wh": null,
+      "energy_basis": null,
+      "configuration": {
+        "series": 6,
+        "parallel": 1
+      },
+      "connector": {
+        "description": "XT60U-F discharge connector; JST-XHR-7P balance connector.",
+        "polarity": null
+      },
+      "dimensions_mm": {
+        "diameter": null,
+        "length": 77,
+        "width": 37.5,
+        "height": 40,
+        "basis": "Manufacturer reference dimensions LxWxT; thickness T is stored as height. Tolerance not stated."
+      },
+      "mass_g": 240,
+      "maintenance_notes": null,
+      "source_ids": [
+        "tattu-taa16006s16st-page",
+        "gensace-lipo-guide"
+      ],
+      "field_evidence": {
+        "/brand": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Overview, product heading",
+            "observation": "The heading identifies the brand as Tattu."
+          }
+        ],
+        "/model": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Product Sku",
+            "observation": "The exact product SKU is TAA16006S16ST."
+          }
+        ],
+        "/variant_description": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Overview and Specs, Configuration / Connector / Balancer Connector Type",
+            "observation": "R-Line V6 ST; 6S1P; XT60U-F and JST-XHR-7P."
+          }
+        ],
+        "/aliases": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Product Sku",
+            "observation": "TAA16006S16ST is the brand's SKU."
+          }
+        ],
+        "/aliases/0/value": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Product Sku",
+            "observation": "Exact SKU: TAA16006S16ST."
+          }
+        ],
+        "/chemistry": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Overview, product heading",
+            "observation": "The pack is identified as LiPo."
+          },
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo means lithium-ion polymer."
+          }
+        ],
+        "/rechargeable": [
+          {
+            "source_id": "gensace-lipo-guide",
+            "locator": "What's a Lipo battery?",
+            "observation": "LiPo is rechargeable."
+          }
+        ],
+        "/unit_kind": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Overview, product heading; Specs, Configuration",
+            "observation": "A battery pack with explicit 6S1P configuration."
+          }
+        ],
+        "/form_factor": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "A Soft Pack with three rectangular dimensions."
+          }
+        ],
+        "/form_factor/code": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Catalog shape code represents the specified soft pack."
+          }
+        ],
+        "/form_factor/description": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Packaging / Dimension (LxWxT)",
+            "observation": "Soft Pack; rectangular LxWxT dimensions."
+          }
+        ],
+        "/rated_capacity_mah": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "Nominal Capacity is 1600 mAh."
+          }
+        ],
+        "/capacity_basis": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Nominal Capacity",
+            "observation": "The source explicitly labels capacity nominal."
+          }
+        ],
+        "/nominal_voltage_v": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Nominal Voltage",
+            "observation": "Nominal voltage is 22.2 V."
+          }
+        ],
+        "/configuration": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P is explicit; voltage division is not used."
+          }
+        ],
+        "/configuration/series": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P specifies 6 series cells."
+          }
+        ],
+        "/configuration/parallel": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Configuration",
+            "observation": "6S1P specifies 1 parallel string."
+          }
+        ],
+        "/connector": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60U-F discharge; JST-XHR-7P balance."
+          }
+        ],
+        "/connector/description": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Connector / Balancer Connector Type",
+            "observation": "XT60U-F discharge; JST-XHR-7P balance."
+          }
+        ],
+        "/dimensions_mm": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "LxWxT: 77 x 37.5 x 40 mm; T maps to height."
+          }
+        ],
+        "/dimensions_mm/length": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Length: 77 mm."
+          }
+        ],
+        "/dimensions_mm/width": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Width: 37.5 mm."
+          }
+        ],
+        "/dimensions_mm/height": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Thickness: 40 mm, stored as height."
+          }
+        ],
+        "/dimensions_mm/basis": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Dimension (LxWxT)",
+            "observation": "Manufacturer reference LxWxT; tolerance unstated."
+          }
+        ],
+        "/mass_g": [
+          {
+            "source_id": "tattu-taa16006s16st-page",
+            "locator": "Specs, Weight",
+            "observation": "Mass: 240 g."
+          }
+        ]
+      },
+      "verification_status": "verified_core",
+      "conflicts": [],
+      "unknowns": [
+        "The legal manufacturing entity and production facility are not established in this record.",
+        "Capacity test conditions and separate minimum/typical capacities are not stated on the selected product page.",
+        "Connector pin polarity and dimensional tolerances are not established.",
+        "An energy rating is not curated in this record; the optional energy fields remain null."
+      ],
+      "notes": [
+        "Public product reference only; no school ownership or purchasing preference is asserted.",
+        "Capacity is a manufacturer nominal value, not a measurement of an individual asset.",
+        "Match the exact SKU and supplied connectors; generic connector options are not treated as this variant.",
+        "The display name is an editable suggestion formed from brand and exact SKU.",
+        "This is the ST (stick) SKU; SQ alternatives are not counted as additional independent products in this fragment."
+      ]
+    }
+  ]
+}
