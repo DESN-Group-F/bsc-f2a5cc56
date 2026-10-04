@@ -15,6 +15,7 @@ import { actionNames, formatTime, formatDateOnly, formatBatteryAge, sydneyInput,
 import { currentSydneyDate } from "@/lib/battery-age";
 import { buildingPickerOptions, isSupportedBuilding, roomPickerOptions } from "@/lib/location-catalog";
 import { RecordPicker } from "./record-picker";
+import { BatteryMovementSummary } from "./battery-movement-summary";
 import type { WriteAction } from "@/lib/client/inventory-contracts";
 type DetailDraft = { kind: "charge" } | { kind: "observation" } | {
     kind: "correction";
@@ -31,16 +32,21 @@ export function BatteryDetails({ battery: initialBattery, data, revision, onClos
     onExport: () => void;
     write: WriteAction;
 }) {
-    const [detail, setDetail] = useState<BatteryDetail | null>(null), [error, setError] = useState(""), [retry, setRetry] = useState(0), [form, setForm] = useState<DetailDraft | null>(null);
+    const [result, setResult] = useState<{ key: string; detail: BatteryDetail | null; error: string } | null>(null);
+    const [retry, setRetry] = useState(0), [form, setForm] = useState<DetailDraft | null>(null);
+    const requestKey = `${data.dataset}:${initialBattery.id}:${revision}:${retry}`;
+    const detail = result?.key === requestKey ? result.detail : null;
+    const error = result?.key === requestKey ? result.error : "";
     const battery = detail?.battery ?? initialBattery;
     useEffect(() => { const abort = new AbortController(); fetch(`/api/inventory?dataset=${data.dataset}&batteryId=${encodeURIComponent(initialBattery.id)}`, { signal: abort.signal, cache: "no-store" }).then(async (r) => { if (r.status === 401) reloadSessionPage("/signin"); const body = await r.json() as BatteryDetail & {
         error?: string;
     }; if (!r.ok)
-        throw new Error(body.error); if (abort.signal.aborted) return; if (body.battery?.id !== initialBattery.id) throw new Error("The battery details response was incomplete. Refresh before using this record."); setError(""); setDetail(body); }).catch(e => { if (e.name !== "AbortError" && !abort.signal.aborted)
-        setError(e.message); }); return () => abort.abort(); }, [initialBattery.id, data.dataset, revision, retry]);
+        throw new Error(body.error || "Battery details could not be loaded."); if (abort.signal.aborted) return; if (body.battery?.id !== initialBattery.id || !body.movementSummary) throw new Error("The battery details response was incomplete. Refresh before using this record."); setResult({ key: requestKey, detail: body, error: "" }); }).catch(e => { if (e.name !== "AbortError" && !abort.signal.aborted)
+        setResult({ key: requestKey, detail: null, error: e.message }); }); return () => abort.abort(); }, [initialBattery.id, data.dataset, requestKey]);
     const ageAsOfOn = currentSydneyDate();
     return <><Sheet open onOpenChange={o => !o && onClose()}><SheetContent className="battery-detail-sheet"><SheetHeader><SheetTitle><span className="detail-title-icon"><Battery size={20}/></span>{battery.id}</SheetTitle><SheetDescription>{battery.name}</SheetDescription></SheetHeader><div className="detail-body">
     <div className="detail-action-row"><span className={`status-badge ${!isActiveBattery(battery) ? "retired" : battery.loanId ? "out" : "in"}`}>{batteryStatusLabel(battery)}</span><div className="detail-button-group"><Button variant="outline" size="sm" onClick={() => setRetry(value => value + 1)} disabled={!!form}><RefreshCw size={16}/>Refresh details</Button><Button variant="outline" size="sm" onClick={onExport}><Download size={16}/>Download details</Button>{data.user.role === "admin" && isActiveBattery(battery) && <Button variant="outline" size="sm" onClick={() => onEdit(battery)}><Pencil />Edit asset</Button>}</div></div>
+    <BatteryMovementSummary detail={detail} error={error} onRetry={() => setRetry(value => value + 1)} />
     <dl className="spec-grid">{[["Chemistry", battery.chemistry || "Not recorded"], ["Model", battery.model || "Not recorded"], ["Capacity", battery.capacityMah == null ? "Not recorded" : `${battery.capacityMah.toLocaleString()} mAh`], ["Nominal voltage", battery.voltage == null ? "Not recorded" : `${battery.voltage} V`], ["RFID identifier", battery.tagId || "Not assigned"], ["Storage building", battery.homeBuildingId ? buildingLabel({ id: battery.homeBuildingId, name: battery.homeBuildingName! }) : "Building not assigned"], ["Storage room", storageRoomLabel(battery)]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
     {!isActiveBattery(battery) && <div className="detail-card"><h3>Retirement / permanent removal</h3><p>{batteryStatusLabel(battery)} · {formatTime(battery.lifecycleAt)}</p><p>Reason: {battery.lifecycleReason || "Not recorded"}</p>{battery.lifecycleDestination && <p>Destination: {battery.lifecycleDestination}</p>}<p>This asset is unavailable for borrowing. Its archived storage, responsibility and complete history remain recorded.</p></div>}
     <div className="detail-card"><h3><Clock3 size={17}/>Battery age</h3><dl className="spec-grid">{[["Registered at", formatTime(battery.registeredAt)], ["Manufactured on", formatDateOnly(battery.manufacturedOn)], ["First used on", formatDateOnly(battery.firstUsedOn)], ["Age since manufacture", formatBatteryAge(battery.manufacturedOn, ageAsOfOn)], ["Time in service", formatBatteryAge(battery.firstUsedOn, ageAsOfOn)]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p>Manufacture age uses the recorded production date; time in service uses the recorded first-use date. Registration time is retained separately. Calculated as of {formatDateOnly(ageAsOfOn)} (Sydney).</p></div>

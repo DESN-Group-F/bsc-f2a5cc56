@@ -583,6 +583,11 @@ export async function runApiSmoke({
   assert.equal(detail.loans[0].borrowerAccountId, staff.user.id);
   assert.equal(detail.loans[0].checkoutActorName, staff.user.displayName);
   assert.equal(detail.loans[0].returnActorName, loan.user.displayName);
+  assert.equal(detail.movementSummary.activeLoan, null);
+  assert.equal(detail.movementSummary.latestReturn.id, detail.loans[0].id);
+  assert.equal(detail.movementSummary.latestReturn.returnActorName, loan.user.displayName);
+  assert.equal(detail.movementSummary.registration.actorName, staff.user.displayName);
+  assert.equal(detail.movementSummary.recentLoans[0].id, detail.loans[0].id);
   await check(
     "a correction must freeze its intended action and state",
     "/api/inventory",

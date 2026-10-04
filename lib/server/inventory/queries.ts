@@ -9,6 +9,8 @@ import { InventoryDatabase, type Row } from "./database";
 import { InventorySession } from "./actor";
 import { ensureInventoryReferenceData } from "./provisioning";
 
+const loanColumns = "id,borrower_name AS borrowerName,borrower_account_id AS borrowerAccountId,CASE WHEN borrower_account_id IS NULL THEN 'legacy' ELSE 'staff' END AS borrowerKind,checked_out_at AS checkedOutAt,returned_at AS returnedAt,cancelled_at AS cancelledAt,checkout_actor_name AS checkoutActorName,return_actor_name AS returnActorName,correction_reason AS correctionReason";
+
 /** Inventory read models; provisioning is explicit at the public snapshot/detail entry points. */
 export class InventoryQueries {
   constructor(
@@ -190,11 +192,11 @@ export class InventoryQueries {
   async detail(id: string) {
     await ensureInventoryReferenceData(this.database);
     const key = this.database.key(id);
-    const [batteries, loans, charges, observations, events] = (
+    const [batteries, loans, charges, observations, events, activeLoans, latestReturns, recentLoans, registrations] = (
       await this.database.raw.batch<Row>([
         this.snapshotStatements(undefined, id)[0],
         this.database.statement(
-          "SELECT id,borrower_name AS borrowerName,borrower_account_id AS borrowerAccountId,CASE WHEN borrower_account_id IS NULL THEN 'legacy' ELSE 'staff' END AS borrowerKind,checked_out_at AS checkedOutAt,returned_at AS returnedAt,cancelled_at AS cancelledAt,checkout_actor_name AS checkoutActorName,return_actor_name AS returnActorName,correction_reason AS correctionReason FROM loans WHERE scope=? AND battery_key=? ORDER BY checked_out_at DESC,rowid DESC LIMIT 200",
+          `SELECT ${loanColumns} FROM loans WHERE scope=? AND battery_key=? ORDER BY checked_out_at DESC,rowid DESC LIMIT 200`,
           this.database.scope,
           key,
         ),
@@ -214,6 +216,27 @@ export class InventoryQueries {
           id,
           id,
         ),
+        // Read movement evidence independently of the capped history, in the same D1 snapshot.
+        this.database.statement(
+          `SELECT ${loanColumns} FROM loans WHERE scope=? AND battery_key=? AND cancelled_at IS NULL AND returned_at IS NULL LIMIT 1`,
+          this.database.scope,
+          key,
+        ),
+        this.database.statement(
+          `SELECT ${loanColumns} FROM loans WHERE scope=? AND battery_key=? AND cancelled_at IS NULL AND returned_at IS NOT NULL ORDER BY julianday(returned_at) DESC,rowid DESC LIMIT 1`,
+          this.database.scope,
+          key,
+        ),
+        this.database.statement(
+          `SELECT ${loanColumns} FROM loans WHERE scope=? AND battery_key=? AND cancelled_at IS NULL ORDER BY julianday(COALESCE(returned_at,checked_out_at)) DESC,rowid DESC LIMIT 6`,
+          this.database.scope,
+          key,
+        ),
+        this.database.statement(
+          "SELECT at,actor_name AS actorName FROM audit_events WHERE scope=? AND battery_id=? AND action='battery_registered' ORDER BY at,rowid LIMIT 1",
+          this.database.scope,
+          id,
+        ),
       ])
     ).map((result) => result.results);
     if (!batteries.length)
@@ -222,6 +245,12 @@ export class InventoryQueries {
       .batteries[0];
     return {
       battery,
+      movementSummary: {
+        activeLoan: activeLoans.find((loan) => loan.id === battery.loanId) ?? null,
+        latestReturn: latestReturns[0] ?? null,
+        recentLoans,
+        registration: registrations[0] ?? null,
+      },
       loans,
       charges,
       observations,

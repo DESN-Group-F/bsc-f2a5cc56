@@ -2,6 +2,8 @@
 
 A staff work platform for the DESN2000 battery-management design project. Its primary aim is to reduce routine staff work while keeping responsibility, lending and dated location evidence traceable.
 
+Release **0.6.1** adds a prominent **Check-in / check-out** summary inside each battery detail. It shows the current recorded holder and loan duration, or time since the last recorded return and its operator, followed by recent movements. Registration remains separate from a physical check-in; missing evidence is explicit. The existing 16 migrations are unchanged. See the [release record](docs/releases/0.6.1.md).
+
 The frozen **0.6.0** release reorganizes the existing staff workflows into explicit application, client, inventory-service and visual-system modules. The yellow-and-ink interface uses a shared theme across the inventory, workstations, tasks, dialogs and sign-in. Operational text and table cells use 14px text, supporting hints use 13px and compact labels use at least 12px; darker secondary text improves contrast while preserving the existing theme. See the [architecture map](docs/architecture.md), [design system](docs/design-system.md) and [release record](docs/releases/0.6.0.md).
 
 Release **0.6.0** uses branch `battery-staff-platform-v0.6.0` and annotated tag `battery-inventory-v0.6.0-freeze-20261003`. It includes recoverable personal Messages and shared recurring-plan removal, clearer task completion, model-assisted registration, reviewed intake/removal, manual scan selection and the primary Teaching groups workspace with recorded group activity. The preceding [development snapshot](docs/releases/2026-10-03-teaching-groups.md) remains available on `battery-staff-platform-teaching-groups-20261003`.

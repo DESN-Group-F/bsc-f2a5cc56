@@ -153,6 +153,12 @@ export type LoanRecord = {
 };
 export type BatteryDetail = {
     battery: BatteryRecord;
+    movementSummary: {
+        activeLoan: LoanRecord | null;
+        latestReturn: LoanRecord | null;
+        recentLoans: LoanRecord[];
+        registration: { at: string; actorName: string } | null;
+    };
     loans: LoanRecord[];
     charges: {
         id: string;
