@@ -1,0 +1,15 @@
+**/node_modules/
+**/dist/
+**/build/
+work/
+**/.gradle/
+**/xcuserdata/
+**/local.properties
+.env*
+*.p8
+*.p12
+*.pem
+*.key
+*.mobileprovision
+*.ipa
+*.apk

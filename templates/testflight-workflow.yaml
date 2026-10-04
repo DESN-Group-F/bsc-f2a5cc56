@@ -1,0 +1,44 @@
+# Inactive reference template. Review signing inputs and obtain explicit test-distribution authorization before intentionally enabling this workflow.
+workflows:
+  mobile-ios-testflight:
+    name: Mobile iOS functional test beta
+    instance_type: mac_mini_m2
+    max_build_duration: 45
+    integrations:
+      app_store_connect: battery-inventory
+    environment:
+      node: 22
+      xcode: 26.6
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.batteryinventory.mobile
+    scripts:
+      - name: Install and verify the mobile package
+        script: |
+          cd mobile
+          npm ci --no-fund --no-audit
+          npm test
+          npm run test:plugin
+          npm run build
+          node ../scripts/prepare-mobile-native.mjs --ios
+      - name: Apply provisioned NFC signing profiles
+        script: |
+          cd mobile
+          xcode-project use-profiles
+      - name: Set the build number and produce the signed package
+        script: |
+          cd mobile
+          : "${PROJECT_BUILD_NUMBER:?A Codemagic project build number is required}"
+          MOBILE_BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 1))
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $MOBILE_BUILD_NUMBER" ios/App/App/Info.plist
+          xcode-project build-ipa --project ios/App/App.xcodeproj --scheme App \
+            --archive-directory build/ios/xcarchive --ipa-directory build/ios/ipa
+    artifacts:
+      - mobile/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - mobile/build/ios/xcarchive/**/*.dSYM
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false

@@ -1,0 +1,16 @@
+node_modules/
+dist/
+build/
+.DS_Store
+*.log
+*.keystore
+*.jks
+*.p12
+*.p8
+*.cer
+*.ipa
+*.xcarchive/
+*.mobileprovision
+.env
+.env.*
+!.env.example

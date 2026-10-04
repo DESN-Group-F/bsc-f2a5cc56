@@ -1,0 +1,663 @@
+{
+  "formatVersion": 1,
+  "purpose": "functional-test-source",
+  "formalRelease": false,
+  "testVersion": "0.1.0",
+  "createdAt": "2026-10-04T08:58:10.841Z",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 86,
+      "sha256": "1735b3fc288c4769e494c98f9e254bc40bef7f98ec61e0bd0f353d558a949393",
+      "mode": "0644"
+    },
+    {
+      "path": ".gitignore",
+      "bytes": 148,
+      "sha256": "c20323dcbebad0f2a5b8201de98aa26b56948fa046da5a8db1d46ee1355c2182",
+      "mode": "0644"
+    },
+    {
+      "path": "codemagic.yaml",
+      "bytes": 1916,
+      "sha256": "9715f97009e191802ae944394f7b16e7914414be3579163d55d306f6c2e22b86",
+      "mode": "0644"
+    },
+    {
+      "path": "docs/mobile-codemagic-setup.md",
+      "bytes": 9157,
+      "sha256": "cf27f268c8c9238e4ff2f68ee1c366295ef39c8fc409763956e75b1a5ca99b87",
+      "mode": "0644"
+    },
+    {
+      "path": "docs/mobile-nfc-development.md",
+      "bytes": 12044,
+      "sha256": "ae69003609cba73cc48b40efd930c82da5f6e107ba6d174d4b7211937bd02f0a",
+      "mode": "0644"
+    },
+    {
+      "path": "docs/mobile-nfc-test-protocol.md",
+      "bytes": 14824,
+      "sha256": "ba60482b7fdcaba38e08dcdd479a21f7a31915a7a6950d50973c2ee45889ae73",
+      "mode": "0644"
+    },
+    {
+      "path": "docs/mobile-nfc-validation.md",
+      "bytes": 4595,
+      "sha256": "5e771f5aa4d0c1d27d94889c57fed4e7c243d4f010141ae32f5eba6c7bb87f04",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/.gitignore",
+      "bytes": 140,
+      "sha256": "066a428ffff6a45bf47788b43ce1652116447783eeb8f59602740afae058e432",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/.gitignore",
+      "bytes": 1824,
+      "sha256": "065e4a92a240fe11a0ea230491ad9dabef143f5fd5a3e6884ad6f0395666a971",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/.gitignore",
+      "bytes": 26,
+      "sha256": "99c54e51ee601a60fbde8016b2cbf717483bc2e92773be86c9247d02a7fa6ea4",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/build.gradle",
+      "bytes": 2154,
+      "sha256": "1c08aa7793c0302321fefc5d8ad6cbf3923f49bee2090c233b3d3f972bb28ee3",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/capacitor.build.gradle",
+      "bytes": 570,
+      "sha256": "7a7dd62b777ae93c92314e465b7d0fe5358ed7be1f112cd32bed93d2282339ee",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/proguard-rules.pro",
+      "bytes": 751,
+      "sha256": "1cf8c57e8f79c250b0af9c1a5a4edad71a5c348a79ab70243b6bae086c150ad2",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/AndroidManifest.xml",
+      "bytes": 1538,
+      "sha256": "806e6d0b0e3da66c9220173121672f6a54724189a679947902d126af37973beb",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/java/com/batteryinventory/mobile/MainActivity.java",
+      "bytes": 131,
+      "sha256": "8f9ecea4250ec341764e4f60d35764facd4dbf16f04e8863b6f414ac0363fbcc",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable-land-hdpi/splash.png",
+      "bytes": 11232,
+      "sha256": "7c4a9dda1d2417900a2c601257c3a49a76dd18d3e039f98879e8520058c409ae",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable-land-mdpi/splash.png",
+      "bytes": 5625,
+      "sha256": "501ede9b6e781b4dfb78423770ec6ec23d849d41dba1d7d1197c57725b4d1282",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable-land-xhdpi/splash.png",
+      "bytes": 22388,
+      "sha256": "63dceb17826ce5448e76462bdf45af4c0ac629bea5878761e58f844f4567660b",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable-land-xxhdpi/splash.png",
+      "bytes": 34966,
+      "sha256": "c7d091d654aa2857be412b3a54d2066bfe51522815573a851701899e0f981fad",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable-land-xxxhdpi/splash.png",
+      "bytes": 53844,
+      "sha256": "2ac825ebd7c19b313c58fa8d2bf2c52fe4cfd10cfb09978928ca7c90af67730f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable-port-hdpi/splash.png",
+      "bytes": 11589,
+      "sha256": "5abfecda73e90175065ab0ac40cc20f1b5e56a8f27d8444d75315addb778ba04",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable-port-mdpi/splash.png",
+      "bytes": 5796,
+      "sha256": "2779296630d449046410455d5a360f18ddf9937d76535acb44a3ee2573914892",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable-port-xhdpi/splash.png",
+      "bytes": 24223,
+      "sha256": "e561b97682404802e96b5943df954093ee3bc66b812daa5f560fa771f24462e7",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable-port-xxhdpi/splash.png",
+      "bytes": 35929,
+      "sha256": "7645070e86673fee87c6d4c7aa02830e4b917223406fc415313a4c1a6ee3754e",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable-port-xxxhdpi/splash.png",
+      "bytes": 54994,
+      "sha256": "692d9079f682ec9a5b49fbc1ab81bc134b984d338a38eba7219d5329360f2eb8",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable-v24/ic_launcher_foreground.xml",
+      "bytes": 558,
+      "sha256": "cae2280c71691e54238776a36abc848c47b9147a31a721542af72ded5b363f26",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable/ic_launcher_background.xml",
+      "bytes": 133,
+      "sha256": "c563c16b719f009d20ed9a9476509d74cd008d6ea577e81226469c9f7fff3375",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/drawable/splash.png",
+      "bytes": 5625,
+      "sha256": "501ede9b6e781b4dfb78423770ec6ec23d849d41dba1d7d1197c57725b4d1282",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/layout/activity_main.xml",
+      "bytes": 535,
+      "sha256": "5d770feb791313b947020cbfc57e5c733c556dac5e9e49261a1190e527073253",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml",
+      "bytes": 265,
+      "sha256": "9c3a7e0a6515c6e1a7ae834a9ae430311ebc3241f7b2e5e7f0460aa690709a7c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml",
+      "bytes": 265,
+      "sha256": "9c3a7e0a6515c6e1a7ae834a9ae430311ebc3241f7b2e5e7f0460aa690709a7c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_foreground.png",
+      "bytes": 1145,
+      "sha256": "e7538577eb6d779f8ddd056f609644790eea89a593bd533e1d92c068e7d3ea5c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher_round.png",
+      "bytes": 1660,
+      "sha256": "e996deb6e8fa7f172ae8220f329be6a316c073fb0fd6df79e8bdc59e9c1c6e38",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-hdpi/ic_launcher.png",
+      "bytes": 970,
+      "sha256": "d18925e57686867aca7a81636fd5fed98142c0ba2d3d6cc994fb6f3ddfebeda8",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_foreground.png",
+      "bytes": 843,
+      "sha256": "5f625a88a1e3be90f2fb2992751a9f47e3ce3154de147dc16c224d8e4cdf3d74",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png",
+      "bytes": 1162,
+      "sha256": "ec5b20e5a00fed3459c6fba325a62a5c86d8c5d02ba7a5f481b2d44fec167367",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-mdpi/ic_launcher.png",
+      "bytes": 661,
+      "sha256": "f8761dd440c26aa91c1c45e65da3830de0060753f95b6d67cf130924cf4fbc99",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_foreground.png",
+      "bytes": 1474,
+      "sha256": "e1b6e7c041e01e70889a5a3deec3df6c747c9a3b35a12c1fa341a2589de94a9d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher_round.png",
+      "bytes": 2171,
+      "sha256": "d228a2e5e3d8a7fa69a64f6a955b482d1253054bf815a2138582343572664096",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png",
+      "bytes": 1111,
+      "sha256": "fb8c2d5a559146f264d82c759ae2963077493e7e2cc8532469a2b39d22e99332",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_foreground.png",
+      "bytes": 2215,
+      "sha256": "79f8a69cdd9330ad7932940bde557c4969b8ef40ee4c7c33bafc8f93be9f1307",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.png",
+      "bytes": 3403,
+      "sha256": "f4f275c9b4ecefa7e86bbf0ac780271dd35c4ea81ba5049afd1404c123d3e1bd",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png",
+      "bytes": 1881,
+      "sha256": "c31e12858c9be65a21cd129a86c7a7804b88ba909131934e24c9548bfcff27d4",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_foreground.png",
+      "bytes": 3008,
+      "sha256": "b75c650173a812d19fd53eacb5195ac5116974bfaf9bd584d01e5d39f8441ce4",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png",
+      "bytes": 4688,
+      "sha256": "d5632dfecb7c4feb8cb3c329483269aa3268891872b5351fbbb38f10283ce26b",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png",
+      "bytes": 2518,
+      "sha256": "b87f13105c8f42f71dbbbcfd45d50e57579c318e5fc8c96f456bc6d5c2e4eb0b",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/values/colors.xml",
+      "bytes": 208,
+      "sha256": "f716b4115ccd36ce3833ce0c0522f3d0530e307d931d419a9cf382710cea7c9b",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/values/ic_launcher_background.xml",
+      "bytes": 114,
+      "sha256": "c8f5c53e10061b5b62d75c602ec8562493201f12e62ab1c8c636306816e5529c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/values/strings.xml",
+      "bytes": 336,
+      "sha256": "421d19c9eb77a0a00a97ff6eb3e58b7a26391089820e518b2b9b62c70fd27d9e",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/values/styles.xml",
+      "bytes": 823,
+      "sha256": "18ebba36575e9461347ee67361b23caf095f158ee85dbefe1b83a4669ba5bd6c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/app/src/main/res/xml/file_paths.xml",
+      "bytes": 213,
+      "sha256": "a46ed43ef65c90cb6778f4581decf3556e3f0055aad8f36d69dae16f9a0e99aa",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/build.gradle",
+      "bytes": 637,
+      "sha256": "46ade7db7afeb8049ccea59fce83095dca736ceb8c9acd79cc944e988c3357d9",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/capacitor.settings.gradle",
+      "bytes": 734,
+      "sha256": "53e685bdf75f98b753520cf4e009f30d9acd276e9ee35c7c484de0eb4bc28013",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/gradle.properties",
+      "bytes": 987,
+      "sha256": "3bab15c5b8bc4c2f4b6cf525497d15ad4abca53a460e6dd2eb0f0135817d31e6",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/gradle/wrapper/gradle-wrapper.jar",
+      "bytes": 43764,
+      "sha256": "7d3a4ac4de1c32b59bc6a4eb8ecb8e612ccd0cf1ae1e99f66902da64df296172",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/gradle/wrapper/gradle-wrapper.properties",
+      "bytes": 253,
+      "sha256": "9a479a85aa879bb55284fc16d0de5b81a745c3854f4e2d88c42e7debaf007435",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/gradlew",
+      "bytes": 8733,
+      "sha256": "b187b4c52e749f5760afdd6fadc31b2a98ad35fb249bf0dff03b72650f320409",
+      "mode": "0755"
+    },
+    {
+      "path": "mobile/android/gradlew.bat",
+      "bytes": 2843,
+      "sha256": "94102713eb8fb22d032397924c0f38ab2da783ba60d07054339f1190a0c4e2cd",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/settings.gradle",
+      "bytes": 208,
+      "sha256": "6ce098d15ebd69b44c4ecd786bca1bdc366340d2459b2af4d7bb0ab317aa9669",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/android/variables.gradle",
+      "bytes": 498,
+      "sha256": "83d502c9ed8fcf1dd4791482067abeedbebae49fafe9cd14a8a1f5891deb0d88",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/capacitor.config.ts",
+      "bytes": 211,
+      "sha256": "e9475bb7d6935e86e03014c4e96127174075362ea2b349953df934fbd209c987",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/index.html",
+      "bytes": 378,
+      "sha256": "a09a472731c9e6740759b70954bac51b4826e8dd1c3e087b011bd5e44a7c9af2",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/.gitignore",
+      "bytes": 206,
+      "sha256": "2b7132a9943d2622e51e656897ca5162f56b121b40b423dedce1fbc699dba88a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App.xcodeproj/project.pbxproj",
+      "bytes": 15515,
+      "sha256": "4b98d10b2250c88b623e5e3682b84c2244df1001f0dba7c048a91e1883c9cdab",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist",
+      "bytes": 238,
+      "sha256": "dfa0f9bb85b95ccba9c6811adadf8cb407fb5d52088e89db83ebc308ec448542",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/App.entitlements",
+      "bytes": 283,
+      "sha256": "4d20a59794417d4cf2a2c034eb3dd96f259cf1cdbe48106a4e4b93f10dc26996",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/AppDelegate.swift",
+      "bytes": 2504,
+      "sha256": "481e2ad8672b14acbd3e3df65acdc6d046526ae542b7bec903cf842fc68d9e49",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png",
+      "bytes": 38956,
+      "sha256": "e1f8e9b81f70173bbb5975d12138d82ba9cb9c9f15569be666ea21e86c0040dd",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "bytes": 218,
+      "sha256": "5c09bec6eede599b14fa9e4c44b03e7febebc930615a0cd70f02981c09dfe48a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Assets.xcassets/Contents.json",
+      "bytes": 62,
+      "sha256": "972ec1fd42325872438eb085ac29e94f51c10788ec18ec5549439950866c541d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Assets.xcassets/Splash.imageset/Contents.json",
+      "bytes": 403,
+      "sha256": "041481917eb249533ac6dd63d283bc6190b2d0642a93deda11b2ed0f6f7b605a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732-1.png",
+      "bytes": 156965,
+      "sha256": "5277dee9b2012af9e80c7ff52ca2f0ab84b08a5f48d97ff46295c4217b1c0cd9",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732-2.png",
+      "bytes": 156965,
+      "sha256": "5277dee9b2012af9e80c7ff52ca2f0ab84b08a5f48d97ff46295c4217b1c0cd9",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Assets.xcassets/Splash.imageset/splash-2732x2732.png",
+      "bytes": 156965,
+      "sha256": "5277dee9b2012af9e80c7ff52ca2f0ab84b08a5f48d97ff46295c4217b1c0cd9",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Base.lproj/LaunchScreen.storyboard",
+      "bytes": 1994,
+      "sha256": "87a42e842164d75f39cca56a2cf743652f4d8e858f2eba12ae21a8ddcd9a21c6",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Base.lproj/Main.storyboard",
+      "bytes": 1019,
+      "sha256": "7b7dc7acc67134bfaa80e5ce9c9068ba53db5369b9b70248aa7439fc2b09daae",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Info.plist",
+      "bytes": 2444,
+      "sha256": "de1966528b38c88bb323504a24c9190707b6e83ae49fd6e739f0d11fa4a4cdd0",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/PrivacyInfo.xcprivacy",
+      "bytes": 665,
+      "sha256": "07dce369fdb242c84a7191bc2a0718c259c9f42f927c6ef3c6662aee92cd3b8a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/SceneDelegate.swift",
+      "bytes": 899,
+      "sha256": "738b9b96bb71d34d80cd8c1183cf7f8f6f2e789c64e46fb5fe6777a35ae12dfd",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/CapApp-SPM/.gitignore",
+      "bytes": 165,
+      "sha256": "4b958e2b4dd57319aadef2551153c74b9cb5ffe9f89d6e3e491122a94913f016",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/CapApp-SPM/Package.swift",
+      "bytes": 1415,
+      "sha256": "e7a17e0522c29df1d02ab0cac6c9fb47825ceaaf0e35a65a02433bee9aca492a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/CapApp-SPM/README.md",
+      "bytes": 162,
+      "sha256": "42c535861f4a866e35f85764ed6af1ea046d6a409bf9852ecb00e5d292a1626e",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/CapApp-SPM/Sources/CapApp-SPM/CapApp-SPM.swift",
+      "bytes": 33,
+      "sha256": "70bf9dafddc35e3877dfb133a996f5be7ccd1e132897a98fdbf4869ff605ece9",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/debug.xcconfig",
+      "bytes": 23,
+      "sha256": "4838938a72b913b99cfda54a43bbe73f05893071dc6e3702b0adc44794b64272",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/package-lock.json",
+      "bytes": 74990,
+      "sha256": "7f1a3e7b326949b8f6262f14e8bc9506faa7ac3b62e13ffc4e9b7fb74370213b",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/package.json",
+      "bytes": 910,
+      "sha256": "a148b6992b8d477aee59a501319d4d80f4aadac80f10cc8613cca1fb731ea8b6",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/.gitignore",
+      "bytes": 7,
+      "sha256": "07cc0e3f57247b75f5278d110feba3719a32f4b2383e41234cf01325de774d40",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/android/build.gradle",
+      "bytes": 809,
+      "sha256": "f7548eecb5d42064895a6ba14bfa2785e9b11d800a82e5fbf6b2401852a3170b",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/android/src/main/AndroidManifest.xml",
+      "bytes": 265,
+      "sha256": "d5da24ff3851edcb59b8f16e533808b451a988f766b4070c11b577faa965464a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/android/src/main/java/com/batteryinventory/nfc/BatteryNfcPlugin.java",
+      "bytes": 12443,
+      "sha256": "34eab3b769afbf167347ab0c9960f2332abee4464ff97a9a54d83a560ad6ec4e",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/index.d.ts",
+      "bytes": 1259,
+      "sha256": "8dc10f1af17594e8c83245481ac369bd815df4c1d59bd8b07b1339e234b645ba",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/index.js",
+      "bytes": 194,
+      "sha256": "73427f31856561eb4194d2ae3a8dfb03f7e5671a6a04158870025871f6d7bb2f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/ios/Sources/BatteryNfcPlugin/BatteryNfcPlugin.swift",
+      "bytes": 12824,
+      "sha256": "e88d7cda1dac2b888eeec6d2a201c6fbc3ec64a9fdb2312addc80d2eff3e805a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/package.json",
+      "bytes": 671,
+      "sha256": "bebd1dde57af176c781514f6b25f5eb63867c0078b75c1da9d88e17f0c7ca84e",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/Package.swift",
+      "bytes": 630,
+      "sha256": "c890d0a70084abfc573f4f836be8eb840e5380b70634ae3297a65c97e3a73b3c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/README.md",
+      "bytes": 5352,
+      "sha256": "bcb6f7f85c26f7b171fea81deb299229afd8fd6f9cadd46c4835f54035c2077f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/tests/android-lifecycle.test.mjs",
+      "bytes": 14848,
+      "sha256": "327d310ee838391f0d08b326d7dde6caf3ee14bba32231683d73af93cfa31508",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/tests/web.test.mjs",
+      "bytes": 1028,
+      "sha256": "26bd6203a09fb8327fb1e5fa9ee0db08a80d917eb834bb54d3c2583e113211a3",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-nfc/web.js",
+      "bytes": 463,
+      "sha256": "a2ab685112004df4203cec75b8910641ffb364b8284c76d13eba0de4547269a0",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/README.md",
+      "bytes": 2027,
+      "sha256": "15ed14032b2e96632bf61f4b83862ee005459bffd20bf1cf863583dc2995037c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/resources/app-icon.svg",
+      "bytes": 270,
+      "sha256": "c9e6d73901a35062716fd0a4a8c7529a65361521594fd616074b8b7623a7e94d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/diagnostics.mjs",
+      "bytes": 7907,
+      "sha256": "ac7234970d846ff9d1d27b66ce627601a0b53c2d5f7c78579fe364d6be2df01c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/main.jsx",
+      "bytes": 20068,
+      "sha256": "f0c9aade5016b9a1124d14a79fd12fc16f9970fd71393a29f0119774de7ddbc5",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/styles.css",
+      "bytes": 9031,
+      "sha256": "f8536498ed6a9c7f33e4824fd16c90c6fdcbd13b892d7f04836cb80eef27c16f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/tests/diagnostics.test.mjs",
+      "bytes": 7239,
+      "sha256": "a9eee7ad8a33ed213e293ec41b33b8859c6641bdfd452e5550b7f795315c3d5c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/vite.config.js",
+      "bytes": 187,
+      "sha256": "6a5f357c6032a51c5042bd18f611863ec5cf23f7ad0669dff978542aa94adfcf",
+      "mode": "0644"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2593,
+      "sha256": "44331c39e9cfded9285392ebac1d0177fa144111424c61bff0138ca019d4a2a6",
+      "mode": "0644"
+    },
+    {
+      "path": "scripts/prepare-mobile-native.mjs",
+      "bytes": 6510,
+      "sha256": "895136cec9c1f29eeb54d246e603ca94ebfb2501f8cdb6feeba9542414ec6249",
+      "mode": "0644"
+    },
+    {
+      "path": "templates/testflight-workflow.yaml",
+      "bytes": 1690,
+      "sha256": "1351545e6c6f29a3b1518d0c7e7a6c9640fbb1f878e99abdd423323979a37794",
+      "mode": "0644"
+    }
+  ]
+}

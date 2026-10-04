@@ -1,0 +1,21 @@
+{
+  "name": "@battery-inventory/nfc",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Read-only NFC tag diagnostics for Battery Inventory.",
+  "type": "module",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "scripts": { "test": "node --test tests/*.test.mjs" },
+  "exports": {
+    ".": { "types": "./index.d.ts", "import": "./index.js", "default": "./index.js" },
+    "./web": "./web.js"
+  },
+  "files": ["index.js", "index.d.ts", "web.js", "ios", "android", "Package.swift", "README.md"],
+  "peerDependencies": { "@capacitor/core": "^8.5.2" },
+  "capacitor": {
+    "ios": { "src": "ios" },
+    "android": { "src": "android" }
+  }
+}

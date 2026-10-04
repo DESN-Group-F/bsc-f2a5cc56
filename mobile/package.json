@@ -1,0 +1,32 @@
+{
+  "name": "battery-inventory-nfc-mobile",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22.13.0" },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "node --test tests/*.test.mjs",
+    "test:plugin": "node --test plugins/battery-nfc/tests/*.test.mjs",
+    "sync": "npm run build && cap sync"
+  },
+  "dependencies": {
+    "@battery-inventory/nfc": "file:plugins/battery-nfc",
+    "@capacitor/android": "8.5.2",
+    "@capacitor/browser": "8.0.5",
+    "@capacitor/core": "8.5.2",
+    "@capacitor/filesystem": "8.1.4",
+    "@capacitor/ios": "8.5.2",
+    "@capacitor/share": "8.0.3",
+    "react": "19.2.6",
+    "react-dom": "19.2.6"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "8.5.2",
+    "@vitejs/plugin-react": "6.0.2",
+    "typescript": "5.9.3",
+    "vite": "8.0.13"
+  }
+}
