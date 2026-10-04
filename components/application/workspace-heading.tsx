@@ -1,10 +1,12 @@
 import { RotateCcw, ScanLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import type { StaffRole } from "@/lib/accounts";
+import { getRolePermissions } from "@/lib/permissions";
 
 const pages = {
   inventory: [
     "Battery inventory",
-    "Manage battery loans, responsibility, buildings and rooms.",
+    "View shared batteries, check out to yourself and record returns.",
   ],
   "teaching-groups": [
     "Teaching groups",
@@ -24,7 +26,7 @@ const pages = {
   ],
   "my-activity": [
     "My activity",
-    "Inventory operations recorded by your staff account.",
+    "Review your operations and current battery status, or check batteries in and out.",
   ],
   messages: [
     "Messages",
@@ -32,7 +34,7 @@ const pages = {
   ],
   "task-plans": [
     "Recurring tasks",
-    "Prepare task content, schedules and staff assignments from three supplied templates.",
+    "View shared schedules and complete tasks currently assigned to you.",
   ],
   activity: [
     "Activity history",
@@ -41,25 +43,40 @@ const pages = {
   account: ["My account", "Manage your profile, preferences and password."],
   accounts: ["Staff accounts", "Manage staff access and account permissions."],
   manage: [
-    "Manage records",
-    "Shared staff, buildings, rooms and battery records.",
+    "Directories",
+    "View and download shared directories and battery records. Saved records are read-only for staff.",
   ],
 } as const;
 export type ApplicationView = keyof typeof pages;
 
 export function WorkspaceHeading({
+  role,
   view,
   scan,
   intake,
   ready,
   onScan,
 }: {
+  role: StaffRole;
   view: ApplicationView;
   scan: "checkout" | "return" | null;
   intake: boolean;
   ready: boolean;
   onScan: (kind: "checkout" | "return") => void;
 }) {
+  const permissions = getRolePermissions(role);
+  const page =
+    view === "manage" && permissions.manageDirectories
+      ? [
+          "Manage records",
+          "Manage saved battery, building and room records, and view the account-linked staff directory.",
+        ]
+      : view === "task-plans" && permissions.manageTaskPlans
+        ? [
+            "Recurring tasks",
+            "Configure shared schedules and assignments, manage plans and complete eligible tasks.",
+          ]
+        : pages[view];
   const [title, description] = intake
     ? [
         "Batch intake",
@@ -68,15 +85,33 @@ export function WorkspaceHeading({
     : scan
       ? [
           scan === "checkout" ? "Scan checkout" : "Scan return",
-          "Keep scanning until you choose Exit scanning. Process each battery or confirm a batch.",
+          "Add batteries to the review list, then confirm checkout or return. Keep working until you choose Exit scanning.",
         ]
-      : pages[view];
+      : page;
   const showActions =
-    !scan && !intake && !["assets", "messages", "task-plans"].includes(view);
+    permissions.operateLoans &&
+    !scan &&
+    !intake &&
+    ["inventory", "my-batteries", "my-loans", "my-activity", "teaching-groups"].includes(view);
+  const administrationView =
+    !scan &&
+    !intake &&
+    ((view === "manage" && permissions.manageDirectories) ||
+      (view === "accounts" && permissions.manageAccounts));
+  const personalView =
+    !scan &&
+    !intake &&
+    ["account", "messages", "my-batteries", "my-loans", "my-activity"].includes(view);
   return (
     <div className="page-heading">
       <div>
-        <p className="eyebrow">INVENTORY MANAGEMENT</p>
+        <p className="eyebrow">
+          {administrationView
+            ? "ADMINISTRATION"
+            : personalView
+              ? "MY WORK"
+              : "INVENTORY WORKSPACE"}
+        </p>
         <h1>{title}</h1>
         <p className="page-description">{description}</p>
       </div>

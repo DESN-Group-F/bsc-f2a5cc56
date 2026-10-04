@@ -4,21 +4,27 @@ import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
+import { getRolePermissions } from "../work/qa/permissions.mjs";
 
 // Execute the actual intake component handlers with controlled hooks, receipts
 // and local recovery. No browser, physical reader or shared database is used.
 const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "intake-ui-"));
-for (const name of ["teaching-context", "battery-models", "battery-age", "domain", "location-catalog", "client-utils", "intake-session", "intake-draft"]) {
+for (const name of ["teaching-context", "battery-models", "battery-age", "domain", "location-catalog", "client-utils", "intake-session", "intake-draft", "battery-lifecycle", "inventory-query", "battery-selection-query"]) {
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
     await writeFile(join(scratch, `${name}.mjs`), compiled);
 }
 const [intake, models, client, locations, drafts] = await Promise.all(["intake-session", "battery-models", "client-utils", "location-catalog", "intake-draft"].map(name => import(pathToFileURL(join(scratch, `${name}.mjs`)))));
+const query = await import(pathToFileURL(join(scratch, "inventory-query.mjs")));
+const selectionQuery = await import(pathToFileURL(join(scratch, "battery-selection-query.mjs")));
+const rowSource = await readFile(new URL("../lib/client/row-selection.ts", import.meta.url), "utf8");
+await writeFile(join(scratch, "row-selection.mjs"), ts.transpileModule(rowSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText);
+const rowSelection = await import(pathToFileURL(join(scratch, "row-selection.mjs")));
 const source = await readFile(new URL("../components/inventory/intake-station.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
-const ui = Object.fromEntries(["TeachingGroupsPanel", "CheckCircle2", "LogOut", "ScanLine", "Button", "Input", "Label", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "RecordPicker", "BatteryModelPicker", "Checkbox", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"].map(name => [name, name]));
+const ui = Object.fromEntries(["BatteryFilterControls", "TeachingGroupsPanel", "CheckCircle2", "LogOut", "ScanLine", "Button", "Input", "Label", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "RecordPicker", "BatteryModelPicker", "Checkbox", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"].map(name => [name, name]));
 const jsx = (type, props, key) => typeof type === "function" ? type(props ?? {}) : ({ type, props: props ?? {}, key });
 function hooks() {
     const state = [], effects = [];
@@ -44,15 +50,16 @@ function receipt(payload, overrides = {}) {
     return { ...common, requestId: payload.requestId, sessionId: payload.sessionId, dataset: "demo", actorAccountId: "intake-native-actor", batteryId: "BAT-00000001", tagId: payload.tagId, registeredAt: "2026-10-03T01:00:00.000Z", source: "simulated_intake", replayed: false, ...(payload.scannedAt ? { scannedAt: payload.scannedAt } : {}), firstUsedOn: payload.firstUseMode === "at_registration" ? "2026-10-03" : payload.firstUseMode === "date" ? common.firstUsedOn : null, ...overrides };
 }
 async function environment(run, seed = []) {
-    const saved = Object.fromEntries(["sessionStorage", "window"].map(name => [name, Object.getOwnPropertyDescriptor(globalThis, name)]));
-    const entries = new Map(seed), control = { failWrites: false, failReads: false, writeCalls: 0 };
+    const saved = Object.fromEntries(["sessionStorage", "window", "Element"].map(name => [name, Object.getOwnPropertyDescriptor(globalThis, name)]));
+    const entries = new Map(seed), control = { selection: null, failWrites: false, failReads: false, writeCalls: 0 };
     Object.defineProperty(globalThis, "sessionStorage", { configurable: true, value: { getItem: key => { if (control.failReads) throw new Error("Read unavailable"); return entries.get(key) ?? null; }, setItem: (key, value) => { control.writeCalls++; if (control.failWrites) throw new Error("Storage unavailable"); entries.set(key, value); }, removeItem: key => { if (control.failWrites) throw new Error("Storage unavailable"); entries.delete(key); } } });
-    Object.defineProperty(globalThis, "window", { configurable: true, value: { addEventListener() {}, removeEventListener() {} } });
+    Object.defineProperty(globalThis, "window", { configurable: true, value: { addEventListener() {}, removeEventListener() {}, getSelection() { return control.selection; } } });
+    Object.defineProperty(globalThis, "Element", { configurable: true, value: class { constructor(interactive = false) { this.interactive = interactive; } closest() { return this.interactive; } } });
     try { await run({ entries, control }); } finally { for (const [name, descriptor] of Object.entries(saved)) { if (descriptor) Object.defineProperty(globalThis, name, descriptor); else Reflect.deleteProperty(globalThis, name); } }
 }
 function mount(overrides = {}) {
     const state = hooks(), writes = [], exits = [];
-    const bindings = { ...ui, ...intake, ...drafts, ...models, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
+    const bindings = { ...query, ...selectionQuery, ...rowSelection, getRolePermissions, ...ui, ...intake, ...drafts, ...models, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
     const IntakeStation = new Function(...names, "_jsx", "_jsxs", "_Fragment", `${compiled}\nreturn IntakeStation;`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
     const props = { data: fixture(), onExit: () => exits.push(true), async write(action, payload) { writes.push({ action, payload: structuredClone(payload) }); return receipt(payload, { batteryId: `BAT-${String(writes.length).padStart(8, "0")}` }); }, ...overrides };
     return { props, writes, exits, render() { state.reset(); const tree = IntakeStation(props); state.commit(); return tree; }, unmount: state.unmount };
@@ -70,6 +77,55 @@ function confirmButton(view, kind) { return nodes(view.render()).find(node => no
 function editFields(view, fields) { for (const [key, value] of Object.entries(fields)) input(view.render(), "edit-" + key).props.onChange({ target: { value } }); }
 function saveEdit(view) { nodes(view.render()).find(node => node.type === "form").props.onSubmit({ preventDefault() {} }); }
 function bareAttempt(tag = "DEMO-INTAKE-LEGACY") { return intake.captureIntakeAttempt("intake-native-actor", "demo", { requestId: crypto.randomUUID(), sessionId: crypto.randomUUID(), tagId: tag, firstUseMode: "at_registration", common: { name: "Legacy pending", model: "LEGACY", chemistry: "", capacityMah: null, voltage: null, ownerId: "staff-intake-actor", homeBuildingId: "J18", homeRoomId: null, manufacturedOn: null, firstUsedOn: null } }); }
+
+test("intake rows toggle once from plain content, preserve interactive controls and text selection, and lock uncertain confirmations", async () => {
+    await environment(async ({ entries, control }) => {
+        const view = mount({ async write() { throw new Error("Response unavailable"); } });
+        start(view); queue(view, "DEMO-INTAKE-ROW");
+        const event = interactive => ({ target: new Element(interactive), currentTarget: { contains: node => node === "inside" }, button: 0, defaultPrevented: false });
+        draftRow(view, "DEMO-INTAKE-ROW").props.onClick(event(false));
+        assert.equal(saved(entries).entries[0].selected, false);
+        draftRow(view, "DEMO-INTAKE-ROW").props.onClick(event(true));
+        assert.equal(saved(entries).entries[0].selected, false);
+        control.selection = { isCollapsed: false, anchorNode: "inside", focusNode: "inside" };
+        draftRow(view, "DEMO-INTAKE-ROW").props.onClick(event(false));
+        assert.equal(saved(entries).entries[0].selected, false);
+        control.selection = null;
+        selectEntry(view, "DEMO-INTAKE-ROW", true);
+        await confirmButton(view, "selected").props.onClick();
+        const preserved = structuredClone(saved(entries));
+        draftRow(view, "DEMO-INTAKE-ROW").props.onClick(event(false));
+        assert.deepEqual(saved(entries), preserved);
+        view.unmount();
+    });
+});
+
+test("registered intake filters use current records while retaining hidden selections, original receipts and unavailable history", async () => {
+    await environment(async ({ entries }) => {
+        const view = mount(); start(view); queue(view, "DEMO-INTAKE-FILTER-A"); queue(view, "DEMO-INTAKE-FILTER-B");
+        await confirmButton(view, "all").props.onClick();
+        const preserved = structuredClone(saved(entries));
+        const receiptRows = () => nodes(view.render()).filter(node => node.type === "TableRow" && node.props.onClick && !node.props["data-testid"]);
+        const filters = () => nodes(view.render()).find(node => node.type === "BatteryFilterControls");
+        assert.equal(receiptRows().length, 2, "unavailable current inventory must not hide saved receipts by default");
+        view.props.data.batteries = preserved.completed.map((receipt, index) => ({ ...receipt, id: receipt.batteryId, lifecycleStatus: index ? "scrapped" : "active", loanId: null, chemistry: index ? "NiMH" : "Li-ion", name: "Confirmed pack" }));
+        receiptRows()[0].props.onClick({ target: new Element(false), currentTarget: { contains: () => false }, button: 0, defaultPrevented: false });
+        filters().props.onChange({ chemistry: "NiMH" });
+        assert.equal(receiptRows().length, 1);
+        assert.ok(text(receiptRows()[0]).includes("BAT-00000002"));
+        assert.ok(text(view.render()).includes("1 selected outside these filters"));
+        button(view.render(), "Add selected to teaching group").props.onClick();
+        assert.deepEqual(nodes(view.render()).find(node => node.type === "TeachingGroupsPanel").props.initialIds, ["BAT-00000001"]);
+        filters().props.onChange({ capacityMinMah: 100, capacityMaxMah: 50 });
+        assert.equal(receiptRows().length, 0);
+        assert.ok(nodes(view.render()).some(node => node.props.role === "alert"));
+        filters().props.onClear();
+        assert.equal(receiptRows().length, 2);
+        assert.equal(nodes(receiptRows()[0]).find(node => node.type === "Checkbox").props.checked, true);
+        assert.deepEqual(saved(entries), preserved, "selection and filtering cannot alter saved intake evidence");
+        view.unmount();
+    });
+});
 
 test("scans create durable editable drafts only; common snapshots, device times and default unknown manufacture dates exist before any API", async () => {
     await environment(async ({ entries }) => {

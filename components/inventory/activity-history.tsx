@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Download, ClipboardList } from "lucide-react";
+import { Download, ClipboardList, LogIn, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -28,8 +28,14 @@ import {
   durationLabel,
   reloadSessionPage,
 } from "@/lib/client-utils";
-import { groupActivity, filterActivity } from "@/lib/group-activity";
+import { groupActivity, filterActivity, hasActivityBatteryCriteria } from "@/lib/group-activity";
+import { defaultInventoryFilter, type InventoryFilter } from "@/lib/inventory-query";
+import { getFilteredBatteries } from "@/lib/battery-selection-query";
+import { shouldToggleSelection } from "@/lib/client/row-selection";
+import { BatteryFilterControls } from "./battery-filter-controls";
 import { ActivityExportDialog } from "./activity-export-dialog";
+import { batteryStatusLabel, isActiveBattery } from "@/lib/battery-lifecycle";
+import { getRolePermissions } from "@/lib/permissions";
 
 type ActivityScope = "all" | "mine";
 
@@ -41,6 +47,8 @@ export function ActivityHistory({
   groupId = null,
   onGroupFilterChange,
   onDialogChange,
+  ready = true,
+  onMovement,
 }: {
   data: InventorySnapshot;
   onDetail: (id: string) => void;
@@ -49,6 +57,8 @@ export function ActivityHistory({
   groupId?: string | null;
   onGroupFilterChange?: (id: string | null) => void;
   onDialogChange?: (open: boolean) => void;
+  ready?: boolean;
+  onMovement?: (kind: "checkout" | "return", ids: string[]) => void;
 }) {
   type HistoryResult = {
     context: string;
@@ -65,6 +75,15 @@ export function ActivityHistory({
     [retry, setRetry] = useState(0);
   const [downloadOpen, setDownloadOpen] = useState(false),
     [selected, setSelected] = useState<string[]>([]);
+  const [batteryFilter, setBatteryFilter] = useState<InventoryFilter>(() => ({ ...defaultInventoryFilter(), lifecycle: "all" }));
+  const batteryCriteriaActive = hasActivityBatteryCriteria(batteryFilter);
+  const batteryResult = getFilteredBatteries(data, batteryFilter);
+  function clearFilters() {
+    setBatteryFilter({ ...defaultInventoryFilter(), lifecycle: "all" });
+    setQuery("");
+    onGroupFilterChange?.(null);
+    setPage(0);
+  }
   useEffect(() => {
     onDialogChange?.(downloadOpen);
     return () => onDialogChange?.(false);
@@ -118,7 +137,7 @@ export function ActivityHistory({
     error = current ? history.error : "",
     events = current && !error ? history.events : [];
   const entries = groupActivity(events),
-    matching = filterActivity(entries, query, groupId),
+    matching = batteryResult.error ? [] : filterActivity(entries, query, groupId, batteryCriteriaActive ? new Set(batteryResult.batteries.map(battery => battery.id)) : null),
     maxPage = Math.max(0, Math.ceil(matching.length / 25) - 1),
     currentPage = Math.min(page, maxPage);
   const visible = matching.slice(currentPage * 25, (currentPage + 1) * 25);
@@ -135,7 +154,41 @@ export function ActivityHistory({
     entries.some((entry) => entry.id === id),
   );
   const countLabel = `${matching.length} matching ${matching.length === 1 ? "operation" : "operations"}`;
+  const showBatteryActions = scope === "mine";
+  const canMove = getRolePermissions(data.user.role).operateLoans && !!onMovement;
+  const batteriesById = new Map(data.batteries.map((battery) => [battery.id, battery]));
+  function batteryControls(batteryId: string) {
+    const battery = batteriesById.get(batteryId);
+    if (!battery || !ready)
+      return <span className="cell-secondary">Current status unavailable</span>;
+    const active = isActiveBattery(battery);
+    return (
+      <div className="flex flex-wrap items-center gap-2" aria-label={`Current status and actions for ${batteryId}`}>
+        <span className={`status-badge ${!active ? "retired" : battery.loanId ? "out" : "in"}`}>
+          {batteryStatusLabel(battery)}
+        </span>
+        {active && canMove ? (
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={loading || !!error}
+            aria-label={`${battery.loanId ? "Check in" : "Check out"} ${batteryId}`}
+            onClick={() => {
+              if (ready && !loading && !error && canMove)
+                onMovement?.(battery.loanId ? "return" : "checkout", [batteryId]);
+            }}
+          >
+            {battery.loanId ? <LogIn size={15} /> : <LogOut size={15} />}
+            {battery.loanId ? "Check in" : "Check out"}
+          </Button>
+        ) : !active ? (
+          <span className="cell-secondary">Retired asset · History retained</span>
+        ) : null}
+      </div>
+    );
+  }
   function toggle(id: string, checked: boolean) {
+    if (!ready || loading || error) return;
     setSelected((previous) =>
       checked
         ? [...new Set([...previous, id])]
@@ -157,7 +210,7 @@ export function ActivityHistory({
           </h2>
           <p className="field-hint">
             {scope === "mine"
-              ? "Inventory operations recorded by your signed-in staff account."
+              ? "Your recorded operations. Battery status shows the current register; check-in and check-out open a review before saving."
               : "Recorded inventory operations across all staff accounts."}
           </p>
         </div>
@@ -207,30 +260,39 @@ export function ActivityHistory({
         )}
         <Button
           variant="ghost"
-          onClick={() => {
-            setQuery("");
-            onGroupFilterChange?.(null);
-            setPage(0);
-          }}
-          disabled={!query && !groupId}
+          onClick={clearFilters}
+          disabled={!query && !groupId && !batteryCriteriaActive}
         >
           Clear filters
         </Button>
         <Button
           variant="outline"
-          disabled={loading || !!error || (!matching.length && !chosen.length)}
+          disabled={loading || !!error || (!!batteryResult.error && !chosen.length) || (!matching.length && !chosen.length)}
           onClick={() => setDownloadOpen(true)}
         >
           <Download size={16} />
           Download filtered history
         </Button>
       </div>
+      <div className="px-5 pb-4">
+      <BatteryFilterControls
+        data={data}
+        filters={batteryFilter}
+        onChange={(patch) => { setBatteryFilter(previous => ({ ...previous, ...patch })); setPage(0); }}
+        onClear={clearFilters}
+        disabled={!ready}
+        showSort={false}
+        defaultLifecycle="all"
+        scopeNote="Battery filters use the current register, including current status, owner, age and latest checkout. Activity search and recorded teaching group refer to historical operations. When any battery in a group matches, the whole recorded operation stays visible."
+      />
+      {batteryResult.error && <p className="form-error" role="alert">{batteryResult.error}</p>}
+      </div>
       {(query || groupId) && (
         <p className="field-hint">
           Applied filters: {query && `Search: ${query}`}
           {query && groupId && " · "}
           {groupId &&
-            `Teaching group: ${groupChoices.find(([id]) => id === groupId)?.[1] ?? "Recorded group"}`}
+            `Recorded teaching group: ${groupChoices.find(([id]) => id === groupId)?.[1] ?? "Recorded group"}`}
         </p>
       )}
       {!!chosen.length && (
@@ -282,8 +344,9 @@ export function ActivityHistory({
                           ? "indeterminate"
                           : false
                     }
-                    disabled={!visible.length}
-                    onCheckedChange={(value) =>
+                    disabled={!ready || !visible.length}
+                    onCheckedChange={(value) => {
+                      if (!ready || loading || error) return;
                       setSelected((previous) =>
                         value === true
                           ? [
@@ -295,23 +358,34 @@ export function ActivityHistory({
                           : previous.filter(
                               (id) => !visible.some((event) => event.id === id),
                             ),
-                      )
-                    }
+                      );
+                    }}
                   />
                 </TableHead>
                 <TableHead>ACTION / DETAILS</TableHead>
                 <TableHead>BATTERY / TEACHING GROUP</TableHead>
+                {showBatteryActions && <TableHead>CURRENT STATUS / ACTION</TableHead>}
                 <TableHead>OPERATOR</TableHead>
                 <TableHead>RECORDED AT</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {visible.map((event) => (
-                <TableRow key={event.id}>
+                <TableRow
+                  key={event.id}
+                  className="battery-selection-row"
+                  data-selected={chosen.includes(event.id)}
+                  data-selectable={ready}
+                  aria-selected={chosen.includes(event.id)}
+                  onClick={(click) => {
+                    if (shouldToggleSelection(click)) toggle(event.id, !chosen.includes(event.id));
+                  }}
+                >
                   <TableCell>
                     <Checkbox
                       aria-label={`Select activity ${event.id}`}
                       checked={chosen.includes(event.id)}
+                      disabled={!ready}
                       onCheckedChange={(value) =>
                         toggle(event.id, value === true)
                       }
@@ -337,6 +411,12 @@ export function ActivityHistory({
                               {member.batteryId}
                             </button>
                             <EventDescription event={member} />
+                            {showBatteryActions && member.batteryId && (
+                              <div className="my-2">
+                                <p className="field-hint mb-1">Current battery status</p>
+                                {batteryControls(member.batteryId)}
+                              </div>
+                            )}
                             <p className="field-hint">
                               {member.actorName} · {formatTime(member.at)}
                             </p>
@@ -372,6 +452,15 @@ export function ActivityHistory({
                       "—"
                     )}
                   </TableCell>
+                  {showBatteryActions && (
+                    <TableCell>
+                      {event.teachingGroup ? (
+                        <span className="cell-secondary">
+                          Expand recorded battery actions to view each battery&apos;s current status and check in or out.
+                        </span>
+                      ) : event.batteryId ? batteryControls(event.batteryId) : "—"}
+                    </TableCell>
+                  )}
                   <TableCell>{event.actorName}</TableCell>
                   <TableCell>{formatTime(event.at)}</TableCell>
                 </TableRow>
@@ -390,7 +479,7 @@ export function ActivityHistory({
               </h3>
               <p>
                 {events.length
-                  ? "Try another search."
+                  ? "Try another search or clear filters."
                   : "Confirmed inventory operations will appear here."}
               </p>
             </div>
@@ -427,6 +516,7 @@ export function ActivityHistory({
           scope={scope}
           search={query}
           groupId={groupId}
+          batteryFilter={batteryFilter}
           selectedIds={chosen}
           count={matching.length}
           onClose={() => setDownloadOpen(false)}
@@ -438,6 +528,7 @@ export function ActivityHistory({
           ? "history of your recorded inventory operations"
           : "inventory activity history"}
         . Corrections retain the original action.
+        {showBatteryActions && " Current status is separate from the recorded event. Check out is to your own account; check in can return another staff member's loan."}
       </div>
     </section>
   );

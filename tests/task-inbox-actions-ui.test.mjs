@@ -2,6 +2,9 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import ts from "typescript";
+import { getRolePermissions } from "../work/qa/permissions.mjs";
+import { createCustomTaskPlan, taskTemplates } from "../work/qa/task-schedule.mjs";
+import { captureTaskCreate, recoverTaskCreate, taskCreateStorageKey } from "../work/qa/task-create-session.mjs";
 
 const sources = await Promise.all(
   [
@@ -10,6 +13,7 @@ const sources = await Promise.all(
     "components/inventory/task-plans-panel.tsx",
     "components/inventory/tasks/task-cycle-dialog.tsx",
     "components/inventory/tasks/task-plan-removal-dialog.tsx",
+    "components/inventory/tasks/task-plan-details.tsx",
   ].map((path) => readFile(path, "utf8")),
 );
 const compiled = ts
@@ -173,8 +177,9 @@ function harness(
     "TaskDeliveryNotice",
     "TaskGenerationWarnings",
     "TaskPlanEditor",
+    "TaskDownloadDialog",
   ];
-  const bindings = {
+  const bindings = { getRolePermissions,
     ...Object.fromEntries(uiNames.map((name) => [name, name])),
     useState(initial) {
       const index = pointer++;
@@ -210,9 +215,10 @@ function harness(
     cycleState: (item) => (item.status === "completed" ? "Completed" : "Open"),
     reminderLimitation: () => null,
     taskPlanMatchesQuery: (item, query) => item.title.includes(query),
-    taskTemplates: [],
-    recoverTaskCreate: () => null,
-    taskCreateStorageKey: () => "key",
+    taskTemplates,
+    createCustomTaskPlan,
+    recoverTaskCreate,
+    taskCreateStorageKey,
     sessionStorage: storage,
     downloadTaskJson() {
       throw new Error("Unexpected download");
@@ -223,7 +229,7 @@ function harness(
     "_jsx",
     "_jsxs",
     "_Fragment",
-    `${compiled}\nreturn { MessagesPanel, TaskPlansPanel, TaskCycleDialog, TaskPlanRemovalDialog };`,
+    `${compiled}\nreturn { MessagesPanel, TaskPlansPanel, TaskCycleDialog, TaskPlanRemovalDialog, TaskPlanDetails };`,
   )(...Object.values(bindings), jsx, jsx, "Fragment");
   return {
     components,
@@ -480,12 +486,132 @@ test("a completion conflict requires reviewing latest state and never bypasses a
   assert.match(label(render()), /Completion is unavailable/);
 });
 
+test("Create task is a visible action and each template opens its own unsaved editor draft", () => {
+  for (const template of taskTemplates) {
+    const h = harness({ plans: [], cycles: [] });
+    let tree = h.render("TaskPlansPanel", { data });
+    assert.ok(button(tree, "Create task"));
+    assert.equal(nodes(tree).some((node) => node.type === "details"), false);
+    assert.equal(button(tree, "Use this template"), undefined);
+    button(tree, "Create task").props.onClick();
+    tree = h.render("TaskPlansPanel", { data });
+    assert.ok(nodes(tree).find((node) => node.type === "DialogTitle" && label(node) === "Create a recurring task"));
+    const choices = nodes(tree).filter((node) => node.type === "Button" && label(node) === "Use this template");
+    assert.equal(choices.length, 3);
+    for (const choice of choices) assert.match(choice.props["aria-label"], /^Choose template: /);
+    choices.find((choice) => choice.props["aria-label"] === `Choose template: ${template.label}`).props.onClick();
+    tree = h.render("TaskPlansPanel", { data });
+    assert.equal(button(tree, "Use this template"), undefined);
+    const editor = nodes(tree).find((node) => node.type === "TaskPlanEditor");
+    assert.equal(editor.props.original.category, template.plan.category);
+    assert.equal(editor.props.original.title, template.plan.title);
+    assert.deepEqual(editor.props.original.assigneeIds, template.plan.category === "storage_maintenance" ? [] : [data.user.id]);
+    assert.notEqual(editor.props.original.batteryIds, template.plan.batteryIds);
+    assert.equal(h.storage.values.size, 0, "Choosing a template does not submit or persist a request");
+    editor.props.onClose();
+    tree = h.render("TaskPlansPanel", { data });
+    assert.equal(nodes(tree).some((node) => node.type === "TaskPlanEditor"), false);
+    assert.equal(button(tree, "Create task").props.disabled, false);
+  }
+});
+
+test("Start from scratch opens a genuinely blank custom draft alongside optional templates", () => {
+  const h = harness({ plans: [], cycles: [] });
+  button(h.render("TaskPlansPanel", { data }), "Create task").props.onClick();
+  let tree = h.render("TaskPlansPanel", { data });
+  assert.match(label(tree), /Optional templates/);
+  assert.ok(button(tree, "Start from scratch"));
+  assert.equal(nodes(tree).filter(node => node.type === "Button" && label(node) === "Use this template").length, 3);
+  button(tree, "Start from scratch").props.onClick();
+  tree = h.render("TaskPlansPanel", { data });
+  const editor = nodes(tree).find(node => node.type === "TaskPlanEditor");
+  assert.equal(editor.props.original.category, "custom");
+  for (const field of ["title", "description", "basis", "scopeNote"]) assert.equal(editor.props.original[field], "");
+  assert.deepEqual(editor.props.original.assigneeIds, [data.user.id]);
+  assert.deepEqual(editor.props.original.channels, ["messages"]);
+  assert.equal(button(tree, "Start from scratch"), undefined);
+  assert.equal(h.storage.values.size, 0, "An unsubmitted blank draft is not an uncertain request");
+});
+
+test("task and Messages report choices capture the original filter scope before a file is requested", () => {
+  for (const [component, payload, downloadLabel] of [
+    ["TaskPlansPanel", { plans: [plan], cycles: [cycle] }, "Download filtered task records"],
+    ["MessagesPanel", { messages: [message], unreadCount: 1 }, "Download messages"],
+  ]) {
+    const h = harness(payload);
+    let tree = h.render(component, { data });
+    const search = () => nodes(tree).find(node => node.type === "Input" && node.props.placeholder?.startsWith("Search"));
+    search().props.onChange({ target: { value: "Storage" } });
+    tree = h.render(component, { data });
+    button(tree, downloadLabel).props.onClick();
+    tree = h.render(component, { data });
+    const dialog = nodes(tree).find(node => node.type === "TaskDownloadDialog");
+    assert.ok(dialog); assert.match(dialog.props.request.url, /search=Storage/);
+    search().props.onChange({ target: { value: "Changed later" } });
+    tree = h.render(component, { data });
+    assert.equal(nodes(tree).find(node => node.type === "TaskDownloadDialog").props.request.url, dialog.props.request.url);
+    assert.match(dialog.props.request.scope, /all pages/);
+    if (component === "MessagesPanel") assert.match(dialog.props.request.scope, /your own.*Reading and completion/);
+    dialog.props.onClose();
+    assert.equal(nodes(h.render(component, { data })).some(node => node.type === "TaskDownloadDialog"), false);
+  }
+});
+
+test("the template chooser can be cancelled or dismissed without starting a task", () => {
+  for (const dismiss of ["cancel", "close"]) {
+    const h = harness({ plans: [], cycles: [] });
+    button(h.render("TaskPlansPanel", { data }), "Create task").props.onClick();
+    const tree = h.render("TaskPlansPanel", { data });
+    if (dismiss === "cancel") button(tree, "Cancel").props.onClick();
+    else nodes(tree).find((node) => node.type === "Dialog").props.onOpenChange(false);
+    const closed = h.render("TaskPlansPanel", { data });
+    assert.equal(button(closed, "Use this template"), undefined);
+    assert.equal(button(closed, "Start from scratch"), undefined);
+    assert.equal(nodes(closed).some((node) => node.type === "TaskPlanEditor"), false);
+    assert.equal(button(closed, "Create task").props.disabled, false);
+    assert.equal(h.storage.values.size, 0);
+  }
+});
+
+test("template creation cannot replace a saved uncertain request or malformed recovery data", () => {
+  const attempt = captureTaskCreate(taskTemplates[0].plan, data.user.id, data.dataset, "44444444-4444-4444-8444-444444444444");
+  for (const raw of [JSON.stringify(attempt), "{broken"]) {
+    const storage = sessionStore();
+    const key = taskCreateStorageKey(data.user.id, data.dataset);
+    storage.setItem(key, raw);
+    const h = harness({ plans: [], cycles: [] }, undefined, storage);
+    let tree = h.render("TaskPlansPanel", { data });
+    assert.equal(button(tree, "Create task").props.disabled, true);
+    button(tree, "Create task").props.onClick();
+    tree = h.render("TaskPlansPanel", { data });
+    assert.equal(button(tree, "Use this template"), undefined);
+    assert.equal(button(tree, "Start from scratch"), undefined);
+    assert.equal(storage.getItem(key), raw);
+    const editor = nodes(tree).find((node) => node.type === "TaskPlanEditor");
+    if (raw === "{broken") {
+      assert.equal(editor, undefined);
+      assert.match(label(tree), /New task creation is blocked/);
+    } else assert.deepEqual(editor.props.original, attempt.input.payload);
+  }
+});
+
+test("an open template chooser disappears when administrator access is lost", () => {
+  const h = harness({ plans: [plan], cycles: [] });
+  button(h.render("TaskPlansPanel", { data }), "Create task").props.onClick();
+  assert.ok(button(h.render("TaskPlansPanel", { data }), "Use this template"));
+  const tree = h.render("TaskPlansPanel", { data: { ...data, user: { ...data.user, role: "staff" } } });
+  assert.equal(button(tree, "Create task"), undefined);
+  assert.equal(button(tree, "Use this template"), undefined);
+  assert.equal(button(tree, "Start from scratch"), undefined);
+  assert.ok(button(tree, "View plan"));
+});
+
 test("plan actions are next to the title, admin-only, and removed plans cannot be edited", () => {
   const h = harness({ plans: [plan], cycles: [] });
   let tree = h.render("TaskPlansPanel", { data });
   const firstCell = nodes(tree).find((node) => node.type === "TableCell");
   assert.ok(button(firstCell, "Remove"));
-  assert.ok(button(firstCell, "Edit"));
+  assert.ok(button(firstCell, "Edit plan"));
   button(tree, "Remove").props.onClick();
   tree = h.render("TaskPlansPanel", { data });
   assert.ok(
@@ -503,7 +629,103 @@ test("plan actions are next to the title, admin-only, and removed plans cannot b
     cycles: [],
   }).render("TaskPlansPanel", { data });
   assert.ok(button(removed, "Restore"));
-  assert.equal(button(removed, "Edit"), undefined);
+  assert.equal(button(removed, "Edit plan"), undefined);
+});
+
+test("Staff can inspect shared plans without seeing configuration controls or administrator empty-state instructions", () => {
+  const staffData = { ...data, user: { ...data.user, role: "staff" } };
+  for (const removedAt of [null, "2026-10-03"]) {
+    const sharedPlan = { ...plan, removedAt };
+    const h = harness({ plans: [sharedPlan], cycles: [] });
+    const props = { data: staffData };
+    let tree = h.render("TaskPlansPanel", props);
+    assert.ok(button(tree, "Download filtered task records"));
+    assert.doesNotMatch(label(tree), /Create task|Use this template/);
+    for (const action of ["Edit plan", "Remove", "Restore"]) {
+      assert.equal(button(tree, action), undefined);
+    }
+    button(tree, "View plan").props.onClick();
+    tree = h.render("TaskPlansPanel", props);
+    const detail = nodes(tree).find((node) => node.type === h.components.TaskPlanDetails);
+    assert.equal(detail.props.plan, sharedPlan);
+    assert.equal(detail.props.data.user.id, staffData.user.id);
+  }
+  const empty = harness({ plans: [], cycles: [] }).render("TaskPlansPanel", { data: staffData });
+  assert.match(label(empty), /An administrator can create a plan/);
+  assert.doesNotMatch(label(empty), /Select Create task/);
+});
+
+test("switching from Admin to Staff hides plan management while preserving shared visibility", () => {
+  const h = harness({ plans: [plan], cycles: [] });
+  let tree = h.render("TaskPlansPanel", { data });
+  for (const action of ["Create task", "Edit plan", "Remove", "View plan"]) {
+    assert.ok(button(tree, action));
+  }
+  tree = h.render("TaskPlansPanel", { data: { ...data, user: { ...data.user, role: "staff" } } });
+  for (const action of ["Create task", "Edit plan", "Remove", "Restore"]) {
+    assert.equal(button(tree, action), undefined);
+  }
+  assert.ok(button(tree, "View plan"));
+  assert.ok(button(tree, "Download filtered task records"));
+  assert.ok(nodes(tree).find((node) => node.type === "TabsTrigger" && label(node) === "Removed"));
+});
+
+test("task completion controls continue to follow current server authority for either role", () => {
+  for (const role of ["staff", "admin"]) {
+    for (const canComplete of [false, true]) {
+      const current = { ...cycle, canComplete };
+      const props = { data: { ...data, user: { ...data.user, role } } };
+      const panel = harness({ plans: [plan], cycles: [current] }).render("TaskPlansPanel", props);
+      assert.equal(!!button(panel, "Complete task"), canComplete);
+      const dialog = harness().render("TaskCycleDialog", { ...props, cycle: current, onClose() {}, async onSaved() {} });
+      assert.equal(!!button(dialog, "Record completion"), canComplete);
+    }
+  }
+});
+
+test("shared plan details show requirements and pause/removal rules without editing controls", () => {
+  const savedPlan = {
+    ...taskTemplates[0].plan,
+    ...plan,
+    description: "Inspect the agreed storage conditions.",
+    basis: "Confirmed local procedure",
+    scopeNote: "The selected storage area",
+    firstDueOn: "2026-10-04",
+    reminderTime: "09:00",
+    updatedAt: "2026-10-03T01:00:00Z",
+  };
+  for (const state of ["draft", "active", "paused", "removed"]) {
+    const tree = harness().render("TaskPlanDetails", {
+      plan: { ...savedPlan, state: state === "removed" ? "active" : state, removedAt: state === "removed" ? "2026-10-03" : null },
+      data,
+      onClose() {},
+    });
+    assert.match(label(tree), /Inspect the agreed storage conditions/);
+    assert.match(label(tree), /Confirmed local procedure/);
+    assert.match(label(tree), /09:00 Sydney/);
+    assert.match(label(tree), /not a battery safety certification/);
+    assert.ok(button(tree, "Close"));
+    assert.equal(nodes(tree).some((node) => ["Input", "Select", "Checkbox", "Textarea"].includes(node.type)), false);
+    if (state === "paused") assert.match(label(tree), /Existing open tasks can still be completed/);
+    if (state === "removed") assert.match(label(tree), /restore this plan before its pending tasks can be completed/);
+  }
+});
+
+test("Staff cannot send a plan removal or restoration through a directly mounted management dialog", async () => {
+  let sent = 0;
+  for (const removedAt of [null, "2026-10-03"]) {
+    const h = harness({}, async () => { sent++; });
+    const tree = h.render("TaskPlanRemovalDialog", {
+      original: { ...plan, removedAt },
+      data: { ...data, user: { ...data.user, role: "staff" } },
+      onClose() {},
+      async onSaved() {},
+    });
+    const action = button(tree, removedAt ? "Restore plan" : "Remove plan");
+    assert.equal(action.props.disabled, true);
+    await action.props.onClick();
+  }
+  assert.equal(sent, 0);
 });
 
 test("plan removal and restoration capture reviewed versions and verify exact retry receipts", async () => {
@@ -664,9 +886,13 @@ test("an unmounted plan removal resumes from the plans panel even when the plan 
     storage,
   );
   const tree = recovered.render("TaskPlansPanel", { data });
+  assert.equal(button(tree, "Create task").props.disabled, true);
+  button(tree, "Create task").props.onClick();
+  assert.equal(button(recovered.render("TaskPlansPanel", { data }), "Use this template"), undefined);
   await button(tree, "Retry original plan removal").props.onClick();
   assert.deepEqual(inputs[0], inputs[1]);
   assert.equal(storage.values.size, 0);
+  assert.equal(button(recovered.render("TaskPlansPanel", { data }), "Create task").props.disabled, false);
 });
 
 test("storage write failure prevents both message and plan requests from being sent", async () => {

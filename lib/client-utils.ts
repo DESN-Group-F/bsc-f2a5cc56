@@ -55,11 +55,14 @@ function saveDownloadAttachment(attachment: DownloadAttachment) {
 }
 
 export async function downloadTaskJson(url: string, fallbackFilename: string) {
+    return downloadTaskReport(url, "json", fallbackFilename);
+}
+export async function downloadTaskReport(url: string, format: "xlsx" | "json", fallbackFilename: string) {
     const request = new URL(url, "http://inventory.local"), messages = request.pathname === "/api/messages";
     let response: Response;
     try { response = await fetch(url, { cache: "no-store" }); }
     catch { throw new Error("The download request was interrupted. No file was downloaded. Try again."); }
-    const attachment = await readDownloadAttachment(response, "json", fallbackFilename, value => {
+    const attachment = await readDownloadAttachment(response, format, fallbackFilename, value => {
         const document = value as { metadata?: { dataset?: unknown; scope?: unknown; exportedMessages?: unknown; exportedPlans?: unknown; exportedCycles?: unknown }; messages?: unknown[]; plans?: unknown[]; cycles?: unknown[] } | null;
         if (!document?.metadata || document.metadata.dataset !== (request.searchParams.get("dataset") ?? "demo")) return false;
         return messages ? document.metadata.scope === "personal_messages" && Array.isArray(document.messages) && document.metadata.exportedMessages === document.messages.length

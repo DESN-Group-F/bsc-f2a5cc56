@@ -877,8 +877,12 @@ export async function runApiSmoke({
   await workbook.xlsx.load(Buffer.from(await attachment.arrayBuffer()));
   assert.equal(
     workbook.getWorksheet("Inventory").rowCount,
-    page.tables.Inventory.length + 1,
+    page.tables.Inventory.length + 4,
   );
+  assert.equal(workbook.worksheets[0].name, "Report guide");
+  assert.equal(workbook.getWorksheet("Inventory").getCell("A4").value, "Battery ID");
+  assert.equal(workbook.getWorksheet("Evidence Inventory").rowCount, page.tables.Inventory.length + 4);
+  assert.equal(workbook.getWorksheet("Evidence Inventory").state, "hidden");
   const downloadedDetail = await (
     await check(
       "staff receive all selected JSON history tables",
@@ -925,6 +929,21 @@ export async function runApiSmoke({
     accountCsv,
     /password_hash|password_salt|token_hash|authVersion/,
   );
+  await check(
+    "staff cannot download the account Excel report",
+    "/api/accounts?download=xlsx",
+    { headers: { Cookie: staffCookie } },
+    403,
+  );
+  const accountReport = await check(
+    "admin receives the readable account Excel report",
+    "/api/accounts?download=xlsx",
+    { headers: { Cookie: adminCookie } },
+  );
+  const accountWorkbook = new ExcelJS.Workbook();
+  await accountWorkbook.xlsx.load(Buffer.from(await accountReport.arrayBuffer()));
+  assert.ok(accountWorkbook.getWorksheet("Staff accounts"));
+  assert.doesNotMatch(JSON.stringify(accountWorkbook.model), /password_hash|password_salt|token_hash|authVersion/);
   await checkTaskRemoval({ check, json, adminCookie, staffCookie });
   await check(
     "staff sign-out invalidates their session",

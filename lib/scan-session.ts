@@ -3,7 +3,7 @@ import { isActiveBattery } from "./battery-lifecycle";
 import { teachingGroupReferenceSchema, type TeachingGroupReference, type TeachingGroupEvidence } from "./teaching-context";
 
 export type ScanSource = "manual" | "simulated" | "selection";
-export type ScanMode = "continuous" | "batch";
+export type ScanMode = "batch";
 export type ScanRead = { battery: BatteryRecord; tagId: string | null; source: ScanSource; readAt: string };
 export type ScanRoom = Pick<Room, "id" | "version" | "name" | "isPlaceholder" | "buildingId">;
 export type ScanMovement = {
@@ -97,6 +97,8 @@ export function recoverScanSession(raw: string | null, kind: ScanMovement["kind"
             const expected = scanMovementPayload(kind, saved.attempt.reads, saved.sessionId, saved.room, saved.attempt.payload.requestId, saved.teachingGroup);
             if (JSON.stringify(expected) !== JSON.stringify(saved.attempt.payload)) return null;
         }
-        return saved.attempt || saved.queue.length || saved.roomConfirmationRequired || saved.issues.some(issue => !issue.acknowledged) ? saved : null;
+        // Older sessions may contain an unfinished immediate-processing request.
+        // Keep its exact payload; only future queue submissions use review and confirmation.
+        return saved.attempt || saved.queue.length || saved.roomConfirmationRequired || saved.issues.some(issue => !issue.acknowledged) ? { ...saved, mode: "batch" } : null;
     } catch { return null; }
 }

@@ -2,9 +2,103 @@
 
 1 October 2026 · Windows portable development preview.
 
-Current frozen source: [release 0.5.0](releases/0.5.0.md), 3 October 2026. Its source freeze passed 196 isolated tests, TypeScript, application/script/test ESLint and the production build; see [the release validation](#source-freeze-050) and the preceding workflow repair records. Earlier sections retain their dated results and limitations.
+Current frozen source: [release 0.7.0](releases/0.7.0.md). The currently hosted release remains 0.6.1. The development entries below retain their original dates and outcomes; source publication does not deploy the hosted service. Historical release records retain their dated results and limitations.
 
 The release includes [personal operation history](#personal-operation-history), periodic tasks, Messages, scan workflows and subsequent repairs. Their original dated checks below describe the state at each check; historical statements about publication or deployment are not current release status.
+
+## Source freeze 0.7.0
+
+4 October 2026 · The reviewed web-only snapshot passed **527 tests, 0 failures and 0 skipped tests**, repository ESLint, TypeScript and the production build. A fresh isolated production Worker applied all **17 migrations** and passed **102 HTTP checks**, then stopped. Installed dependencies were reused through a local directory junction; none of them is in the source snapshot. Dependency declarations and resolved versions are unchanged, with only root release version fields advanced to 0.7.0. Final documentation changes record these checks and do not change runtime behavior.
+
+The separately approved mobile/NFC functional prototype, diagnostic web route and cloud build configuration were excluded before validation. The published source uses the existing neutral administrator history, a new release branch and an annotated freeze tag. Local development, prototype files and normal business databases were preserved. No hosted migration or server upgrade was performed. Required hosting metadata and third-party license notices remain.
+
+This complete release test run passed; the earlier local `fetch failed` attempts below remain recorded, and their underlying cause is still undiagnosed. The existing build performance advisory remains. Browser coverage is the dated development evidence below, rather than a new exhaustive browser walkthrough during this source freeze. Evidence is retained under ignored `work/releases/v0.7.0-source/work/release-*.log` and `work/releases/v0.7.0-source/work/qa/api-cp3WJH/results.json`.
+
+## Local scan review confirmation
+
+4 October 2026 · Local development after 0.6.1. Scan checkout and Scan return now share one workflow: tag entry or manual selection adds batteries to a review queue, then staff explicitly choose **Confirm checkout** or **Confirm return**. The former Continuous / Batch selector and immediate-submit path have been removed. Repeated entry still populates the queue, and confirmed results leave the station open. First-time registration retains its separate draft-and-confirm intake workflow.
+
+Recovery preserves the original request ID and payload of an uncertain attempt, including an older Continuous session. Unfinished entries return to the review queue without automatic submission. An exact retry resolves only its captured attempt; remaining queued batteries require a separate review and confirmation.
+
+The **31 focused scan checks passed**. Repository ESLint, TypeScript and the final production build passed. A fresh Worker built from the final source with all **17 migrations** passed **102 isolated HTTP checks**. The build retains its existing large-client-chunk advisory; no new performance measurement is claimed.
+
+The first full run passed **526 of 527 tests**; one existing removal test matched a complete CSS class string and failed after the row gained selection styling. Its selector was changed to match the intended class token while retaining its behavioral assertions. The second full run passed **498 of 527 tests**, with repeated Miniflare Worker `fetch failed` errors. The final serial full-suite run passed **526 of 527 tests**, with one `fetch failed` during the existing hundred-member group fixture. Its entire group-workspace test file subsequently passed **16 of 16 checks** in a standalone rerun without a product change. The connection failure's cause has not been established, and lowering concurrency did not eliminate it. These results are not presented as a completely passing full-suite run. Logs for all attempts are retained under `work/queue-confirm-*`; final HTTP results are in `work/qa/api-UCPpIo/results.json`.
+
+A fresh isolated production Worker with all **17 migrations** supported the browser review. Tag entry added demonstration batteries **BAT-001** and **BAT-002** to the return queue. Authenticated HTTP inspection verified that both original loan IDs were unchanged before **Confirm return (2)** and that both batteries had no active loan after confirmation. Manual row selection then staged **BAT-001** for checkout without changing its loan state. **Confirm checkout (1)** created a new active loan for BAT-001 while BAT-002 remained without one. The station stayed open after each confirmed operation. No warnings or errors appeared in the inspected browser diagnostics.
+
+The isolated fixture was stopped after review. The normal local administrator session was restored and left at an empty Scan return station; no normal-preview business records were mutated for this check. Evidence is retained under ignored `work/queue-confirm-*`. No source push, release freeze or hosted deployment was performed. The dated results and limitations below remain historical.
+
+## Local shared battery filters and row selection
+
+4 October 2026 · Local development after 0.6.1. The inventory query and controlled Filter panel now also serve Activity / My activity, movement additions, scan manual selection and completed records, teaching-group members, task battery targets, battery-directory downloads, removal candidates/history and registered intake results. Status tabs, advanced criteria, removable Applied filters and Clear filters retain selected records and each operation's fixed eligibility, personal or group boundary. Pending review queues remain fully visible; unregistered intake drafts do not pretend to have registered inventory metadata.
+
+Activity criteria use current battery values, while historical search and recorded teaching groups remain separate. Matching an original group member retains the complete recorded group operation. With no battery criteria, history without an available current battery remains visible. Scan and intake receipt filters use available current records and never substitute a pre-movement snapshot for a current status. Selected exports retain selection and native actor-scope checks. Directory and activity downloads use the same query as their displayed results.
+
+Selectable rows support plain-content clicks, while embedded buttons, links, checkboxes, labels and disclosure controls retain their own actions. Deliberate text selection is ignored. Existing keyboard-accessible checkboxes remain available; uncertain requests and locked workflows cannot change their captured payload through a row click or filter.
+
+The complete domain, real-D1 and component-handler suite passed **525 tests, 0 failures, 0 skipped**. Repository ESLint, TypeScript and production build passed. A fresh production Worker with all **17 migrations** passed **102 HTTP checks**. A later presentation-only adjustment added the shared pointer/selection styling to scan completion and removal queue rows; scoped ESLint, TypeScript and production build passed again. The build still reports its existing large-client-chunk advisory; no new performance measurement is claimed. An initial new intake test used incorrect range-field names; correcting the fixture to the actual query contract produced 18 passing intake checks before the full run.
+
+The normal local browser verified My activity row-text selection, independent checkbox toggling, independent detail navigation, current-status and battery-search filters, and selection retention while hidden and after clearing. Teaching-group label selection and the hidden-selection count were also checked without saving the draft. During integration the development tab retained stale imports and reported a dynamic-module load failure; restarting the local development service with the same persisted database and reloading restored the current interface. Subsequent inspected logs contained no newer error entries. The screenshots and logs are under ignored `work/selection-*`; API results are in `work/qa/api-YAIxgc/results.json`. Browser coverage sampled Activity and teaching groups; other selectors were validated by their real component handlers and the shared query regression suite. No normal-preview business transaction, migration, source push or hosted deployment was performed for this change.
+
+## Local custom tasks and readable reports
+
+4 October 2026 · Local development after 0.6.1. Templates are optional starting points: administrators can open a blank Custom task, choose any supported target, configure recurrence or explicit dates, and edit a saved plan. Converting a template to Custom retains its entered configuration. Existing assignment, activation, version and exact-request recovery rules remain enforced.
+
+Downloads now start with a Report guide and named business worksheets with explanations, names, units and Sydney dates. Full original records and export metadata remain in initially hidden Evidence sheets; the guide explains how to unhide them. CSV uses readable headings, while JSON retains structured technical records. Tasks and personal Messages support Excel and JSON. Read status remains distinct from task completion. Current directory labels never replace names and locations recorded with historic events.
+
+Migration `0016_custom_task_plans.sql` adds the custom category while retaining task identity, version, replacement, scope and account guards. Before applying it to the normal local preview, its database state was backed up. All row counts and sorted-content hashes across **26 existing business tables** matched before and after the migration; existing business history was preserved. Applied earlier migrations were not edited. The hosted release and its data were not changed.
+
+The complete domain, real-D1 and component-handler regression suite passed **505 tests, 0 failures, 0 skipped**. Repository ESLint, TypeScript and production builds passed. A fresh production Worker with all **17 migrations** passed **102 HTTP checks**, including native Excel attachments and administrator-only account reports. The build retains its large-client-chunk advisory; no new loading-performance measurement is claimed.
+
+Coverage includes all five custom target kinds, activation and account guards, existing-cycle preservation, exact request replay, unchanged migration-era business rows and database triggers, private Messages scope, captured download filters, original JSON compatibility, historical names and locations, typed Sydney dates, import identifiers, complete histories beyond 200 records, literal spreadsheet text and lossless long Unicode values. Account exports use an explicit public-field allowlist and exclude authentication versions, credentials and sessions.
+
+An isolated production-browser walkthrough created a blank custom draft with one confirmed date, saved it, reopened and edited it, and confirmed the retained schedule. It also opened a prepared template and switched it to Custom without losing its instructions or interval. Task, Messages, inventory, activity and administrator account download controls completed without an interface error. No warnings or errors were reported in the inspected tab. The automation download-event wait timed out and did not yield a local file path, so this is not claimed as successful browser file capture. Separate authenticated HTTP downloads supplied the files for read-back verification.
+
+Six actual HTTP-generated reports (tasks, personal Messages, accounts, people, rooms and buildings) were checked against their original permitted source tables, including every original field and record. Workbook dates, visibility, frozen headers, filters, literal values and absence of credentials were also checked. Read-only spreadsheet rendering inspected those business sheets, alongside battery detail, loan, observation, charge and operation report fixtures. This is not native Microsoft Excel acceptance. The renderer displayed a numeric-looking RFID string without its leading zero; ExcelJS read-back verified the actual cell retains the full string with text formatting.
+
+The first full regression run passed 497 of 502 tests. Five assertions expected raw CSV headings or previous worksheet names and row positions; they were updated to verify readable columns and complete original evidence. During that repair, a test reused the 200-row CSV import parser on a 205-row export; checking its fixture rows in batches retained complete export coverage. The final full run above passed. Later visual inspection found narrow message text and insufficient height for explicit line breaks. Column widths and line-height estimation were corrected, followed by **34 focused report tests**, TypeScript, scoped ESLint and another production build, all passing. The six HTTP report downloads, source-field checks and rendered business-sheet inspections were repeated successfully against that build; message paragraphs now fit the inspected sample, and email columns are wider.
+
+Evidence is retained under ignored `work/custom-reports-*`, `work/custom-task-chooser.png`, `work/report-render/` and `work/qa/api-BxW0Dp/results.json`. An application crash interrupted the final review after artifacts had been saved; the saved test results and files were recovered and the normal local preview restarted using the same state directory. No source push, release freeze or hosted deployment was performed. Normal-preview business actions were not used as test fixtures.
+
+The subsequent Filter spacing correction places Age & activity, Teaching groups and the other disclosure groups in the same existing layout container. Browser measurements confirmed **10 px** between adjacent groups in both collapsed and expanded states, with no warning/error entries. Scoped ESLint and the final production build passed. The local preview was inspected without changing business records, and `work/filter-spacing-desktop.png` records the corrected layout.
+
+## Local activity actions and task usability
+
+4 October 2026 · Local development after 0.6.1. No source publication, release freeze or hosted deployment. Normal development and hosted business records were preserved; browser writes used a fresh isolated local database.
+
+My activity now separates recorded operations from current battery status and offers reviewed Check out / Check in actions. Historic group members open individual movements without reusing an obsolete group definition. Shared Activity remains read-only. Administrators now have a visible Create task button, an explicit three-template chooser and outlined Edit plan actions. The editor has five numbered sections, a scrolling body, persistent actions, visible state choices and activation requirements. Ordinary validation errors clear after edits; version conflicts and original-request recovery remain blocking.
+
+- The final complete domain, real-D1 and component-handler suite passed **475 tests, 0 failures, 0 skipped**. New coverage includes current status versus historic action, retired/missing assets, stale group context, personal/shared scope, template discovery/cancellation, role and recovery locks, state-specific saves, activation validation and preserved version conflicts.
+- Final TypeScript, repository ESLint and production build passed. The build retains its large-client-chunk advisory; no loading-performance acceptance is claimed.
+- Isolated production-preview browser checks confirmed Staff checkout and return from My activity, refreshed status/action labels and retained history; Staff has no task creation control. Administrator checks created a draft, rejected incomplete activation, edited the saved draft and selected another template. Desktop and 390 x 844 mobile views were inspected; the editor and chooser retain accessible action areas while their bodies scroll. The temporary viewport override was reset and the test tab closed.
+- The browser review found a stale activation error after switching back to Draft. The subsequent repair is covered by actual-handler assertions, including retained version-conflict errors and save locks. The browser walkthrough preceded this final small repair; it is not claimed as another complete walkthrough of the repaired build.
+- No warnings or errors were reported in the inspected browser tab. No endpoint, migration or dependency changes were needed. This round does not claim a new HTTP acceptance-suite run, measured staff time savings or production performance acceptance.
+
+The first full run passed 474 tests and encountered one local Worker `fetch failed` in an existing scan/database test. The final standalone rerun passed all 475 without a product-code change to scanning or the database; the initial connection failure's cause was not established. Evidence is retained in ignored `work/usability-tests-initial.log`, `work/usability-tests-final.log`, validation/build logs and `work/usability-*.png` screenshots.
+
+## Local role-specific interface
+
+4 October 2026 · Local development after 0.6.1. No source publication, release freeze, hosted deployment, production account change or production-data mutation.
+
+| Check | Actual result |
+| --- | --- |
+| Domain, D1 and component-handler regression suite | 466 passed, 0 failed in the final complete run |
+| Isolated HTTP checks | 100 passed against the final production build with a fresh local database and all 16 migrations |
+| TypeScript and repository ESLint | Passed |
+| Production build | Passed; existing large-client-chunk and plugin-timing advisories remain |
+| Staff browser review | Daily/personal navigation retained; Directories has read-only saved records; battery registration/import retained; battery details retain movement/history while administrative controls are absent |
+| Task browser review | Staff has read-only plan details and completion for assigned cycles; unassigned cycles show View task; Administrator retains template/configuration/remove controls and eligible shared-cycle completion |
+| Administrator browser review | Separate Administration group, Manage records editors and Staff accounts present |
+| Responsive review | Both role menus checked at 390 x 844; navigation closes after choosing a destination; temporary viewport override reset |
+| Browser diagnostics | No warning/error entries reported by the inspected local tab |
+
+The new component tests cover role switching, menu membership, mobile dismissal handlers, loading/workflow locks, heading actions, shared task visibility, directory controls and original-request recovery after a role change. They use inert UI primitives and are complemented by the browser checks above; they are not a substitute for end-to-end rendering.
+
+An initial regression run found a missing capability binding in the test-only task-creation harness. The harness was updated and its recovery assertions passed. A subsequent concurrent domain/API run encountered local Worker `fetch failed` errors; after stopping the temporary browser preview and running the suites separately, both complete suites passed. This is not presented as proof of a production capacity limit or a diagnosed runtime defect.
+
+The interface uses the [permission baseline](permissions.md) and a shared presentation capability catalog. Existing server, account, assignment, dataset, record-version and exact-request checks remain unchanged. Pending administrative requests are retained after a role change; the existing server requirement for administrator authority before replaying group/model updates remains documented in the baseline. Shared message-action metadata and residual administrator-only directory write APIs also remain documented rather than silently changing business policy.
+
+Browser fixtures used a fresh isolated local database with fictional administrator/staff accounts, demonstration batteries and two task plans. The temporary Worker was stopped after review. Screenshots and logs are retained only under ignored `work/`; no normal local or hosted business inventory was reset.
 
 ## Shared staff platform release
 

@@ -12,6 +12,7 @@ import { groupMaintenanceKey, captureGroupMaintenance, recoverGroupMaintenance, 
 import { fromSydneyInput, staffIdentityLabel } from "@/lib/client-utils";
 import { roomPickerOptions } from "@/lib/location-catalog";
 import type { WriteAction } from "@/lib/client/inventory-contracts";
+import { getRolePermissions } from "@/lib/permissions";
 
 export function GroupMaintenanceDialog({ data, group, ids, write, onClose, onChanged }: { data: InventorySnapshot; group?: TeachingGroup; ids: string[]; write: WriteAction; onClose: () => void; onChanged: () => Promise<void> }) {
     const [context] = useState(() => ({ accountId: data.user.id, dataset: data.dataset }));
@@ -23,6 +24,9 @@ export function GroupMaintenanceDialog({ data, group, ids, write, onClose, onCha
     const [saved, setSaved] = useState(false);
     const [reviewed] = useState(() => ids.map(id => data.batteries.find(b => b.id === id)).filter(b => !!b).map(b => ({ batteryId: b.id, version: b.version, tagId: b.tagId })));
     const contextChanged = context.accountId !== data.user.id || context.dataset !== data.dataset;
+    const permissions = getRolePermissions(data.user.role);
+    const operation = attempt?.payload.kind ?? kind;
+    const permitted = operation === "charge" ? permissions.recordCharges : operation === "observation" ? permissions.recordDemoObservations && data.dataset === "demo" : permissions.editBatteryRecords;
     useEffect(() => { live.current = !contextChanged; return () => { live.current = false; }; }, [contextChanged]);
     const locked = busy || !!attempt || !!storageError || recovery.invalid || contextChanged;
     function preserve(next: GroupMaintenanceAttempt | null) {
@@ -30,7 +34,7 @@ export function GroupMaintenanceDialog({ data, group, ids, write, onClose, onCha
         catch { pending.current = next || pending.current; setAttempt(pending.current); setStorageError("Restore browser storage and retry this exact operation before leaving."); return false; }
     }
     async function save(retry = false) {
-        if (saved || running.current || busy || recovery.invalid || contextChanged || !retry && locked || retry && !pending.current) return;
+        if ((!permitted && !retry) || saved || running.current || busy || recovery.invalid || contextChanged || !retry && locked || retry && !pending.current) return;
         running.current = true; setBusy(true); setError("");
         let captured = pending.current;
         try {
@@ -59,7 +63,8 @@ export function GroupMaintenanceDialog({ data, group, ids, write, onClose, onCha
         <p className="group-context-banner"><strong>{group?.name ?? "Preserved group operation"}</strong> · {attempt?.payload.items.length ?? reviewed.length} batteries</p>
         {recovery.invalid && <p className="form-error">This tab could not recover its earlier group operation. Restore storage access and reopen with the same account and inventory.</p>}
         {contextChanged && <p className="form-error">Restore the original staff account and inventory to resolve this request.</p>}
-        {!attempt && !saved && <div className="form-stack"><Label>Operation</Label><Select value={kind} onValueChange={value => { if (!locked) { setKind(value as typeof kind); setRoomId("__unspecified"); } }} disabled={locked}><SelectTrigger aria-label="Group update operation"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="owner">Change responsible owner</SelectItem><SelectItem value="storage">Change registered storage</SelectItem><SelectItem value="charge">Record charging</SelectItem>{data.dataset === "demo" && <SelectItem value="observation">Record demo location</SelectItem>}</SelectContent></Select>
+        {!permitted && <p className="form-error" role="alert">New group updates require administrator access. Any unconfirmed request remains preserved; its exact retry is checked by the server and may require restoring the original administrator access.</p>}
+        {!attempt && !saved && permitted && <div className="form-stack"><Label>Operation</Label><Select value={kind} onValueChange={value => { if (!locked) { setKind(value as typeof kind); setRoomId("__unspecified"); } }} disabled={locked}><SelectTrigger aria-label="Group update operation"><SelectValue/></SelectTrigger><SelectContent>{permissions.editBatteryRecords && <><SelectItem value="owner">Change responsible owner</SelectItem><SelectItem value="storage">Change registered storage</SelectItem></>}{permissions.recordCharges && <SelectItem value="charge">Record charging</SelectItem>}{data.dataset === "demo" && permissions.recordDemoObservations && <SelectItem value="observation">Record demo location</SelectItem>}</SelectContent></Select>
         {kind === "owner" && <RecordPicker id="group-update-owner" value={ownerId} onChange={setOwnerId} disabled={locked} placeholder="Choose responsible owner…" options={data.people.filter(p => p.role === "staff" && p.accountId && data.staffDirectory.some(a => a.id === p.accountId && a.active)).map(p => ({ id: p.id, label: staffIdentityLabel(p.name, data.staffDirectory.find(a => a.id === p.accountId)?.username, p.accountId!) }))}/>}
         {(kind === "storage" || kind === "observation") && <><Label>J18 room{kind === "storage" ? " — optional" : ""}</Label><RecordPicker id="group-update-room" value={roomId} onChange={setRoomId} disabled={locked} placeholder="Choose J18 room…" options={[...(kind === "storage" ? [{ id: "__unspecified", label: "Room not specified" }] : []), ...roomPickerOptions(data.rooms, "J18")]}/><p className="field-hint">Registered storage and dated location evidence remain separate. Demo rooms are unverified placeholders.</p></>}
         {(kind === "charge" || kind === "observation") && <><Label htmlFor="group-update-time">{kind === "charge" ? "Charging completed" : "Demo observation time"} · Sydney time</Label><Input id="group-update-time" type="datetime-local" value={time} onChange={event => setTime(event.target.value)} disabled={locked}/></>}
@@ -67,6 +72,6 @@ export function GroupMaintenanceDialog({ data, group, ids, write, onClose, onCha
         <details><summary>Review selected battery IDs</summary><p>{reviewed.map(item => item.batteryId).join(", ")}</p></details></div>}
         {attempt && <div className="detail-card"><p>The outcome of this exact request is unconfirmed. Reopening this dialog restores it without sending automatically.</p><p>{attempt.payload.kind} · {attempt.payload.items.map(item => item.batteryId).join(", ")}</p><Button onClick={() => save(true)} disabled={busy || recovery.invalid || contextChanged}>Retry exact group operation</Button></div>}
         {(error || storageError) && <p className="form-error" role="alert">{storageError || error}</p>}
-        <DialogFooter><Button variant="outline" disabled={locked} onClick={onClose}>{saved ? "Close" : "Cancel"}</Button>{!saved && <Button onClick={() => save()} disabled={locked || !group || !reviewed.length}>{busy ? "Saving…" : `Confirm update (${reviewed.length})`}</Button>}</DialogFooter>
+        <DialogFooter><Button variant="outline" disabled={locked} onClick={onClose}>{saved ? "Close" : "Cancel"}</Button>{!saved && permitted && <Button onClick={() => save()} disabled={locked || !group || !reviewed.length}>{busy ? "Saving…" : `Confirm update (${reviewed.length})`}</Button>}</DialogFooter>
     </DialogContent></Dialog>;
 }

@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import type { InventorySnapshot } from "@/lib/domain";
 import type { TaskPlanRecord } from "@/lib/task-plans";
+import { getRolePermissions } from "@/lib/permissions";
 import {
   taskRequest,
   type RequestError,
@@ -37,6 +38,7 @@ export function TaskPlanRemovalDialog({
   onClose: () => void;
   onSaved: () => Promise<void>;
 }) {
+  const { manageTaskPlans } = getRolePermissions(data.user.role);
   const [reviewed, setReviewed] = useState(original);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -57,7 +59,7 @@ export function TaskPlanRemovalDialog({
   const locked = busy || uncertain;
 
   async function save() {
-    if (busy || conflict || !applicable || data.user.role !== "admin") return;
+    if (busy || conflict || !applicable || !manageTaskPlans) return;
     attempt.current ??= captureTaskRecordAction(data.dataset, action, reviewed);
     const input = attempt.current;
     try {
@@ -164,6 +166,12 @@ export function TaskPlanRemovalDialog({
             review and refresh task records.
           </p>
         )}
+        {!manageTaskPlans && (
+          <p className="field-hint" role="status">
+            Only an administrator can remove or restore a shared plan. Any
+            unresolved request remains preserved in this tab.
+          </p>
+        )}
         {error && (
           <div role="alert">
             <p className="form-error">{error}</p>
@@ -209,7 +217,7 @@ export function TaskPlanRemovalDialog({
             variant={restoring ? "default" : "destructive"}
             onClick={save}
             disabled={
-              busy || conflict || !applicable || data.user.role !== "admin"
+              busy || conflict || !applicable || !manageTaskPlans
             }
           >
             {busy

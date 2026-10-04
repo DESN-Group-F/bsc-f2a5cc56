@@ -2,7 +2,7 @@
 
 Draft for review, 2 October 2026. This document specifies a proposed device interface and validation approach. It does not implement RFID ingestion, certify a device, or report measured performance.
 
-The related local software phase now implements staff-operated manual/simulated scan sessions with continuous processing or reviewed batches, guarded tag/version/loan bindings and optional dated return confirmation. It uses existing inventory operations and labels demonstration input explicitly. The normalized device-event example and hardware interpretation below remain proposed contracts; no real-reader parser, unattended read stream or automatic room decision has been implemented. Actual local software outcomes are recorded separately in [validation.md](validation.md).
+The related local software workflow, updated on 4 October 2026, uses staff-operated tag entry or manual selection to build a review queue of 1–100 batteries, followed by explicit checkout or return confirmation. Repeated entry can populate the queue but never immediately submits a movement. The station remains open after each saved result, with guarded tag/version/loan bindings, exact-request recovery and optional dated return confirmation. Each queue retains one input source, and demonstration evidence remains explicitly labelled. The normalized device-event example and hardware interpretation below remain proposed contracts; no real-reader parser, unattended read stream or automatic room decision has been implemented. Actual local software outcomes are recorded separately in [validation.md](validation.md).
 
 ## Scope and recommendation
 

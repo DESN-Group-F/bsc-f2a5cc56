@@ -1,7 +1,10 @@
+import { hasRowTextSelection } from "../work/qa/client/row-selection.mjs";
+import * as batterySelection from "../work/qa/battery-selection-query.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import ts from "typescript";
+import { getRolePermissions } from "../work/qa/permissions.mjs";
 import * as client from "../work/qa/client-utils.mjs";
 import * as lifecycle from "../work/qa/battery-lifecycle.mjs";
 import * as locations from "../work/qa/location-catalog.mjs";
@@ -40,12 +43,12 @@ function text(node) {
     if (Array.isArray(node)) return node.map(text).join("");
     return node && typeof node === "object" ? text(node.props?.children) : "";
 }
-const ui = Object.fromEntries(["Search", "X", "CalendarDays", "CheckCircle2", "Battery", "Package", "Plus", "Download", "Upload", "Pencil", "Settings2", "ClipboardList", "Copy", "Button", "Input", "Textarea", "Label", "Checkbox", "RecordPicker", "BatteryModelPicker", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Select", "SelectTrigger", "SelectContent", "SelectValue", "SelectItem", "Tabs", "TabsList", "TabsTrigger", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Skeleton", "InventoryFilterPanel", "AppliedFilters"].map(name => [name, name]));
+const ui = Object.fromEntries(["Search", "X", "CalendarDays", "CheckCircle2", "Battery", "Package", "Plus", "Download", "Upload", "Pencil", "Settings2", "ClipboardList", "Copy", "Button", "Input", "Textarea", "Label", "Checkbox", "RecordPicker", "BatteryModelPicker", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Select", "SelectTrigger", "SelectContent", "SelectValue", "SelectItem", "Tabs", "TabsList", "TabsTrigger", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Skeleton", "InventoryFilterPanel", "BatteryFilterControls", "AppliedFilters"].map(name => [name, name]));
 async function component(path, exports, state = hooks(), additional = {}) {
     const paths = Array.isArray(path) ? path : [path];
     const input = (await Promise.all(paths.map(file => readFile(file, "utf8")))).join("\n");
     const output = ts.transpileModule(input, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export \{[^\n]*\} from [^;]+;\r?\n/gm, "").replace(/^export /gm, "");
-    const bindings = { ...ui, ...client, ...locations, ...lifecycle, ...schedule, ...inventoryQuery, ...state, ...additional, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
+    const bindings = { hasRowTextSelection, ...batterySelection, getRolePermissions, ...ui, ...client, ...locations, ...lifecycle, ...schedule, ...inventoryQuery, ...state, ...additional, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
     return new Function(...names, "_jsx", "_jsxs", "_Fragment", `${output}\nreturn { ${exports.join(", ")} };`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
 }
 function fixture() {
@@ -120,10 +123,10 @@ test("owner and holder filters use distinct identities and the same applied labe
 test("task staff choices and assignment summaries keep full identity fallbacks and account-ID selection", async () => {
     const data = fixture(), state = hooks();
     const taskCreate = await component("lib/task-create-session.ts", ["captureTaskCreate", "recoverTaskCreate", "taskCreateFailureStatus", "taskCreateStorageKey", "verifyTaskCreateReceipt"]);
-    const { TaskPlanEditor, assignmentNames } = await component(["components/inventory/tasks/task-presentation.ts", "components/inventory/tasks/task-plan-editor.tsx"], ["TaskPlanEditor", "assignmentNames"], state, { ...taskCreate, sessionStorage: { getItem: () => null } });
+    const { TaskPlanEditor, assignmentNames } = await component(["components/inventory/tasks/task-presentation.ts", "components/inventory/tasks/task-plan-editor.tsx"], ["TaskPlanEditor", "assignmentNames"], state, { ...taskCreate, styles: new Proxy({}, { get: (_, key) => String(key) }), sessionStorage: { getItem: () => null } });
     const original = schedule.taskPlanSchema.parse({ title: "Test plan", category: "inventory_reconciliation", assigneeIds: ["account-prefix-disabled"] });
     const render = () => { state.reset(); return TaskPlanEditor({ original, data, cycles: [], onClose() {}, async onSaved() {} }); };
-    const assigned = tree => nodes(tree).find(node => node.type === "fieldset" && nodes(node).some(child => child.type === "legend" && text(child) === "Assigned staff"));
+    const assigned = tree => nodes(tree).find(node => node.type === "section" && node.props["aria-labelledby"] === "task-assignees-heading");
     const choices = nodes(assigned(render())).filter(node => node.type === "label");
     assert.deepEqual(choices.map(node => text(nodes(node).find(child => child.type === "strong"))), ["Same Staff (teacher-one)", "Same Staff (teacher-two)", "Same Staff (account-prefix-disabled)"]);
     nodes(choices[1]).find(node => node.type === "Checkbox").props.onCheckedChange(true);
@@ -134,6 +137,29 @@ test("task staff choices and assignment summaries keep full identity fallbacks a
 });
 
 function button(tree, label) { return nodes(tree).find(node => node.type === "Button" && text(node) === label); }
+
+test("battery directory shares inventory filters and sends the exact criteria with its sorted export", async () => {
+    const state = hooks(), data = fixture(), downloads = [];
+    data.batteries = data.batteries.map((battery, index) => ({ ...battery, model: "PACK", chemistry: index === 1 ? "NiMH" : "LiPo", capacityMah: (index + 1) * 1000, voltage: 7.4, lifecycleStatus: index === 2 ? "scrapped" : "active", manufacturedOn: null, firstUsedOn: null, lastCheckedOutAt: null, chargedAt: null, observedAt: null }));
+    const { RecordManagement } = await component("components/inventory/record-management.tsx", ["RecordManagement"], state, { async downloadExportAttachment(input) { downloads.push(structuredClone(input)); } });
+    const render = () => { state.reset(); return RecordManagement({ data, ready: true, onEdit() {}, onDetail() {}, onImport() {} }); };
+    nodes(render()).find(node => node.type === "Input" && node.props["aria-label"] === "Search directory records").props.onChange({ target: { value: "teacher-two" } });
+    nodes(render()).find(node => node.type === "Tabs").props.onValueChange("batteries");
+    const filters = () => nodes(render()).find(node => node.type === "BatteryFilterControls");
+    assert.equal(filters().props.filters.lifecycle, "all");
+    assert.match(text(render()), /3 records/);
+    filters().props.onChange({ chemistry: "LiPo", sortBy: "capacity", sortDirection: "desc" });
+    assert.deepEqual(nodes(render()).filter(node => node.type === "button" && node.props.className === "record-link").map(text), ["BAT-2", "BAT-0"]);
+    await button(render(), "Download filtered list").props.onClick();
+    assert.equal(downloads[0].mode, "records");
+    assert.equal(downloads[0].kind, "batteries");
+    assert.equal(downloads[0].search, "");
+    assert.deepEqual(downloads[0].filter, filters().props.filters);
+    filters().props.onClear();
+    assert.match(text(render()), /3 records/);
+    nodes(render()).find(node => node.type === "Tabs").props.onValueChange("people");
+    assert.equal(nodes(render()).find(node => node.type === "Input" && node.props["aria-label"] === "Search directory records").props.value, "teacher-two");
+});
 
 test("removal-record exports keep their captured selected IDs and prevent changing to filtered or page scope", async () => {
     const state = hooks(), downloads = [], closed = [];

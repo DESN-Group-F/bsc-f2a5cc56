@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-    taskPlanSchema, taskTemplates, addTaskInterval, nextCycleDueOn,
+    createCustomTaskPlan, taskPlanSchema, taskTemplates, taskTargetKinds, addTaskInterval, nextCycleDueOn,
     taskCycleCandidate, taskSchedulePreview, taskReminderAt,
 } from "../work/qa/task-schedule.mjs";
 
@@ -33,7 +33,7 @@ test("activation requires a confirmed basis, applicability, assigned people, tar
     assert.throws(() => active({ category: "storage_maintenance", targetKind: "batteries", targetRef: null, batteryIds: [] }), /registered battery/);
     assert.deepEqual(active({ category: "storage_maintenance", targetKind: "batteries", targetRef: null, batteryIds: ["BAT-001"] }).batteryIds, ["BAT-001"]);
     assert.equal(active({ recurrenceBasis: "dates", firstDueOn: null, scheduledDates: ["2026-02-20"] }).firstDueOn, null);
-    assert.throws(() => active({ recurrenceBasis: "dates", scheduledDates: [] }), /teaching-period dates/);
+    assert.throws(() => active({ recurrenceBasis: "dates", scheduledDates: [] }), /confirmed due date/);
 });
 
 test("active category targets distinguish one storage-area review from inventory reconciliation and asset maintenance", () => {
@@ -61,6 +61,30 @@ test("shared schema rejects unsupported task types, invalid dates, intervals, re
     assert.deepEqual(plan.batteryIds, ["BAT-001", "BAT-002"]);
     assert.deepEqual(plan.scheduledDates, ["2026-03-01", "2026-12-01"]);
     assert.deepEqual(plan.channels, ["messages"]);
+});
+
+test("custom tasks cover every supported target without weakening activation evidence", () => {
+    const blank = createCustomTaskPlan();
+    assert.equal(blank.category, "custom");
+    assert.deepEqual([blank.title, blank.description, blank.basis, blank.scopeNote], ["", "", "", ""]);
+    assert.equal(blank.applicabilityConfirmed, false);
+    assert.equal(blank.firstDueOn, null);
+    assert.equal(blank.reminderTime, null);
+    assert.deepEqual(blank.channels, ["messages"]);
+    assert.equal(taskPlanSchema.safeParse(blank).success, false, "A title must be supplied before saving");
+    const partial = taskPlanSchema.parse({ ...blank, title: "Design workshop equipment review" });
+    assert.equal(partial.state, "draft");
+    for (const targetKind of taskTargetKinds) {
+        const plan = active({ category: "custom", targetKind, targetRef: ["storage_area", "model", "group"].includes(targetKind) ? "USER-TARGET" : null, batteryIds: ["group", "batteries"].includes(targetKind) ? ["BAT-001"] : [], scopeNote: "Equipment assigned to the design workshop." });
+        assert.equal(plan.category, "custom");
+        assert.equal(plan.targetKind, targetKind);
+    }
+    for (const missing of [{ description: "" }, { basis: "" }, { assigneeIds: [] }, { reminderTime: null }, { applicabilityConfirmed: false }])
+        assert.throws(() => active({ category: "custom", ...missing }), error => error.name === "ZodError");
+    assert.throws(() => active({ category: "custom", targetKind: "batteries", batteryIds: [] }), /registered battery/);
+    assert.equal(active({ category: "custom", recurrenceBasis: "dates", firstDueOn: null, scheduledDates: ["2026-10-15"] }).scheduledDates.length, 1);
+    blank.batteryIds.push("UNSAVED");
+    assert.deepEqual(createCustomTaskPlan().batteryIds, [], "New blank drafts do not share mutable selections");
 });
 
 test("calendar month recurrence retains the original day through short months and leap years", () => {

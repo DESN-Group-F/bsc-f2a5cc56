@@ -61,6 +61,59 @@ const activePlan = (extra = {}) => ({
 async function savedPlan(context, id) { return (await context.tasks().list()).plans.find(plan => plan.id === id); }
 async function openCycle(context, id) { return (await context.tasks().list()).cycles.find(cycle => cycle.planId === id && cycle.status === "open"); }
 
+test("custom plans support every existing target with the same assignment, activation and staff boundaries", async () => {
+    const context = await fixture("custom-targets");
+    await context.battery();
+    for (const target of [
+        { targetKind: "inventory", targetRef: null, batteryIds: [] },
+        { targetKind: "storage_area", targetRef: "J18-DEMO-ROOM", batteryIds: [] },
+        { targetKind: "model", targetRef: "Confirmed Model One", batteryIds: [] },
+        { targetKind: "group", targetRef: "Teaching demonstration set", batteryIds: ["BAT-ONE"] },
+        { targetKind: "batteries", targetRef: null, batteryIds: ["BAT-ONE"] },
+    ]) {
+        const input = activePlan({ category: "custom", title: `Custom ${target.targetKind} task`, ...target });
+        await assert.rejects(context.tasks(self).savePlan(input), status(403));
+        const result = await context.tasks().savePlan(input);
+        assert.equal((await savedPlan(context, result.id)).category, "custom");
+        const cycle = await openCycle(context, result.id);
+        assert.equal(cycle.category, "custom");
+        assert.equal(cycle.targetKind, target.targetKind);
+        await assert.rejects(context.tasks(other).completeCycle({ cycleId: cycle.id, expectedVersion: cycle.version }), status(403));
+        await context.tasks(self).completeCycle({ cycleId: cycle.id, expectedVersion: cycle.version, notes: "Confirmed custom instructions completed." });
+    }
+    await assert.rejects(context.tasks().savePlan(activePlan({ category: "custom", applicabilityConfirmed: false })), invalid);
+    await assert.rejects(context.tasks().savePlan(activePlan({ category: "custom", targetKind: "model", targetRef: "Unregistered model" })), status(400));
+    assert.deepEqual((await db.prepare("PRAGMA foreign_key_check").all()).results, []);
+});
+
+test("custom plan creation and editing replay exactly while existing cycle instructions retain their saved category", async () => {
+    const context = await fixture("custom-replay"), input = activePlan({ category: "custom", title: "Equipment preparation for teaching" });
+    const createId = crypto.randomUUID(), created = await context.tasks().savePlan(input, false, createId);
+    assert.deepEqual(await context.tasks().savePlan(input, false, createId), created);
+    const firstCycle = await openCycle(context, created.id);
+    assert.equal((await rows("task_plans", context.scope)).length, 1);
+    const edit = { ...(await savedPlan(context, created.id)), title: "Updated teaching preparation", expectedVersion: created.version };
+    const editId = crypto.randomUUID(), updated = await context.tasks().savePlan(edit, true, editId);
+    assert.deepEqual(await context.tasks().savePlan(edit, true, editId), updated);
+    assert.equal(updated.version, created.version + 1);
+    assert.equal((await savedPlan(context, created.id)).title, edit.title);
+    const preserved = await openCycle(context, created.id);
+    assert.equal(preserved.title, input.title);
+    assert.equal(preserved.category, "custom");
+    assert.equal(preserved.id, firstCycle.id);
+    await assert.rejects(context.tasks().savePlan(edit, true, crypto.randomUUID()), status(409));
+    await assert.rejects(context.tasks().savePlan({ ...edit, title: "Changed retry" }, true, editId), error => error.code === "idempotency_conflict");
+
+    const prepared = await context.tasks().savePlan(activePlan());
+    const preparedCycle = await openCycle(context, prepared.id);
+    await updatePlan(context, prepared.id, { category: "custom", title: "Teacher-defined follow-up" });
+    assert.equal((await savedPlan(context, prepared.id)).category, "custom");
+    const original = await openCycle(context, prepared.id);
+    assert.equal(original.id, preparedCycle.id);
+    assert.equal(original.category, "storage_review", "Changing the plan category must not rewrite existing cycle evidence.");
+    assert.equal((await rows("audit_events", context.scope)).filter(row => row.action === "task_plan_updated").length, 2);
+});
+
 test("a task create whose success response is lost replays its exact receipt without duplicate plans, cycles or reminders", async () => {
     const context = await fixture("create-response-lost"), input = activePlan(), requestId = crypto.randomUUID();
     const committed = await context.tasks().savePlan(input, false, requestId);
@@ -168,7 +221,7 @@ function beforeAtomicCommit(intervene) {
     };
 }
 
-test("administrators configure only the three supported task categories; drafts do not activate unknown requirements", async () => {
+test("prepared task drafts retain their defaults and do not activate unknown requirements", async () => {
     const context = await fixture("configuration");
     for (const template of taskTemplates) await context.tasks().savePlan(template.plan);
     const initial = await context.tasks().list();
@@ -762,6 +815,69 @@ test("recoverable-removal migration preserves old task evidence and retains dele
         await assert.rejects(database.prepare("UPDATE task_messages SET read_at=NULL,version=version+1 WHERE key=?").bind(message.key).run(), /cannot be rewritten/);
         await assert.rejects(database.prepare("UPDATE task_messages SET body='Rewritten',version=version+1 WHERE key=?").bind(message.key).run(), /immutable/);
         await assert.rejects(database.prepare("UPDATE task_messages SET removed_at=? WHERE key=?").bind(initialTime, message.key).run(), /version must advance/);
+        assert.deepEqual((await database.prepare("PRAGMA foreign_key_check").all()).results, []);
+    } finally { await isolated.dispose(); }
+});
+
+test("custom-category migration preserves every existing row, task reference and integrity trigger", async () => {
+    const isolated = new Miniflare({ modules: true, script: "export default {fetch(){return new Response('custom-task-migration-test')}}", compatibilityDate: "2026-05-15", d1Databases: { DB: "custom-task-migration-test" }, d1Persist: false });
+    try {
+        const database = await isolated.getD1Database("DB"), migration = journal.entries.find(entry => entry.tag === "0016_custom_task_plans");
+        await migrate(database, journal.entries.filter(entry => entry.idx < migration.idx));
+        const [owner, , assigned] = await seedAccounts(database), scope = "custom-task-migration:demo";
+        const inventory = new InventoryStore(database, scope, "demo", inventoryActor(owner), () => new Date(initialTime));
+        await inventory.initializeDemo();
+        const tasks = new TaskPlanStore(database, scope, "demo", owner, () => new Date(initialTime));
+        const prepared = [
+            activePlan({ assigneeIds: [assigned.id] }),
+            activePlan({ assigneeIds: [assigned.id], category: "inventory_reconciliation", targetKind: "inventory", targetRef: null }),
+            activePlan({ assigneeIds: [assigned.id], category: "storage_maintenance", targetKind: "batteries", targetRef: null, batteryIds: ["BAT-001"] }),
+        ];
+        const saved = [];
+        for (const plan of prepared) saved.push(await tasks.savePlan(plan, false, crypto.randomUUID()));
+        const existing = await tasks.list(), first = existing.cycles.find(cycle => cycle.planId === saved[0].id);
+        await tasks.completeCycle({ cycleId: first.id, expectedVersion: first.version, notes: "Original completed cycle." });
+        const inbox = new TaskPlanStore(database, scope, "demo", assigned, () => new Date(initialTime));
+        const message = (await inbox.messages()).messages.find(row => row.planId === saved[2].id);
+        await inbox.markRead({ id: message.id });
+        const currentMessage = (await inbox.messages()).messages.find(row => row.id === message.id);
+        await inbox.changeMessageVisibility({ id: message.id, expectedVersion: currentMessage.version }, "remove", crypto.randomUUID());
+        await tasks.changePlanVisibility({ id: saved[2].id, expectedVersion: saved[2].version }, "remove", crypto.randomUUID());
+
+        const tables = (await database.prepare("SELECT name,sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*' ORDER BY name").all()).results;
+        const triggers = (await database.prepare("SELECT name,sql FROM sqlite_master WHERE type='trigger' ORDER BY name").all()).results;
+        const indexes = (await database.prepare("SELECT name,sql FROM sqlite_master WHERE type='index' AND sql IS NOT NULL ORDER BY name").all()).results;
+        const references = new Map(), before = new Map();
+        for (const table of tables) {
+            before.set(table.name, (await database.prepare(`SELECT * FROM ${table.name} ORDER BY rowid`).all()).results);
+            references.set(table.name, (await database.prepare(`PRAGMA foreign_key_list(${table.name})`).all()).results);
+        }
+        await migrate(database, [migration]);
+        for (const table of tables) {
+            assert.deepEqual((await database.prepare(`SELECT * FROM ${table.name} ORDER BY rowid`).all()).results, before.get(table.name), `${table.name} evidence changed`);
+            assert.deepEqual((await database.prepare(`PRAGMA foreign_key_list(${table.name})`).all()).results, references.get(table.name), `${table.name} foreign keys changed`);
+            if (table.name !== "task_plans") assert.equal(await database.prepare("SELECT sql FROM sqlite_master WHERE type='table' AND name=?").bind(table.name).first("sql"), table.sql);
+        }
+        assert.deepEqual((await database.prepare("SELECT name,sql FROM sqlite_master WHERE type='trigger' ORDER BY name").all()).results, triggers);
+        assert.deepEqual((await database.prepare("SELECT name,sql FROM sqlite_master WHERE type='index' AND sql IS NOT NULL ORDER BY name").all()).results, indexes);
+        assert.deepEqual((await database.prepare("PRAGMA foreign_key_check").all()).results, []);
+
+        const custom = await tasks.savePlan(activePlan({ category: "custom", assigneeIds: [assigned.id], title: "New custom task after migration" }));
+        assert.equal((await tasks.list()).plans.find(plan => plan.id === custom.id).category, "custom");
+        const original = before.get("task_plans")[0];
+        const columns = Object.keys(original), values = Object.values(original), placeholders = columns.map(() => "?").join(",");
+        await assert.rejects(database.prepare(`INSERT OR REPLACE INTO task_plans(${columns.join(",")}) VALUES(${placeholders})`).bind(...values).run(), /replacement forbidden/);
+        await assert.rejects(database.prepare(`INSERT INTO task_plans(${columns.join(",")}) VALUES(${placeholders}) ON CONFLICT(key) DO UPDATE SET title=excluded.title`).bind(...values).run(), /replacement forbidden/);
+        await assert.rejects(database.prepare("DELETE FROM task_plans WHERE key=?").bind(original.key).run(), /cannot be deleted/);
+        await assert.rejects(database.prepare("UPDATE task_plans SET title='Unversioned change' WHERE key=?").bind(original.key).run(), /version must advance/);
+        await assert.rejects(database.prepare("UPDATE task_plans SET id='changed',version=version+1 WHERE key=?").bind(original.key).run(), /identity is immutable/);
+        await assert.rejects(database.prepare("UPDATE task_plans SET category='invalid',version=version+1 WHERE key=?").bind(original.key).run(), /CHECK constraint failed/);
+        await assert.rejects(database.prepare("UPDATE task_plans SET updated_by='missing-account',version=version+1 WHERE key=?").bind(original.key).run(), /FOREIGN KEY constraint failed/);
+        const removedCycle = before.get("task_cycles").find(row => row.plan_key === `${scope}/${saved[2].id}`);
+        await assert.rejects(database.prepare("UPDATE task_cycles SET version=version+1 WHERE key=?").bind(removedCycle.key).run(), /removed task plan cannot change cycles/);
+        const unrelatedScope = "custom-task-migration-other:demo";
+        await new InventoryStore(database, unrelatedScope, "demo", inventoryActor(owner), () => new Date(initialTime)).initializeDemo();
+        await assert.rejects(database.prepare("INSERT INTO task_plan_batteries(key,plan_key,battery_key) VALUES(?,?,?)").bind(`${scope}/${custom.id}/BAT-001`, `${scope}/${custom.id}`, `${unrelatedScope}/BAT-001`).run(), /task battery identity invalid/);
         assert.deepEqual((await database.prepare("PRAGMA foreign_key_check").all()).results, []);
     } finally { await isolated.dispose(); }
 });

@@ -28,7 +28,6 @@ import type {
 } from "@/lib/task-plans";
 import { currentSydneyDate } from "@/lib/battery-age";
 import {
-  downloadTaskJson,
   formatDateOnly,
   formatTime,
 } from "@/lib/client-utils";
@@ -50,6 +49,7 @@ import {
   TaskGenerationWarnings,
 } from "./tasks/task-notices";
 import { taskCategoryLabels } from "./tasks/task-presentation";
+import { TaskDownloadDialog, type TaskDownloadRequest } from "./tasks/task-download-dialog";
 
 type MessagesResponse = {
   messages: InboxMessage[];
@@ -96,6 +96,7 @@ export function MessagesPanel({
     [busyId, setBusyId] = useState<string | null>(null),
     [notice, setNotice] = useState(""),
     [downloadBusy, setDownloadBusy] = useState(false);
+  const [downloadRequest, setDownloadRequest] = useState<TaskDownloadRequest | null>(null);
   const parameters = new URLSearchParams({
     dataset: data.dataset,
     visibility,
@@ -115,7 +116,7 @@ export function MessagesPanel({
     `/api/messages?${parameters}`,
     data.user.id,
     data.events.map((event) => event.id).join("|"),
-    !!cycle || !!busyId || !!pendingAction || downloadBusy,
+    !!cycle || !!busyId || !!pendingAction || !!downloadRequest || downloadBusy,
   );
   const messages = resource.payload?.messages ?? [],
     maxPage = Math.max(0, Math.ceil(messages.length / 25) - 1),
@@ -198,19 +199,13 @@ export function MessagesPanel({
       setBusyId(null);
     }
   }
-  async function download() {
-    setDownloadBusy(true);
-    setNotice("");
-    try {
-      await downloadTaskJson(
-        `/api/messages?${parameters}&download=json`,
-        `my-messages-${data.dataset}.json`,
-      );
-    } catch (error) {
-      setNotice((error as Error).message);
-    } finally {
-      setDownloadBusy(false);
-    }
+  function download() {
+    setDownloadRequest({
+      url: `/api/messages?${parameters}`,
+      filename: `my-messages-report-${data.dataset}`,
+      title: "Download Messages report",
+      scope: "Includes your own matching messages across all pages and their related task records. Reading and completion are shown separately.",
+    });
   }
   return (
     <>
@@ -604,6 +599,7 @@ export function MessagesPanel({
           Reading and task completion are separate states.
         </div>
       </section>
+      {downloadRequest && <TaskDownloadDialog request={downloadRequest} onClose={() => setDownloadRequest(null)} onBusyChange={setDownloadBusy} />}
       {cycle && (
         <TaskCycleDialog
           cycle={cycle}

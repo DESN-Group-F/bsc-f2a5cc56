@@ -24,6 +24,7 @@ import type { Dataset } from "@/lib/domain";
 import { defaultInventoryFilter } from "@/lib/inventory-query";
 import { registerInventoryTools } from "@/lib/browser-tools";
 import type { StaffUser } from "@/lib/accounts";
+import { getRolePermissions } from "@/lib/permissions";
 import {
   MyAccount,
   AccountManagement,
@@ -104,8 +105,13 @@ export default function InventoryApp({
   } = useInventoryData(initialUser);
   const [exportDraft, setExportDraft] = useState<ExportDraft | null>(null);
 
+  const permissions = getRolePermissions(user.role);
   const [notice, setNotice] = useState("");
-  const [view, setView] = useState<View>("inventory");
+  const [requestedView, setView] = useState<View>("inventory");
+  const view =
+    requestedView === "accounts" && !permissions.manageAccounts
+      ? "inventory"
+      : requestedView;
   const { unreadCount, acceptUnreadCount } = useMessageCount(
     dataset,
     user.id,
@@ -233,7 +239,7 @@ export default function InventoryApp({
   function returnFromTeachingGroups() {
     if (modalOpen || view !== "teaching-groups") return;
     setView(
-      groupsReturnView === "accounts" && user.role !== "admin"
+      groupsReturnView === "accounts" && !permissions.manageAccounts
         ? "inventory"
         : groupsReturnView,
     );
@@ -485,6 +491,7 @@ export default function InventoryApp({
           </div>
         </div>
         <WorkspaceHeading
+          role={user.role}
           view={view}
           scan={scan?.kind ?? null}
           intake={!!intake}
@@ -756,6 +763,8 @@ export default function InventoryApp({
                   <ActivityHistory
                     key={`${dataset}-${activityScope}-${data.user.id}`}
                     data={data}
+                    ready={ready}
+                    onMovement={view === "my-activity" ? startMovement : undefined}
                     scope={activityScope}
                     revision={revision}
                     groupId={activityGroupId}
@@ -788,7 +797,7 @@ export default function InventoryApp({
               {!scan &&
                 !intake &&
                 view === "accounts" &&
-                user.role === "admin" && (
+                permissions.manageAccounts && (
                   <AccountManagement
                     currentUser={user}
                     onSaved={() => load(dataset)}

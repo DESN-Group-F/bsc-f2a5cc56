@@ -18,6 +18,7 @@ import {
 import type { StaffUser } from "@/lib/accounts";
 import type { InventorySnapshot } from "@/lib/domain";
 import { isActiveBattery } from "@/lib/battery-lifecycle";
+import { getRolePermissions } from "@/lib/permissions";
 import { signOut } from "@/lib/client-session";
 import { Button } from "@/components/ui/button";
 import {
@@ -86,6 +87,7 @@ export function ApplicationShell({
   onScan,
   onError,
 }: ShellProps) {
+  const permissions = getRolePermissions(user.role);
   const owned =
     data?.batteries.filter(
       (battery) =>
@@ -140,24 +142,34 @@ export function ApplicationShell({
       action: () => onNavigate("activity"),
     },
     {
-      view: "manage",
-      label: "Manage records",
-      icon: Settings2,
-      action: () => onNavigate("manage"),
-    },
-    {
       view: "task-plans",
       label: "Recurring tasks",
       icon: CalendarDays,
       action: () => onNavigate("task-plans"),
     },
-    {
-      view: "account",
-      label: "My account",
-      icon: UserRound,
-      action: () => onNavigate("account"),
-    },
-    ...(user.role === "admin"
+    ...(!permissions.manageDirectories
+      ? [
+          {
+            view: "manage",
+            label: "Directories",
+            icon: ClipboardList,
+            action: () => onNavigate("manage"),
+          },
+        ]
+      : []),
+  ];
+  const administration = [
+    ...(permissions.manageDirectories
+      ? [
+          {
+            view: "manage",
+            label: "Manage records",
+            icon: Settings2,
+            action: () => onNavigate("manage"),
+          },
+        ]
+      : []),
+    ...(permissions.manageAccounts
       ? [
           {
             view: "accounts",
@@ -211,7 +223,7 @@ export function ApplicationShell({
                 <NavigationButton
                   disabled={locked}
                   className="h-auto min-h-10 items-start py-2"
-                  isActive={view === "my-batteries"}
+                  isActive={active === "my-batteries"}
                   onClick={() => onNavigate("my-batteries")}
                 >
                   <Battery />
@@ -232,7 +244,7 @@ export function ApplicationShell({
                 <NavigationButton
                   disabled={locked}
                   className="h-auto min-h-10 items-start py-2"
-                  isActive={view === "my-loans"}
+                  isActive={active === "my-loans"}
                   onClick={() => onNavigate("my-loans")}
                 >
                   <UserRound />
@@ -252,7 +264,7 @@ export function ApplicationShell({
               <SidebarMenuItem>
                 <NavigationButton
                   disabled={locked}
-                  isActive={view === "my-activity"}
+                  isActive={active === "my-activity"}
                   onClick={() => onNavigate("my-activity")}
                 >
                   <ClipboardList />
@@ -262,7 +274,7 @@ export function ApplicationShell({
               <SidebarMenuItem>
                 <NavigationButton
                   disabled={locked}
-                  isActive={view === "messages"}
+                  isActive={active === "messages"}
                   onClick={() => onNavigate("messages")}
                 >
                   <Mail />
@@ -285,8 +297,37 @@ export function ApplicationShell({
                   </span>
                 </NavigationButton>
               </SidebarMenuItem>
+              <SidebarMenuItem>
+                <NavigationButton
+                  disabled={locked}
+                  isActive={active === "account"}
+                  onClick={() => onNavigate("account")}
+                >
+                  <UserRound />
+                  <span>My account</span>
+                </NavigationButton>
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroup>
+          {administration.length > 0 && (
+            <SidebarGroup>
+              <SidebarGroupLabel>ADMINISTRATION</SidebarGroupLabel>
+              <SidebarMenu>
+                {administration.map((item) => (
+                  <SidebarMenuItem key={item.view}>
+                    <NavigationButton
+                      disabled={locked}
+                      isActive={active === item.view}
+                      onClick={item.action}
+                    >
+                      <item.icon />
+                      <span>{item.label}</span>
+                    </NavigationButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroup>
+          )}
         </SidebarContent>
         <SidebarFooter className="sidebar-bottom">
           <FlaskConical size={18} />

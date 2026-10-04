@@ -26,16 +26,21 @@ import type {
   RecordActions,
 } from "@/lib/client/inventory-contracts";
 import type { Dataset } from "@/lib/domain";
+import { getRolePermissions } from "@/lib/permissions";
+import { defaultInventoryFilter, type InventoryFilter } from "@/lib/inventory-query";
+import { getFilteredBatteries } from "@/lib/battery-selection-query";
+import { BatteryFilterControls } from "./battery-filter-controls";
 
 async function downloadRecordList(
   dataset: Dataset,
   search: string,
   kind: ImportKind,
+  filter?: InventoryFilter,
 ) {
   await downloadExportAttachment(
-    { dataset, mode: "records", search, kind },
-    "csv",
-    `battery-${kind}-${dataset}.csv`,
+    { dataset, mode: "records", search, kind, ...(kind === "batteries" ? { filter } : {}) },
+    "xlsx",
+    `battery-${kind}-${dataset}.xlsx`,
   );
 }
 
@@ -51,11 +56,16 @@ export function RecordManagement({
   const [kind, setKind] = useState<ImportKind>("people");
   const [query, setQuery] = useState(""),
     [downloadError, setDownloadError] = useState("");
+  const [batteryFilters, setBatteryFilters] = useState<InventoryFilter>(() => ({ ...defaultInventoryFilter(), lifecycle: "all" }));
+  const filteredBatteries = getFilteredBatteries(data, batteryFilters);
   const [copyingOwnerId, setCopyingOwnerId] = useState(""),
     [copiedOwnerId, setCopiedOwnerId] = useState(""),
     [copyError, setCopyError] = useState("");
-  const admin = data.user.role === "admin";
-  const records = (
+  const permissions = getRolePermissions(data.user.role);
+  const canRegister = kind === "batteries"
+    ? permissions.registerBatteries
+    : kind !== "people" && permissions.manageDirectories;
+  const records = kind === "batteries" ? filteredBatteries.batteries : (
     kind === "people"
       ? data.people.filter(
           (person) => person.role === "staff" && person.accountId,
@@ -77,9 +87,7 @@ export function RecordManagement({
   const rooms = data.rooms.filter((room) =>
     records.some((record) => record.id === room.id),
   );
-  const batteries = data.batteries.filter((battery) =>
-    records.some((record) => record.id === battery.id),
-  );
+  const batteries = filteredBatteries.batteries;
   const editorKind =
     kind === "people"
       ? "person"
@@ -127,7 +135,7 @@ export function RecordManagement({
           </TabsList>
         </Tabs>
         <div className="panel-actions">
-          {kind !== "people" && (admin || kind === "batteries") && (
+          {canRegister && (
             <>
               <Button
                 variant="outline"
@@ -148,9 +156,30 @@ export function RecordManagement({
           )}
         </div>
       </div>
+      <p className="field-hint px-5 pb-3">
+        {kind === "people"
+          ? "Browse the shared staff directory and copy owner IDs for battery imports. An administrator manages account access in Staff accounts."
+          : kind === "batteries"
+            ? permissions.editBatteryRecords
+              ? "Register batteries, review shared records and edit active battery details."
+              : "View and download the shared register, or register new batteries. An administrator manages saved battery details."
+            : permissions.manageDirectories
+              ? "Maintain the shared building and room directory used for registered storage."
+              : "View and download shared locations. An administrator manages building and room records."}
+      </p>
+      {kind === "batteries" && <BatteryFilterControls
+        data={data}
+        filters={batteryFilters}
+        onChange={patch => setBatteryFilters(previous => ({ ...previous, ...patch }))}
+        onClear={() => setBatteryFilters({ ...defaultInventoryFilter(), lifecycle: "all" })}
+        defaultLifecycle="all"
+        scopeNote="Filter the complete battery directory, including retired records. Downloads use the same filters and sort order."
+      />}
+      {kind === "batteries" && filteredBatteries.error && <p className="form-error" role="alert">{filteredBatteries.error}</p>}
       <div className="table-toolbar">
+        {kind !== "batteries" && <>
         <Input
-          aria-label="Search managed records"
+          aria-label="Search directory records"
           placeholder="Search these records…"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
@@ -158,11 +187,12 @@ export function RecordManagement({
         <Button variant="ghost" onClick={() => setQuery("")} disabled={!query}>
           Clear filters
         </Button>
+        </>}
         <Button
           variant="outline"
           disabled={!records.length}
           onClick={() =>
-            downloadRecordList(data.dataset, query, kind).catch((error) =>
+            downloadRecordList(data.dataset, kind === "batteries" ? "" : query, kind, batteryFilters).catch((error) =>
               setDownloadError(error.message),
             )
           }
@@ -271,7 +301,7 @@ export function RecordManagement({
               <TableHead>BUILDING CODE</TableHead>
               <TableHead>NAME</TableHead>
               <TableHead>ROOM INFORMATION</TableHead>
-              {admin && <TableHead>ACTIONS</TableHead>}
+              {permissions.manageDirectories && <TableHead>ACTIONS</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -300,7 +330,7 @@ export function RecordManagement({
                     ? "Placeholder rooms awaiting confirmation"
                     : "Not available"}
                 </TableCell>
-                {admin && (
+                {permissions.manageDirectories && (
                   <TableCell>
                     <Button
                       variant="ghost"
@@ -327,7 +357,7 @@ export function RecordManagement({
               <TableHead>ROOM</TableHead>
               <TableHead>BUILDING</TableHead>
               <TableHead>STATUS</TableHead>
-              {admin && <TableHead>ACTIONS</TableHead>}
+              {permissions.manageDirectories && <TableHead>ACTIONS</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -357,7 +387,7 @@ export function RecordManagement({
                       ? "Placeholder · awaiting confirmation"
                       : "Confirmed room"}
                 </TableCell>
-                {admin && (
+                {permissions.manageDirectories && (
                   <TableCell>
                     <Button
                       variant="ghost"
@@ -382,7 +412,7 @@ export function RecordManagement({
               <TableHead>BATTERY</TableHead>
               <TableHead>RFID IDENTIFIER</TableHead>
               <TableHead>OWNER / STORAGE LOCATION</TableHead>
-              {admin && <TableHead>ACTIONS</TableHead>}
+              {permissions.editBatteryRecords && <TableHead>ACTIONS</TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -408,7 +438,7 @@ export function RecordManagement({
                     {storageRoomLabel(b)}
                   </span>
                 </TableCell>
-                {admin && (
+                {permissions.editBatteryRecords && (
                   <TableCell>
                     <Button
                       variant="ghost"
@@ -434,7 +464,7 @@ export function RecordManagement({
           <p>
             {kind === "people"
               ? "Staff directory entries come from staff accounts. An administrator manages these through Staff accounts."
-              : admin || kind === "batteries"
+              : canRegister
                 ? "Use the registration form or review a CSV import."
                 : "Ask an administrator to register these records."}
           </p>
@@ -445,7 +475,7 @@ export function RecordManagement({
           {kind === "buildings" || kind === "rooms"
             ? "J18 is currently supported. Placeholder rooms await confirmation; a battery's room can remain unspecified."
             : kind === "people"
-              ? "Use an active Owner ID (CSV) as owner_id when importing batteries. In the downloaded staff directory, this is the id column. Administrators manage staff identities through Staff accounts."
+              ? "Use an active Owner ID (CSV) as owner_id when importing batteries. In the Excel staff directory, use the Owner ID for imports column; Evidence people retains the original id field. Administrators manage staff identities through Staff accounts."
               : "Responsible owners and current holders are distinct staff accounts."}
         </span>
       </div>

@@ -4,6 +4,7 @@ import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
+import { getRolePermissions } from "../work/qa/permissions.mjs";
 
 // Exercise the actual component handlers with controlled hooks and transport.
 // No browser, physical reader or shared business database is operated here.
@@ -40,7 +41,7 @@ function hooks() {
 async function component(path, exportNames, state, additional = {}) {
     const source = await readFile(new URL(`../${path}`, import.meta.url), "utf8");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
-    const bindings = { ...ui, ...models, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03", ...additional }, names = Object.keys(bindings);
+    const bindings = { getRolePermissions, ...ui, ...models, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03", ...additional }, names = Object.keys(bindings);
     return new Function(...names, "_jsx", "_jsxs", "_Fragment", `${compiled}\nreturn {${exportNames.join(",")}};`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
 }
 function nodes(node, results = []) { if (Array.isArray(node)) { for (const item of node) nodes(item, results); } else if (node && typeof node === "object") { results.push(node); nodes(node.props?.children, results); } return results; }

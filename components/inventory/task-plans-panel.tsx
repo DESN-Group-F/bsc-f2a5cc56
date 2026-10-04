@@ -13,6 +13,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Table,
   TableHeader,
   TableBody,
@@ -23,13 +31,14 @@ import {
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { TaskPlanRecord, TaskCycleRecord } from "@/lib/task-plans";
+import { getRolePermissions } from "@/lib/permissions";
 import {
+  createCustomTaskPlan,
   taskPlanMatchesQuery,
   taskTemplates,
   type TaskPlan,
 } from "@/lib/task-schedule";
 import {
-  downloadTaskJson,
   formatDateOnly,
   formatTime,
 } from "@/lib/client-utils";
@@ -50,6 +59,8 @@ import { useTaskEndpoint } from "@/hooks/use-task-endpoint";
 import { TaskPlanEditor } from "./tasks/task-plan-editor";
 import { TaskPlanRemovalDialog } from "./tasks/task-plan-removal-dialog";
 import { TaskCycleDialog } from "./tasks/task-cycle-dialog";
+import { TaskPlanDetails } from "./tasks/task-plan-details";
+import { TaskDownloadDialog, type TaskDownloadRequest } from "./tasks/task-download-dialog";
 import {
   TaskDeliveryNotice,
   TaskGenerationWarnings,
@@ -80,6 +91,8 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
     "current",
   );
   const [removalPlan, setRemovalPlan] = useState<TaskPlanRecord | null>(null);
+  const [selectedPlan, setSelectedPlan] = useState<TaskPlanRecord | null>(null);
+  const [choosingTemplate, setChoosingTemplate] = useState(false);
   const [createRecovery] = useState(() => {
     try {
       const raw = sessionStorage.getItem(
@@ -108,14 +121,17 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
   const [query, setQuery] = useState(""),
     [notice, setNotice] = useState(""),
     [downloadBusy, setDownloadBusy] = useState(false);
+  const [downloadRequest, setDownloadRequest] = useState<TaskDownloadRequest | null>(null);
   const resource = useTaskEndpoint<TaskPlansResponse>(
     `/api/task-plans?dataset=${data.dataset}&visibility=${visibility}`,
     data.user.id,
     data.events.map((event) => event.id).join("|"),
-    !!draft || !!selectedCycle || !!removalPlan || actionBlocked,
+    choosingTemplate || !!draft || !!selectedCycle || !!selectedPlan || !!removalPlan || !!downloadRequest || actionBlocked,
   );
-  const admin = data.user.role === "admin",
-    plans = resource.payload?.plans ?? [],
+  const { manageTaskPlans } = getRolePermissions(data.user.role);
+  const createBlocked =
+    !manageTaskPlans || resource.loading || !!createRecovery.error || !!draft || actionBlocked;
+  const plans = resource.payload?.plans ?? [],
     cycles = resource.payload?.cycles ?? [];
   const matching = plans.filter((plan) => taskPlanMatchesQuery(plan, query));
   const matchingPlanIds = new Set(matching.map((plan) => plan.id)),
@@ -182,7 +198,8 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
     }
   }
   function create(template: (typeof taskTemplates)[number]) {
-    if (createRecovery.error) return;
+    if (createBlocked) return;
+    setChoosingTemplate(false);
     setDraft({
       ...template.plan,
       batteryIds: [...template.plan.batteryIds],
@@ -192,19 +209,18 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
       scheduledDates: [...template.plan.scheduledDates],
     });
   }
-  async function download() {
-    setDownloadBusy(true);
-    setNotice("");
-    try {
-      await downloadTaskJson(
-        `/api/task-plans?${new URLSearchParams({ dataset: data.dataset, visibility, search: query, download: "json" })}`,
-        `periodic-task-records-${data.dataset}.json`,
-      );
-    } catch (error) {
-      setNotice((error as Error).message);
-    } finally {
-      setDownloadBusy(false);
-    }
+  function createCustom() {
+    if (createBlocked) return;
+    setChoosingTemplate(false);
+    setDraft({ ...createCustomTaskPlan(), assigneeIds: [data.user.id] });
+  }
+  function download() {
+    setDownloadRequest({
+      url: `/api/task-plans?${new URLSearchParams({ dataset: data.dataset, visibility, search: query })}`,
+      filename: `periodic-task-report-${data.dataset}`,
+      title: "Download task report",
+      scope: "Includes every matching plan and all of its recorded cycles, across all pages.",
+    });
   }
   return (
     <>
@@ -254,44 +270,15 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
           {createRecovery.error}
         </p>
       )}
-      <details className="inventory-panel task-template-library">
-        <summary className="section-heading">
-          <div>
-            <h2>Prepared periodic tasks</h2>
-            <p className="field-hint">
-              Three supplied templates. Confirm actual applicability and dates
-              before activating a plan.
-            </p>
-          </div>
-        </summary>
-        <div className="grid gap-3 p-5 md:grid-cols-3">
-          {taskTemplates.map((template) => (
-            <div className="detail-card mb-0!" key={template.id}>
-              <h3>{template.label}</h3>
-              <p>{template.description}</p>
-              {admin && (
-                <Button
-                  variant="outline"
-                  onClick={() => create(template)}
-                  disabled={
-                    resource.loading ||
-                    !!createRecovery.error ||
-                    !!draft ||
-                    actionBlocked
-                  }
-                >
-                  <Plus size={16} />
-                  Use template
-                </Button>
-              )}
-            </div>
-          ))}
-        </div>
-      </details>
       <section className="inventory-panel">
         <div className="panel-top">
           <div>
             <h2>Shared periodic plans</h2>
+            <p className="field-hint">
+              {manageTaskPlans
+                ? "Manage plans and assignments, or record completion for any eligible task."
+                : "View all plans and recorded cycles. Complete tasks assigned to you; an administrator manages plans and assignments."}
+            </p>
             <Tabs
               value={visibility}
               onValueChange={(value) =>
@@ -309,6 +296,15 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
             </Tabs>
           </div>
           <div className="panel-actions">
+            {manageTaskPlans && (
+              <Button
+                onClick={() => !createBlocked && setChoosingTemplate(true)}
+                disabled={createBlocked}
+              >
+                <Plus size={16} />
+                Create task
+              </Button>
+            )}
             <Button
               variant="outline"
               onClick={resource.refresh}
@@ -409,6 +405,14 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
                             {targetSummary(plan, data)}
                           </span>
                           <div className="flex flex-wrap gap-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => setSelectedPlan(plan)}
+                              aria-label={`View plan: ${plan.title}`}
+                            >
+                              View plan
+                            </Button>
                             {open && (
                               <Button
                                 variant="outline"
@@ -422,19 +426,19 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
                                     : "View task"}
                               </Button>
                             )}
-                            {admin && !plan.removedAt && (
+                            {manageTaskPlans && !plan.removedAt && (
                               <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="sm"
                                 onClick={() => setDraft(plan)}
                                 disabled={actionBlocked}
-                                aria-label={`Edit ${plan.title}`}
+                                aria-label={`Edit plan: ${plan.title}`}
                               >
                                 <Pencil size={16} />
-                                Edit
+                                Edit plan
                               </Button>
                             )}
-                            {admin && (
+                            {manageTaskPlans && (
                               <Button
                                 variant="outline"
                                 size="sm"
@@ -529,7 +533,9 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
                       ? "Try another search."
                       : visibility === "removed"
                         ? "Removed plans remain available here for an administrator to restore."
-                        : "Open Prepared periodic tasks to use a supplied template."}
+                        : manageTaskPlans
+                          ? "Select Create task to start from scratch or use an optional template, then set its schedule and assignments."
+                          : "An administrator can create a plan and assign the required staff. Shared plans will appear here."}
                   </p>
                 </div>
               )}
@@ -609,6 +615,56 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
           </Table>
         </section>
       )}
+      {downloadRequest && <TaskDownloadDialog request={downloadRequest} onClose={() => setDownloadRequest(null)} onBusyChange={setDownloadBusy} />}
+      {manageTaskPlans && choosingTemplate && (
+        <Dialog open onOpenChange={(open) => !open && setChoosingTemplate(false)}>
+          <DialogContent className="task-cycle-dialog w-[min(960px,calc(100vw-32px))]! max-w-none!">
+            <DialogHeader>
+              <DialogTitle>Create a recurring task</DialogTitle>
+              <DialogDescription>
+                Start from scratch, or save time with an optional template.
+                Set your own instructions, targets, schedule and staff assignments
+                in the editor before saving.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="task-cycle-body grid gap-3 md:grid-cols-3">
+              <section className="detail-card mb-0! md:col-span-3 flex flex-wrap items-center justify-between gap-4">
+                <div className="min-w-0 flex-1">
+                  <h3>Custom task</h3>
+                  <p>Begin with a blank form. Define the work and choose any supported target, without template restrictions.</p>
+                </div>
+                <Button onClick={createCustom} disabled={createBlocked}>
+                  <Plus size={16} />
+                  Start from scratch
+                </Button>
+              </section>
+              <p className="field-hint md:col-span-3">Optional templates · All content and scheduling can be edited.</p>
+              {taskTemplates.map((template) => (
+                <section className="detail-card mb-0! flex flex-col" key={template.id}>
+                  <h3>{template.label}</h3>
+                  <p>{template.description}</p>
+                  <p className="field-hint">{template.basis}</p>
+                  <Button
+                    variant="outline"
+                    className="mt-auto"
+                    onClick={() => create(template)}
+                    disabled={createBlocked}
+                    aria-label={`Choose template: ${template.label}`}
+                  >
+                    <Plus size={16} />
+                    Use this template
+                  </Button>
+                </section>
+              ))}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setChoosingTemplate(false)}>
+                Cancel
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
       {removalPlan && (
         <TaskPlanRemovalDialog
           original={removalPlan}
@@ -643,6 +699,14 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
             setSelectedCycle(null);
             await changed();
           }}
+        />
+      )}
+      {selectedPlan && (
+        <TaskPlanDetails
+          plan={selectedPlan}
+          data={data}
+          onClose={() => setSelectedPlan(null)}
+          onDetail={onDetail}
         />
       )}
     </>

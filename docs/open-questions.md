@@ -31,7 +31,7 @@ The [Messages and periodic reminders plan](messages-and-reminders-plan.md) descr
 
 The eventual adapter should map a registered tag to an asset and a validated reader to a room, then supply observation time, receipt time and explicit source. Unknown tags/readers, duplicate packets, stale data, clock skew and simultaneous room detections require tested handling.
 
-A passive reader detection alone must never check a battery in or out. The local scan station requires staff to deliberately enter checkout/return mode and supply manual or demonstration input. Continuous mode processes individual eligible inputs; Batch mode requires a final confirmation. Loss of detection must never assert that a battery is missing. Automatic placement and any freshness threshold must be calibrated against real evidence and agreed with the teacher. Simulated workflow success does not establish read recall, held-item isolation or real room accuracy.
+A passive reader detection alone must never check a battery in or out. The local scan station requires staff to open checkout or return, add registered tags or manual selections to a review queue, then explicitly confirm 1–100 batteries. Repeated tag entry does not submit movements, and there is no immediate-save mode. One input source is retained per queue. Loss of detection must never assert that a battery is missing. Automatic placement and any freshness threshold must be calibrated against real evidence and agreed with the teacher. Simulated workflow success does not establish read recall, held-item isolation or real room accuracy.
 
 ## Next decision sequence
 

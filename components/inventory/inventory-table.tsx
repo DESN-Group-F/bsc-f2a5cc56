@@ -2,6 +2,7 @@
 
 import { isActiveBattery, batteryStatusLabel } from "@/lib/battery-lifecycle";
 import { useEffect, useState, type MouseEvent } from "react";
+import { shouldToggleSelection } from "@/lib/client/row-selection";
 import { Battery, Package, Plus, Download, Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -41,6 +42,7 @@ import {
 } from "./inventory-filter-panel";
 import { TeachingGroupsPanel } from "./teaching-groups-panel";
 import type { TeachingGroup } from "@/lib/teaching-groups";
+import { getRolePermissions } from "@/lib/permissions";
 import type {
   RecordActions,
   ExportDraft,
@@ -73,6 +75,7 @@ export function InventoryTable({
   onGroupsChanged?: () => Promise<void>;
   onGroupDialogChange?: (open: boolean) => void;
 }) {
+  const permissions = getRolePermissions(data.user.role);
   const [savedFilters, setFilters] = useState<InventoryFilter>(() => ({
       ...defaultInventoryFilter(),
       personalScope,
@@ -193,22 +196,7 @@ export function InventoryTable({
     id: string,
     event: MouseEvent<HTMLTableRowElement>,
   ) {
-    if (
-      !ready ||
-      event.defaultPrevented ||
-      !(event.target instanceof Element) ||
-      event.target.closest(
-        'button, a, input, select, textarea, label, [role="checkbox"], [role="button"], [contenteditable="true"]',
-      )
-    )
-      return;
-    const textSelection = window.getSelection();
-    if (
-      textSelection &&
-      !textSelection.isCollapsed &&
-      event.currentTarget.contains(textSelection.anchorNode)
-    )
-      return;
+    if (!ready || !shouldToggleSelection(event)) return;
     changeBatterySelection(id);
   }
   function updateFilters(patch: Partial<InventoryFilter>) {
@@ -448,7 +436,7 @@ export function InventoryTable({
                     Retire or remove selected
                   </Button>
                 )}
-                {onGroupMaintenance && data.user.role === "admin" && (
+                {onGroupMaintenance && permissions.editBatteryRecords && (
                   <Button
                     variant="outline"
                     size="sm"
@@ -625,7 +613,7 @@ export function InventoryTable({
               <TableHead>CURRENT HOLDER</TableHead>
               <TableHead>STORAGE LOCATION</TableHead>
               <TableHead>LAST OBSERVED</TableHead>
-              {group && data.user.role === "admin" && (
+              {group && permissions.editBatteryRecords && (
                 <TableHead>ACTIONS</TableHead>
               )}
             </TableRow>
@@ -720,7 +708,7 @@ export function InventoryTable({
                     <span className="muted">Not yet observed</span>
                   )}
                 </TableCell>
-                {group && data.user.role === "admin" && (
+                {group && permissions.editBatteryRecords && (
                   <TableCell>
                     <Button
                       variant="ghost"

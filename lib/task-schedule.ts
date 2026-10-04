@@ -1,15 +1,17 @@
 import { z } from "zod";
 import { isDateOnly } from "./battery-age";
 
-export const taskCategories = ["storage_review", "inventory_reconciliation", "storage_maintenance"] as const;
+export const taskCategories = ["custom", "storage_review", "inventory_reconciliation", "storage_maintenance"] as const;
 export const taskTargetKinds = ["inventory", "storage_area", "model", "group", "batteries"] as const;
 export const taskTargetsByCategory = {
+    custom: taskTargetKinds,
     storage_review: ["storage_area"],
     inventory_reconciliation: ["inventory", "model", "group", "batteries"],
     storage_maintenance: ["model", "group", "batteries"],
 } as const;
 export const taskTimeZone = "Australia/Sydney" as const;
 const searchableCategoryLabels = {
+    custom: "Custom task",
     storage_review: "Storage area review",
     inventory_reconciliation: "Inventory reconciliation",
     storage_maintenance: "Storage maintenance review",
@@ -57,7 +59,7 @@ export const taskPlanSchema = z.object({
     if (!plan.assigneeIds.length) issue("assigneeIds", "Assign at least one active staff account before activation.");
     if (!plan.reminderTime) issue("reminderTime", "Choose a Sydney reminder time before activation.");
     if (plan.recurrenceBasis === "dates") {
-        if (!plan.scheduledDates.length) issue("scheduledDates", "Enter the actual teaching-period dates before activation.");
+        if (!plan.scheduledDates.length) issue("scheduledDates", "Enter at least one confirmed due date before activation.");
     } else if (!plan.firstDueOn) issue("firstDueOn", "Choose the first due date before activation.");
     if (["storage_area", "model", "group"].includes(plan.targetKind) && !plan.targetRef) issue("targetRef", "Select or define the target before activation.");
     if (plan.targetKind === "batteries" && !plan.batteryIds.length) issue("batteryIds", "Select at least one registered battery before activation.");
@@ -188,6 +190,16 @@ const templatePlan = (input: Partial<TaskPlan> & Pick<TaskPlan, "category" | "ti
     recurrenceBasis: "calendar", interval: 1, unit: "weeks", scheduledDates: [], reminderDaysBefore: 0,
     reminderTime: null, channels: ["messages", "email"], state: "draft", applicabilityConfirmed: false, ...input,
 });
+
+/** An empty editor draft has no borrowed template content or confirmed operating requirements. */
+export function createCustomTaskPlan(): TaskPlan {
+    return {
+        category: "custom", title: "", description: "", basis: "", scopeNote: "",
+        targetKind: "inventory", targetRef: null, batteryIds: [], assigneeIds: [],
+        firstDueOn: null, recurrenceBasis: "calendar", interval: 1, unit: "weeks", scheduledDates: [],
+        reminderDaysBefore: 0, reminderTime: null, channels: ["messages"], state: "draft", applicabilityConfirmed: false,
+    };
+}
 
 export const taskTemplates: { id: string; label: string; description: string; basis: string; plan: TaskPlan }[] = [
     {

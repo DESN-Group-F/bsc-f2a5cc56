@@ -10,15 +10,20 @@ import ts from "typescript";
 const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "removal-ui-"));
-for (const name of ["teaching-context", "battery-age", "domain", "location-catalog", "client-utils", "lifecycle-session", "removal-draft"]) {
+for (const name of ["teaching-context", "battery-age", "domain", "location-catalog", "client-utils", "lifecycle-session", "removal-draft", "battery-lifecycle", "inventory-query", "battery-selection-query"]) {
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
     await writeFile(join(scratch, `${name}.mjs`), compiled);
 }
 const [lifecycle, client, removalDraft] = await Promise.all(["lifecycle-session", "client-utils", "removal-draft"].map(name => import(pathToFileURL(join(scratch, `${name}.mjs`)))));
+const query = await import(pathToFileURL(join(scratch, "inventory-query.mjs")));
+const selectionQuery = await import(pathToFileURL(join(scratch, "battery-selection-query.mjs")));
+const rowSource = await readFile(new URL("../lib/client/row-selection.ts", import.meta.url), "utf8");
+await writeFile(join(scratch, "row-selection.mjs"), ts.transpileModule(rowSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText);
+const rowSelection = await import(pathToFileURL(join(scratch, "row-selection.mjs")));
 const source = await readFile(new URL("../components/inventory/removal-station.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
-const ui = Object.fromEntries(["CheckCircle2", "LogOut", "ScanLine", "Trash2", "Button", "Checkbox", "Input", "Label", "Textarea", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow"].map(name => [name, name]));
+const ui = Object.fromEntries(["BatteryFilterControls", "CheckCircle2", "LogOut", "ScanLine", "Trash2", "Button", "Checkbox", "Input", "Label", "Textarea", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow"].map(name => [name, name]));
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 function hooks() {
     const state = [], effects = [];
@@ -36,8 +41,9 @@ function nodes(node, results = []) { if (Array.isArray(node)) for (const item of
 function text(node) { if (typeof node === "string" || typeof node === "number") return String(node); if (Array.isArray(node)) return node.map(text).join(""); return node && typeof node === "object" ? text(node.props?.children) : ""; }
 function button(tree, label) { return nodes(tree).find(node => node.type === "Button" && text(node) === label); }
 function control(tree, id) { return nodes(tree).find(node => node.props?.id === id && ["Input", "Textarea", "Checkbox"].includes(node.type)); }
+function filters(tree) { return nodes(tree).find(node => node.type === "BatteryFilterControls"); }
 function battery(id, overrides = {}) {
-    return { id, name: `Battery ${id}`, model: "PACK-MODEL", ownerName: "Staff owner", version: 3, tagId: `TAG-${id}`, loanId: null, lifecycleStatus: "active", lifecycleAt: null, lifecycleReason: null, lifecycleDestination: null, ...overrides };
+    return { id, chemistry: "", capacityMah: null, voltage: null, manufacturedOn: null, firstUsedOn: null, name: `Battery ${id}`, model: "PACK-MODEL", ownerName: "Staff owner", version: 3, tagId: `TAG-${id}`, loanId: null, lifecycleStatus: "active", lifecycleAt: null, lifecycleReason: null, lifecycleDestination: null, ...overrides };
 }
 function fixture(dataset = "live", role = "staff") {
     return { dataset, user: { id: "removal-native-actor", username: "operator", role }, batteries: [battery("BAT-A"), battery("BAT-B", { tagId: null }), battery("BAT-LOAN", { loanId: "active-loan" }), battery("BAT-SCRAPPED", { lifecycleStatus: "scrapped", lifecycleAt: "2026-10-03T03:00:00.000Z", lifecycleReason: "Damaged pack" }), battery("BAT-REMOVED", { lifecycleStatus: "permanently_removed", lifecycleAt: "2026-10-03T04:00:00.000Z", lifecycleReason: "Transferred", lifecycleDestination: "Receiving laboratory" })] };
@@ -49,12 +55,12 @@ async function environment(run, seed = []) {
     const saved = Object.fromEntries(["sessionStorage", "window"].map(name => [name, Object.getOwnPropertyDescriptor(globalThis, name)]));
     const entries = new Map(seed), storage = { failReads: false, failWrites: false, failRemoval: false, blockedReadKey: null, blockedWriteKey: null };
     Object.defineProperty(globalThis, "sessionStorage", { configurable: true, value: { getItem: key => { if (storage.failReads || storage.blockedReadKey === key) throw new Error("Storage unavailable"); return entries.get(key) ?? null; }, setItem: (key, value) => { if (storage.failWrites || storage.blockedWriteKey === key) throw new Error("Storage unavailable"); entries.set(key, value); }, removeItem: key => { if (storage.failRemoval) throw new Error("Storage unavailable"); entries.delete(key); } } });
-    Object.defineProperty(globalThis, "window", { configurable: true, value: { addEventListener() {}, removeEventListener() {} } });
+    Object.defineProperty(globalThis, "window", { configurable: true, value: { addEventListener() {}, removeEventListener() {}, getSelection() { return null; } } });
     try { await run({ entries, storage }); } finally { for (const [name, descriptor] of Object.entries(saved)) { if (descriptor) Object.defineProperty(globalThis, name, descriptor); else Reflect.deleteProperty(globalThis, name); } }
 }
 function mount(overrides = {}, component = "RemovalStation") {
     const state = hooks(), writes = [], changes = [], details = [], locks = [], downloads = [];
-    const bindings = { ...ui, ...lifecycle, ...client, ...removalDraft, ...state }, names = Object.keys(bindings);
+    const bindings = { ...ui, ...query, ...selectionQuery, ...rowSelection, ...lifecycle, ...client, ...removalDraft, ...state }, names = Object.keys(bindings);
     const Component = new Function(...names, "_jsx", "_jsxs", "_Fragment", `${compiled}\nreturn ${component};`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
     const props = { data: fixture(), onChanged: () => changes.push(true), onDetail: id => details.push(id), onBusyChange: locked => locks.push(locked), onDownload: ids => downloads.push(ids), async write(action, payload) { writes.push({ action, payload: structuredClone(payload) }); return receipt(payload, { dataset: props.data.dataset }); }, ...overrides };
     return { props, writes, changes, details, locks, downloads, render() { state.reset(); const tree = Component(props); state.commit(); return tree; }, unmount: state.unmount };
@@ -317,7 +323,7 @@ test("a persisted tag-entry draft reopens with its original input source and can
         const original = mount(); button(original.render(), "Tag entry").props.onClick(); setTag(original, "TAG-BAT-A"); button(original.render(), "Add tag to queue").props.onClick(); reason(original); original.unmount();
         const reopened = mount(); assert.ok(control(reopened.render(), "removal-tag")); assert.equal(savedDraft(entries).source, "tag_entry"); assert.equal(button(reopened.render(), "Manual selection").props.disabled, true); assert.equal(reopened.writes.length, 0);
         button(reopened.render(), "Clear queue").props.onClick(); button(reopened.render(), "Manual selection").props.onClick(); assert.equal(savedDraft(entries).source, "manual_selection"); reopened.unmount();
-        const manual = mount(); assert.ok(control(manual.render(), "removal-search")); assert.equal(control(manual.render(), "removal-tag"), undefined); manual.unmount();
+        const manual = mount(); assert.ok(filters(manual.render())); assert.equal(control(manual.render(), "removal-tag"), undefined); manual.unmount();
     });
 });
 
@@ -363,10 +369,10 @@ test("failure to read the separate draft store also fails closed without overwri
 
 test("removal history keeps only terminal records and clears combined filters while downloading their exact matching IDs", () => {
     const view = mount({}, "RemovalHistory"); assert.ok(text(view.render()).includes("2 matching records")); assert.equal(text(view.render()).includes("Battery BAT-LOAN"), false);
-    nodes(view.render()).find(node => node.type === "Select").props.onValueChange("permanently_removed"); nodes(view.render()).find(node => node.type === "Input").props.onChange({ target: { value: "Receiving" } });
-    assert.ok(text(view.render()).includes("Applied filters")); button(view.render(), "Download matching records").props.onClick(); assert.deepEqual(view.downloads[0], ["BAT-REMOVED"]);
+    filters(view.render()).props.onChange({ lifecycle: "permanently_removed", search: "Receiving" });
+    assert.equal(filters(view.render()).props.filters.search, "Receiving"); button(view.render(), "Download matching records").props.onClick(); assert.deepEqual(view.downloads[0], ["BAT-REMOVED"]);
     nodes(view.render()).find(node => node.type === "button" && text(node) === "BAT-REMOVED").props.onClick(); assert.deepEqual(view.details, ["BAT-REMOVED"]);
-    button(view.render(), "Clear filters").props.onClick(); assert.ok(text(view.render()).includes("2 matching records")); assert.equal(nodes(view.render()).find(node => node.type === "Input").props.value, ""); view.unmount();
+    filters(view.render()).props.onClear(); assert.ok(text(view.render()).includes("2 matching records")); assert.equal(filters(view.render()).props.filters.search, ""); view.unmount();
 });
 test("group removal stages exact members durably and keeps its context after leaving and reopening", async () => environment(async ({ entries }) => {
     const data = fixture(), reference = { id: crypto.randomUUID(), version: 1 };
@@ -374,4 +380,38 @@ test("group removal stages exact members durably and keeps its context after lea
     const first = mount({ data, initialIds: ["BAT-A", "BAT-B"], teachingGroup: reference }); first.render();
     assert.deepEqual(savedDraft(entries).teachingGroup, reference); assert.deepEqual(savedDraft(entries).selectedIds, ["BAT-A", "BAT-B"]); assert.equal(first.writes.length, 0); first.unmount();
     const restored = mount({ data }); assert.match(text(restored.render()), /Staff class/); assert.match(text(restored.render()), /BAT-A/); assert.match(text(restored.render()), /BAT-B/); assert.equal(restored.writes.length, 0); restored.unmount();
+}));
+
+
+test("removal battery filters keep the exact reviewed queue, selection and group boundary through search and clear", async () => environment(async ({ entries }) => {
+    const inventory = fixture(); inventory.batteries[0].chemistry = "Li-ion"; inventory.batteries[0].capacityMah = 2000; inventory.batteries[1].chemistry = "NiMH";
+    const group = { id: crypto.randomUUID(), version: 1, state: "active", name: "Class set", ownerAccountId: inventory.user.id, batteryIds: ["BAT-A", "BAT-B"] }; inventory.teachingGroups = [group];
+    const view = mount({ data: inventory, teachingGroup: { id: group.id, version: group.version } });
+    queue(view, "BAT-A"); reason(view, "Keep this review note"); control(view.render(), "removal-queued-BAT-A").props.onCheckedChange(false);
+    const before = savedDraft(entries);
+    filters(view.render()).props.onChange({ chemistry: "NiMH", capacityMode: "unknown" });
+    assert.ok(nodes(view.render()).find(node => node.props["aria-label"] === "Queue BAT-B")); assert.equal(nodes(view.render()).find(node => node.props["aria-label"] === "Queue BAT-A"), undefined);
+    filters(view.render()).props.onChange({ capacityMode: "any", capacityMinMah: 3000, capacityMaxMah: 1000 }); assert.match(text(view.render()), /maximum must be at least the minimum/);
+    filters(view.render()).props.onClear(); assert.deepEqual(savedDraft(entries), before); assert.equal(control(view.render(), "removal-queued-BAT-A").props.checked, false);
+    assert.equal(nodes(view.render()).find(node => node.props["aria-label"] === "Queue BAT-LOAN"), undefined); assert.equal(nodes(view.render()).find(node => node.props["aria-label"] === "Queue BAT-SCRAPPED"), undefined); assert.equal(view.writes.length, 0); view.unmount();
+}));
+
+
+test("removal queue row clicks select blank areas while embedded controls, text selection and unresolved writes remain independent", async () => environment(async ({ entries }) => {
+    const previousElement = Object.getOwnPropertyDescriptor(globalThis, "Element");
+    class ProbeElement { constructor(interactive = false) { this.interactive = interactive; } closest() { return this.interactive ? this : null; } }
+    Object.defineProperty(globalThis, "Element", { configurable: true, value: ProbeElement });
+    let selection = null; window.getSelection = () => selection;
+    const event = (interactive = false) => ({ defaultPrevented: false, button: 0, target: new ProbeElement(interactive), currentTarget: { contains() { return true; } } });
+    try {
+        const view = mount({ async write() { throw new Error("Unknown response"); } }); queue(view, "BAT-A");
+        const row = () => nodes(view.render()).find(node => node.props.className?.split(" ").includes("removal-queue-item"));
+        row().props.onClick(event()); assert.deepEqual(savedDraft(entries).selectedIds, []);
+        row().props.onClick(event(true)); assert.deepEqual(savedDraft(entries).selectedIds, []);
+        selection = { isCollapsed: false, anchorNode: {}, focusNode: {} }; row().props.onClick(event()); assert.deepEqual(savedDraft(entries).selectedIds, []);
+        const label = nodes(row()).find(node => node.type === "label"); let prevented = false; label.props.onClick({ ...event(), preventDefault() { prevented = true; } }); assert.equal(prevented, true);
+        selection = null; control(view.render(), "removal-queued-BAT-A").props.onCheckedChange(true); row().props.onClick(event(true)); assert.deepEqual(savedDraft(entries).selectedIds, ["BAT-A"], "checkbox bubbling must not toggle the row a second time");
+        await button(view.render(), "Confirm selected").props.onClick(); const exact = pendingValues(entries)[0];
+        row().props.onClick(event()); assert.deepEqual(savedDraft(entries).selectedIds, ["BAT-A"]); assert.equal(pendingValues(entries)[0], exact); view.unmount();
+    } finally { if (previousElement) Object.defineProperty(globalThis, "Element", previousElement); else Reflect.deleteProperty(globalThis, "Element"); }
 }));

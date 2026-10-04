@@ -68,10 +68,10 @@ function worksheetRows(workbook, name) {
     const sheet = workbook.getWorksheet(name);
     assert.ok(sheet, `Missing ${name} worksheet`);
     const columns = [];
-    sheet.getRow(1).eachCell((cell, number) => { columns[number - 1] = cell.value; });
+    sheet.getRow(4).eachCell((cell, number) => { columns[number - 1] = cell.value; });
     const rows = [];
     sheet.eachRow((row, number) => {
-        if (number > 1) rows.push(Object.fromEntries(columns.map((column, index) => [column, row.getCell(index + 1).value])));
+        if (number > 4) rows.push(Object.fromEntries(columns.map((column, index) => [column, row.getCell(index + 1).value])));
     });
     return rows;
 }
@@ -90,10 +90,10 @@ test("selected summary exports exactly the checked batteries, even outside the f
     assert.equal(document.metadata.page, null);
     assert.equal(document.metadata.page_size, null);
     const csv = parseCsv(summaryCsv(document));
-    assert.deepEqual(rowIds(csv), selectedIds);
-    assert.ok(csv.every(row => row.export_record_count === "2"));
-    assert.equal(csv.find(row => row.battery_id === "BAT-001").status, "In use");
-    assert.equal(csv.find(row => row.battery_id === "BAT-005").status, "In store");
+    assert.deepEqual(sorted(csv.map(row => row["Battery ID"])), selectedIds);
+    assert.ok(csv.every(row => row["Records in this file"] === "2"));
+    assert.equal(csv.find(row => row["Battery ID"] === "BAT-001")["Current status"], "In use");
+    assert.equal(csv.find(row => row["Battery ID"] === "BAT-005")["Current status"], "In store");
 });
 
 test("selected detail includes complete linked histories and only referenced directories", async () => {
@@ -117,9 +117,18 @@ test("selected detail includes complete linked histories and only referenced dir
     assert.deepEqual(sorted(json.tables.Charges.map(row => row.id)), await expectedHistory("charges"));
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(await excelBuffer(document));
-    assert.deepEqual(rowIds(worksheetRows(workbook, "Batteries")), selectedIds);
-    assert.deepEqual(sorted(worksheetRows(workbook, "Charges").map(row => row.id)), await expectedHistory("charges"));
-    assert.deepEqual(sorted(worksheetRows(workbook, "Loans").map(row => row.id)), await expectedHistory("loans"));
+    assert.deepEqual(rowIds(worksheetRows(workbook, "Evidence Batteries")), selectedIds);
+    assert.deepEqual(sorted(worksheetRows(workbook, "Evidence Charges").map(row => row.id)), await expectedHistory("charges"));
+    assert.deepEqual(sorted(worksheetRows(workbook, "Evidence Loans").map(row => row.id)), await expectedHistory("loans"));
+    assert.deepEqual(sorted(worksheetRows(workbook, "Evidence People").map(row => row.id)), [`staff-${actor.id}`]);
+    assert.deepEqual(sorted(worksheetRows(workbook, "Evidence Rooms").map(row => row.id)), ["J18-DEMO-ROOM", "J18-DEMO-WORKSPACE"]);
+    assert.deepEqual(sorted(worksheetRows(workbook, "Battery details").map(row => row["Battery ID"])), selectedIds);
+    const humanCharges = worksheetRows(workbook, "Charging history"), humanLoans = worksheetRows(workbook, "Check-in and checkout");
+    assert.equal(humanCharges.length, document.tables.Charges.length);
+    assert.equal(humanLoans.length, document.tables.Loans.length);
+    assert.equal(humanCharges.filter(row => row["Battery ID"] === "BAT-001").length, 207);
+    assert.ok([...humanCharges, ...humanLoans].every(row => selectedIds.includes(row["Battery ID"])));
+    assert.ok(worksheetRows(workbook, "People directory").every(row => row.Name !== otherActor.name));
 });
 
 test("selected information sections and staff-readable exports retain their original permissions", async () => {

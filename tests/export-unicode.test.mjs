@@ -60,7 +60,7 @@ async function rawWorkbook(bytes) {
                 if (current.name === "row") rows.push(row);
             },
         });
-        const headers = rows[0].cells, records = rows.slice(1).map(row => Object.fromEntries(Object.entries(headers).map(([column, field]) => [field, row.cells[column]])));
+        const headers = rows.find(row => row.number === 4).cells, records = rows.filter(row => row.number > 4).map(row => Object.fromEntries(Object.entries(headers).map(([column, field]) => [field, row.cells[column]])));
         sheets.set(tag.attributes.name, { xml, records });
     } });
     return { files, shared, sheets };
@@ -80,12 +80,17 @@ test("Excel ZIP XML preserves 70 valid saved Unicode observation labels and thei
     for (const alignment of ["A", "AB"]) {
         const workbook = await rawWorkbook(await excelBuffer({ ...document, metadata: { ...document.metadata, fixture_alignment: alignment } }));
         assert.ok(workbook.files["xl/sharedStrings.xml"].length > 16384, "Fixture must cross the failing aggregate XML chunk boundary");
-        assert.deepEqual(workbook.sheets.get("Observations").records.filter(row => String(row.room_key).includes("REVIEW-ROOM-")).map(row => row.room_name), expected);
+        assert.deepEqual(workbook.sheets.get("Evidence Observations").records.filter(row => String(row.room_key).includes("REVIEW-ROOM-")).map(row => row.room_name), expected);
+        const readableLocations = workbook.sheets.get("Location history").records.filter(row => String(row["Saved location"]).includes("Review room "));
+        assert.equal(readableLocations.length, expected.length);
+        assert.deepEqual(readableLocations.map(row => String(row["Saved location"]).split(" · ").at(-1)), expected);
         for (const row of document.tables.Operations) assert.ok(workbook.shared.includes(row.details_json), `Operation ${row.id} must retain its exact JSON`);
-        assert.deepEqual([...workbook.sheets.keys()], ["Export information", ...Object.keys(document.tables)]);
-        assert.ok(workbook.files["xl/styles.xml"].includes('rgb="FF234A69"'));
+        assert.equal([...workbook.sheets.keys()][0], "Report guide");
+        assert.deepEqual([...workbook.sheets.keys()].filter(name => name.startsWith("Evidence ")), ["Evidence export", ...Object.keys(document.tables).map(name => `Evidence ${name}`)]);
+        assert.ok(!workbook.sheets.has("Export information"));
+        assert.ok(workbook.files["xl/styles.xml"].includes('rgb="FFFFDF00"'));
         for (const { xml } of workbook.sheets.values()) {
-            assert.ok(xml.includes('ySplit="1"') && xml.includes('state="frozen"'));
+            assert.ok(xml.includes('ySplit="4"') && xml.includes('state="frozen"'));
             assert.ok(xml.includes("<autoFilter "));
         }
     }
@@ -100,14 +105,16 @@ test("long Unicode audit text reconstructs exactly from ordered Complete text ce
     // Shift XML text by one code unit so a coincidentally safe chunk alignment cannot hide surrogate loss.
     for (const alignment of ["A", "AB"]) {
         const workbook = await rawWorkbook(await excelBuffer({ ...document, metadata: { ...document.metadata, fixture_alignment: alignment } }));
-        const operations = workbook.sheets.get("Operations").records, index = operations.findIndex(row => row.action === "test_long_unicode_operation");
+        const operations = workbook.sheets.get("Evidence Operations").records, index = operations.findIndex(row => row.action === "test_long_unicode_operation");
         assert.equal(operations[index].details_json, "See Complete text worksheet; all parts are preserved.");
-        const parts = workbook.sheets.get("Complete text").records.filter(row => row.worksheet === "Operations" && row.record_number === index + 1 && row.field === "details_json").sort((a, b) => a.part - b.part);
+        const parts = workbook.sheets.get("Complete text").records.filter(row => row.worksheet === "Evidence Operations" && row.record_number === index + 1 && row.field === "details_json").sort((a, b) => a.part - b.part);
         assert.ok(parts.length > 1);
         assert.deepEqual(parts.map(row => row.part), parts.map((_, part) => part + 1));
         assert.equal(parts.map(row => row.value).join(""), details);
         assert.ok(parts.every(row => row.value.length <= 32000 && !/[\uD800-\uDBFF]$/.test(row.value) && !/^[\uDC00-\uDFFF]/.test(row.value)));
-        assert.deepEqual([...workbook.sheets.keys()], ["Export information", "Batteries", "Operations", "Complete text"]);
+        assert.equal([...workbook.sheets.keys()][0], "Report guide");
+        assert.deepEqual([...workbook.sheets.keys()].filter(name => name.startsWith("Evidence ")), ["Evidence export", "Evidence Batteries", "Evidence Operations"]);
+        assert.equal([...workbook.sheets.keys()].at(-1), "Complete text");
     }
 });
 
@@ -116,7 +123,7 @@ test("concurrent workbook exports preserve distinct Unicode text without modifyi
     await Promise.all(Array.from({ length: 4 }, async (_, index) => {
         const value = `Concurrent ${index} ${"🚀".repeat(9000)}`;
         const workbook = await rawWorkbook(await excelBuffer({ metadata: { operator: `Staff ${index} 🧪`, exported_at_utc: now }, tables: { Records: [{ value }] } }));
-        assert.equal(workbook.sheets.get("Records").records[0].value, value);
+        assert.equal(workbook.sheets.get("Evidence Records").records[0].value, value);
         assert.ok(workbook.shared.includes(`Staff ${index} 🧪`));
     }));
     assert.deepEqual(Object.getOwnPropertyDescriptor(process, "browser"), browserFlag);

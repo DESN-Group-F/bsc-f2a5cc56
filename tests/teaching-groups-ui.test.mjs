@@ -1,7 +1,10 @@
+import { hasRowTextSelection } from "../work/qa/client/row-selection.mjs";
+import * as batterySelection from "../work/qa/battery-selection-query.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import ts from "typescript";
+import { getRolePermissions } from "../work/qa/permissions.mjs";
 import * as groups from "../work/qa/teaching-groups.mjs";
 import * as query from "../work/qa/inventory-query.mjs";
 import * as lifecycle from "../work/qa/battery-lifecycle.mjs";
@@ -10,7 +13,7 @@ import * as locations from "../work/qa/location-catalog.mjs";
 
 // Actual component handlers with inert UI boundaries; no browser or hardware claims.
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
-const ui = Object.fromEntries(["Battery", "Package", "Plus", "Download", "Upload", "Pencil", "Settings2", "ClipboardList", "Copy", "Search", "X", "Button", "Input", "Textarea", "Label", "Checkbox", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Tabs", "TabsList", "TabsTrigger", "Skeleton", "AppliedFilters", "InventoryFilterPanel", "TeachingGroupsPanel"].map(name => [name, name]));
+const ui = Object.fromEntries(["Battery", "Package", "Plus", "Download", "Upload", "Pencil", "Settings2", "ClipboardList", "Copy", "Search", "X", "Button", "Input", "Textarea", "Label", "Checkbox", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Tabs", "TabsList", "TabsTrigger", "Skeleton", "AppliedFilters", "InventoryFilterPanel", "BatteryFilterControls", "TeachingGroupsPanel"].map(name => [name, name]));
 function hooks() {
     const state = [], effects = []; let pointer = 0, ep = 0, scheduled = [];
     return {
@@ -23,7 +26,7 @@ function hooks() {
 }
 async function component(file, exports, state, extra = {}) {
     const source = ts.transpileModule(await readFile(file, "utf8"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
-    const bindings = { ...ui, ...query, ...groups, ...lifecycle, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03", ...extra }, names = Object.keys(bindings);
+    const bindings = { hasRowTextSelection, ...batterySelection, getRolePermissions, ...ui, ...query, ...groups, ...lifecycle, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03", ...extra }, names = Object.keys(bindings);
     return new Function(...names, "_jsx", "_jsxs", "_Fragment", `${source}\nreturn {${exports.join(",")}};`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
 }
 function nodes(node, result = []) { if (Array.isArray(node)) node.forEach(child => nodes(child, result)); else if (node && typeof node === "object") { result.push(node); nodes(node.props?.children, result); } return result; }
@@ -71,8 +74,8 @@ test("saved groups support filtering or whole-group selection without a write; c
 test("editing freezes the loaded group version until explicit latest review, and search clearing leaves draft fields and members intact", async () => {
     const view = await panel({ transport: async (payload, count, data) => payload.expectedVersion < data.teachingGroups[0].version ? { ok: false, status: 409, async json() { return { error: "Group changed; draft preserved", code: "teaching_group_rejected_final" }; } } : { ok: true, async json() { return { result: result(data, payload) }; } } }); button(view.render(), "Edit").props.onClick();
     control(view.render(), "teaching-group-name").props.onChange({ target: { value: "My edited class" } });
-    input(view.render(), "Find teaching group batteries").props.onChange({ target: { value: "BAT-C" } });
-    button(view.render(), "Clear filters").props.onClick(); assert.equal(control(view.render(), "teaching-group-name").props.value, "My edited class"); assert.match(text(view.render()), /2\/100 selected/);
+    nodes(view.render()).find(node => node.type === "BatteryFilterControls").props.onChange({ search: "BAT-C" });
+    nodes(view.render()).find(node => node.type === "BatteryFilterControls").props.onClear(); assert.equal(control(view.render(), "teaching-group-name").props.value, "My edited class"); assert.match(text(view.render()), /2\/100 selected/);
     view.data.teachingGroups[0] = { ...view.data.teachingGroups[0], version: 2, name: "Other tab change" };
     await button(view.render(), "Save changes").props.onClick(); assert.equal(view.requests[0].payload.expectedVersion, 1);
     assert.equal(control(view.render(), "teaching-group-name").props.value, "My edited class"); button(view.render(), "Load latest group").props.onClick(); assert.equal(control(view.render(), "teaching-group-name").props.value, "Other tab change");
@@ -155,4 +158,59 @@ test("opening a workspace group for editing starts with its captured members and
     assert.match(text(view.render()), /2\/100 selected/);
     await button(view.render(), "Save changes").props.onClick();
     assert.equal(view.requests[0].payload.expectedVersion, 1);
+});
+
+test("group battery filters combine criteria and clear without changing members, text or reviewed version", async () => {
+    const data = fixture();
+    data.batteries[0].lifecycleStatus = "scrapped";
+    data.batteries[1].chemistry = "NiMH";
+    const view = await panel({ data, options: { initialGroup: data.teachingGroups[0] } });
+    const filters = () => nodes(view.render()).find(node => node.type === "BatteryFilterControls");
+    assert.equal(filters().props.filters.lifecycle, "all");
+    assert.match(text(view.render()), /3 matching batteries/);
+    control(view.render(), "teaching-group-notes").props.onChange({ target: { value: "Retain my teaching notes" } });
+    filters().props.onChange({ chemistry: "LiPo", capacityMinMah: 2500, sortBy: "capacity", sortDirection: "desc" });
+    assert.match(text(view.render()), /1 matching batteries · 2 selected outside these filters/);
+    assert.equal(nodes(view.render()).filter(node => node.type === "Checkbox").length, 1);
+    filters().props.onClear();
+    assert.equal(filters().props.filters.lifecycle, "all");
+    assert.equal(filters().props.filters.sortBy, "id");
+    assert.equal(control(view.render(), "teaching-group-notes").props.value, "Retain my teaching notes");
+    await button(view.render(), "Save changes").props.onClick();
+    assert.deepEqual(view.requests[0].payload.batteryIds, ["BAT-A", "BAT-B"]);
+    assert.equal(view.requests[0].payload.expectedVersion, 1);
+});
+
+test("group filter actions cannot alter a preserved uncertain group request", async () => {
+    const view = await panel({ initialIds: ["BAT-A"], transport: async () => { throw new Error("Response unavailable"); } });
+    control(view.render(), "teaching-group-name").props.onChange({ target: { value: "Preserved group" } });
+    const filters = () => nodes(view.render()).find(node => node.type === "BatteryFilterControls");
+    filters().props.onChange({ chemistry: "LiPo" });
+    await button(view.render(), "Save new group").props.onClick();
+    assert.equal(filters().props.disabled, true);
+    filters().props.onClear();
+    filters().props.onChange({ chemistry: "NiMH" });
+    assert.equal(filters().props.filters.chemistry, "LiPo");
+    assert.deepEqual(view.requests[0].payload.batteryIds, ["BAT-A"]);
+});
+
+test("teaching group member rows preserve native label selection and ignore a deliberate text selection", async () => {
+    const view = await panel({ initialIds: ["BAT-A"] });
+    const row = () => nodes(view.render()).find(node => node.type === "label" && node.props.className === "export-option" && text(node).includes("BAT-B"));
+    const prior = globalThis.window, anchor = {};
+    let selectedText = false, prevented = false;
+    globalThis.window = { getSelection: () => ({ isCollapsed: !selectedText, anchorNode: anchor, focusNode: anchor }) };
+    try {
+        const event = { currentTarget: { contains: node => node === anchor }, preventDefault() { prevented = true; } };
+        row().props.onClick(event);
+        assert.equal(prevented, false, "Ordinary clicks keep the native label activation");
+        assert.match(text(view.render()), /1\/100 selected/, "No second scripted toggle is added");
+        selectedText = true;
+        row().props.onClick(event);
+        assert.equal(prevented, true);
+        assert.match(text(view.render()), /1\/100 selected/);
+        selectedText = false;
+        nodes(row()).find(node => node.type === "Checkbox").props.onCheckedChange(true);
+        assert.match(text(view.render()), /2\/100 selected/, "The checkbox remains independently operable");
+    } finally { if (prior === undefined) delete globalThis.window; else globalThis.window = prior; }
 });

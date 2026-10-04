@@ -5,6 +5,7 @@ import { currentSydneyDate } from "@/lib/battery-age";
 import { staffIdentityLabel } from "@/lib/client-utils";
 
 export const taskCategoryLabels: Record<TaskPlan["category"], string> = {
+  custom: "Custom task",
   storage_review: "Storage area review",
   inventory_reconciliation: "Inventory reconciliation",
   storage_maintenance: "Storage maintenance review",

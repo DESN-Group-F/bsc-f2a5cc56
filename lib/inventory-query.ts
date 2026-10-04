@@ -128,7 +128,7 @@ export function filterBatteries(batteries: BatteryRecord[], input: InventoryFilt
         && matchesRange(ageInDays(battery.manufacturedOn, asOfOn), filter.ageMode, filter.ageMinDays, filter.ageMaxDays)
         && matchesRange(timestampDate(battery.lastCheckedOutAt), filter.checkoutMode, filter.checkoutFrom, filter.checkoutTo)
         && matchesRange(timestampDate(battery.chargedAt), filter.chargeMode, filter.chargeFrom, filter.chargeTo)
-        && `${battery.id} ${battery.name} ${battery.chemistry} ${battery.model} ${battery.tagId ?? ""} ${battery.ownerName} ${battery.borrowerName ?? ""} ${battery.homeBuildingId ?? ""} ${battery.homeBuildingName ?? ""} ${battery.homeRoomNumber ?? ""} ${battery.homeRoomName ?? ""}`.toLowerCase().includes(query)), filter, asOfOn);
+        && `${battery.id} ${battery.name} ${battery.chemistry} ${battery.model} ${battery.tagId ?? ""} ${battery.ownerName} ${battery.borrowerName ?? ""} ${battery.homeBuildingId ?? ""} ${battery.homeBuildingName ?? ""} ${battery.homeRoomNumber ?? ""} ${battery.homeRoomName ?? ""} ${battery.lifecycleReason ?? ""} ${battery.lifecycleDestination ?? ""}`.toLowerCase().includes(query)), filter, asOfOn);
 }
 export const exportSections = [
     { id: "specifications", label: "Identity and specifications", note: "Identifiers, specifications, registration time, manufacture and first-use dates, age and record version" },

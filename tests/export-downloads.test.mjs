@@ -4,6 +4,7 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import ts from "typescript";
 import ExcelJS from "exceljs";
 import { downloadExportAttachment, downloadTaskJson, readDownloadAttachment, requestExportAttachment, parseCsv } from "../work/qa/client-utils.mjs";
+import { excelBuffer, summaryCsv } from "../work/qa/downloads.mjs";
 
 const routeDirectory = "work/qa/review-fixes/attachment-route-tests";
 await mkdir(routeDirectory, { recursive: true });
@@ -60,10 +61,11 @@ test("formatted POST returns the actual JSON, CSV or Excel attachment from one a
         assert.match(response.headers.get("content-disposition"), new RegExp(`^attachment; filename="battery-summary-demo-.*\\.${format}"$`));
         assert.equal(response.headers.get("cache-control"), "no-store");
         if (format === "json") assert.deepEqual((await response.json()).tables.Inventory.map(row => row.battery_id), ["MINE"]);
-        if (format === "csv") assert.deepEqual(parseCsv(await response.text()).map(row => row.battery_id), ["MINE"]);
+        if (format === "csv") assert.deepEqual(parseCsv(await response.text()).map(row => row["Battery ID"]), ["MINE"]);
         if (format === "xlsx") {
             const workbook = new ExcelJS.Workbook(); await workbook.xlsx.load(await response.arrayBuffer());
-            assert.equal(workbook.getWorksheet("Inventory").getCell("A2").value, "MINE");
+            assert.equal(workbook.worksheets[0].name, "Report guide");
+            assert.equal(workbook.getWorksheet("Evidence Inventory").getCell("A5").value, "MINE");
         }
     }
 });
@@ -74,7 +76,7 @@ test("existing JSON-document POST and attachment GET callers retain their behavi
     assert.deepEqual((await document.json()).tables.Inventory.map(row => row.battery_id), ["MINE"]);
     const response = await GET(new Request(`http://inventory.test/api/export?${new URLSearchParams({ request: JSON.stringify(input), format: "csv" })}`));
     assert.equal(response.status, 200); assert.match(response.headers.get("content-disposition"), /\.csv"$/);
-    assert.deepEqual(parseCsv(await response.text()).map(row => row.battery_id), ["MINE"]); assert.equal(state.reads, 2);
+    assert.deepEqual(parseCsv(await response.text()).map(row => row["Battery ID"]), ["MINE"]); assert.equal(state.reads, 2);
 });
 
 test("formatted POST preserves rejected selection and incompatible format errors in its actual response", async () => {
@@ -96,7 +98,7 @@ test("a single client request downloads the exact captured selection and the ser
     assert.equal(requests[0].init.method, "POST"); assert.deepEqual(JSON.parse(requests[0].init.body), input);
     assert.equal(state.reads, 1); assert.equal(browser.clicks, 1); assert.equal(browser.created.length, 1);
     assert.equal(browser.link.href, "blob:attachment-review"); assert.match(browser.link.download, /^battery-summary-demo-.*\.csv$/);
-    assert.deepEqual(parseCsv(await browser.created[0].text()).map(row => row.battery_id), ["MINE"]);
+    assert.deepEqual(parseCsv(await browser.created[0].text()).map(row => row["Battery ID"]), ["MINE"]);
     assert.equal(browser.removed, true); assert.deepEqual(browser.revoked, []);
     assert.equal(browser.timer.delay, 60000); browser.timer.callback(); assert.deepEqual(browser.revoked, ["blob:attachment-review"]);
 });
@@ -169,4 +171,60 @@ test("task and message downloads retain the exact filter request and use verifie
     assert.deepEqual(requests.map(request => request.url), files.map(file => file.url));
     assert.ok(requests.every(request => request.init.cache === "no-store"));
     assert.equal(browser.clicks, 2); assert.equal(browser.timer.delay, 60000);
+});
+
+test("human workbooks retain typed dates, literal formula text, readable styling and complete evidence", async () => {
+    const formula = '=HYPERLINK("https://example.invalid","External link")';
+    const document = { metadata: { operator: "Report staff", dataset: "demo", mode: "summary", exported_at_utc: "2026-10-02T02:00:00.000Z" }, tables: { Inventory: [
+        { battery_id: "REPORT-001", name: formula, status: "In store", manufactured_on: "2026-01-31", manufacturing_age_days: 244 },
+        { battery_id: "REPORT-002", name: "+1+1", status: "In use", manufactured_on: null, manufacturing_age_days: null },
+    ] } };
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(await excelBuffer(document));
+    assert.deepEqual(workbook.worksheets.map(sheet => sheet.name), ["Report guide", "Inventory", "Evidence export", "Evidence Inventory"]);
+    const sheet = workbook.getWorksheet("Inventory"), headers = new Map();
+    sheet.getRow(4).eachCell((cell, index) => headers.set(cell.value, index));
+    assert.equal(sheet.getCell(5, headers.get("Battery name")).value, formula);
+    assert.equal(sheet.getCell(5, headers.get("Battery name")).type, ExcelJS.ValueType.String);
+    assert.equal(sheet.getCell(5, headers.get("Manufactured on")).value.toISOString(), "2026-01-31T00:00:00.000Z");
+    assert.equal(sheet.getCell(5, headers.get("Age since manufacture (days)")).value, 244);
+    assert.equal(sheet.getCell(6, headers.get("Age since manufacture (days)")).value, "Not recorded");
+    assert.equal(sheet.views[0].ySplit, 4);
+    assert.equal(sheet.getCell("A4").alignment.wrapText, true);
+    assert.equal(sheet.getCell("A5").alignment.wrapText, true);
+    assert.equal(sheet.properties.tabColor.argb, "FFFFDF00");
+    assert.equal(workbook.getWorksheet("Evidence Inventory").properties.tabColor.argb, "FF9B9B93");
+    assert.equal(sheet.state, "visible");
+    assert.equal(workbook.getWorksheet("Evidence Inventory").state, "hidden");
+    const guide = workbook.getWorksheet("Report guide");
+    assert.ok(guide.getColumn(2).values.some(value => typeof value === "string" && value.includes("not forms to fill in")));
+    assert.ok(guide.getColumn(2).values.some(value => typeof value === "string" && value.includes("Unhide")));
+    const csv = parseCsv(summaryCsv(document));
+    assert.equal(csv[0]["Battery name"], `'${formula}`);
+    assert.equal(csv[1]["Battery name"], "'+1+1");
+    assert.equal(csv[0]["Manufactured on"], "31 Jan 2026");
+    assert.match(csv[0]["Report created (Sydney)"], /02 Oct 2026.*12:00/);
+    assert.equal(csv[0]["Report scope"], "All matching records across all pages");
+    assert.equal(csv[0]["Report filters"], "No additional filters");
+});
+
+test("workbook sheet names remain unique after sanitizing and truncation, and empty sheets explain their scope", async () => {
+    const document = { metadata: { operator: "Report staff", exported_at_utc: "2026-10-02T02:00:00.000Z" }, tables: { export: [{ id: "original" }] } };
+    const report = { title: "Report", description: "Collision fixture", facts: [], glossary: [], sheets: [
+        { name: "Report guide", description: "A selected empty business section.", columns: ["Battery ID", "Current status"], rows: [] },
+        { name: "A very long report name that collides / first", description: "First selection.", rows: [{ "Battery ID": "FIRST" }] },
+        { name: "A very long report name that collides : second", description: "Second selection.", rows: [{ "Battery ID": "SECOND" }] },
+    ] };
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(await excelBuffer(document, report));
+    const names = workbook.worksheets.map(sheet => sheet.name);
+    assert.equal(new Set(names.map(name => name.toLowerCase())).size, names.length);
+    assert.ok(names.every(name => name.length <= 31 && !/[\\/*?:\[\]]/.test(name)));
+    const empty = workbook.worksheets[1];
+    assert.equal(empty.getCell("A4").value, "Battery ID");
+    assert.equal(empty.getCell("B4").value, "Current status");
+    assert.equal(empty.getCell("A5").value, "No records match the selected scope.");
+    assert.equal(workbook.worksheets[2].getCell("A5").value, "FIRST");
+    assert.equal(workbook.worksheets[3].getCell("A5").value, "SECOND");
+    assert.equal(workbook.worksheets.at(-1).getCell("A5").value, "original");
 });

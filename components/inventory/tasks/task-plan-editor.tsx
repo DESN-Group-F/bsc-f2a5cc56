@@ -23,13 +23,19 @@ import {
 } from "@/components/ui/dialog";
 import type { InventorySnapshot } from "@/lib/domain";
 import type { TaskPlanRecord, TaskCycleRecord } from "@/lib/task-plans";
+import { getRolePermissions } from "@/lib/permissions";
 import {
+  taskCategories,
   taskPlanSchema,
   taskSchedulePreview,
   taskTargetsByCategory,
   type TaskPlan,
 } from "@/lib/task-schedule";
 import { currentSydneyDate } from "@/lib/battery-age";
+import { defaultInventoryFilter, type InventoryFilter } from "@/lib/inventory-query";
+import { getFilteredBatteries } from "@/lib/battery-selection-query";
+import { BatteryFilterControls } from "../battery-filter-controls";
+import { hasRowTextSelection } from "@/lib/client/row-selection";
 import {
   formatDateOnly,
   roomLabel,
@@ -54,6 +60,7 @@ import {
   taskCategoryLabels,
   targetLabels,
 } from "./task-presentation";
+import styles from "./task-plan-editor.module.css";
 
 export function TaskPlanEditor({
   original,
@@ -68,6 +75,7 @@ export function TaskPlanEditor({
   onClose: () => void;
   onSaved: () => Promise<void>;
 }) {
+  const { manageTaskPlans } = getRolePermissions(data.user.role);
   const existing = "id" in original ? original : null;
   const storageKey = taskCreateStorageKey(data.user.id, data.dataset);
   const [recovery] = useState(() => {
@@ -91,7 +99,10 @@ export function TaskPlanEditor({
     }
   });
   const [draft, setDraft] = useState<TaskPlan>(
-      () => recovery.attempt?.input.payload ?? taskPlanSchema.parse(original),
+      () => recovery.attempt?.input.payload ??
+        (!existing && original.category === "custom" && original.title === ""
+          ? structuredClone(original)
+          : taskPlanSchema.parse(original)),
     ),
     [expectedVersion, setExpectedVersion] = useState(existing?.version);
   const [busy, setBusy] = useState(false),
@@ -106,7 +117,7 @@ export function TaskPlanEditor({
   const captured = useRef(creation),
     running = useRef(false);
   const attempt = useRef({ signature: "", requestId: "" });
-  const [batterySearch, setBatterySearch] = useState(""),
+  const [batteryFilters, setBatteryFilters] = useState<InventoryFilter>(() => ({ ...defaultInventoryFilter(), lifecycle: "all" })),
     [datesText, setDatesText] = useState(
       (recovery.attempt?.input.payload ?? original).scheduledDates.join("\n"),
     );
@@ -151,17 +162,14 @@ export function TaskPlanEditor({
         data.batteries.map((battery) => battery.model).filter(Boolean),
       ),
     ].sort();
-  const visibleBatteries = data.batteries.filter((battery) =>
-    `${battery.id} ${battery.name} ${battery.model}`
-      .toLowerCase()
-      .includes(batterySearch.toLowerCase()),
-  );
+  const filteredBatteries = getFilteredBatteries(data, batteryFilters),
+    visibleBatteries = filteredBatteries.batteries;
   const placeholderArea =
     draft.targetKind === "storage_area" &&
     data.rooms.find((room) => room.id === draft.targetRef)?.isPlaceholder;
   const activeBlockedByPlaceholder =
     data.dataset === "live" && draft.state === "active" && placeholderArea;
-  const locked = busy || !!creation || !!recovery.error;
+  const locked = busy || !!creation || !!recovery.error || !manageTaskPlans;
   useEffect(() => {
     if (!busy && creation?.status !== "uncertain") return;
     const protect = (event: BeforeUnloadEvent) => {
@@ -210,7 +218,7 @@ export function TaskPlanEditor({
     originalAttempt: TaskCreateAttempt,
     alreadyUncertain: boolean,
   ) {
-    if (running.current || recovery.error) return;
+    if (!manageTaskPlans || running.current || recovery.error) return;
     running.current = true;
     setBusy(true);
     setError("");
@@ -263,7 +271,8 @@ export function TaskPlanEditor({
     }
   }
   function update(patch: Partial<TaskPlan>, reconfirm = true) {
-    if (running.current || captured.current || recovery.error) return;
+    if (!manageTaskPlans || running.current || captured.current || recovery.error) return;
+    if (!conflict) setError("");
     setDraft((previous) => ({
       ...previous,
       ...patch,
@@ -312,7 +321,7 @@ export function TaskPlanEditor({
   }
   async function save(event: React.FormEvent) {
     event.preventDefault();
-    if (running.current || captured.current || recovery.error) return;
+    if (!manageTaskPlans || running.current || captured.current || recovery.error) return;
     setError("");
     if (!validation.success) {
       setError(validation.error.issues.map((issue) => issue.message).join(" "));
@@ -419,7 +428,7 @@ export function TaskPlanEditor({
   return (
     <Dialog open onOpenChange={(open) => !open && close()}>
       <DialogContent
-        className="record-dialog"
+        className={`record-dialog ${styles.dialog}`}
         showCloseButton={!busy && !creation && !recovery.error}
         onEscapeKeyDown={(event) => {
           if (running.current || captured.current || recovery.error)
@@ -430,16 +439,46 @@ export function TaskPlanEditor({
             event.preventDefault();
         }}
       >
-        <DialogHeader>
+        <DialogHeader className={styles.header}>
           <DialogTitle>
-            {existing ? "Edit periodic task" : "Prepare periodic task"}
+            {existing ? "Edit recurring task" : "Create recurring task"}
           </DialogTitle>
           <DialogDescription>
-            {taskCategoryLabels[draft.category]}. Supplied timing is provisional
-            until its basis and applicability are confirmed.
+            {taskCategoryLabels[draft.category]}. Review the five sections below.
+            Save your work as a draft, or confirm the plan to activate reminders.
           </DialogDescription>
         </DialogHeader>
-        <form className="form-stack" onSubmit={save}>
+        <form className={styles.form} onSubmit={save}>
+          <div className={styles.body}>
+          <section className={styles.section} aria-labelledby="task-instructions-heading">
+            <div className={styles.sectionHeading}>
+              <span aria-hidden="true">1</span>
+              <h3 id="task-instructions-heading">Task instructions</h3>
+            </div>
+          <div className="form-field">
+            <Label>Task type</Label>
+            <Select
+              value={draft.category}
+              onValueChange={(value) => update({ category: value as TaskPlan["category"] })}
+              disabled={locked}
+            >
+              <SelectTrigger aria-label="Task type">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {taskCategories.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {taskCategoryLabels[category]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="field-hint">
+              {draft.category === "custom"
+                ? "Write your own task and use any supported target. No template wording or operating requirement is imposed."
+                : "This task type provides suggested target choices. Choose Custom task to use any supported target; your current instructions and schedule are retained."}
+            </p>
+          </div>
           <div className="form-field">
             <Label htmlFor="task-title">Task title</Label>
             <Input
@@ -473,8 +512,25 @@ export function TaskPlanEditor({
               disabled={locked}
             />
           </div>
+          <p className="field-hint">
+            {draft.category === "custom"
+              ? "Record the local procedure, teaching need or other reason for this task. Confirm the scope and timing before activation."
+              : "Template instructions and timing are starting points. Edit them to match the applicable requirement before activating this plan."}
+          </p>
+          </section>
+          <section className={styles.section} aria-labelledby="task-targets-heading">
+            <div className={styles.sectionHeading}>
+              <span aria-hidden="true">2</span>
+              <h3 id="task-targets-heading">Targets and scope</h3>
+            </div>
           <div className="form-field">
             <Label>Applies to</Label>
+            {!(taskTargetsByCategory[draft.category] as readonly string[]).includes(draft.targetKind) && (
+              <p className="form-error">
+                Your previous target is retained. Choose a target for this task type,
+                or choose Custom task to keep all target options available.
+              </p>
+            )}
             <Select
               value={draft.targetKind}
               onValueChange={(value) =>
@@ -581,23 +637,18 @@ export function TaskPlanEditor({
               <legend className="text-sm font-semibold">
                 Registered batteries · {draft.batteryIds.length} selected
               </legend>
-              <Input
-                aria-label="Find task batteries"
-                placeholder="Search registered battery ID, name or model…"
-                value={batterySearch}
-                onChange={(event) => setBatterySearch(event.target.value)}
+              <BatteryFilterControls
+                data={data}
+                filters={batteryFilters}
+                onChange={(patch) => { if (!locked && !running.current) setBatteryFilters(previous => ({ ...previous, ...patch })); }}
+                onClear={() => { if (!locked && !running.current) setBatteryFilters({ ...defaultInventoryFilter(), lifecycle: "all" }); }}
                 disabled={locked}
+                defaultLifecycle="all"
+                scopeNote="Filter the registered batteries available for this task. Clearing filters keeps your selected batteries and task draft."
               />
+              {filteredBatteries.error && <p className="form-error" role="alert">{filteredBatteries.error}</p>}
+              <p className="field-hint">{visibleBatteries.length} matching batteries · {draft.batteryIds.filter(id => !visibleBatteries.some(battery => battery.id === id)).length} selected outside these filters</p>
               <div className="my-2 flex flex-wrap gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setBatterySearch("")}
-                  disabled={!batterySearch || locked}
-                >
-                  Clear filters
-                </Button>
                 <Button
                   type="button"
                   variant="outline"
@@ -635,7 +686,12 @@ export function TaskPlanEditor({
               </div>
               <div className="max-h-44 overflow-y-auto">
                 {visibleBatteries.map((battery) => (
-                  <label className="export-option" key={battery.id}>
+                  <label
+                    className={`export-option ${styles.selectionRow}`}
+                    onClick={event => { if (hasRowTextSelection(event)) event.preventDefault(); }}
+                    data-selected={draft.batteryIds.includes(battery.id)}
+                    key={battery.id}
+                  >
                     <Checkbox
                       checked={draft.batteryIds.includes(battery.id)}
                       onCheckedChange={(value) =>
@@ -679,11 +735,16 @@ export function TaskPlanEditor({
               placeholder="Describe the actual area, inventory or assets covered, and why this requirement applies."
             />
           </div>
-          <fieldset className="detail-card">
-            <legend className="text-sm font-semibold">Assigned staff</legend>
+          </section>
+          <section className={styles.section} aria-labelledby="task-assignees-heading">
+            <div className={styles.sectionHeading}>
+              <span aria-hidden="true">3</span>
+              <h3 id="task-assignees-heading">Assigned staff</h3>
+            </div>
             <p className="field-hint">
-              Existing staff accounts; one actual completion closes the shared
-              cycle for all assignees.
+              {draft.assigneeIds.length} selected. Select people below, or use
+              the responsible owners of the selected targets. One completion
+              closes the shared cycle for all assignees.
             </p>
             <Button
               type="button"
@@ -701,7 +762,12 @@ export function TaskPlanEditor({
                     staff.active || draft.assigneeIds.includes(staff.id),
                 )
                 .map((staff) => (
-                  <label className="export-option" key={staff.id}>
+                  <label
+                    className={`export-option ${styles.selectionRow}`}
+                    onClick={event => { if (hasRowTextSelection(event)) event.preventDefault(); }}
+                    data-selected={draft.assigneeIds.includes(staff.id)}
+                    key={staff.id}
+                  >
                     <Checkbox
                       checked={draft.assigneeIds.includes(staff.id)}
                       onCheckedChange={(value) =>
@@ -739,7 +805,12 @@ export function TaskPlanEditor({
                 choose reviewed staff assignments to replace it.
               </p>
             )}
-          </fieldset>
+          </section>
+          <section className={styles.section} aria-labelledby="task-schedule-heading">
+            <div className={styles.sectionHeading}>
+              <span aria-hidden="true">4</span>
+              <h3 id="task-schedule-heading">Schedule and reminders</h3>
+            </div>
           <fieldset className="detail-card">
             <legend className="text-sm font-semibold">Task due rule</legend>
             <div className="form-field">
@@ -763,7 +834,7 @@ export function TaskPlanEditor({
                   <SelectItem value="completion">
                     Interval after actual completion
                   </SelectItem>
-                  <SelectItem value="dates">Explicit due dates</SelectItem>
+                  <SelectItem value="dates">Specific dates / one-off task</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -774,6 +845,7 @@ export function TaskPlanEditor({
                   id="task-dates"
                   value={datesText}
                   onChange={(event) => {
+                    if (locked) return;
                     setDatesText(event.target.value);
                     update({});
                   }}
@@ -781,8 +853,8 @@ export function TaskPlanEditor({
                   disabled={locked}
                 />
                 <p className="field-hint">
-                  Enter actual teaching-period review dates. No university dates
-                  are inferred.
+                  Enter one date for a one-off task, or several confirmed dates.
+                  No teaching-period dates are inferred.
                 </p>
               </div>
             ) : (
@@ -966,30 +1038,36 @@ export function TaskPlanEditor({
               due date.
             </p>
           )}
-          <div className="form-field">
-            <Label>Plan status</Label>
-            <Select
-              value={draft.state}
-              onValueChange={(value) =>
-                update({ state: value as TaskPlan["state"] }, false)
-              }
-              disabled={locked}
-            >
-              <SelectTrigger aria-label="Periodic plan status">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="draft">Draft · no reminders</SelectItem>
-                <SelectItem value="active">
-                  Active · generate Messages while in use
-                </SelectItem>
-                <SelectItem value="paused">
-                  Paused · stop future reminder generation
-                </SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <label className="export-option">
+          </section>
+          <section className={styles.section} aria-labelledby="task-review-heading">
+            <div className={styles.sectionHeading}>
+              <span aria-hidden="true">5</span>
+              <h3 id="task-review-heading">Review and save</h3>
+            </div>
+          <fieldset className={styles.stateChoices}>
+            <legend>Plan status after saving</legend>
+            {([
+              { value: "draft", title: "Draft", description: "Save progress without reminders." },
+              { value: "active", title: "Active", description: "Generate Messages while the system is in use." },
+              { value: "paused", title: "Paused", description: "Stop new cycles and future reminders." },
+            ] as const).map((state) => (
+              <label key={state.value} data-selected={draft.state === state.value}>
+                <input
+                  type="radio"
+                  name="task-plan-state"
+                  value={state.value}
+                  checked={draft.state === state.value}
+                  onChange={() => update({ state: state.value }, false)}
+                  disabled={locked}
+                />
+                <span><strong>{state.title}</strong><small>{state.description}</small></span>
+              </label>
+            ))}
+          </fieldset>
+          <label
+            className={`export-option ${styles.selectionRow}`}
+            data-selected={draft.applicabilityConfirmed}
+          >
             <Checkbox
               checked={draft.applicabilityConfirmed}
               onCheckedChange={(value) =>
@@ -1016,34 +1094,13 @@ export function TaskPlanEditor({
             </p>
           )}
           {!validation.success && draft.state === "active" && (
-            <p className="field-hint">
-              Activation needs:{" "}
-              {validation.error.issues.map((issue) => issue.message).join(" ")}
-            </p>
-          )}
-          {error && (
-            <div>
-              <p className="form-error" role="alert">
-                {error}
-              </p>
-              {conflict && existing && (
-                <>
-                  <p className="field-hint">
-                    Your draft is preserved. Load and review the latest saved
-                    task before replacing this draft.
-                  </p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={loadLatest}
-                    disabled={locked}
-                  >
-                    Load latest saved task
-                  </Button>
-                </>
-              )}
+            <div className={styles.requirements}>
+              <strong>Before activation</strong>
+              <ul>{validation.error.issues.map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>
+              <p>You can choose Draft to save while these details are incomplete.</p>
             </div>
           )}
+          </section>
           {latest && (
             <div className="detail-card">
               <h3>Latest saved version {latest.version}</h3>
@@ -1080,12 +1137,52 @@ export function TaskPlanEditor({
               <p>Request: {creation.input.requestId}</p>
             </div>
           )}
+          {!manageTaskPlans && (
+            <p className="field-hint" role="status">
+              Administrator access is required to change this plan. Any saved
+              request remains preserved in this tab.
+            </p>
+          )}
+          </div>
+          <div className={styles.footer}>
+          {error && (
+            <div className={styles.error}>
+              <p className="form-error" role="alert">
+                {error}
+              </p>
+              {conflict && existing && (
+                <>
+                  <p className="field-hint">
+                    Your draft is preserved. Load and review the latest saved
+                    task before replacing this draft.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={loadLatest}
+                    disabled={locked}
+                  >
+                    Load latest saved task
+                  </Button>
+                </>
+              )}
+            </div>
+          )}
+          <p className={styles.saveHint}>
+            {creation || recovery.error
+              ? "Resolve the saved request before editing or leaving this form."
+              : draft.state === "active"
+                ? "Active plans generate Messages while the system is in use."
+                : draft.state === "paused"
+                  ? "Saving as paused stops new cycles and future reminders."
+                  : "A draft saves your progress without generating reminders."}
+          </p>
           <DialogFooter>
             <Button
               type="button"
               variant="outline"
               onClick={close}
-              disabled={locked}
+              disabled={busy || !!creation || !!recovery.error}
             >
               Cancel
             </Button>
@@ -1093,7 +1190,7 @@ export function TaskPlanEditor({
               <Button
                 type="button"
                 onClick={() => void sendCreation(creation, true)}
-                disabled={busy || data.user.role !== "admin"}
+                disabled={busy || !manageTaskPlans}
               >
                 {busy ? "Checking…" : "Retry original task creation"}
               </Button>
@@ -1109,16 +1206,19 @@ export function TaskPlanEditor({
             ) : (
               <Button
                 type="submit"
-                disabled={locked || conflict || data.user.role !== "admin"}
+                disabled={locked || conflict}
               >
                 {busy
                   ? "Saving…"
-                  : existing
-                    ? "Save task plan"
-                    : "Create task plan"}
+                  : draft.state === "active"
+                    ? existing ? "Save active plan" : "Create and activate"
+                    : draft.state === "paused"
+                      ? existing ? "Save paused plan" : "Create paused plan"
+                      : existing ? "Save draft" : "Create draft"}
               </Button>
             )}
           </DialogFooter>
+          </div>
         </form>
       </DialogContent>
     </Dialog>

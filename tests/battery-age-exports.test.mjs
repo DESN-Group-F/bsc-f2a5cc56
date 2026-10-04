@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import ExcelJS from "exceljs";
 import { createExport } from "../work/qa/exports.mjs";
 import { excelBuffer, summaryCsv } from "../work/qa/downloads.mjs";
+import { parseCsv } from "../work/qa/client-utils.mjs";
 
 const exportInstant = new Date("2026-10-01T14:30:00.000Z");
 const makeStore = (beforeRead = () => {}) => {
@@ -26,7 +27,7 @@ const makeStore = (beforeRead = () => {}) => {
     } };
 };
 
-test("a slow export uses one Sydney age date and keeps unknown ages blank in downloadable formats", async context => {
+test("a slow export uses one Sydney age date and distinguishes unknown human ages from blank source evidence", async context => {
     context.mock.timers.enable({ apis: ["Date"], now: exportInstant });
     const store = makeStore(() => context.mock.timers.tick(24 * 60 * 60 * 1000));
     const document = await createExport(store, { dataset: "live", mode: "summary", filter: { building: "J18" } });
@@ -38,16 +39,25 @@ test("a slow export uses one Sydney age date and keeps unknown ages blank in dow
     assert.equal(document.tables.Inventory[0].time_in_service_days, 1);
     assert.equal(document.tables.Inventory[1].manufacturing_age_days, null);
     assert.equal(document.tables.Inventory[1].time_in_service_days, null);
-    assert.match(summaryCsv(document), /manufacturing_age_days/);
+    const humanCsv = parseCsv(summaryCsv(document));
+    assert.equal(humanCsv[0]["Age since manufacture (days)"], "31");
+    assert.equal(humanCsv[1]["Age since manufacture (days)"], "Not recorded");
+    assert.equal(humanCsv[1]["Time in service (days)"], "Not recorded");
 
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.load(await excelBuffer(document));
-    const worksheet = workbook.getWorksheet("Inventory");
+    const worksheet = workbook.getWorksheet("Evidence Inventory");
     const columns = new Map();
-    worksheet.getRow(1).eachCell((cell, index) => columns.set(cell.value, index));
-    assert.equal(worksheet.getRow(2).getCell(columns.get("manufacturing_age_days")).value, 31);
-    assert.equal(worksheet.getRow(3).getCell(columns.get("manufacturing_age_days")).value, "");
-    assert.equal(worksheet.getRow(2).getCell(columns.get("age_as_of_date")).value, "2026-10-02");
+    worksheet.getRow(4).eachCell((cell, index) => columns.set(cell.value, index));
+    assert.equal(worksheet.getRow(5).getCell(columns.get("manufacturing_age_days")).value, 31);
+    assert.equal(worksheet.getRow(6).getCell(columns.get("manufacturing_age_days")).value, "");
+    assert.equal(worksheet.getRow(5).getCell(columns.get("age_as_of_date")).value, "2026-10-02");
+    const human = workbook.getWorksheet("Inventory"), humanColumns = new Map();
+    human.getRow(4).eachCell((cell, index) => humanColumns.set(cell.value, index));
+    assert.equal(human.getRow(5).getCell(humanColumns.get("Age since manufacture (days)")).value, 31);
+    assert.equal(human.getRow(6).getCell(humanColumns.get("Age since manufacture (days)")).value, "Not recorded");
+    assert.equal(human.getRow(6).getCell(humanColumns.get("Time in service (days)")).value, "Not recorded");
+    assert.equal(human.getRow(5).getCell(humanColumns.get("Age calculated on (Sydney date)")).value.toISOString(), "2026-10-02T00:00:00.000Z");
 });
 
 test("selected details include ages only in specifications and preserve single and page scopes", async context => {

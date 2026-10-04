@@ -2,9 +2,10 @@ import { test, after } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { Miniflare } from "miniflare";
+import ExcelJS from "exceljs";
 import { InventoryStore } from "../work/qa/store.mjs";
 import { createExport } from "../work/qa/exports.mjs";
-import { summaryCsv } from "../work/qa/downloads.mjs";
+import { excelBuffer, summaryCsv } from "../work/qa/downloads.mjs";
 import { parseCsv } from "../work/qa/client-utils.mjs";
 
 const mf = new Miniflare({ modules: true, script: "export default {fetch(){return new Response('personal-activity-test')}}", compatibilityDate: "2026-05-15", d1Databases: { DB: "personal-activity-test" }, d1Persist: false });
@@ -25,6 +26,7 @@ const store = (scope, actor = self, dataset = "demo") => new InventoryStore(db, 
 const asset = (id, owner) => ({ id, name: "Activity verification battery", ownerId: `staff-${owner.id}`, homeBuildingId: "J18", homeRoomId: null });
 const ids = records => records.map(record => record.id).sort();
 const byId = records => new Map(records.map(record => [record.id, record]));
+const excelRows = (book, name) => { const sheet = book.getWorksheet(name), headers = sheet.getRow(4).values.slice(1); return Array.from({ length: sheet.rowCount - 4 }, (_, index) => Object.fromEntries(headers.map((field, column) => [field, sheet.getRow(index + 5).getCell(column + 1).value]))); };
 const invalidInput = error => error.name === "ZodError" || error.status === 400;
 const event = (scope, id, actor, extra = {}) => db.prepare("INSERT INTO audit_events(id,scope,action,battery_id,actor_id,actor_name,at,details_json) VALUES(?,?,?,?,?,?,?,?)")
     .bind(`${scope}/${id}`, scope, extra.action ?? "battery_updated", extra.batteryId ?? null, actor.id, actor.name, extra.at ?? now.toISOString(), JSON.stringify(extra.details ?? { note: "Isolated verification evidence" }));
@@ -91,8 +93,18 @@ test("complete personal activity and downloads retain older records beyond the 2
     assert.deepEqual(ids(document.tables.Activity), ids(personal));
     const csv = summaryCsv(document);
     assert.equal(csv.split("\r\n").length, 206);
-    for (const id of ownIds) assert.ok(csv.includes(`"${scope}/${id}"`));
+    // The application import parser limits one import to 200 rows. Read every
+    // line of this single-line export fixture in smaller batches for validation.
+    const lines = csv.split("\r\n"), readableRows = [];
+    for (let start = 1; start < lines.length; start += 100) readableRows.push(...parseCsv([lines[0], ...lines.slice(start, start + 100)].join("\r\n")));
+    assert.equal(readableRows.length, ownIds.length);
+    assert.ok(readableRows.every(row => row["Recorded by (name at operation)"] === self.name && row.Operation === "Battery details updated" && row["Records in this file"] === "205"));
     assert.ok(!csv.includes(`${scope}/OTHER-`));
+    const workbook = new ExcelJS.Workbook(); await workbook.xlsx.load(await excelBuffer(document));
+    const evidenceRows = excelRows(workbook, "Evidence Activity");
+    assert.deepEqual(ids(evidenceRows), ids(personal));
+    assert.ok(evidenceRows.every(row => row.actor_id === self.id));
+    assert.equal(excelRows(workbook, "Activity").length, ownIds.length);
 });
 
 test("personal activity retains dataset boundaries, including the same actor in the separate live inventory", async () => {
@@ -111,7 +123,7 @@ test("personal activity retains dataset boundaries, including the same actor in 
     assert.deepEqual(await store("activity-empty:demo").fullActivity("mine"), []);
 });
 
-test("personal activity exports search only the authenticated operator's complete records and preserve raw details in JSON and CSV", async () => {
+test("personal activity exports search only the authenticated operator's complete records and preserve raw evidence beside readable CSV", async () => {
     const scope = "activity-download:demo", mine = store(scope);
     const details = { reason: 'Unique NEEDLE, with "quoted text"\nand a second line', before: { version: 2 }, after: { version: 3 }, source: "Manual verification" };
     await db.batch([
@@ -129,10 +141,17 @@ test("personal activity exports search only the authenticated operator's complet
     assert.equal(document.tables.Activity.find(row => row.battery_id === null).action, "records_imported");
     const json = JSON.parse(JSON.stringify(document));
     assert.deepEqual(JSON.parse(byId(json.tables.Activity).get(`${scope}/own-detail`).details_json), details);
-    const csv = parseCsv(summaryCsv(document)), rows = byId(csv);
-    assert.deepEqual(ids(csv), ids(document.tables.Activity));
+    const csv = parseCsv(summaryCsv(document));
+    assert.equal(csv.length, 2);
+    assert.deepEqual(csv.map(row => row.Operation).sort(), ["Battery details updated", "Records imported"]);
+    assert.equal(csv.find(row => row["Battery ID"] === "SEARCH-BATTERY")["Recorded by (name at operation)"], self.name);
+    assert.ok(csv.every(row => row["Recorded by (name at operation)"] === self.name && row["Report filters"] === "Search: nEeDlE" && row["Records in this file"] === "2"));
+    const workbook = new ExcelJS.Workbook(); await workbook.xlsx.load(await excelBuffer(document));
+    const evidenceRows = excelRows(workbook, "Evidence Activity"), rows = byId(evidenceRows);
+    assert.deepEqual(ids(evidenceRows), ids(document.tables.Activity));
     assert.deepEqual(JSON.parse(rows.get(`${scope}/own-detail`).details_json), details);
-    assert.ok(csv.every(row => row.actor_id === self.id && row.activity_scope === "mine" && row.search_query === "nEeDlE" && row.export_record_count === "2"));
+    assert.ok(evidenceRows.every(row => row.actor_id === self.id));
+    assert.match(excelRows(workbook, "Report guide").find(row => row.Topic === "Personal scope").Explanation, /My recorded operations/);
 
     for (const search of ["search-battery", "BATTERY_UPDATED", "same staff name", "2026-10-02T04:00"]) {
         const filtered = await createExport(mine, { dataset: "demo", mode: "activity", activityScope: "mine", search });

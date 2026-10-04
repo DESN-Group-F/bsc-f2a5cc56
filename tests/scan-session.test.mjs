@@ -193,3 +193,18 @@ test("untagged selection recovery preserves an uncertain request and rejects cha
     const priorSimulation = savedAttempt();
     assert.equal(recoverScanSession(JSON.stringify(priorSimulation), "return").attempt.payload.scan.source, "simulated", "existing simulated recovery retains its original source");
 });
+
+
+test("legacy continuous recovery changes only the mode and preserves its exact partial pending request plus unsubmitted queue", () => {
+    const pending = read({}, "selection"), tail = read({ id: "BAT-002", tagId: null, loanId: laterLoanId }, "selection");
+    const payload = scanMovementPayload("return", [pending], sessionId, room(), requestId);
+    const saved = { sessionId, mode: "continuous", room: room(), queue: [pending, tail], completed: [], issues: [],
+        attempt: { payload, reads: [pending], status: "uncertain", message: "The original reply was lost." } };
+    const recovered = recoverScanSession(JSON.stringify(saved), "return");
+    assert.deepEqual(recovered, { ...saved, mode: "batch" });
+    assert.deepEqual(recovered.attempt.payload, payload);
+    assert.deepEqual(recovered.queue, [pending, tail]);
+    assert.deepEqual(recoverScanSession(JSON.stringify({ ...saved, attempt: null }), "return"), { ...saved, mode: "batch", attempt: null });
+    assert.equal(recoverScanSession(JSON.stringify({ ...saved, mode: "unrecognized" }), "return"), null);
+    assert.equal(saved.mode, "continuous");
+});

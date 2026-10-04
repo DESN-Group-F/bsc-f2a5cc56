@@ -1,9 +1,13 @@
+import { hasRowTextSelection } from "../work/qa/client/row-selection.mjs";
+import { defaultInventoryFilter } from "../work/qa/inventory-query.mjs";
+import * as batterySelection from "../work/qa/battery-selection-query.mjs";
+import { getRolePermissions } from "../work/qa/permissions.mjs";
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import ts from "typescript";
 import { captureTaskCreate, recoverTaskCreate, taskCreateFailureStatus, taskCreateStorageKey, verifyTaskCreateReceipt } from "../work/qa/task-create-session.mjs";
-import { taskTemplates, taskPlanSchema, taskSchedulePreview, taskTargetsByCategory, taskPlanMatchesQuery } from "../work/qa/task-schedule.mjs";
+import { createCustomTaskPlan, taskCategories, taskTemplates, taskPlanSchema, taskSchedulePreview, taskTargetsByCategory, taskPlanMatchesQuery } from "../work/qa/task-schedule.mjs";
 
 const requestId = "22222222-2222-4222-8222-222222222222", planId = "33333333-3333-4333-8333-333333333333";
 const accountId = "44444444-4444-4444-8444-444444444444";
@@ -70,7 +74,7 @@ function dialogHarness() {
         useRef(initial) { const index = pointer++; if (!(index in state)) state[index] = { current: initial }; return state[index]; },
         useEffect() {},
     };
-    const uiNames = ["CalendarDays", "CheckCircle2", "Download", "Pencil", "Plus", "RefreshCw", "Button", "Input", "Textarea", "Label", "Checkbox", "Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Skeleton"];
+    const uiNames = ["BatteryFilterControls", "CalendarDays", "CheckCircle2", "Download", "Pencil", "Plus", "RefreshCw", "Button", "Input", "Textarea", "Label", "Checkbox", "Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Skeleton"];
     return { reset() { pointer = 0; }, hooks, jsx, ui: Object.fromEntries(uiNames.map(name => [name, name])) };
 }
 function nodes(node, result = []) {
@@ -83,7 +87,7 @@ async function loadEditor(harness) {
     const files = ["lib/client/task-api.ts", "components/inventory/tasks/task-presentation.ts", "components/inventory/tasks/task-plan-editor.tsx"];
     const source = (await Promise.all(files.map(file => readFile(file, "utf8")))).join("\n");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export \{.*\}(?: from "[^"]+")?;\r?\n/gm, "").replace(/\bexport (?=(?:async )?function|const|let|var)/g, "");
-    const bindings = { ...harness.hooks, ...harness.ui, captureTaskCreate, recoverTaskCreate, taskCreateFailureStatus, taskCreateStorageKey, verifyTaskCreateReceipt, taskTemplates, taskPlanSchema, taskSchedulePreview, taskTargetsByCategory, taskPlanMatchesQuery,
+    const bindings = { hasRowTextSelection, ...batterySelection, defaultInventoryFilter, styles: new Proxy({}, { get: (_, key) => String(key) }), getRolePermissions, ...harness.hooks, ...harness.ui, captureTaskCreate, recoverTaskCreate, taskCreateFailureStatus, taskCreateStorageKey, verifyTaskCreateReceipt, taskCategories, taskTemplates, taskPlanSchema, taskSchedulePreview, taskTargetsByCategory, taskPlanMatchesQuery,
         currentSydneyDate: () => "2026-10-03", formatDateOnly: value => value || "Not configured", formatTime: value => value, roomLabel: room => room.name, staffIdentityLabel: (name, username) => `${name} (${username})`, isSelectableRoom: room => room.selectable, reloadSessionPage() { throw new Error("Unexpected sign-in navigation"); }, downloadTaskJson() { throw new Error("No download expected"); } };
     return new Function(...Object.keys(bindings), "_jsx", "_jsxs", "_Fragment", `${compiled}\nreturn { TaskPlanEditor };`)(...Object.values(bindings), harness.jsx, harness.jsx, "Fragment");
 }
@@ -129,4 +133,178 @@ test("actual task creation handlers lock a lost-response payload, recover it aft
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.deepEqual(inputs, [captured.input, captured.input]);
     assert.equal(storage.size, 0); assert.equal(saved, 1);
+});
+
+test("visible plan status choices explain incomplete activation and allow a deliberate draft save", async context => {
+    const storage = new Map(), originalStorage = Object.getOwnPropertyDescriptor(globalThis, "sessionStorage");
+    Object.defineProperty(globalThis, "sessionStorage", { configurable: true, value: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) } });
+    context.after(() => { if (originalStorage) Object.defineProperty(globalThis, "sessionStorage", originalStorage); else delete globalThis.sessionStorage; });
+    const writes = [], data = { dataset: "demo", user: { id: accountId, role: "admin" }, batteries: [], rooms: [], staffDirectory: [], events: [] };
+    let saves = 0;
+    context.mock.method(globalThis, "fetch", async (_url, options) => {
+        writes.push(JSON.parse(options.body));
+        return Response.json({ ok: true, result: receipt(recoverTaskCreate([...storage.values()][0], accountId, "demo")) });
+    });
+    const harness = dialogHarness(), { TaskPlanEditor } = await loadEditor(harness);
+    const render = () => { harness.reset(); return TaskPlanEditor({ original: makePlan(), data, cycles: [], onClose() {}, async onSaved() { saves++; } }); };
+    let tree = render();
+    assert.deepEqual(nodes(tree).filter(node => node.type === "section").map(node => label(nodes(node).find(child => child.type === "h3"))), ["Task instructions", "Targets and scope", "Assigned staff", "Schedule and reminders", "Review and save"]);
+    const status = value => nodes(tree).find(node => node.type === "input" && node.props.name === "task-plan-state" && node.props.value === value);
+    assert.equal(status("draft").props.checked, true);
+    status("active").props.onChange();
+    tree = render();
+    assert.equal(status("active").props.checked, true);
+    assert.ok(nodes(tree).some(node => node.type === "Button" && label(node) === "Create and activate"));
+    assert.match(label(tree), /Before activation.*Assign at least one active staff account/);
+    await nodes(tree).find(node => node.type === "form").props.onSubmit({ preventDefault() {} });
+    tree = render();
+    const footer = nodes(tree).find(node => node.props.className === "footer");
+    assert.ok(nodes(footer).some(node => node.props.role === "alert"));
+    assert.equal(writes.length, 0);
+    status("draft").props.onChange();
+    tree = render();
+    assert.equal(nodes(tree).some(node => node.props.role === "alert"), false);
+    assert.ok(nodes(tree).some(node => node.type === "Button" && label(node) === "Create draft"));
+    await nodes(tree).find(node => node.type === "form").props.onSubmit({ preventDefault() {} });
+    assert.equal(writes.length, 1);
+    assert.equal(writes[0].payload.state, "draft");
+    assert.equal(writes[0].payload.applicabilityConfirmed, false);
+    assert.equal(saves, 1);
+});
+
+test("a blank custom editor accepts original instructions and a one-off schedule before saving", async context => {
+    const storage = new Map(), originalStorage = Object.getOwnPropertyDescriptor(globalThis, "sessionStorage");
+    Object.defineProperty(globalThis, "sessionStorage", { configurable: true, value: { getItem: key => storage.get(key) ?? null, setItem: (key, value) => storage.set(key, value), removeItem: key => storage.delete(key) } });
+    context.after(() => { if (originalStorage) Object.defineProperty(globalThis, "sessionStorage", originalStorage); else delete globalThis.sessionStorage; });
+    const writes = [], data = { dataset: "demo", user: { id: accountId, role: "admin" }, batteries: [], rooms: [], staffDirectory: [], events: [] };
+    context.mock.method(globalThis, "fetch", async (_url, options) => {
+        writes.push(JSON.parse(options.body));
+        return Response.json({ ok: true, result: receipt(recoverTaskCreate([...storage.values()][0], accountId, "demo")) });
+    });
+    const harness = dialogHarness(), { TaskPlanEditor } = await loadEditor(harness);
+    const render = () => { harness.reset(); return TaskPlanEditor({ original: createCustomTaskPlan(), data, cycles: [], onClose() {}, async onSaved() {} }); };
+    let tree = render();
+    assert.equal(nodes(tree).find(node => node.props.id === "task-title").props.value, "");
+    const selectFor = name => nodes(tree).find(node => node.type === "Select" && nodes(node).some(child => child.type === "SelectTrigger" && child.props["aria-label"] === name));
+    assert.equal(selectFor("Task type").props.value, "custom");
+    assert.deepEqual(nodes(selectFor("Periodic task target")).filter(node => node.type === "SelectItem").map(node => node.props.value), ["inventory", "storage_area", "model", "group", "batteries"]);
+    await nodes(tree).find(node => node.type === "form").props.onSubmit({ preventDefault() {} });
+    assert.equal(writes.length, 0, "An empty task cannot be submitted");
+    for (const [id, value] of [["task-title", "Workshop handover"], ["task-description", "Review equipment and record the handover outcome."], ["task-basis", "Workshop coordinator's agreed handover procedure."]]) {
+        tree = render();
+        nodes(tree).find(node => node.props.id === id).props.onChange({ target: { value } });
+    }
+    tree = render();
+    selectFor("Task recurrence basis").props.onValueChange("dates");
+    tree = render();
+    assert.match(label(tree), /one date for a one-off task/);
+    nodes(tree).find(node => node.props.id === "task-dates").props.onChange({ target: { value: "2026-10-15" } });
+    tree = render();
+    await nodes(tree).find(node => node.type === "form").props.onSubmit({ preventDefault() {} });
+    assert.equal(writes.length, 1);
+    assert.equal(writes[0].payload.category, "custom");
+    assert.equal(writes[0].payload.title, "Workshop handover");
+    assert.equal(writes[0].payload.description, "Review equipment and record the handover outcome.");
+    assert.equal(writes[0].payload.basis, "Workshop coordinator's agreed handover procedure.");
+    assert.deepEqual(writes[0].payload.scheduledDates, ["2026-10-15"]);
+    assert.deepEqual(writes[0].payload.channels, ["messages"]);
+    assert.equal(storage.size, 0);
+});
+
+test("switching a saved template to Custom preserves content and schedule while unlocking all targets", async context => {
+    const original = { ...makePlan(), id: planId, version: 9, scheduledDates: ["2026-11-01"], scopeNote: "Confirmed workshop inventory" };
+    const data = { dataset: "demo", user: { id: accountId, role: "admin" }, batteries: [], rooms: [], staffDirectory: [], events: [] }, writes = [];
+    context.mock.method(globalThis, "fetch", async (_url, options) => { writes.push(JSON.parse(options.body)); return Response.json({ ok: true }); });
+    const harness = dialogHarness(), { TaskPlanEditor } = await loadEditor(harness);
+    const render = () => { harness.reset(); return TaskPlanEditor({ original, data, cycles: [], onClose() {}, async onSaved() {} }); };
+    let tree = render();
+    const type = () => nodes(tree).find(node => node.type === "Select" && nodes(node).some(child => child.type === "SelectTrigger" && child.props["aria-label"] === "Task type"));
+    type().props.onValueChange("custom");
+    tree = render();
+    assert.equal(nodes(tree).find(node => node.props.id === "task-title").props.value, original.title);
+    assert.equal(nodes(tree).find(node => node.props.id === "task-description").props.value, original.description);
+    assert.equal(nodes(tree).find(node => node.props.id === "task-dates").props.value, "2026-11-01");
+    await nodes(tree).find(node => node.type === "form").props.onSubmit({ preventDefault() {} });
+    assert.equal(writes[0].payload.category, "custom");
+    assert.equal(writes[0].payload.targetKind, "inventory");
+    assert.equal(writes[0].payload.expectedVersion, 9);
+    assert.equal(writes[0].payload.id, planId);
+    assert.deepEqual(writes[0].payload.scheduledDates, original.scheduledDates);
+    type().props.onValueChange("storage_review");
+    tree = render();
+    assert.match(label(tree), /Your previous target is retained/);
+    assert.equal(nodes(tree).find(node => node.props.id === "task-title").props.value, original.title);
+});
+
+test("editing an active plan still requires reconfirmation and preserves the reviewed version and open cycle", async context => {
+    const original = { ...makePlan(), id: planId, version: 7, state: "active", applicabilityConfirmed: true, scopeNote: "Shared demonstration register", assigneeIds: [accountId], scheduledDates: ["2026-11-01"], reminderTime: "09:00" };
+    const cycles = [{ planId, status: "open", dueOn: "2026-10-01", reminderOn: "2026-09-30", reminderTime: "09:00" }];
+    const data = { dataset: "demo", user: { id: accountId, role: "admin" }, batteries: [], rooms: [], staffDirectory: [{ id: accountId, displayName: "Reviewer", username: "reviewer", active: true }], events: [] };
+    const writes = [];
+    context.mock.method(globalThis, "fetch", async (_url, options) => { writes.push(JSON.parse(options.body)); return Response.json({ ok: true }); });
+    const harness = dialogHarness(), { TaskPlanEditor } = await loadEditor(harness);
+    const render = () => { harness.reset(); return TaskPlanEditor({ original, data, cycles, onClose() {}, async onSaved() {} }); };
+    let tree = render();
+    nodes(tree).find(node => node.props.id === "task-title").props.onChange({ target: { value: "Updated review title" } });
+    tree = render();
+    const confirmation = () => nodes(nodes(tree).find(node => node.type === "label" && label(node).includes("Confirm the plan before activation"))).find(node => node.type === "Checkbox");
+    assert.equal(confirmation().props.checked, false);
+    assert.match(label(tree), /Recorded open cycle: due 2026-10-01/);
+    await nodes(tree).find(node => node.type === "form").props.onSubmit({ preventDefault() {} });
+    assert.equal(writes.length, 0);
+    confirmation().props.onCheckedChange(true);
+    tree = render();
+    await nodes(tree).find(node => node.type === "form").props.onSubmit({ preventDefault() {} });
+    assert.equal(writes.length, 1);
+    assert.equal(writes[0].action, "update");
+    assert.equal(writes[0].payload.id, planId);
+    assert.equal(writes[0].payload.expectedVersion, 7);
+    assert.equal(writes[0].payload.state, "active");
+    assert.equal(writes[0].payload.title, "Updated review title");
+    assert.equal(cycles[0].dueOn, "2026-10-01");
+    globalThis.fetch.mock.mockImplementation(async () => Response.json({ error: "A newer version was saved." }, { status: 409 }));
+    nodes(tree).find(node => node.props.id === "task-title").props.onChange({ target: { value: "Another reviewed title" } });
+    tree = render();
+    confirmation().props.onCheckedChange(true);
+    tree = render();
+    await nodes(tree).find(node => node.type === "form").props.onSubmit({ preventDefault() {} });
+    tree = render();
+    assert.match(label(nodes(tree).find(node => node.props.role === "alert")), /A newer version was saved/);
+    nodes(tree).find(node => node.props.id === "task-title").props.onChange({ target: { value: "Preserved conflict draft" } });
+    tree = render();
+    assert.match(label(nodes(tree).find(node => node.props.role === "alert")), /A newer version was saved/);
+    assert.equal(nodes(tree).find(node => node.type === "Button" && node.props.type === "submit").props.disabled, true);
+});
+
+test("custom task battery filters preserve hidden targets and draft content, including retired records", async context => {
+    const original = { ...makePlan(), id: planId, version: 4, category: "custom", targetKind: "batteries", batteryIds: ["BAT-A"], title: "My reviewed task" };
+    const base = { name: "Teaching pack", chemistry: "LiPo", model: "PACK", voltage: 7.4, tagId: null, loanId: null, registeredAt: "2026-10-03T01:00:00.000Z", ownerAccountId: accountId, ownerName: "Teacher", manufacturedOn: null, firstUsedOn: null, lastCheckedOutAt: null, chargedAt: null, observedAt: null };
+    const data = { dataset: "demo", user: { id: accountId, role: "admin" }, batteries: [{ ...base, id: "BAT-A", capacityMah: 2000, lifecycleStatus: "scrapped" }, { ...base, id: "BAT-B", capacityMah: 3000, lifecycleStatus: "active" }], rooms: [], staffDirectory: [], events: [] };
+    const writes = [];
+    context.mock.method(globalThis, "fetch", async (_url, options) => { writes.push(JSON.parse(options.body)); return Response.json({ ok: true }); });
+    const harness = dialogHarness(), { TaskPlanEditor } = await loadEditor(harness);
+    const render = () => { harness.reset(); return TaskPlanEditor({ original, data, cycles: [], onClose() {}, async onSaved() {} }); };
+    const filters = () => nodes(render()).find(node => node.type === "BatteryFilterControls");
+    assert.equal(filters().props.filters.lifecycle, "all");
+    assert.match(label(render()), /2 matching batteries/);
+    filters().props.onChange({ capacityMinMah: 2500, chemistry: "LiPo", sortBy: "capacity", sortDirection: "desc" });
+    assert.match(label(render()), /1 matching batteries · 1 selected outside these filters/);
+    const row = nodes(render()).find(node => node.type === "label" && label(node).includes("BAT-B"));
+    const priorWindow = globalThis.window, anchor = {};
+    let prevented = false;
+    globalThis.window = { getSelection: () => ({ isCollapsed: false, anchorNode: anchor, focusNode: anchor }) };
+    try {
+        row.props.onClick({ currentTarget: { contains: node => node === anchor }, preventDefault() { prevented = true; } });
+        assert.equal(prevented, true);
+        assert.match(label(render()), /Registered batteries · 1 selected/);
+    } finally { if (priorWindow === undefined) delete globalThis.window; else globalThis.window = priorWindow; }
+    nodes(render()).find(node => node.type === "Button" && label(node) === "Select filtered batteries").props.onClick();
+    assert.match(label(render()), /Registered batteries · 2 selected/);
+    filters().props.onClear();
+    assert.equal(filters().props.filters.lifecycle, "all");
+    assert.equal(filters().props.filters.sortBy, "id");
+    assert.equal(nodes(render()).find(node => node.props.id === "task-title").props.value, "My reviewed task");
+    await nodes(render()).find(node => node.type === "form").props.onSubmit({ preventDefault() {} });
+    assert.deepEqual(writes[0].payload.batteryIds, ["BAT-A", "BAT-B"]);
+    assert.equal(writes[0].payload.expectedVersion, 4);
 });

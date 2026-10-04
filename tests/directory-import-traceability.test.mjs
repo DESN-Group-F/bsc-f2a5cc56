@@ -37,7 +37,12 @@ test("current staff directory names agree with downloads without rewriting histo
     assert.equal(document.tables.people[0].id, visible.id);
     assert.equal(document.tables.people[0].account_id, firstStaff.id);
     assert.equal(document.tables.people[0].name, renamed.displayName);
-    assert.equal(parseCsv(summaryCsv(document))[0].name, renamed.displayName);
+    const directoryRows = parseCsv(summaryCsv(document));
+    assert.equal(directoryRows.length, 1);
+    assert.equal(directoryRows[0].Name, renamed.displayName);
+    assert.equal(directoryRows[0]["Owner ID for imports"], visible.id);
+    assert.equal(directoryRows[0]["Native staff account linked"], "Yes");
+    assert.equal(directoryRows[0]["Records in this file"], "1");
     assert.equal(await db.prepare("SELECT name FROM people WHERE scope=? AND account_id=?").bind(scope, firstStaff.id).first("name"), firstStaff.displayName);
     const full = await createExport(current, { dataset: "live", mode: "detail", batteryId: "NAME-CHECK" });
     assert.equal(full.tables.People[0].name, renamed.displayName);
