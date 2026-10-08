@@ -11,6 +11,7 @@ import { InventoryDatabase } from "./database";
 import { InventorySession } from "./actor";
 import { InventoryTransactions } from "./transactions";
 import { ensureInventoryReferenceData } from "./provisioning";
+import { registeredTagHash } from "../purge-evidence";
 
 /** Atomic directory or battery imports with complete attributed evidence. */
 export class InventoryImports {
@@ -103,9 +104,11 @@ export class InventoryImports {
           this.database.scope,
         );
       const ownerKeys = new Set<string>(),
-        roomKeys = new Set<string>();
+        roomKeys = new Set<string>(),
+        tagHashes = new Set<string>();
       for (const raw of records) {
         const b = batterySchema.parse(raw);
+        if (b.tagId !== null) tagHashes.add(await registeredTagHash(this.database.scope, b.tagId));
         validateBatteryDates(b, new Date(at));
         const building = buildings.find((x) => x.id === b.homeBuildingId);
         const owner = people.find((p) => p.id === b.ownerId),
@@ -165,7 +168,7 @@ export class InventoryImports {
         );
       }
       guard =
-        "(SELECT COUNT(*) FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.scope=? AND p.role='staff' AND a.active=1 AND p.key IN (SELECT value FROM json_each(?)))=? AND (SELECT COUNT(*) FROM rooms WHERE scope=? AND selectable=1 AND building_key=? AND key IN (SELECT value FROM json_each(?)))=?";
+        "(SELECT COUNT(*) FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.scope=? AND p.role='staff' AND a.active=1 AND p.key IN (SELECT value FROM json_each(?)))=? AND (SELECT COUNT(*) FROM rooms WHERE scope=? AND selectable=1 AND building_key=? AND key IN (SELECT value FROM json_each(?)))=? AND NOT EXISTS(SELECT 1 FROM purged_tag_reservations WHERE scope=? AND tag_hash IN (SELECT value FROM json_each(?)))";
       guardValues = [
         this.database.scope,
         JSON.stringify([...ownerKeys]),
@@ -174,6 +177,8 @@ export class InventoryImports {
         this.database.key("J18"),
         JSON.stringify([...roomKeys]),
         roomKeys.size,
+        this.database.scope,
+        JSON.stringify([...tagHashes]),
       ];
     } else
       throw new DomainError(

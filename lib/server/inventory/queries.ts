@@ -8,8 +8,12 @@ import { teachingGroupSchema } from "../../teaching-groups";
 import { InventoryDatabase, type Row } from "./database";
 import { InventorySession } from "./actor";
 import { ensureInventoryReferenceData } from "./provisioning";
+import { summarizeBatteryUsage } from "../../battery-usage";
+import type { InspectionRecord } from "../../battery-inspections";
+import { InventoryNewArrivals } from "./new-arrivals";
 
 const loanColumns = "id,borrower_name AS borrowerName,borrower_account_id AS borrowerAccountId,CASE WHEN borrower_account_id IS NULL THEN 'legacy' ELSE 'staff' END AS borrowerKind,checked_out_at AS checkedOutAt,returned_at AS returnedAt,cancelled_at AS cancelledAt,checkout_actor_name AS checkoutActorName,return_actor_name AS returnActorName,correction_reason AS correctionReason";
+const inspectionColumns = "i.id,b.id AS batteryId,i.kind,i.outcome,i.performed_at AS performedAt,i.recorded_at AS recordedAt,i.inspector_account_id AS inspectorAccountId,i.inspector_name AS inspectorName,i.method,i.notes,i.reference,i.capacity_mah AS capacityMah,v.voided_at AS voidedAt,v.actor_account_id AS voidedByAccountId,v.actor_name AS voidedByName,v.reason AS voidReason";
 
 /** Inventory read models; provisioning is explicit at the public snapshot/detail entry points. */
 export class InventoryQueries {
@@ -18,10 +22,25 @@ export class InventoryQueries {
     private session: InventorySession,
   ) {}
 
+  private inspectionStatement(batteryId?: string) {
+    return this.database.statement(
+      `SELECT ${inspectionColumns} FROM battery_inspections i JOIN batteries b ON b.key=i.battery_key AND b.scope=i.scope LEFT JOIN battery_inspection_voids v ON v.inspection_id=i.id AND v.scope=i.scope WHERE i.scope=?${batteryId ? " AND b.id=?" : ""} ORDER BY julianday(i.performed_at) DESC,julianday(i.recorded_at) DESC,i.rowid DESC`,
+      this.database.scope, ...(batteryId ? [batteryId] : []),
+    );
+  }
+
   private snapshotStatements(tagIds?: string[], batteryId?: string) {
     return [
       this.database.statement(
-        `SELECT b.id,b.version,b.name,b.chemistry,b.model,b.capacity_mah AS capacityMah,b.voltage,b.tag_id AS tagId,
+        `WITH current_inspections AS (
+          SELECT i.*,ROW_NUMBER() OVER(PARTITION BY i.scope,i.battery_key ORDER BY julianday(i.performed_at) DESC,julianday(i.recorded_at) DESC,i.rowid DESC) AS latest_rank,
+          ROW_NUMBER() OVER(PARTITION BY i.scope,i.battery_key,i.outcome ORDER BY julianday(i.performed_at) DESC,julianday(i.recorded_at) DESC,i.rowid DESC) AS outcome_rank
+          FROM battery_inspections i LEFT JOIN battery_inspection_voids v ON v.inspection_id=i.id AND v.scope=i.scope
+          WHERE i.scope=? AND v.inspection_id IS NULL
+        ), inspection_counts AS (
+          SELECT scope,battery_key,COUNT(*) AS valid_records,SUM(CASE WHEN outcome='concern_observed' THEN 1 ELSE 0 END) AS concern_records
+          FROM current_inspections GROUP BY scope,battery_key
+        ) SELECT b.id,b.version,b.name,b.chemistry,b.model,b.capacity_mah AS capacityMah,b.voltage,b.tag_id AS tagId,
         b.lifecycle_status AS lifecycleStatus,b.lifecycle_at AS lifecycleAt,b.lifecycle_reason AS lifecycleReason,b.lifecycle_destination AS lifecycleDestination,
         b.manufactured_on AS manufacturedOn,b.first_used_on AS firstUsedOn,b.created_at AS registeredAt,
         own.id AS ownerId,COALESCE(ownerAccount.display_name,own.name) AS ownerName,own.account_id AS ownerAccountId,
@@ -35,7 +54,12 @@ export class InventoryQueries {
         CASE WHEN o.id IS NULL THEN NULL ELSE COALESCE(o.room_name,'Room ID: ' || observedRoom.id) END AS observedRoom,
         o.room_building AS observedBuilding,CASE WHEN o.id IS NULL THEN NULL WHEN o.room_name IS NULL THEN 'unavailable' ELSE 'recorded' END AS observationRoomSnapshot,
         o.observed_at AS observedAt,o.source AS observationSource,
-        c.completed_at AS chargedAt,c.duration_minutes AS chargeDurationMinutes
+        c.completed_at AS chargedAt,c.duration_minutes AS chargeDurationMinutes,
+        COALESCE(ic.valid_records,0) AS inspectionValidRecords,COALESCE(ic.concern_records,0) AS inspectionConcernRecords,
+        latestCheck.id AS inspectionLatestId,latestCheck.kind AS inspectionLatestKind,latestCheck.outcome AS inspectionLatestOutcome,
+        latestCheck.performed_at AS inspectionLatestPerformedAt,latestCheck.recorded_at AS inspectionLatestRecordedAt,latestCheck.inspector_name AS inspectionLatestInspectorName,
+        latestConcern.id AS inspectionConcernId,latestConcern.kind AS inspectionConcernKind,
+        latestConcern.performed_at AS inspectionConcernPerformedAt,latestConcern.recorded_at AS inspectionConcernRecordedAt,latestConcern.inspector_name AS inspectionConcernInspectorName
         FROM batteries b JOIN people own ON own.key=b.owner_key LEFT JOIN rooms home ON home.key=b.home_room_key
         LEFT JOIN staff_accounts ownerAccount ON ownerAccount.id=own.account_id
         LEFT JOIN buildings homeBuilding ON homeBuilding.key=COALESCE(b.home_building_key,home.building_key)
@@ -44,7 +68,11 @@ export class InventoryQueries {
         LEFT JOIN observations o ON o.id=(SELECT id FROM observations WHERE battery_key=b.key AND scope=b.scope ORDER BY observed_at DESC,received_at DESC,rowid DESC LIMIT 1)
         LEFT JOIN rooms observedRoom ON observedRoom.key=o.room_key
         LEFT JOIN charges c ON c.id=(SELECT id FROM charges WHERE battery_key=b.key AND scope=b.scope ORDER BY completed_at DESC,recorded_at DESC,rowid DESC LIMIT 1)
+        LEFT JOIN inspection_counts ic ON ic.scope=b.scope AND ic.battery_key=b.key
+        LEFT JOIN current_inspections latestCheck ON latestCheck.scope=b.scope AND latestCheck.battery_key=b.key AND latestCheck.latest_rank=1
+        LEFT JOIN current_inspections latestConcern ON latestConcern.scope=b.scope AND latestConcern.battery_key=b.key AND latestConcern.outcome='concern_observed' AND latestConcern.outcome_rank=1
         WHERE b.scope=?${tagIds ? " AND b.tag_id IN (SELECT value FROM json_each(?))" : ""}${batteryId ? " AND b.id=?" : ""} ORDER BY b.id`,
+        this.database.scope,
         this.database.scope,
         ...(tagIds ? [JSON.stringify(tagIds)] : []),
         ...(batteryId ? [batteryId] : []),
@@ -73,6 +101,8 @@ export class InventoryQueries {
         this.database.scope,
         this.session.actor.id,
       ),
+      this.database.statement("SELECT id,actor_id AS actorAccountId,at FROM purged_batteries WHERE scope=? ORDER BY at DESC,id", this.database.scope),
+      ...new InventoryNewArrivals(this.database, this.session).snapshotStatements(),
     ];
   }
 
@@ -85,20 +115,49 @@ export class InventoryQueries {
       events,
       staffDirectory,
       groups = [],
+      purgedBatteries = [],
+      arrivalMetadata,
+      arrivalRecords = [],
     ] = result;
     return {
       dataset: this.session.dataset,
-      batteries: batteries.map<Row>((battery) => ({
-        ...battery,
-        homeRoomIsPlaceholder:
-          battery.homeRoomIsPlaceholder === null
-            ? null
-            : battery.homeRoomIsPlaceholder === 1,
-        homeRoomSelectable:
-          battery.homeRoomSelectable === null
-            ? null
-            : battery.homeRoomSelectable === 1,
-      })),
+      purgedBatteries,
+      ...(arrivalMetadata ? { newArrivals: new InventoryNewArrivals(this.database, this.session).snapshotResult(arrivalMetadata, arrivalRecords, this.session.clock().toISOString()) } : {}),
+      batteries: batteries.map<Row>((row) => {
+        const {
+          inspectionValidRecords, inspectionConcernRecords,
+          inspectionLatestId, inspectionLatestKind, inspectionLatestOutcome,
+          inspectionLatestPerformedAt, inspectionLatestRecordedAt, inspectionLatestInspectorName,
+          inspectionConcernId, inspectionConcernKind,
+          inspectionConcernPerformedAt, inspectionConcernRecordedAt, inspectionConcernInspectorName,
+          ...battery
+        } = row;
+        return {
+          ...battery,
+          inspectionPreview: {
+            validRecords: Number(inspectionValidRecords),
+            concernRecords: Number(inspectionConcernRecords),
+            latest: inspectionLatestId ? {
+              id: inspectionLatestId, kind: inspectionLatestKind, outcome: inspectionLatestOutcome,
+              performedAt: inspectionLatestPerformedAt, recordedAt: inspectionLatestRecordedAt,
+              inspectorName: inspectionLatestInspectorName,
+            } : null,
+            latestConcern: inspectionConcernId ? {
+              id: inspectionConcernId, kind: inspectionConcernKind,
+              performedAt: inspectionConcernPerformedAt, recordedAt: inspectionConcernRecordedAt,
+              inspectorName: inspectionConcernInspectorName,
+            } : null,
+          },
+          homeRoomIsPlaceholder:
+            battery.homeRoomIsPlaceholder === null
+              ? null
+              : battery.homeRoomIsPlaceholder === 1,
+          homeRoomSelectable:
+            battery.homeRoomSelectable === null
+              ? null
+              : battery.homeRoomSelectable === 1,
+        };
+      }),
       people,
       buildings,
       rooms: rooms.map<Row>((room) => ({
@@ -136,9 +195,10 @@ export class InventoryQueries {
 
   async exportData() {
     await ensureInventoryReferenceData(this.database);
+    const snapshotStatements = this.snapshotStatements();
     const result = (
       await this.database.raw.batch<Row>([
-        ...this.snapshotStatements(),
+        ...snapshotStatements,
         ...[
           "batteries",
           "people",
@@ -148,12 +208,15 @@ export class InventoryQueries {
           "charges",
           "observations",
           "audit_events",
+          "battery_inspections",
+          "battery_inspection_voids",
         ].map((table) =>
           this.database.statement(
             `SELECT * FROM ${table} WHERE scope=? ORDER BY rowid`,
             this.database.scope,
           ),
         ),
+        this.inspectionStatement(),
       ])
     ).map((item) => item.results);
     return {
@@ -168,8 +231,11 @@ export class InventoryQueries {
           "charges",
           "observations",
           "audit_events",
-        ].map((name, index) => [name, result[index + 7]]),
+          "battery_inspections",
+          "battery_inspection_voids",
+        ].map((name, index) => [name, result[index + snapshotStatements.length]]),
       ),
+      inspections: result[snapshotStatements.length + 10] as unknown as InspectionRecord[],
     };
   }
 
@@ -192,7 +258,7 @@ export class InventoryQueries {
   async detail(id: string) {
     await ensureInventoryReferenceData(this.database);
     const key = this.database.key(id);
-    const [batteries, loans, charges, observations, events, activeLoans, latestReturns, recentLoans, registrations] = (
+    const [batteries, loans, charges, observations, events, activeLoans, latestReturns, recentLoans, registrations, usageLoans, inspectionRows] = (
       await this.database.raw.batch<Row>([
         this.snapshotStatements(undefined, id)[0],
         this.database.statement(
@@ -237,14 +303,27 @@ export class InventoryQueries {
           this.database.scope,
           id,
         ),
+        this.database.statement(
+          "SELECT checked_out_at AS checkedOutAt,returned_at AS returnedAt,cancelled_at AS cancelledAt FROM loans WHERE scope=? AND battery_key=?",
+          this.database.scope, key,
+        ),
+        this.inspectionStatement(id),
       ])
     ).map((result) => result.results);
+    // Anchor after the snapshot so a concurrent committed movement included in
+    // that read is not incorrectly classified as future-dated evidence.
+    const asOf = this.session.clock();
     if (!batteries.length)
       throw new DomainError(404, "Battery not found in this inventory.");
     const battery = this.snapshotResult([batteries, [], [], [], [], []])
       .batteries[0];
+    const inspections = inspectionRows as unknown as InspectionRecord[];
+    const validInspections = inspections.filter((inspection) => inspection.voidedAt === null);
     return {
       battery,
+      usageSummary: summarizeBatteryUsage(usageLoans, asOf),
+      inspections: inspections.slice(0, 200),
+      inspectionSummary: { totalRecords: inspections.length, validRecords: validInspections.length, latest: validInspections[0] ?? null },
       movementSummary: {
         activeLoan: activeLoans.find((loan) => loan.id === battery.loanId) ?? null,
         latestReturn: latestReturns[0] ?? null,

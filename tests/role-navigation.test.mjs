@@ -9,10 +9,10 @@ import { isActiveBattery } from "../work/qa/battery-lifecycle.mjs";
 // inert UI primitives. Browser layout and native disabled behavior are separate checks.
 const primitiveNames = [
   "Battery", "Package", "ScanLine", "RotateCcw", "ClipboardList", "Settings2",
-  "UserRound", "Users", "LogOut", "CalendarDays", "Mail", "FlaskConical", "Button",
+  "UserRound", "Users", "LogOut", "CalendarDays", "Mail", "FlaskConical", "ChevronLeft", "Button",
   "SidebarProvider", "Sidebar", "SidebarHeader", "SidebarContent", "SidebarGroup",
   "SidebarGroupLabel", "SidebarMenu", "SidebarMenuItem", "SidebarMenuButton",
-  "SidebarFooter", "SidebarInset", "SidebarTrigger",
+  "SidebarFooter", "SidebarInset", "SidebarTrigger", "WorkspaceMotion",
 ];
 const primitives = Object.fromEntries(primitiveNames.map(name => [name, name]));
 const jsx = (type, props, key) => typeof type === "function"
@@ -24,7 +24,7 @@ async function compile(file, exportName) {
     compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX },
   }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
   return extra => {
-    const bindings = { ...primitives, getRolePermissions, isActiveBattery, signOut: async () => {}, ...extra };
+    const bindings = { ...primitives, getRolePermissions, isActiveBattery, signOut: async () => {}, useRef: value => ({ current: value }), useLayoutEffect() {}, spring() {}, ...extra };
     const names = Object.keys(bindings);
     return new Function(...names, "_jsx", "_jsxs", `${source}\nreturn ${exportName};`)(
       ...names.map(name => bindings[name]), jsx, jsx,
@@ -54,7 +54,7 @@ const group = (tree, label) => nodes(tree).find(node => node.type === "SidebarGr
   nodes(node).some(child => child.type === "SidebarGroupLabel" && text(child) === label));
 const groupLabels = tree => nodes(tree).filter(node => node.type === "SidebarGroupLabel").map(text);
 
-function shell(role = "staff", overrides = {}, mobile = false) {
+function shell(role = "staff", overrides = {}, mobile = false, collapsed = false) {
   const events = [];
   const props = {
     children: "Workspace content",
@@ -69,7 +69,7 @@ function shell(role = "staff", overrides = {}, mobile = false) {
     ...overrides,
   };
   const ApplicationShell = shellFactory({
-    useSidebar: () => ({ isMobile: mobile, setOpenMobile: open => events.push(["mobile", open]) }),
+    useSidebar: () => ({ isMobile: mobile, open: !collapsed, setOpenMobile: open => events.push(["mobile", open]), toggleSidebar: () => { collapsed = !collapsed; events.push(["sidebar", !collapsed]); } }),
   });
   return { props, events, render: () => ApplicationShell(props) };
 }
@@ -194,4 +194,53 @@ test("header scan shortcuts appear only in relevant inventory views and retain r
       assert.equal(button(tree, "Scan return"), undefined);
     }
   }
+});
+
+test("desktop sidebar has one discoverable fixed-header toggle in expanded and icon states while mobile keeps its topbar menu", () => {
+  const desktop = shell("staff");
+  let tree = desktop.render();
+  const toggle = () => nodes(tree).find(node => node.type === "Button" && node.props.className === "sidebar-desktop-toggle");
+  assert.equal(nodes(tree).filter(node => node.type === "SidebarTrigger").length, 0, "The desktop topbar must not duplicate the sidebar control.");
+  assert.ok(nodes(nodes(tree).find(node => node.type === "SidebarHeader")).includes(toggle()));
+  assert.equal(toggle().props["aria-label"], "Collapse navigation");
+  assert.equal(toggle().props["aria-expanded"], true);
+  assert.equal(toggle().props["aria-controls"], "workspace-navigation");
+  assert.match(toggle().props.title, /Ctrl\+B/);
+  assert.ok(nodes(toggle()).some(node => node.type === "ChevronLeft"));
+  toggle().props.onClick();
+  tree = desktop.render();
+  assert.equal(toggle().props["aria-label"], "Expand navigation");
+  assert.equal(toggle().props["aria-expanded"], false);
+  assert.deepEqual(desktop.events, [["sidebar", false]]);
+  toggle().props.onClick();
+  tree = desktop.render();
+  assert.equal(toggle().props["aria-expanded"], true);
+  assert.deepEqual(desktop.events, [["sidebar", false], ["sidebar", true]]);
+  const mobile = shell("staff", {}, true).render();
+  assert.equal(nodes(mobile).filter(node => node.type === "Button" && node.props.className === "sidebar-desktop-toggle").length, 0);
+  assert.equal(nodes(mobile).filter(node => node.type === "SidebarTrigger").length, 1);
+  assert.ok(nodes(nodes(mobile).find(node => node.type === "header")).some(node => node.type === "SidebarTrigger"));
+});
+
+test("collapsed navigation retains one native current marker and separate inventory-notice and Messages counts", () => {
+  const view = shell("admin", { inventoryNotice: true, inventoryNoticeCount: 3, unreadCount: 7 }, false, true);
+  let tree = view.render();
+  const current = () => navigation(tree).filter(node => node.props["aria-current"] === "page");
+  assert.deepEqual(current().map(text), ["Battery inventory"]);
+  const inventory = nav(tree, "Battery inventory");
+  assert.equal(inventory.props.tooltip, "Battery inventory · 3 unread battery registration notices");
+  assert.equal(inventory.props["aria-label"], inventory.props.tooltip);
+  assert.equal(nodes(inventory).find(node => node.props.className === "sidebar-inventory-notice").props["data-notice"], true);
+  const messages = navigation(tree).find(node => node.props["aria-label"] === "Messages · 7 unread messages");
+  assert.ok(messages);
+  assert.match(messages.props.tooltip, /7 unread/);
+  assert.equal(nodes(tree).filter(node => node.props.className === "sidebar-current-marker").length, 1);
+  view.props.view = "messages";
+  tree = view.render();
+  assert.equal(current().length, 1);
+  assert.equal(current()[0].props["aria-label"], "Messages · 7 unread messages");
+  view.props.inventoryNoticeCount = 0;
+  tree = view.render();
+  assert.equal(nav(tree, "Battery inventory").props["aria-label"], "Battery inventory");
+  assert.equal(nodes(nav(tree, "Battery inventory")).find(node => node.props.className === "sidebar-inventory-notice").props["data-notice"], false);
 });

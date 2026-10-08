@@ -73,7 +73,7 @@ test("a competing checkout before the detail read cannot split header and histor
         const prepared = db.prepare(sql);
         return { bind: (...values) => { const bound = prepared.bind(...values); sqlByStatement.set(bound, sql); return bound; } };
     }, batch: async statements => {
-        if (!changed && statements.some(statement => /^SELECT b.id,b.version/.test(sqlByStatement.get(statement) ?? ""))) {
+        if (!changed && statements.some(statement => /\bSELECT b\.id,b\.version,b\.name\b/.test(sqlByStatement.get(statement) ?? ""))) {
             changed = true;
             await checkout(self, ["BAT-002"]);
         }

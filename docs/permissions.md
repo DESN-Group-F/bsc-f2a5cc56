@@ -6,6 +6,12 @@ This document consolidates the implemented account, record-scope and operation r
 
 The later local custom-task and readable-report work keeps these authority boundaries. Start from scratch is an administrator task-configuration entry; an optional template is not a permission requirement. Excel presentation and hidden evidence worksheets change how authorized downloads are read, not which records an account can obtain. Local migration 0016 expands the stored task category without altering task ownership or completion rules.
 
+The 6 October 2026 local extension adds staff-attributed inspection records. Both roles can append checks they performed; only administrators can mark an entry as entered in error. Separate immutable correction evidence preserves the original. This does not grant saved asset metadata editing or infer a safety approval.
+
+The user-approved 8 October 2026 local extension permits both roles to recover selected Scrapped batteries and permits administrators to permanently delete selected Scrapped battery data. Permanently removed assets remain terminal. These are explicit exceptions to the earlier no-reactivation/no-deletion baseline, with exact review, atomic server guards and original-request recovery; they do not authorize development writes to normal or hosted records.
+
+The separate local [temporary teaching checkout extension](teaching-checkout-alternatives.md) preserves these roles. Both roles may review alternatives for their own fixed groups and check out to themselves. Automatic alternatives require the same known recorded model/specifications; explicitly reviewed manual alternatives may differ or be unknown. Candidate stock stays within the same inventory, eligibility rules and captured personal scope. Actual run mappings and loan history are shared business evidence through Activity and explicit run-ID reads/downloads; the ordinary run list shows the signed-in borrower's checkouts. Unused private group membership and notes are not exposed. Receivers may return exact actual loans through existing return permissions, independently of later group edits.
+
 ## Roles and identity
 
 There are two login roles: **Administrator** (`admin`) and **Staff** (`staff`). Both require an active native account and a valid session. Administrators have the ordinary operational capabilities plus administrative capabilities. An unauthenticated visitor or disabled account has no business-data access.
@@ -47,7 +53,11 @@ These permissions apply to both datasets unless a row explicitly says otherwise.
 | Confirm optional placement during a scan-return session | Yes | Yes | Dated source evidence; does not change registered storage; working inventory rejects placeholder rooms |
 | First-time batch scan intake | Demonstration only | Demonstration only | Account-bound session, explicit reviewed registrations and original-request recovery |
 | Scrap or permanently remove assets | Yes | Yes | May include another owner's assets; active assets must have no current loan and match reviewed versions and tags |
+| Recover selected Scrapped assets | Yes | Yes | Exact versions/tags and no active loan; original identity, dates, specifications and history retained; adds an attributed recovery event |
+| Permanently delete selected Scrapped battery data | No | Yes | Separate irreversible confirmation; own records/history and system-held asset snapshots cleared; minimal deletion evidence and identity/tag/request reservations retained |
 | Add historical charging records | No | Yes | Active asset; duration and completion time required |
+| Record an actual battery inspection | Yes | Yes | Active battery and reviewed version; inspector is the authenticated account; explicit outcome and actual time required |
+| Mark an inspection as entered in error | No | Yes | Reason required; original entry and correction retained, including after retirement; exact retries do not duplicate evidence |
 | Add a standalone location observation | No | Demonstration only | Real RFID ingestion remains unavailable |
 | Correct eligible checkout or return history | No | Yes | Latest eligible loan, exact reviewed state and a recorded reason; original evidence retained |
 | Create reusable battery-model templates | Yes | Yes | Shared templates; model evidence does not identify a physical asset |
@@ -94,10 +104,12 @@ Role changes, disabling and password changes/reset invalidate the affected accou
 | Personal message | Moves the recipient's copy to Removed | Recipient may restore it |
 | Recurring plan | Stops generation and blocks editing/completion while retaining all evidence | Administrator may restore it |
 | Teaching group | Archives the private shortcut; assets and business history remain | No restore operation in the current API or interface |
-| Battery | Records a terminal scrapped or permanently removed lifecycle state | No restore operation; identity, tags and full history remain retained |
+| Scrapped battery | Retires the asset while retaining its full record indefinitely unless explicitly deleted | Staff and administrators may recover it to active, in store, with its original history retained |
+| Permanently removed battery | Closes the managed asset while retaining its full record | No recovery or database-deletion action |
+| Permanently deleted Scrapped battery | Administrator clears its own data/history and structured related snapshots | Irreversible; BAT ID, deleting account and time remain; technical tag hashes/request reservations prevent reuse and delayed writes |
 | Staff account | Disables future access while preserving identity and evidence | Administrator may re-enable it |
 
-None of these supported operations authorizes deleting recorded business history. Administrators can make the supported reasoned loan corrections; they cannot arbitrarily rewrite or erase historic transactions through the application.
+Except for the explicit Scrapped-battery deletion above, supported removal operations retain recorded business history. Deletion preserves other assets, Task/group definitions and independent human notes, even where those notes mention the deleted battery. Existing Task/group references retain minimal deleted IDs rather than silently shrinking their targets. Administrators can make the supported reasoned loan corrections; there is no general transaction-erasure permission.
 
 ## Role-specific interface
 
@@ -139,4 +151,5 @@ The baseline review inspected current source and existing test assertions. Valid
 | Models and intake | [Model store](../lib/battery-model-store.ts), [intake store](../lib/intake-store.ts), [model tests](../tests/battery-model-store.test.mjs), [intake tests](../tests/intake-store.test.mjs) |
 | Plans, completion and personal Messages | [Task store](../lib/task-plans.ts), [Messages API](../app/api/messages/route.ts), [task tests](../tests/task-plans.test.mjs) |
 | Private teaching groups and shared group operations | [Group store](../lib/teaching-group-store.ts), [group tests](../tests/sorting-teaching-groups.test.mjs), [group operations tests](../tests/group-workspace.test.mjs) |
+| Temporary alternatives and exact actual checkout history | [Teaching checkout service](../lib/server/inventory/teaching-checkouts.ts), [D1 tests](../tests/teaching-checkouts-store.test.mjs), [review/recovery tests](../tests/teaching-checkout-ui.test.mjs) |
 | Visible navigation and operation controls | [Application shell](../components/application/application-shell.tsx), [record management](../components/inventory/record-management.tsx), [HTTP checks](../tests/api/smoke.mjs) |

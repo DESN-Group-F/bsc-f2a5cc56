@@ -25,22 +25,85 @@
   scrollbar-gutter: stable;
 }
 
+.formGuide {
+  margin: 0 0 8px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.draftGuide {
+  margin: 0 0 20px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.formGuide span {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
 .section {
-  display: grid;
-  gap: 18px;
   min-width: 0;
 }
 
 .section + .section {
-  margin-top: 28px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
+  margin-top: 12px;
+}
+
+.sectionDisclosure {
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  transition: border-color 180ms ease, background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.sectionDisclosure[open] {
+  border-color: var(--selection-border);
+  box-shadow: 0 2px 8px rgb(0 0 0 / 3%);
 }
 
 .sectionHeading {
   display: flex;
   align-items: center;
   gap: 10px;
+  min-height: 78px;
+  padding: 16px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.sectionHeading::-webkit-details-marker {
+  display: none;
+}
+
+.sectionHeading::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  margin: 0 3px 4px 4px;
+  flex: none;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 240ms cubic-bezier(.2, .8, .2, 1);
+}
+
+.sectionDisclosure[open] > .sectionHeading::after {
+  transform: rotate(225deg);
+  margin-bottom: 0;
+}
+
+.sectionHeading:hover {
+  background: var(--surface-hover);
+}
+
+.sectionHeading:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 3px;
+  border-radius: var(--radius-control);
 }
 
 .sectionHeading > span {
@@ -57,8 +120,86 @@
 }
 
 .sectionHeading h3 {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 650;
+}
+
+.sectionSummary {
+  min-width: 0;
+  flex: 1;
+}
+
+.sectionSummary p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  margin-top: 4px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+
+.sectionStatus {
+  max-width: 150px;
+  padding: 4px 7px;
+  flex: none;
+  border-radius: 6px;
+  background: var(--surface-subtle);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.sectionStatus[data-incomplete="true"] {
+  background: var(--selection-surface);
+  color: var(--foreground);
+}
+
+.sectionContent {
+  display: grid;
+  gap: 18px;
+  padding: 8px 18px 20px;
+  min-width: 0;
+}
+
+.fieldRequirement {
+  margin-left: auto;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 400;
+  text-align: right;
+}
+
+.reviewSummary {
+  display: grid;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface-subtle);
+}
+
+.reviewSummary > div {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  gap: 14px;
+  padding: 10px 12px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.reviewSummary > div + div {
+  border-top: 1px solid var(--border);
+}
+
+.reviewSummary dt {
+  color: var(--muted-foreground);
+}
+
+.reviewSummary dd {
+  overflow-wrap: anywhere;
 }
 
 .selectionRow {
@@ -82,6 +223,21 @@
 .stateChoices label:focus-within {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
+}
+
+.unavailableTargets {
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid var(--warning-border);
+  border-radius: var(--radius-control);
+  background: var(--warning-surface);
+}
+
+.unavailableTargetGuide {
+  margin: 0 0 8px;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted-foreground);
 }
 
 .stateChoices {
@@ -176,6 +332,34 @@
     padding: 20px 18px;
   }
 
+  .sectionHeading {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+  }
+
+  .sectionSummary {
+    flex-basis: calc(100% - 52px);
+  }
+
+  .sectionStatus {
+    margin-left: 36px;
+    max-width: none;
+  }
+
+  .sectionHeading::after {
+    margin-left: auto;
+  }
+
+  .sectionContent {
+    padding: 8px 12px 16px;
+  }
+
+  .reviewSummary > div {
+    grid-template-columns: 74px minmax(0, 1fr);
+    gap: 8px;
+  }
+
   .footer {
     padding: 12px 18px 16px;
   }
@@ -189,5 +373,12 @@
     white-space: normal;
     min-height: 38px;
     height: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sectionDisclosure,
+  .sectionHeading::after {
+    transition: none;
   }
 }

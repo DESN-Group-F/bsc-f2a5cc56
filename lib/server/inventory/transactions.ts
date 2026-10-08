@@ -2,6 +2,7 @@ import { DomainError } from "../../domain";
 import { InventoryDatabase, type Row } from "./database";
 import { InventorySession } from "./actor";
 import { type ResolvedGroup } from "./groups";
+import { rejectPurgedReplay } from "../purge-evidence";
 
 /** Keep receipts, guards, domain writes and audit evidence in one D1 batch. */
 export class InventoryTransactions {
@@ -36,7 +37,7 @@ export class InventoryTransactions {
       this.database.scope,
     );
     if (!old) return null;
-    const result = JSON.parse(String(old.result_json));
+    const result = rejectPurgedReplay(old.result_json, kind === "battery_lifecycle" ? "lifecycle_rejected_final" : kind === "retired_asset" ? "retired_asset_rejected_final" : kind === "group_maintenance" ? "group_operation_rejected_final" : kind === "inspection" || kind === "inspection_void" ? `${kind}_rejected_final` : "movement_rejected_final");
     const rejectedMovement =
       old.kind === "movement_rejected" &&
       result.rejected === true &&
@@ -49,17 +50,19 @@ export class InventoryTransactions {
       old.kind === "group_maintenance_rejected" &&
       result.rejected === true &&
       kind === "group_maintenance";
+    const rejectedRetired = old.kind === "retired_asset_rejected" && result.rejected === true && kind === "retired_asset";
     if (
       (!rejectedMovement &&
         !rejectedLifecycle &&
         !rejectedGroup &&
+        !rejectedRetired &&
         old.kind !== kind) ||
       old.fingerprint !== fingerprint
     )
       throw new DomainError(
         409,
         "This request identifier was already used for a different operation.",
-        kind === "battery_lifecycle" ? "idempotency_conflict" : undefined,
+        kind === "battery_lifecycle" || kind === "retired_asset" ? "idempotency_conflict" : undefined,
       );
     if (rejectedMovement)
       throw new DomainError(
@@ -79,6 +82,7 @@ export class InventoryTransactions {
         String(result.error),
         "group_operation_rejected_final",
       );
+    if (rejectedRetired) throw new DomainError(Number(result.status), String(result.error), "retired_asset_rejected_final");
     return { ...result, replayed: true };
   }
 

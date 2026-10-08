@@ -4,12 +4,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import ts from "typescript";
+import { bindDownloadFeedback } from "./helpers/download-feedback-harness.mjs";
 import { getRolePermissions } from "../work/qa/permissions.mjs";
 import * as client from "../work/qa/client-utils.mjs";
 import * as lifecycle from "../work/qa/battery-lifecycle.mjs";
 import * as locations from "../work/qa/location-catalog.mjs";
 import * as schedule from "../work/qa/task-schedule.mjs";
 import * as inventoryQuery from "../work/qa/inventory-query.mjs";
+import * as arrivals from "../work/qa/new-arrivals.mjs";
 const { defaultInventoryFilter } = inventoryQuery;
 
 // Render the actual component functions with inert UI boundaries. These probes
@@ -44,11 +46,12 @@ function text(node) {
     return node && typeof node === "object" ? text(node.props?.children) : "";
 }
 const ui = Object.fromEntries(["Search", "X", "CalendarDays", "CheckCircle2", "Battery", "Package", "Plus", "Download", "Upload", "Pencil", "Settings2", "ClipboardList", "Copy", "Button", "Input", "Textarea", "Label", "Checkbox", "RecordPicker", "BatteryModelPicker", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Select", "SelectTrigger", "SelectContent", "SelectValue", "SelectItem", "Tabs", "TabsList", "TabsTrigger", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Skeleton", "InventoryFilterPanel", "BatteryFilterControls", "AppliedFilters"].map(name => [name, name]));
+Object.assign(ui, { DownloadAction: "Button", MotionPresence: "MotionPresence", MotionDisclosure: "MotionDisclosure", transitionWorkspace: update => update(), ChevronDown: "ChevronDown", AlertTriangle: "AlertTriangle", styles: new Proxy({}, { get: (_, name) => String(name) }) });
 async function component(path, exports, state = hooks(), additional = {}) {
     const paths = Array.isArray(path) ? path : [path];
     const input = (await Promise.all(paths.map(file => readFile(file, "utf8")))).join("\n");
     const output = ts.transpileModule(input, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export \{[^\n]*\} from [^;]+;\r?\n/gm, "").replace(/^export /gm, "");
-    const bindings = { hasRowTextSelection, ...batterySelection, getRolePermissions, ...ui, ...client, ...locations, ...lifecycle, ...schedule, ...inventoryQuery, ...state, ...additional, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
+    const bindings = { hasRowTextSelection, ...batterySelection, getRolePermissions, ...ui, ...client, ...locations, ...lifecycle, ...schedule, ...inventoryQuery, ...arrivals, ...state, useDownloadFeedback: bindDownloadFeedback(state), ...additional, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
     return new Function(...names, "_jsx", "_jsxs", "_Fragment", `${output}\nreturn { ${exports.join(", ")} };`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
 }
 function fixture() {
@@ -161,6 +164,23 @@ test("battery directory shares inventory filters and sends the exact criteria wi
     assert.equal(nodes(render()).find(node => node.type === "Input" && node.props["aria-label"] === "Search directory records").props.value, "teacher-two");
 });
 
+test("directory downloads prevent duplicate preparation and do not acknowledge a later directory's scope", async () => {
+    const state = hooks(), data = fixture(), downloads = []; let finish;
+    const transfer = new Promise(resolve => { finish = resolve; });
+    const { RecordManagement } = await component("components/inventory/record-management.tsx", ["RecordManagement"], state, {
+        downloadExportAttachment(input) { downloads.push(structuredClone(input)); return transfer; },
+    });
+    const render = () => { state.reset(); return RecordManagement({ data, ready: true, onEdit() {}, onDetail() {}, onImport() {} }); };
+    const captured = button(render(), "Download filtered list"), pending = captured.props.onClick();
+    await captured.props.onClick();
+    assert.equal(downloads.length, 1); assert.equal(button(render(), "Download filtered list").props.pending, true); assert.equal(button(render(), "Download filtered list").props.disabled, true);
+    nodes(render()).find(node => node.type === "Tabs").props.onValueChange("rooms");
+    finish(); await pending;
+    assert.equal(downloads[0].kind, "people"); assert.equal(button(render(), "Download filtered list").props.completion, null);
+    nodes(render()).find(node => node.type === "Tabs").props.onValueChange("people");
+    assert.ok(button(render(), "Download filtered list").props.completion);
+});
+
 test("removal-record exports keep their captured selected IDs and prevent changing to filtered or page scope", async () => {
     const state = hooks(), downloads = [], closed = [];
     const { ExportDialog } = await component("components/inventory/export-dialog.tsx", ["ExportDialog"], state, {
@@ -187,6 +207,9 @@ test("removal-record exports keep their captured selected IDs and prevent changi
     assert.equal(downloads[0].input.filter.lifecycle, "all");
     assert.equal(downloads[0].input.sections.length, inventoryQuery.exportSections.length);
     assert.equal(downloads[0].format, "json");
+    assert.equal(closed.length, 0);
+    assert.ok(button(render(), "Download").props.completion);
+    button(render(), "Done").props.onClick();
     assert.equal(closed.length, 1);
 });
 
@@ -249,7 +272,7 @@ test("personal responsibility selections remain downloadable after scrap or perm
         assert.equal(table.exports[0].filter.lifecycle, "active");
         assert.equal(table.exports[0].matching, 0);
         assert.equal(table.movements.length, 0);
-        nodes(tree).find(node => node.type === "Button" && node.props["aria-controls"] === "inventory-filter-panel").props.onClick();
+        nodes(tree).find(node => node.type === "Button" && node.props["aria-controls"]?.endsWith("-filter-disclosure")).props.onClick();
         nodes(table.render()).find(node => node.type === "InventoryFilterPanel").props.onChange({ lifecycle: "all" });
         const all = table.render();
         assert.ok(nodes(all).some(node => node.type === "Checkbox" && node.props["aria-label"] === "Select BAT-PERSONAL" && node.props.checked === true));
@@ -271,6 +294,44 @@ test("real personal ownership or loan scope changes still block captured selecti
         button(tree, "Download selected").props.onClick();
         assert.equal(table.exports.length, 0);
         button(tree, "Remove batteries outside this view").props.onClick();
-        assert.ok(!button(table.render(), "Download selected"));
+        const clearedTree = table.render();
+        const toolbar = nodes(clearedTree).find(node => node.type === "MotionDisclosure" && nodes(node).some(child => child.props.className === "selection-toolbar"));
+        assert.equal(toolbar.props.open, false);
+        assert.equal(button(clearedTree, "Download selected").props.disabled, true);
     }
+});
+
+test("retained ordinary and opened group inventories keep distinct disclosure targets and independent filter/selection state", async () => {
+    const data = fixture();
+    data.batteries = [inventoryBattery("BAT-PERSONAL", data.user.id), inventoryBattery("BAT-OTHER", "other-account")];
+    const group = { id: "77777777-7777-4777-8777-777777777777", ownerAccountId: data.user.id, state: "active", name: "Workshop set", version: 3, batteryIds: ["BAT-PERSONAL"] };
+    data.teachingGroups = [group];
+    const { appliedFilterChips } = await component("components/inventory/inventory-filter-panel.tsx", ["appliedFilterChips"]);
+    const makeTable = async (personalScope, selectedGroup) => {
+        const state = hooks(), exports = [];
+        const { InventoryTable } = await component("components/inventory/inventory-table.tsx", ["InventoryTable"], state, { appliedFilterChips });
+        const props = { data, ready: true, personalScope, group: selectedGroup, onEdit() {}, onDetail() {}, onSetup() {}, onMovement() {}, onExport: draft => exports.push(structuredClone(draft)) };
+        return { exports, render() { state.reset(); return InventoryTable(props); } };
+    };
+    const shared = await makeTable("all"), openedGroup = await makeTable("all", group), responsible = await makeTable("responsible"), borrowed = await makeTable("borrowed");
+    const trees = [shared, openedGroup, responsible, borrowed].map(table => table.render());
+    const ids = trees.flatMap(tree => nodes(tree).map(node => node.props.id).filter(Boolean));
+    assert.equal(new Set(ids).size, ids.length, "Retained instances cannot share a disclosure or filter-panel ID");
+    for (const tree of trees) {
+        const ownIds = new Set(nodes(tree).map(node => node.props.id).filter(Boolean));
+        for (const control of nodes(tree).filter(node => node.props["aria-controls"])) {
+            assert.ok(ownIds.has(control.props["aria-controls"]), "Every disclosure points to content in its own inventory instance");
+        }
+    }
+    const groupFilterButton = nodes(openedGroup.render()).find(node => node.type === "Button" && node.props["aria-controls"]?.endsWith("-filter-disclosure"));
+    groupFilterButton.props.onClick();
+    nodes(openedGroup.render()).find(node => node.type === "InventoryFilterPanel").props.onChange({ chemistryUnknown: true });
+    nodes(openedGroup.render()).find(node => node.type === "Checkbox" && node.props["aria-label"] === "Select BAT-PERSONAL").props.onCheckedChange(true);
+    button(openedGroup.render(), "Download selected").props.onClick();
+    assert.equal(openedGroup.exports[0].filter.groupId, group.id);
+    assert.equal(openedGroup.exports[0].filter.chemistryUnknown, true);
+    assert.deepEqual(openedGroup.exports[0].selectedIds, ["BAT-PERSONAL"]);
+    const sharedTree = shared.render();
+    assert.equal(nodes(sharedTree).find(node => node.type === "InventoryFilterPanel").props.filters.chemistryUnknown, false);
+    assert.equal(nodes(sharedTree).find(node => node.type === "Checkbox" && node.props["aria-label"] === "Select BAT-PERSONAL").props.checked, false);
 });

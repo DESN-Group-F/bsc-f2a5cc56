@@ -1,6 +1,6 @@
-import { test } from "node:test";
+import { after, test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
@@ -11,7 +11,8 @@ import { getRolePermissions } from "../work/qa/permissions.mjs";
 const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "intake-ui-"));
-for (const name of ["teaching-context", "battery-models", "battery-age", "domain", "location-catalog", "client-utils", "intake-session", "intake-draft", "battery-lifecycle", "inventory-query", "battery-selection-query"]) {
+after(() => rm(scratch, { recursive: true, force: true }));
+for (const name of ["teaching-context", "battery-models", "battery-age", "domain", "location-catalog", "client-utils", "intake-session", "intake-draft", "battery-lifecycle", "new-arrivals", "inventory-query", "battery-selection-query"]) {
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
     await writeFile(join(scratch, `${name}.mjs`), compiled);
@@ -25,6 +26,7 @@ const rowSelection = await import(pathToFileURL(join(scratch, "row-selection.mjs
 const source = await readFile(new URL("../components/inventory/intake-station.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
 const ui = Object.fromEntries(["BatteryFilterControls", "TeachingGroupsPanel", "CheckCircle2", "LogOut", "ScanLine", "Button", "Input", "Label", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "RecordPicker", "BatteryModelPicker", "Checkbox", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"].map(name => [name, name]));
+Object.assign(ui, { ReceiptAction: "Button" });
 const jsx = (type, props, key) => typeof type === "function" ? type(props ?? {}) : ({ type, props: props ?? {}, key });
 function hooks() {
     const state = [], effects = [];
@@ -195,9 +197,17 @@ test("partial success removes verified drafts, retains an unknown item and its e
         start(view); for (const tag of ["DEMO-INTAKE-PART-A", "DEMO-INTAKE-PART-B", "DEMO-INTAKE-PART-C"]) queue(view, tag);
         await confirmButton(view, "all").props.onClick();
         assert.deepEqual(writes.map(payload => payload.tagId), ["DEMO-INTAKE-PART-A", "DEMO-INTAKE-PART-B"]); assert.equal(saved(entries).completed.length, 1);
+        assert.equal(confirmButton(view, "all").props.pending, false);
+        assert.equal(confirmButton(view, "all").props.confirmation.count, 1);
+        assert.equal(confirmButton(view, "all").props.confirmation.identity, writes[0].requestId);
+        assert.equal(confirmButton(view, "all").props.confirmation.text, "1 battery registered");
+        assert.match(text(view.render()), /one confirmation is unresolved/);
         const pending = saved(entries).attempt; assert.equal(saved(entries).entries.length, 2); assert.equal(rowButton(view, "DEMO-INTAKE-PART-C", "Edit").props.disabled, true);
         await button(view.render(), "Retry exact confirmation").props.onClick(); assert.deepEqual(saved(entries).attempt, pending);
+        assert.equal(confirmButton(view, "all").props.confirmation, null);
         await button(view.render(), "Retry exact confirmation").props.onClick(); assert.equal(saved(entries).attempt, null); assert.equal(saved(entries).entries.length, 1);
+        assert.equal(confirmButton(view, "all").props.confirmation.count, 1);
+        assert.equal(confirmButton(view, "all").props.confirmation.identity, pending.payload.requestId);
         assert.equal(saved(entries).entries[0].tagId, "DEMO-INTAKE-PART-C"); assert.equal(writes.filter(payload => payload.tagId === "DEMO-INTAKE-PART-C").length, 0);
         assert.equal(new Set(writes.filter(payload => payload.tagId === "DEMO-INTAKE-PART-B").map(payload => JSON.stringify(payload))).size, 1); view.unmount();
     });

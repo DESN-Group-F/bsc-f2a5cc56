@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { StaffUser } from "./accounts";
 import { DomainError, recordKey, type Dataset } from "./domain";
 import { currentSydneyDate } from "./battery-age";
+import { rejectPurgedReplay } from "./server/purge-evidence";
 import { taskPlanSchema, taskSchedulePreview, taskReminderAt, taskCycleCandidate, taskPlanMatchesQuery, type TaskPlan } from "./task-schedule";
 
 type Row = Record<string, unknown>;
@@ -42,6 +43,7 @@ export class TaskPlanStore {
     private async replay(requestId: string, fingerprint: string) {
         const row = await this.first("SELECT kind,result_json,fingerprint FROM operations WHERE id=? AND scope=?", this.key(requestId), this.scope);
         if (!row) return null;
+        rejectPurgedReplay(row.result_json, /^task_(plan|message)_(remove|restore)/.test(String(row.kind)) ? "task_visibility_rejected_final" : "task_create_rejected_final");
         if (row.fingerprint !== fingerprint) throw new DomainError(409, "This request identifier was already used for different task changes.", "idempotency_conflict");
         const authorization = this.actorGuard();
         if (!await this.first(`SELECT id FROM staff_accounts WHERE ${authorization.sql}`, ...authorization.values)) throw new DomainError(403, "Your account access changed. Sign in again.");
@@ -79,7 +81,7 @@ export class TaskPlanStore {
         const [plans, assignees, targets, cycles, directory] = (await this.db.batch<Row>([
             this.statement("SELECT * FROM task_plans WHERE scope=? ORDER BY created_at,id", this.scope),
             this.statement("SELECT a.* FROM task_plan_assignees a JOIN task_plans p ON p.key=a.plan_key WHERE p.scope=? ORDER BY a.account_id", this.scope),
-            this.statement("SELECT t.*,b.id AS battery_id FROM task_plan_batteries t JOIN task_plans p ON p.key=t.plan_key JOIN batteries b ON b.key=t.battery_key WHERE p.scope=? ORDER BY b.id", this.scope),
+            this.statement("SELECT t.*,COALESCE(b.id,deleted.id) AS battery_id FROM task_plan_batteries t JOIN task_plans p ON p.key=t.plan_key LEFT JOIN batteries b ON b.key=t.battery_key LEFT JOIN purged_batteries deleted ON deleted.key=t.battery_key AND deleted.scope=p.scope WHERE p.scope=? ORDER BY battery_id", this.scope),
             this.statement("SELECT * FROM task_cycles WHERE scope=? ORDER BY created_at DESC,rowid DESC", this.scope),
             this.statement("SELECT id,display_name AS displayName,username,active FROM staff_accounts ORDER BY display_name,username"),
         ])).map(result => result.results);
@@ -105,7 +107,7 @@ export class TaskPlanStore {
             canComplete: row.status === "open" && planRow.removed_at == null && (this.actor.role === "admin" || currentAssigneeIds.includes(this.actor.id)), targetSnapshot: snapshot.target };
     }
     private latestCompletion(planKey: unknown, cycles: Row[]) { return cycles.find(cycle => cycle.plan_key === planKey && cycle.status === "completed") ?? null; }
-    private async validateTarget(plan: TaskPlan) {
+    private async validateTarget(plan: TaskPlan, retainedIds: readonly string[] = []) {
         const guardParts: string[] = [], values: unknown[] = [], target: Record<string, unknown> = { kind: plan.targetKind, reference: plan.targetRef, scopeNote: plan.scopeNote };
         if (plan.targetKind === "model" && plan.targetRef) {
             const models = await this.rows("SELECT key,id,name,model,version FROM batteries WHERE scope=? AND model=? ORDER BY id", this.scope, plan.targetRef);
@@ -118,9 +120,12 @@ export class TaskPlanStore {
         }
         if (plan.batteryIds.length) {
             const found = await this.rows("SELECT id,key,name,model,version FROM batteries WHERE scope=? AND id IN (SELECT value FROM json_each(?)) ORDER BY id", this.scope, JSON.stringify(plan.batteryIds));
-            if (found.length !== plan.batteryIds.length) throw new DomainError(400, "Select only batteries registered in this inventory.");
-            if (plan.targetKind !== "model") target.batteries = found.map(battery => ({ id: battery.id, name: battery.name, model: battery.model }));
-            guardParts.push("(SELECT COUNT(*) FROM batteries WHERE scope=? AND id IN (SELECT value FROM json_each(?)))=? AND NOT EXISTS(SELECT 1 FROM json_each(?) j WHERE NOT EXISTS(SELECT 1 FROM batteries b WHERE b.scope=? AND b.key=json_extract(j.value,'$.key') AND b.version=json_extract(j.value,'$.version'))) "); values.push(this.scope, JSON.stringify(plan.batteryIds), plan.batteryIds.length, JSON.stringify(found.map(battery => ({ key: battery.key, version: battery.version }))), this.scope);
+            const missing = plan.batteryIds.filter(id => !found.some(battery => battery.id === id));
+            const retainedPurged = missing.length ? await this.rows("SELECT id,key FROM purged_batteries WHERE scope=? AND id IN (SELECT value FROM json_each(?)) AND id IN (SELECT value FROM json_each(?))", this.scope, JSON.stringify(missing), JSON.stringify(retainedIds)) : [];
+            if (found.length + retainedPurged.length !== plan.batteryIds.length) throw new DomainError(400, "Select only batteries registered in this inventory. Existing permanently deleted targets may remain in their original plan; remove or replace them explicitly before generating new work.");
+            if (plan.targetKind !== "model") target.batteries = plan.batteryIds.map(id => { const battery = found.find(row => row.id === id); return battery ? { id: battery.id, name: battery.name, model: battery.model } : { id, deleted: true }; });
+            guardParts.push("(SELECT COUNT(*) FROM batteries WHERE scope=? AND id IN (SELECT value FROM json_each(?)))=? AND NOT EXISTS(SELECT 1 FROM json_each(?) j WHERE NOT EXISTS(SELECT 1 FROM batteries b WHERE b.scope=? AND b.key=json_extract(j.value,'$.key') AND b.version=json_extract(j.value,'$.version'))) AND (SELECT COUNT(*) FROM purged_batteries WHERE scope=? AND id IN (SELECT value FROM json_each(?)))=?");
+            values.push(this.scope, JSON.stringify(found.map(battery => battery.id)), found.length, JSON.stringify(found.map(battery => ({ key: battery.key, version: battery.version }))), this.scope, this.scope, JSON.stringify(missing), retainedPurged.length);
         }
         if (plan.targetKind === "storage_area" && plan.targetRef) {
             const room = await this.first("SELECT r.*,b.id AS building_id,b.name AS building_name FROM rooms r JOIN buildings b ON b.key=r.building_key WHERE r.scope=? AND r.id=?", this.scope, plan.targetRef);
@@ -143,16 +148,19 @@ export class TaskPlanStore {
             if (update && !before) throw new DomainError(404, "Task plan not found in this inventory.");
             if (before?.removed_at != null) throw new DomainError(409, "Restore this task plan before editing it.", "plan_removed");
             if (before && Number(before.version) !== edit?.expectedVersion) throw new DomainError(409, "This task plan changed. Review the latest configuration before saving.", "record_conflict");
-            const version = before ? Number(before.version) + 1 : 1, target = await this.validateTarget(plan);
+            const retainedIds = before ? data.targets.filter(row => row.plan_key === before.key).map(row => String(row.battery_id)) : [];
+            const version = before ? Number(before.version) + 1 : 1, target = await this.validateTarget(plan, retainedIds);
             const activeIds = new Set(data.staffDirectory.filter(account => account.active).map(account => account.id));
             if (plan.assigneeIds.some(accountId => !activeIds.has(accountId))) throw new DomainError(400, "Assign only active staff accounts.");
             const params = [plan.title, plan.description, plan.category, plan.scopeNote, plan.basis, plan.targetKind, plan.targetRef, plan.recurrenceBasis, plan.firstDueOn, plan.interval, plan.unit, JSON.stringify(plan.scheduledDates), plan.reminderDaysBefore, plan.reminderTime, JSON.stringify(plan.channels), Number(plan.applicabilityConfirmed), plan.state];
             const writes: D1PreparedStatement[] = [before
                 ? this.statement("UPDATE task_plans SET title=?,description=?,category=?,scope_note=?,basis=?,target_kind=?,target_ref=?,recurrence_basis=?,first_due_on=?,interval_count=?,interval_unit=?,scheduled_dates_json=?,reminder_days_before=?,reminder_time=?,channels_json=?,applicability_confirmed=?,state=?,updated_at=?,updated_by=?,version=version+1 WHERE key=? AND scope=? AND version=?", ...params, at, this.actor.id, key, this.scope, edit!.expectedVersion)
                 : this.statement("INSERT INTO task_plans(key,scope,id,title,description,category,scope_note,basis,target_kind,target_ref,recurrence_basis,first_due_on,interval_count,interval_unit,scheduled_dates_json,reminder_days_before,reminder_time,channels_json,applicability_confirmed,state,created_at,updated_at,created_by,updated_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", key, this.scope, id, ...params, at, at, this.actor.id, this.actor.id)];
+            if (before) writes.unshift(this.statement("INSERT INTO task_target_retentions(scope,plan_key,battery_key,actor_id,actor_auth_version,plan_version) SELECT ?,?,t.battery_key,?,?,? FROM task_plan_batteries t JOIN purged_batteries deleted ON deleted.key=t.battery_key AND deleted.scope=? WHERE t.plan_key=? AND deleted.id IN (SELECT value FROM json_each(?))", this.scope, key, this.actor.id, this.actor.authVersion ?? -1, before.version, this.scope, key, JSON.stringify(plan.batteryIds)));
             if (before) writes.push(this.statement("DELETE FROM task_plan_assignees WHERE plan_key=?", key), this.statement("DELETE FROM task_plan_batteries WHERE plan_key=?", key));
             for (const accountId of plan.assigneeIds) writes.push(this.statement("INSERT INTO task_plan_assignees(key,plan_key,account_id) VALUES(?,?,?)", `${key}/${accountId}`, key, accountId));
             for (const batteryId of plan.batteryIds) writes.push(this.statement("INSERT INTO task_plan_batteries(key,plan_key,battery_key) VALUES(?,?,?)", `${key}/${batteryId}`, key, this.key(batteryId)));
+            if (before) writes.push(this.statement("DELETE FROM task_target_retentions WHERE scope=? AND plan_key=?", this.scope, key));
             const open = data.cycles.find(cycle => cycle.plan_key === key && cycle.status === "open");
             if (open) {
                 const reminder = taskReminderAt(String(open.due_on), plan.reminderDaysBefore, plan.reminderTime);

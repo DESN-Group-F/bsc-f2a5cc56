@@ -193,7 +193,8 @@ test("D1 summary is scoped to the chosen inventory and shares the battery snapsh
   const scoped = await demo.store(admin, wrapper).detail("BAT-ONE");
   assert.equal(scoped.battery.loanId, loanId);
   assert.equal(scoped.movementSummary.activeLoan.id, loanId);
-  assert.equal(batches.at(-1), 9);
+  // Inspection evidence and complete usage history join the same snapshot batch.
+  assert.equal(batches.at(-1), 11);
   assert.equal(scoped.movementSummary.registration.actorName, staff.name);
 });
 

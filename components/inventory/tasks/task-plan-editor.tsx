@@ -59,6 +59,7 @@ import {
   assignmentNames,
   taskCategoryLabels,
   targetLabels,
+  targetSummary,
 } from "./task-presentation";
 import styles from "./task-plan-editor.module.css";
 
@@ -142,6 +143,14 @@ export function TaskPlanEditor({
     state: "draft",
     scheduledDates: datesText.split(/[\s,;]+/).filter(Boolean),
   });
+  const activationValidation = taskPlanSchema.safeParse({
+    ...draft,
+    state: "active",
+    scheduledDates: datesText.split(/[\s,;]+/).filter(Boolean),
+  });
+  const activationIssues = activationValidation.success
+    ? []
+    : activationValidation.error.issues;
   let preview: ReturnType<typeof taskSchedulePreview> | null = null,
     previewError = "";
   if (previewValidation.success) {
@@ -164,12 +173,56 @@ export function TaskPlanEditor({
     ].sort();
   const filteredBatteries = getFilteredBatteries(data, batteryFilters),
     visibleBatteries = filteredBatteries.batteries;
+  const registeredBatteryIds = new Set(data.batteries.map(battery => battery.id)),
+    deletedBatteryIds = new Set((data.purgedBatteries ?? []).map(battery => battery.id)),
+    unavailableTargets = draft.batteryIds.filter(id => !registeredBatteryIds.has(id)),
+    deletedTargetCount = unavailableTargets.filter(id => deletedBatteryIds.has(id)).length;
   const placeholderArea =
     draft.targetKind === "storage_area" &&
     data.rooms.find((room) => room.id === draft.targetRef)?.isPlaceholder;
   const activeBlockedByPlaceholder =
     data.dataset === "live" && draft.state === "active" && placeholderArea;
   const locked = busy || !!creation || !!recovery.error || !manageTaskPlans;
+  const sectionFields = {
+    instructions: ["category", "title", "description", "basis"],
+    targets: ["targetKind", "targetRef", "batteryIds", "scopeNote"],
+    assignees: ["assigneeIds"],
+    schedule: ["recurrenceBasis", "firstDueOn", "interval", "unit", "scheduledDates", "reminderDaysBefore", "reminderTime", "channels"],
+    review: ["applicabilityConfirmed"],
+  };
+  function missingCount(section: keyof typeof sectionFields) {
+    return activationIssues.filter((issue) =>
+      sectionFields[section].includes(String(issue.path[0])),
+    ).length;
+  }
+  const targetDescription = draft.targetKind === "group"
+    ? `${draft.targetRef || "Unnamed defined group"} · ${draft.batteryIds.length} selected batteries`
+    : targetSummary(draft, data);
+  const unavailableTargetSummary = [
+    deletedTargetCount ? `${deletedTargetCount} deleted target${deletedTargetCount === 1 ? "" : "s"}` : "",
+    unavailableTargets.length > deletedTargetCount ? `${unavailableTargets.length - deletedTargetCount} unavailable target${unavailableTargets.length - deletedTargetCount === 1 ? "" : "s"}` : "",
+  ].filter(Boolean).join(" · ");
+  const targetReferenceSummary = unavailableTargets.length
+    ? `${targetDescription} · ${unavailableTargetSummary}`
+    : targetDescription;
+  const scheduleDescription = draft.recurrenceBasis === "dates"
+    ? `${datesText.split(/[\s,;]+/).filter(Boolean).length} entered due dates`
+    : `Every ${draft.interval} ${draft.unit} · ${draft.recurrenceBasis === "completion" ? "after completion" : "fixed calendar"}`;
+  const assignedDescription = assignmentNames(draft.assigneeIds, data);
+  const hasUnavailableAssignee = draft.assigneeIds.some((id) =>
+    !data.staffDirectory.some((staff) => staff.id === id && staff.active),
+  );
+  const invalidReminder = preview && ["ambiguous", "nonexistent"].includes(preview.reminderStatus);
+  const activationNeedsReview = activationIssues.length > 0 ||
+    (!!placeholderArea && data.dataset === "live") ||
+    hasUnavailableAssignee || !!invalidReminder || !!previewError;
+  function reviewPlan() {
+    const section = document.getElementById("task-review-section");
+    if (!(section instanceof HTMLDetailsElement)) return;
+    section.open = true;
+    section.scrollIntoView({ block: "nearest", behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth" });
+    section.querySelector("summary")?.focus({ preventScroll: true });
+  }
   useEffect(() => {
     if (!busy && creation?.status !== "uncertain") return;
     const protect = (event: BeforeUnloadEvent) => {
@@ -444,17 +497,42 @@ export function TaskPlanEditor({
             {existing ? "Edit recurring task" : "Create recurring task"}
           </DialogTitle>
           <DialogDescription>
-            {taskCategoryLabels[draft.category]}. Review the five sections below.
-            Save your work as a draft, or confirm the plan to activate reminders.
+            {taskCategoryLabels[draft.category]}. Open any section in any order.
+            Save a draft with a title, then complete and review the activation requirements when ready.
           </DialogDescription>
         </DialogHeader>
-        <form className={styles.form} onSubmit={save}>
+        <form
+          className={styles.form}
+          onSubmit={save}
+          onInvalidCapture={(event) => {
+            if (!(event.target instanceof HTMLElement)) return;
+            const section = event.target.closest("details");
+            if (section) section.open = true;
+          }}
+        >
           <div className={styles.body}>
+          <p className={styles.formGuide}>
+            <span>Required to save</span> Title · <span>Required to activate</span> Instructions, applicability, targets, staff and schedule · <span>Optional</span> Additional context and email preference
+          </p>
+          <p className={styles.draftGuide}>
+            A draft can leave activation details blank. Any values you enter must
+            still be valid, and assigned staff accounts must be active before any save.
+            New targets must be registered in this inventory. Existing plans can
+            retain previously selected deleted Battery IDs for review.
+          </p>
           <section className={styles.section} aria-labelledby="task-instructions-heading">
-            <div className={styles.sectionHeading}>
+            <details className={styles.sectionDisclosure} open>
+            <summary className={styles.sectionHeading}>
               <span aria-hidden="true">1</span>
-              <h3 id="task-instructions-heading">Task instructions</h3>
-            </div>
+              <div className={styles.sectionSummary}>
+                <h3 id="task-instructions-heading">Task instructions</h3>
+                <p>{draft.title || "Untitled task"} · {taskCategoryLabels[draft.category]}</p>
+              </div>
+              <small className={styles.sectionStatus} data-incomplete={missingCount("instructions") > 0}>
+                {missingCount("instructions") ? `${missingCount("instructions")} to review` : "Configured"}
+              </small>
+            </summary>
+            <div className={styles.sectionContent}>
           <div className="form-field">
             <Label>Task type</Label>
             <Select
@@ -480,18 +558,19 @@ export function TaskPlanEditor({
             </p>
           </div>
           <div className="form-field">
-            <Label htmlFor="task-title">Task title</Label>
+            <Label htmlFor="task-title">Task title <span className={styles.fieldRequirement}>Required to save</span></Label>
             <Input
               id="task-title"
               value={draft.title}
               onChange={(event) => update({ title: event.target.value })}
               maxLength={160}
+              minLength={2}
               required
               disabled={locked}
             />
           </div>
           <div className="form-field">
-            <Label htmlFor="task-description">What must be done</Label>
+            <Label htmlFor="task-description">What must be done <span className={styles.fieldRequirement}>Required to activate</span></Label>
             <Textarea
               id="task-description"
               value={draft.description}
@@ -503,6 +582,7 @@ export function TaskPlanEditor({
           <div className="form-field">
             <Label htmlFor="task-basis">
               Applicable instruction or management basis
+              <span className={styles.fieldRequirement}>Required to activate</span>
             </Label>
             <Textarea
               id="task-basis"
@@ -517,12 +597,22 @@ export function TaskPlanEditor({
               ? "Record the local procedure, teaching need or other reason for this task. Confirm the scope and timing before activation."
               : "Template instructions and timing are starting points. Edit them to match the applicable requirement before activating this plan."}
           </p>
+            </div>
+            </details>
           </section>
           <section className={styles.section} aria-labelledby="task-targets-heading">
-            <div className={styles.sectionHeading}>
+            <details className={styles.sectionDisclosure}>
+            <summary className={styles.sectionHeading}>
               <span aria-hidden="true">2</span>
-              <h3 id="task-targets-heading">Targets and scope</h3>
-            </div>
+              <div className={styles.sectionSummary}>
+                <h3 id="task-targets-heading">Targets and scope</h3>
+                <p>{targetReferenceSummary} · {data.dataset === "demo" ? "Demonstration inventory" : "Working inventory"}</p>
+              </div>
+              <small className={styles.sectionStatus} data-incomplete={missingCount("targets") > 0 || unavailableTargets.length > 0 || !!placeholderArea && data.dataset === "live"}>
+                {unavailableTargets.length ? "Review unavailable targets" : missingCount("targets") ? `${missingCount("targets")} to review` : placeholderArea && data.dataset === "live" ? "Placeholder area" : "Configured"}
+              </small>
+            </summary>
+            <div className={styles.sectionContent}>
           <div className="form-field">
             <Label>Applies to</Label>
             {!(taskTargetsByCategory[draft.category] as readonly string[]).includes(draft.targetKind) && (
@@ -556,7 +646,7 @@ export function TaskPlanEditor({
           </div>
           {draft.targetKind === "storage_area" && (
             <div className="form-field">
-              <Label>Storage area</Label>
+              <Label>Storage area <span className={styles.fieldRequirement}>Required to activate</span></Label>
               <Select
                 value={draft.targetRef ?? "__unset"}
                 onValueChange={(value) =>
@@ -587,7 +677,7 @@ export function TaskPlanEditor({
           )}
           {draft.targetKind === "model" && (
             <div className="form-field">
-              <Label>Registered battery model</Label>
+              <Label>Registered battery model <span className={styles.fieldRequirement}>Required to activate</span></Label>
               <Select
                 value={draft.targetRef ?? "__unset"}
                 onValueChange={(value) =>
@@ -616,7 +706,7 @@ export function TaskPlanEditor({
           )}
           {draft.targetKind === "group" && (
             <div className="form-field">
-              <Label htmlFor="task-group">Defined group name</Label>
+              <Label htmlFor="task-group">Defined group name <span className={styles.fieldRequirement}>Required to activate</span></Label>
               <Input
                 id="task-group"
                 value={draft.targetRef ?? ""}
@@ -628,7 +718,9 @@ export function TaskPlanEditor({
               />
               <p className="field-hint">
                 Select the registered batteries belonging to this group below; a
-                name alone does not define membership or applicability.
+                name alone does not define membership or applicability. This task
+                uses an explicit name and battery selection; it is separate from
+                private Teaching groups and does not follow their membership changes.
               </p>
             </div>
           )}
@@ -637,6 +729,35 @@ export function TaskPlanEditor({
               <legend className="text-sm font-semibold">
                 Registered batteries · {draft.batteryIds.length} selected
               </legend>
+              {unavailableTargets.length > 0 && (
+                <div className={styles.unavailableTargets}>
+                  <p className={styles.unavailableTargetGuide}>
+                    {existing
+                      ? "Previously selected targets remain in this plan. Deleted records retain only their Battery ID; you can keep an existing reference or remove it explicitly. Future task generation needs available targets."
+                      : "Unavailable records cannot be added to a new plan. Remove these references and select registered batteries before saving."}
+                  </p>
+                  <div role="group" aria-label="Selected unavailable battery targets">
+                    {unavailableTargets.map(id => (
+                      <label
+                        key={id}
+                        className={`export-option ${styles.selectionRow}`}
+                        data-selected="true"
+                        onClick={event => { if (hasRowTextSelection(event)) event.preventDefault(); }}
+                      >
+                        <Checkbox
+                          checked
+                          disabled={locked}
+                          onCheckedChange={value => { if (value !== true) toggleId("batteryIds", id, false); }}
+                        />
+                        <span>
+                          <strong>{id} · {deletedBatteryIds.has(id) ? "Deleted record" : "Unavailable record"}</strong>
+                          <small>Uncheck to remove this target reference.</small>
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              )}
               <BatteryFilterControls
                 data={data}
                 filters={batteryFilters}
@@ -647,7 +768,7 @@ export function TaskPlanEditor({
                 scopeNote="Filter the registered batteries available for this task. Clearing filters keeps your selected batteries and task draft."
               />
               {filteredBatteries.error && <p className="form-error" role="alert">{filteredBatteries.error}</p>}
-              <p className="field-hint">{visibleBatteries.length} matching batteries · {draft.batteryIds.filter(id => !visibleBatteries.some(battery => battery.id === id)).length} selected outside these filters</p>
+              <p className="field-hint">{visibleBatteries.length} matching batteries · {draft.batteryIds.filter(id => registeredBatteryIds.has(id) && !visibleBatteries.some(battery => battery.id === id)).length} selected outside these filters</p>
               <div className="my-2 flex flex-wrap gap-2">
                 <Button
                   type="button"
@@ -725,7 +846,7 @@ export function TaskPlanEditor({
             </fieldset>
           )}
           <div className="form-field">
-            <Label htmlFor="task-scope">Scope and applicability</Label>
+            <Label htmlFor="task-scope">Scope and applicability <span className={styles.fieldRequirement}>{draft.targetKind === "inventory" ? "Required to activate" : "Optional context"}</span></Label>
             <Textarea
               id="task-scope"
               value={draft.scopeNote}
@@ -735,12 +856,22 @@ export function TaskPlanEditor({
               placeholder="Describe the actual area, inventory or assets covered, and why this requirement applies."
             />
           </div>
+            </div>
+            </details>
           </section>
           <section className={styles.section} aria-labelledby="task-assignees-heading">
-            <div className={styles.sectionHeading}>
+            <details className={styles.sectionDisclosure}>
+            <summary className={styles.sectionHeading}>
               <span aria-hidden="true">3</span>
-              <h3 id="task-assignees-heading">Assigned staff</h3>
-            </div>
+              <div className={styles.sectionSummary}>
+                <h3 id="task-assignees-heading">Assigned staff</h3>
+                <p title={assignedDescription}>{draft.assigneeIds.length ? `${draft.assigneeIds.length} selected · ${assignedDescription}` : "No staff assigned"}</p>
+              </div>
+              <small className={styles.sectionStatus} data-incomplete={missingCount("assignees") > 0 || hasUnavailableAssignee}>
+                {hasUnavailableAssignee ? "Review accounts" : draft.assigneeIds.length ? "Configured" : "Required to activate"}
+              </small>
+            </summary>
+            <div className={styles.sectionContent}>
             <p className="field-hint">
               {draft.assigneeIds.length} selected. Select people below, or use
               the responsible owners of the selected targets. One completion
@@ -791,7 +922,7 @@ export function TaskPlanEditor({
                           ? staff.id === data.user.id
                             ? "Your account"
                             : "Active staff account"
-                          : "Disabled account; remove or reassign before activation"}
+                          : "Disabled account; remove or reassign before saving"}
                       </small>
                     </span>
                   </label>
@@ -805,12 +936,22 @@ export function TaskPlanEditor({
                 choose reviewed staff assignments to replace it.
               </p>
             )}
+            </div>
+            </details>
           </section>
           <section className={styles.section} aria-labelledby="task-schedule-heading">
-            <div className={styles.sectionHeading}>
+            <details className={styles.sectionDisclosure}>
+            <summary className={styles.sectionHeading}>
               <span aria-hidden="true">4</span>
-              <h3 id="task-schedule-heading">Schedule and reminders</h3>
-            </div>
+              <div className={styles.sectionSummary}>
+                <h3 id="task-schedule-heading">Schedule and reminders</h3>
+                <p>{scheduleDescription} · {draft.reminderTime ? `remind at ${draft.reminderTime}` : "reminder time not chosen"} · Sydney</p>
+              </div>
+              <small className={styles.sectionStatus} data-incomplete={missingCount("schedule") > 0 || !!invalidReminder || !!previewError}>
+                {invalidReminder ? "Review daylight saving" : missingCount("schedule") ? `${missingCount("schedule")} to review` : previewError ? "Review preview" : "Configured"}
+              </small>
+            </summary>
+            <div className={styles.sectionContent}>
           <fieldset className="detail-card">
             <legend className="text-sm font-semibold">Task due rule</legend>
             <div className="form-field">
@@ -840,7 +981,7 @@ export function TaskPlanEditor({
             </div>
             {draft.recurrenceBasis === "dates" ? (
               <div className="form-field mt-3">
-                <Label htmlFor="task-dates">Confirmed due dates</Label>
+                <Label htmlFor="task-dates">Confirmed due dates <span className={styles.fieldRequirement}>Required to activate</span></Label>
                 <Textarea
                   id="task-dates"
                   value={datesText}
@@ -862,6 +1003,7 @@ export function TaskPlanEditor({
                 <div className="form-field full-width">
                   <Label htmlFor="task-first-date">
                     First due date / calendar anchor
+                    <span className={styles.fieldRequirement}>Required to activate</span>
                   </Label>
                   <Input
                     id="task-first-date"
@@ -939,7 +1081,7 @@ export function TaskPlanEditor({
                 />
               </div>
               <div className="form-field">
-                <Label htmlFor="task-reminder-time">Reminder time</Label>
+                <Label htmlFor="task-reminder-time">Reminder time <span className={styles.fieldRequirement}>Required to activate</span></Label>
                 <Input
                   id="task-reminder-time"
                   type="time"
@@ -1038,12 +1180,30 @@ export function TaskPlanEditor({
               due date.
             </p>
           )}
+            </div>
+            </details>
           </section>
           <section className={styles.section} aria-labelledby="task-review-heading">
-            <div className={styles.sectionHeading}>
+            <details id="task-review-section" className={styles.sectionDisclosure}>
+            <summary className={styles.sectionHeading}>
               <span aria-hidden="true">5</span>
-              <h3 id="task-review-heading">Review and save</h3>
-            </div>
+              <div className={styles.sectionSummary}>
+                <h3 id="task-review-heading">Review and save</h3>
+                <p>{draft.state === "active" ? "Active" : draft.state === "paused" ? "Paused" : "Draft"} · {draft.applicabilityConfirmed ? "Applicability confirmed" : "Applicability not yet confirmed"}</p>
+              </div>
+              <small className={styles.sectionStatus} data-incomplete={activationNeedsReview}>
+                {activationNeedsReview ? "Activation needs review" : "Ready for review"}
+              </small>
+            </summary>
+            <div className={styles.sectionContent}>
+          <dl className={styles.reviewSummary}>
+            <div><dt>Task</dt><dd>{draft.title || "Title required before saving"}</dd></div>
+            <div><dt>Targets</dt><dd>{targetReferenceSummary}</dd></div>
+            <div><dt>Staff</dt><dd>{assignedDescription}</dd></div>
+            <div><dt>Schedule</dt><dd>{scheduleDescription}</dd></div>
+            <div><dt>Next due</dt><dd>{preview?.nextDueOn ? formatDateOnly(preview.nextDueOn) : preview?.calculationRule === "awaiting_actual_completion" ? "After the current task is completed" : "Not configured"}</dd></div>
+            <div><dt>Reminder</dt><dd>{preview?.nextReminderOn ? formatDateOnly(preview.nextReminderOn) : "Date not configured"} · {draft.reminderTime || "Time not chosen"} · Sydney</dd></div>
+          </dl>
           <fieldset className={styles.stateChoices}>
             <legend>Plan status after saving</legend>
             {([
@@ -1093,13 +1253,21 @@ export function TaskPlanEditor({
               routing.
             </p>
           )}
-          {!validation.success && draft.state === "active" && (
+          {activationNeedsReview && (
             <div className={styles.requirements}>
               <strong>Before activation</strong>
-              <ul>{validation.error.issues.map((issue, index) => <li key={index}>{issue.message}</li>)}</ul>
-              <p>You can choose Draft to save while these details are incomplete.</p>
+              <ul>
+                {activationIssues.map((issue, index) => <li key={index}>{issue.message}</li>)}
+                {placeholderArea && data.dataset === "live" && <li>Confirm the actual storage area; a placeholder cannot activate a working-inventory plan.</li>}
+                {hasUnavailableAssignee && <li>Review unavailable or disabled assigned staff accounts.</li>}
+                {invalidReminder && <li>Choose a reminder time that is valid and unambiguous during Sydney daylight saving.</li>}
+                {previewError && <li>{previewError}</li>}
+              </ul>
+              <p>Choose Draft to leave activation details incomplete. Entered values and selected records must still be valid before saving.</p>
             </div>
           )}
+            </div>
+            </details>
           </section>
           {latest && (
             <div className="detail-card">
@@ -1178,6 +1346,14 @@ export function TaskPlanEditor({
                   : "A draft saves your progress without generating reminders."}
           </p>
           <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={reviewPlan}
+              disabled={busy}
+            >
+              Review plan
+            </Button>
             <Button
               type="button"
               variant="outline"

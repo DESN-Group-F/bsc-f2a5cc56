@@ -10,6 +10,7 @@ import { InventoryTransactions } from "./transactions";
 import { InventoryGroups } from "./groups";
 import { ensureInventoryReferenceData } from "./provisioning";
 import { requireActiveBattery, editVersion } from "./records";
+import { registeredTagHash } from "../purge-evidence";
 
 /** Register and edit physical assets while retaining model and directory evidence. */
 export class InventoryRegistration {
@@ -142,6 +143,9 @@ export class InventoryRegistration {
         "Model suggestions are used when registering new batteries. Review saved specifications directly when editing a battery.",
       );
     const at = this.session.clock().toISOString();
+    const tagHash = b.tagId === null ? null : await registeredTagHash(this.database.scope, b.tagId);
+    if (tagHash && await this.database.first("SELECT tag_hash FROM purged_tag_reservations WHERE scope=? AND tag_hash=?", this.database.scope, tagHash))
+      throw new DomainError(409, "This registered tag remains reserved after permanent deletion. Use a different unassigned tag.");
     validateBatteryDates(b, new Date(at));
     let modelReference: Record<string, unknown> | null = null;
     let modelGuard = "1";
@@ -298,7 +302,7 @@ export class InventoryRegistration {
             at,
           ),
         ],
-        `EXISTS(SELECT 1 FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.key=? AND p.scope=? AND p.role='staff' AND p.account_id=? AND (a.active=1 OR ?=1)) AND (? IS NULL OR EXISTS(SELECT 1 FROM rooms WHERE key=? AND scope=? AND building_key=? AND selectable=1)) AND (${modelGuard})`,
+        `EXISTS(SELECT 1 FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.key=? AND p.scope=? AND p.role='staff' AND p.account_id=? AND (a.active=1 OR ?=1)) AND (? IS NULL OR EXISTS(SELECT 1 FROM rooms WHERE key=? AND scope=? AND building_key=? AND selectable=1)) AND (${modelGuard}) AND NOT EXISTS(SELECT 1 FROM purged_tag_reservations WHERE scope=? AND tag_hash=?)`,
         [
           owner.key,
           this.database.scope,
@@ -309,6 +313,8 @@ export class InventoryRegistration {
           this.database.scope,
           building.key,
           ...modelGuardValues,
+          this.database.scope,
+          tagHash,
         ],
         group,
       );

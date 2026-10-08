@@ -4,8 +4,10 @@ import { readFile } from "node:fs/promises";
 import { Miniflare } from "miniflare";
 import { AccountStore } from "../work/qa/accounts.mjs";
 import { InventoryStore } from "../work/qa/store.mjs";
+import { InventoryDatabase } from "../work/qa/server/inventory/database.mjs";
+import { ensureInventoryReferenceData } from "../work/qa/server/inventory/provisioning.mjs";
 import { TaskPlanStore, taskCapabilities } from "../work/qa/task-plans.mjs";
-import { taskTemplates, taskPlanSchema } from "../work/qa/task-schedule.mjs";
+import { taskTemplates, taskPlanSchema, taskReminderAt } from "../work/qa/task-schedule.mjs";
 
 const journal = JSON.parse(await readFile("drizzle/meta/_journal.json", "utf8"));
 async function migrate(database, entries = journal.entries) {
@@ -58,6 +60,54 @@ const activePlan = (extra = {}) => ({
     assigneeIds: [self.id], firstDueOn: "2026-01-31", recurrenceBasis: "calendar", interval: 1, unit: "months", scheduledDates: [],
     reminderDaysBefore: 0, reminderTime: "09:00", channels: ["messages"], state: "active", applicabilityConfirmed: true, ...extra,
 });
+// Migration fixtures seed only their historical schema. Current Task services
+// intentionally require every current migration rather than emulate old tables.
+async function seedHistoricalTask(database, scope, actor, input) {
+    const plan = taskPlanSchema.parse(input), id = crypto.randomUUID(), key = `${scope}/${id}`, result = { id, version: 1 };
+    const statements = [
+        database.prepare("INSERT INTO task_plans(key,scope,id,title,description,category,scope_note,basis,target_kind,target_ref,recurrence_basis,first_due_on,interval_count,interval_unit,scheduled_dates_json,reminder_days_before,reminder_time,channels_json,applicability_confirmed,state,created_at,updated_at,created_by,updated_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
+            .bind(key, scope, id, plan.title, plan.description, plan.category, plan.scopeNote, plan.basis, plan.targetKind, plan.targetRef, plan.recurrenceBasis, plan.firstDueOn, plan.interval, plan.unit, JSON.stringify(plan.scheduledDates), plan.reminderDaysBefore, plan.reminderTime, JSON.stringify(plan.channels), Number(plan.applicabilityConfirmed), plan.state, initialTime, initialTime, actor.id, actor.id),
+        database.prepare("INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) VALUES(?,?,'task_plan_change',?,?,?,1)").bind(`${scope}/${crypto.randomUUID()}`, scope, JSON.stringify({ actorId: actor.id, action: "create", plan, edit: null }), JSON.stringify(result), initialTime),
+        database.prepare("INSERT INTO audit_events(id,scope,action,battery_id,actor_id,actor_name,at,details_json) VALUES(?,?,'task_plan_created',NULL,?,?,?,?)").bind(crypto.randomUUID(), scope, actor.id, actor.displayName, initialTime, JSON.stringify({ planId: id, before: null, after: { ...plan, version: 1 } })),
+    ];
+    for (const accountId of plan.assigneeIds) statements.push(database.prepare("INSERT INTO task_plan_assignees(key,plan_key,account_id) VALUES(?,?,?)").bind(`${key}/${accountId}`, key, accountId));
+    for (const batteryId of plan.batteryIds) statements.push(database.prepare("INSERT INTO task_plan_batteries(key,plan_key,battery_key) VALUES(?,?,?)").bind(`${key}/${batteryId}`, key, `${scope}/${batteryId}`));
+    await database.batch(statements);
+    return { ...result, plan };
+}
+async function seedHistoricalTaskBattery(database, scope, owner, id = "BAT-001") {
+    await ensureInventoryReferenceData(new InventoryDatabase(database, scope));
+    await database.prepare("INSERT INTO batteries(key,scope,id,name,model,owner_key,home_building_key,home_room_key,created_at) VALUES(?,?,?,?,?,?,?,?,?)").bind(`${scope}/${id}`, scope, id, "Historical Task battery", "Historical model", `${scope}/staff-${owner.id}`, `${scope}/J18`, `${scope}/J18-DEMO-ROOM`, initialTime).run();
+}
+async function seedHistoricalCycle(database, scope, actor, saved, dueOn = saved.plan.firstDueOn) {
+    const id = crypto.randomUUID(), key = `${scope}/${id}`, planKey = `${scope}/${saved.id}`, reminder = taskReminderAt(dueOn, saved.plan.reminderDaysBefore, saved.plan.reminderTime);
+    const target = { kind: saved.plan.targetKind, reference: saved.plan.targetRef, scopeNote: saved.plan.scopeNote };
+    if (saved.plan.targetKind === "storage_area") {
+        const room = await database.prepare("SELECT r.id,r.name,r.number,r.is_placeholder,b.id AS building_id,b.name AS building_name FROM rooms r JOIN buildings b ON b.key=r.building_key WHERE r.scope=? AND r.id=?").bind(scope, saved.plan.targetRef).first();
+        target.room = { id: room.id, name: room.name, number: room.number, buildingId: room.building_id, buildingName: room.building_name, isPlaceholder: room.is_placeholder === 1 };
+    }
+    if (saved.plan.batteryIds.length) target.batteries = (await database.prepare("SELECT id,name,model FROM batteries WHERE scope=? AND id IN (SELECT value FROM json_each(?)) ORDER BY id").bind(scope, JSON.stringify(saved.plan.batteryIds)).all()).results;
+    await database.batch([
+        database.prepare("INSERT INTO task_cycles(key,scope,id,plan_key,plan_version,snapshot_json,due_on,reminder_on,reminder_time,reminder_status,reminder_at_utc,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)").bind(key, scope, id, planKey, saved.version, JSON.stringify({ plan: saved.plan, target }), dueOn, reminder.nextReminderOn, reminder.reminderTime, reminder.reminderStatus, reminder.reminderAtUtc, initialTime),
+        database.prepare("INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) VALUES(?,?,'task_cycle_generation',?,?,?,1)").bind(`${scope}/${crypto.randomUUID()}`, scope, JSON.stringify({ actorId: actor.id, result: { id, planId: saved.id } }), JSON.stringify({ id, planId: saved.id }), initialTime),
+        database.prepare("INSERT INTO audit_events(id,scope,action,battery_id,actor_id,actor_name,at,details_json) VALUES(?,?,'task_cycle_created',NULL,?,?,?,?)").bind(crypto.randomUUID(), scope, actor.id, actor.displayName, initialTime, JSON.stringify({ cycleId: id, planId: saved.id, dueOn })),
+    ]);
+    for (const recipient of saved.plan.assigneeIds) {
+        const messageId = crypto.randomUUID(), body = `${saved.plan.description}\nDue: ${dueOn} (${saved.plan.basis}).\n${saved.plan.scopeNote}`;
+        await database.batch([
+            database.prepare("INSERT INTO task_messages(key,scope,id,cycle_key,recipient_id,occurrence,title,body,reminder_on,reminder_time,reminder_at_utc,created_at) VALUES(?,?,?,?,?,'initial-reminder',?,?,?,?,?,?)").bind(`${scope}/${messageId}`, scope, messageId, key, recipient, saved.plan.title, body, reminder.nextReminderOn, reminder.reminderTime, reminder.reminderAtUtc, initialTime),
+            database.prepare("INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) VALUES(?,?,'task_message_generation',?,?,?,1)").bind(`${scope}/${crypto.randomUUID()}`, scope, JSON.stringify({ actorId: actor.id, result: { id: messageId, cycleId: id, recipientId: recipient } }), JSON.stringify({ id: messageId, cycleId: id, recipientId: recipient }), initialTime),
+        ]);
+    }
+    return { id, version: 1 };
+}
+async function completeHistoricalCycle(database, scope, actor, cycle, notes = null) {
+    await database.batch([
+        database.prepare("UPDATE task_cycles SET status='completed',completed_at=?,completed_by=?,completed_by_name=?,completion_notes=?,version=version+1 WHERE key=? AND version=?").bind(initialTime, actor.id, actor.displayName, notes, `${scope}/${cycle.id}`, cycle.version),
+        database.prepare("INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) VALUES(?,?,'task_cycle_completion',?,?,?,1)").bind(`${scope}/${crypto.randomUUID()}`, scope, JSON.stringify({ actorId: actor.id, cycleId: cycle.id, expectedVersion: cycle.version, notes }), JSON.stringify({ id: cycle.id, version: cycle.version + 1, status: "completed" }), initialTime),
+        database.prepare("INSERT INTO audit_events(id,scope,action,battery_id,actor_id,actor_name,at,details_json) VALUES(?,?,'task_cycle_completed',NULL,?,?,?,?)").bind(crypto.randomUUID(), scope, actor.id, actor.displayName, initialTime, JSON.stringify({ cycleId: cycle.id, completionNotes: notes })),
+    ]);
+}
 async function savedPlan(context, id) { return (await context.tasks().list()).plans.find(plan => plan.id === id); }
 async function openCycle(context, id) { return (await context.tasks().list()).cycles.find(cycle => cycle.planId === id && cycle.status === "open"); }
 
@@ -462,16 +512,12 @@ test("optional-note migration preserves task evidence and requires completion id
         const database = await isolated.getD1Database("DB"), migration = journal.entries.find(entry => entry.tag === "0009_optional_task_completion_notes");
         await migrate(database, journal.entries.filter(entry => entry.idx < migration.idx));
         const [migrationAdmin, , migrationStaff] = await seedAccounts(database), scope = "optional-note-migration:demo";
-        const inventory = new InventoryStore(database, scope, "demo", inventoryActor(migrationAdmin), () => new Date(initialTime));
-        await inventory.initializeDemo();
-        const tasks = new TaskPlanStore(database, scope, "demo", migrationAdmin, () => new Date(initialTime));
-        const plan = await tasks.savePlan(activePlan({ assigneeIds: [migrationStaff.id] }));
-        await tasks.sync();
-        const first = (await tasks.list()).cycles.find(cycle => cycle.planId === plan.id && cycle.status === "open");
-        await tasks.completeCycle({ cycleId: first.id, expectedVersion: first.version, notes: "Existing completion evidence." });
-        await tasks.sync();
-        const next = (await tasks.list()).cycles.find(cycle => cycle.planId === plan.id && cycle.status === "open");
-        await assert.rejects(tasks.completeCycle({ cycleId: next.id, expectedVersion: next.version }), status(409));
+        await ensureInventoryReferenceData(new InventoryDatabase(database, scope));
+        const plan = await seedHistoricalTask(database, scope, migrationAdmin, activePlan({ assigneeIds: [migrationStaff.id] }));
+        const first = await seedHistoricalCycle(database, scope, migrationAdmin, plan);
+        await completeHistoricalCycle(database, scope, migrationAdmin, first, "Existing completion evidence.");
+        const next = await seedHistoricalCycle(database, scope, migrationAdmin, plan, "2026-02-28");
+        await assert.rejects(completeHistoricalCycle(database, scope, migrationAdmin, next), /task completion evidence required/);
         const tables = (await database.prepare("SELECT name,sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*' ORDER BY name").all()).results;
         const triggers = (await database.prepare("SELECT name,sql FROM sqlite_master WHERE type='trigger' ORDER BY name").all()).results;
         const before = new Map();
@@ -487,14 +533,14 @@ test("optional-note migration preserves task evidence and requires completion id
         for (const evidence of [[null, migrationAdmin.id, migrationAdmin.displayName], [initialTime, null, migrationAdmin.displayName], [initialTime, migrationAdmin.id, null]])
             await assert.rejects(database.prepare("UPDATE task_cycles SET status='completed',completed_at=?,completed_by=?,completed_by_name=?,completion_notes=NULL,version=version+1 WHERE key=?").bind(...evidence, cycleKey).run(), /CONSTRAINT|evidence required/);
         await assert.rejects(database.prepare("UPDATE task_cycles SET status='completed',completed_at=?,completed_by=?,completed_by_name=?,completion_notes=?,version=version+1 WHERE key=?").bind(initialTime, migrationAdmin.id, migrationAdmin.displayName, "x".repeat(2001), cycleKey).run(), /CONSTRAINT|maximum length/);
-        await tasks.completeCycle({ cycleId: next.id, expectedVersion: next.version });
-        const completed = (await tasks.list()).cycles.find(cycle => cycle.id === next.id);
+        await completeHistoricalCycle(database, scope, migrationAdmin, next);
+        const completed = await database.prepare("SELECT status,completion_notes AS completionNotes,completed_by AS completedBy,completed_at AS completedAt FROM task_cycles WHERE key=?").bind(cycleKey).first();
         assert.equal(completed.status, "completed");
         assert.equal(completed.completionNotes, null);
         assert.equal(completed.completedBy, migrationAdmin.id);
         assert.equal(completed.completedAt, initialTime);
         await assert.rejects(database.prepare("UPDATE task_cycles SET completion_notes='Later replacement',version=version+1 WHERE key=?").bind(cycleKey).run(), /CONSTRAINT|immutable/);
-        assert.equal((await tasks.list()).cycles.find(cycle => cycle.id === first.id).completionNotes, "Existing completion evidence.");
+        assert.equal(await database.prepare("SELECT completion_notes FROM task_cycles WHERE key=?").bind(`${scope}/${first.id}`).first("completion_notes"), "Existing completion evidence.");
         assert.deepEqual((await database.prepare("PRAGMA foreign_key_check").all()).results, []);
     } finally { await isolated.dispose(); }
 });
@@ -796,9 +842,11 @@ test("recoverable-removal migration preserves old task evidence and retains dele
         const database = await isolated.getD1Database("DB"), migration = journal.entries.find(entry => entry.tag === "0015_recoverable_task_removal");
         await migrate(database, journal.entries.filter(entry => entry.idx < migration.idx));
         const [owner, , assigned] = await seedAccounts(database), scope = "task-removal-migration:demo";
-        await new InventoryStore(database, scope, "demo", inventoryActor(owner), () => new Date(initialTime)).snapshot();
-        const tasks = new TaskPlanStore(database, scope, "demo", owner, () => new Date(initialTime));
-        await tasks.savePlan(activePlan({ assigneeIds: [assigned.id] })); await tasks.sync();
+        // This historical fixture needs directory and account projections only.
+        // The current inventory read model requires all later migrations.
+        await ensureInventoryReferenceData(new InventoryDatabase(database, scope));
+        const plan = await seedHistoricalTask(database, scope, owner, activePlan({ assigneeIds: [assigned.id] }));
+        await seedHistoricalCycle(database, scope, owner, plan);
         const message = (await rows("task_messages", scope, database))[0];
         await database.prepare("UPDATE task_messages SET read_at=? WHERE key=?").bind(initialTime, message.key).run();
         const tables = ["task_plans", "task_cycles", "task_messages", "task_plan_assignees", "task_plan_batteries", "audit_events", "operations"];
@@ -825,24 +873,21 @@ test("custom-category migration preserves every existing row, task reference and
         const database = await isolated.getD1Database("DB"), migration = journal.entries.find(entry => entry.tag === "0016_custom_task_plans");
         await migrate(database, journal.entries.filter(entry => entry.idx < migration.idx));
         const [owner, , assigned] = await seedAccounts(database), scope = "custom-task-migration:demo";
-        const inventory = new InventoryStore(database, scope, "demo", inventoryActor(owner), () => new Date(initialTime));
-        await inventory.initializeDemo();
-        const tasks = new TaskPlanStore(database, scope, "demo", owner, () => new Date(initialTime));
+        await seedHistoricalTaskBattery(database, scope, assigned);
         const prepared = [
             activePlan({ assigneeIds: [assigned.id] }),
             activePlan({ assigneeIds: [assigned.id], category: "inventory_reconciliation", targetKind: "inventory", targetRef: null }),
             activePlan({ assigneeIds: [assigned.id], category: "storage_maintenance", targetKind: "batteries", targetRef: null, batteryIds: ["BAT-001"] }),
         ];
         const saved = [];
-        for (const plan of prepared) saved.push(await tasks.savePlan(plan, false, crypto.randomUUID()));
-        const existing = await tasks.list(), first = existing.cycles.find(cycle => cycle.planId === saved[0].id);
-        await tasks.completeCycle({ cycleId: first.id, expectedVersion: first.version, notes: "Original completed cycle." });
-        const inbox = new TaskPlanStore(database, scope, "demo", assigned, () => new Date(initialTime));
-        const message = (await inbox.messages()).messages.find(row => row.planId === saved[2].id);
-        await inbox.markRead({ id: message.id });
-        const currentMessage = (await inbox.messages()).messages.find(row => row.id === message.id);
-        await inbox.changeMessageVisibility({ id: message.id, expectedVersion: currentMessage.version }, "remove", crypto.randomUUID());
-        await tasks.changePlanVisibility({ id: saved[2].id, expectedVersion: saved[2].version }, "remove", crypto.randomUUID());
+        for (const plan of prepared) saved.push(await seedHistoricalTask(database, scope, owner, plan));
+        const seededCycles = [];
+        for (const plan of saved) seededCycles.push(await seedHistoricalCycle(database, scope, owner, plan));
+        await completeHistoricalCycle(database, scope, owner, seededCycles[0], "Original completed cycle.");
+        const message = await database.prepare("SELECT m.* FROM task_messages m JOIN task_cycles c ON c.key=m.cycle_key WHERE c.plan_key=? AND m.recipient_id=?").bind(`${scope}/${saved[2].id}`, assigned.id).first();
+        await database.prepare("UPDATE task_messages SET read_at=?,version=version+1 WHERE key=?").bind(initialTime, message.key).run();
+        await database.prepare("UPDATE task_messages SET removed_at=?,version=version+1 WHERE key=?").bind(initialTime, message.key).run();
+        await database.prepare("UPDATE task_plans SET removed_at=?,version=version+1 WHERE key=?").bind(initialTime, `${scope}/${saved[2].id}`).run();
 
         const tables = (await database.prepare("SELECT name,sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*' ORDER BY name").all()).results;
         const triggers = (await database.prepare("SELECT name,sql FROM sqlite_master WHERE type='trigger' ORDER BY name").all()).results;
@@ -862,8 +907,8 @@ test("custom-category migration preserves every existing row, task reference and
         assert.deepEqual((await database.prepare("SELECT name,sql FROM sqlite_master WHERE type='index' AND sql IS NOT NULL ORDER BY name").all()).results, indexes);
         assert.deepEqual((await database.prepare("PRAGMA foreign_key_check").all()).results, []);
 
-        const custom = await tasks.savePlan(activePlan({ category: "custom", assigneeIds: [assigned.id], title: "New custom task after migration" }));
-        assert.equal((await tasks.list()).plans.find(plan => plan.id === custom.id).category, "custom");
+        const custom = await seedHistoricalTask(database, scope, owner, activePlan({ category: "custom", assigneeIds: [assigned.id], title: "New custom task after migration" }));
+        assert.equal(await database.prepare("SELECT category FROM task_plans WHERE key=?").bind(`${scope}/${custom.id}`).first("category"), "custom");
         const original = before.get("task_plans")[0];
         const columns = Object.keys(original), values = Object.values(original), placeholders = columns.map(() => "?").join(",");
         await assert.rejects(database.prepare(`INSERT OR REPLACE INTO task_plans(${columns.join(",")}) VALUES(${placeholders})`).bind(...values).run(), /replacement forbidden/);
@@ -876,7 +921,7 @@ test("custom-category migration preserves every existing row, task reference and
         const removedCycle = before.get("task_cycles").find(row => row.plan_key === `${scope}/${saved[2].id}`);
         await assert.rejects(database.prepare("UPDATE task_cycles SET version=version+1 WHERE key=?").bind(removedCycle.key).run(), /removed task plan cannot change cycles/);
         const unrelatedScope = "custom-task-migration-other:demo";
-        await new InventoryStore(database, unrelatedScope, "demo", inventoryActor(owner), () => new Date(initialTime)).initializeDemo();
+        await seedHistoricalTaskBattery(database, unrelatedScope, owner);
         await assert.rejects(database.prepare("INSERT INTO task_plan_batteries(key,plan_key,battery_key) VALUES(?,?,?)").bind(`${scope}/${custom.id}/BAT-001`, `${scope}/${custom.id}`, `${unrelatedScope}/BAT-001`).run(), /task battery identity invalid/);
         assert.deepEqual((await database.prepare("PRAGMA foreign_key_check").all()).results, []);
     } finally { await isolated.dispose(); }

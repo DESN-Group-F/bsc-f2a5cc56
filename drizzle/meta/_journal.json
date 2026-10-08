@@ -120,6 +120,34 @@
       "when": 1791090000000,
       "tag": "0016_custom_task_plans",
       "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "6",
+      "when": 1791244800000,
+      "tag": "0017_battery_inspections",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "6",
+      "when": 1791417600000,
+      "tag": "0018_retired_asset_actions",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "6",
+      "when": 1791421200000,
+      "tag": "0019_new_arrivals",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "6",
+      "when": 1791424800000,
+      "tag": "0020_teaching_checkouts",
+      "breakpoints": true
     }
   ]
 }

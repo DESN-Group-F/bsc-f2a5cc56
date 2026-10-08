@@ -17,3 +17,10 @@ drizzle/0013_optional_removal_reason.sql text eol=lf
 drizzle/0014_personal_teaching_groups.sql text eol=lf
 drizzle/0015_recoverable_task_removal.sql text eol=lf
 drizzle/0016_custom_task_plans.sql text eol=lf
+drizzle/0017_battery_inspections.sql text eol=lf
+drizzle/0018_retired_asset_actions.sql text eol=lf
+drizzle/0019_new_arrivals.sql text eol=lf
+drizzle/0020_teaching_checkouts.sql text eol=lf
+# Native build launchers and cloud configuration must remain portable.
+mobile/android/gradlew text eol=lf
+codemagic.yaml text eol=lf

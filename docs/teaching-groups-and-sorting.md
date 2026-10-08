@@ -18,11 +18,14 @@ Edit changes the name, notes or battery selection and requires the loaded versio
 
 An opened group is a fixed view of its members. It keeps **All batteries / In store / In use**, filters, ordering, selection and downloads. Retired members remain available for history review. **Clear filters** resets ordinary criteria, ordering and pagination while retaining the opened group and selected batteries. **All teaching groups** returns to the cards.
 
+The local 8 October extension is described in [Temporary teaching checkout alternatives](teaching-checkout-alternatives.md). Fixed membership remains unchanged; actual runs retain the historic mapping and exact loans for returns and complete Excel/JSON reports.
+
 | Control | Result |
 | --- | --- |
-| **Check out group / Return group** | Opens one review of currently eligible members, reports excluded members and requires final confirmation |
+| **Check out group** | Reviews fixed members and temporary strict or explicitly filtered/tag/native manual alternatives before confirmation |
+| **Actual group checkouts / Return this checkout** | Reviews the actual batteries and saved Loan IDs; supports partial returns independently of later group changes |
 | **Select all group members / Select filtered group members** | Selects all group members or the full matching set across pages |
-| **Check out selected / Return selected** | Opens the existing reviewed movement workflow; final confirmation and eligibility checks remain required |
+| **Check out selected / Return selected** | Group checkout uses the temporary-alternative review; ordinary selected returns retain reviewed exact current loan guards |
 | **Retire or remove selected** | Stages returned active members for staff confirmation; the batch reason is optional |
 | **Update selected members** | Administrators apply a common owner, registered storage, charge record or demo observation atomically |
 | Individual battery details / **Edit battery** | Keeps the existing individual actions, permissions and group operation context |
@@ -51,7 +54,7 @@ Filter by historic group or search across the main entry and its member evidence
 
 **Download activity** offers selected operations or all matching operations:
 
-- **Operation summaries and recorded group names** retain the group name, count and selected operation records without expanding member IDs or evidence. Excel, CSV and JSON are available; ordinary individual actions retain their own records.
+- **Operation summaries and recorded group names** retain the group name, count and selected operation records. Temporary teaching checkouts also retain their original → actual mapping and saved run evidence; partial-return summaries describe only the members returned in that operation. Excel, CSV and JSON are available. Per-battery member events and current battery sections require the detail option below.
 - **Include group battery details** adds original **Activity members** evidence and selectable complete battery sections. Excel and JSON retain all tables. Battery-detail sections reflect the export-time records and histories; the original operation-member evidence remains separately identified.
 
 Selected operation IDs ignore ordinary filters but remain within the authenticated activity scope. Missing selections reject the whole download rather than silently dropping records.
@@ -79,4 +82,4 @@ Before saving a group, the interface preserves its exact request in account/inve
 
 Movement, removal and administrator bulk updates also preserve their exact requests and require matching server receipts. Native account authority, reviewed group/member versions and asset/loan bindings are checked at the commit boundary. An unresolved write must be retried before a replacement operation. If a confirmed bulk update's display refresh fails, the dialog reports it as saved and requires closing/refreshing rather than issuing another update.
 
-This workflow has isolated real-D1 and actual component-handler checks. Real reader behavior and staff time savings remain unverified; see [validation](validation.md) for the scope of browser acceptance. These controls were included in release 0.6.0 and remain in 0.6.1. The frozen 0.5.0 tag is unchanged. The [permission baseline](permissions.md) distinguishes private group definitions from shared inventory operations and records that group removal currently has no restore operation.
+This workflow has isolated real-D1 and actual component-handler checks. Real reader behavior and staff time savings remain unverified; see [validation](validation.md) for the scope of browser acceptance. The original fixed-group controls were included in release 0.6.0; the 8 October temporary-checkout extension is local development after frozen 0.7.0 and has not been published or deployed. Earlier frozen tags are unchanged. The [permission baseline](permissions.md) distinguishes private group definitions from shared inventory operations and records that group removal currently has no restore operation.

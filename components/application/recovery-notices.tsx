@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import type { Dataset } from "@/lib/domain";
 import type {
   RecoveryState,
   PendingDataset,
@@ -9,12 +10,15 @@ type Props = {
   recovery: RecoveryState;
   movementOpen: boolean;
   assetsOpen: boolean;
+  retiredHistoryOpen: boolean;
+  currentDataset: Dataset;
   groupOpen: boolean;
   ready: boolean;
   modalOpen: boolean;
   resumeScan: (pending: PendingMovement) => void;
   resumeMovement: (pending: PendingMovement) => void;
   resumeRemoval: (pending: PendingDataset) => void;
+  resumeRetiredAction: (pending: PendingDataset) => void;
   startIntake: () => void;
   resumeGroupChange: (pending: PendingDataset) => void;
 };
@@ -23,12 +27,15 @@ export function RecoveryNotices({
   recovery,
   movementOpen,
   assetsOpen,
+  retiredHistoryOpen,
+  currentDataset,
   groupOpen,
   ready,
   modalOpen,
   resumeScan,
   resumeMovement,
   resumeRemoval,
+  resumeRetiredAction,
   startIntake,
   resumeGroupChange,
 }: Props) {
@@ -36,11 +43,19 @@ export function RecoveryNotices({
     scans: pendingScans,
     movements: pendingMovements,
     removals: pendingRemovals,
+    retiredActions: pendingRetiredActions,
     intakes: pendingIntakes,
     groups: pendingGroupChanges,
   } = recovery;
+  const visibleRetiredActions = pendingRetiredActions?.filter(pending => !retiredHistoryOpen || pending.dataset !== currentDataset) ?? [];
   return (
     <>
+      {!!visibleRetiredActions.length && (
+        <div className="scan-resume-notice" role="status">
+          <div><strong>Unfinished recovery or permanent deletion</strong><p>Resolve the original retired battery request before starting another workflow.</p></div>
+          {visibleRetiredActions.map(pending => <Button key={pending.dataset} variant="outline" onClick={() => resumeRetiredAction(pending)} disabled={!ready || modalOpen}>Resume retired battery action · {pending.dataset === "demo" ? "Demonstration" : "Working"}</Button>)}
+        </div>
+      )}
       {!movementOpen && !!pendingScans.length && (
         <div className="scan-resume-notice" role="status">
           <div>

@@ -44,6 +44,7 @@ function LoadedMovementSummary({ detail }: { detail: BatteryDetail }) {
 
     return <section className={`battery-movement-summary${terminal ? " movement-terminal" : ""}`} aria-label="Check-in and check-out">
         <h3>Check-in / check-out</h3>
+        <div className="movement-layout">
         <div className="movement-current">
             <div className="movement-status"><StatusIcon size={19} aria-hidden="true" /><strong>{summary.statusLabel}</strong></div>
             <p className="movement-label">{summary.durationLabel}</p>
@@ -51,7 +52,7 @@ function LoadedMovementSummary({ detail }: { detail: BatteryDetail }) {
             <dl className="movement-person"><dt>{summary.personLabel}</dt><dd>{summary.personName}</dd></dl>
             <p className="movement-when">{summary.timestampLabel}{summary.startedAt ? <> <time dateTime={summary.startedAt}>{formatTime(summary.startedAt)}</time></> : " · Time unavailable"}</p>
         </div>
-
+        <div className="movement-records">
         <h4 className="movement-timeline-title">Recent movements</h4>
         {summary.timeline.length ? <ol className="movement-timeline" aria-label="Recent recorded movements">
             {summary.timeline.map(event => <li key={event.id} className={`movement-event movement-event-${event.kind}`}>
@@ -64,6 +65,8 @@ function LoadedMovementSummary({ detail }: { detail: BatteryDetail }) {
                 {event.currentLoan ? <p className="movement-loan-duration"><Clock3 size={13} aria-hidden="true" />Current loan</p> : event.loanDuration && <p className="movement-loan-duration"><Clock3 size={13} aria-hidden="true" />Loan duration: {event.loanDuration}</p>}
             </li>)}
         </ol> : <p className="movement-empty">No movement records are available.</p>}
+        </div>
+        </div>
         <p className="movement-evidence-note">Recorded check-ins and check-outs, not live location. Times use Australia/Sydney. Corrections remain in Loans and Audit history.</p>
     </section>;
 }

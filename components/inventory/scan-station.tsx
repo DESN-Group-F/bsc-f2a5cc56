@@ -4,6 +4,7 @@ import { isActiveBattery } from "@/lib/battery-lifecycle";
 import { useEffect, useRef, useState } from "react";
 import { CheckCircle2, LogOut, Radio, RefreshCw, ScanLine, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ReceiptAction } from "@/components/ui/receipt-action";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -13,7 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
 import { formatTime, roomLabel } from "@/lib/client-utils";
 import { isSelectableRoom } from "@/lib/location-catalog";
-import { recoverScanSession, resolveRegisteredTagIssues, scanCompletedReadMatches, scanFailureStatus, scanMovementPayload, scanReadProblem, type ScanAttempt, type ScanIssue, type ScanReceipt, type ScanSession, type ScanSource } from "@/lib/scan-session";
+import { recoverScanSession, resolveRegisteredTagIssues, saveScanSession, verifySavedScanSession, scanCompletedReadMatches, scanFailureStatus, scanMovementPayload, scanReadProblem, type ScanAttempt, type ScanIssue, type ScanReceipt, type ScanSession, type ScanSource } from "@/lib/scan-session";
 import { TeachingGroupsPanel } from "./teaching-groups-panel";
 import { verifyGroupEvidence } from "@/lib/teaching-context";
 import type { WriteAction } from "@/lib/client/inventory-contracts";
@@ -42,17 +43,22 @@ function sessionStorageKey(data: InventorySnapshot, kind: ScanStationProps["kind
     return `battery-scan:${data.user.id}:${data.dataset}:${kind}`;
 }
 function loadSession(key: string, kind: ScanStationProps["kind"]) {
-    try { return typeof window === "undefined" ? freshSession() : recoverScanSession(sessionStorage.getItem(key), kind) ?? freshSession(); }
-    catch { return freshSession(); }
+    try {
+        const raw = typeof window === "undefined" ? null : sessionStorage.getItem(key);
+        if (raw && !recoverScanSession(raw, kind, true)) throw new Error("Saved scan recovery data is unreadable. It has been kept unchanged.");
+        return { session: recoverScanSession(raw, kind) ?? freshSession(), error: "" };
+    } catch (error) { return { session: freshSession(), error: `${error instanceof Error ? error.message : "Recovery storage could not be read."} Scanning and submission are blocked until recovery storage is readable.` }; }
 }
 function errorMessage(error: unknown) { return error instanceof Error ? error.message : "The operation could not be completed."; }
 function sourceLabel(source: ScanSource) { return source === "selection" ? "Manual selection" : source === "simulated" ? "Simulated reader" : "Manual tag input"; }
 
 export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, paused = false }: ScanStationProps) {
     const storageKey = sessionStorageKey(data, kind);
-    const [session, setSession] = useState<ScanSession>(() => loadSession(storageKey, kind));
+    const [initial] = useState(() => loadSession(storageKey, kind));
+    const [session, setSession] = useState<ScanSession>(initial.session);
     const current = useRef(session), running = useRef(false), tagInput = useRef<HTMLInputElement>(null);
-    const [busy, setBusy] = useState(false), [tag, setTag] = useState(""), [notice, setNotice] = useState(""), [storageError, setStorageError] = useState("");
+    const unreadableStorage = useRef(!!initial.error);
+    const [busy, setBusy] = useState(false), [tag, setTag] = useState(""), [notice, setNotice] = useState(""), [storageError, setStorageError] = useState(initial.error);
     const [selectedIds, setSelectedIds] = useState<string[]>([]), [selectionFilters, setSelectionFilters] = useState<InventoryFilter>(() => defaultInventoryFilter());
     const [completedFilters, setCompletedFilters] = useState<InventoryFilter>(() => ({ ...defaultInventoryFilter(), lifecycle: "all" }));
     const [groupEditor, setGroupEditor] = useState<string[] | null>(null), [completedGroupIds, setCompletedGroupIds] = useState<string[]>([]);
@@ -60,29 +66,30 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
     const [confirmedSelectionSnapshots, setConfirmedSelectionSnapshots] = useState<Map<string, BatteryRecord>>(() => new Map());
     const [confirmation, setConfirmation] = useState<Confirmation>(null), [latest, setLatest] = useState<LatestReview | null>(null), [toast, setToast] = useState("");
     const [reviewedRooms, setReviewedRooms] = useState<InventorySnapshot["rooms"] | null>(null);
-    const checkout = kind === "checkout", roomLocked = busy || paused || !!session.attempt;
+    const checkout = kind === "checkout", roomLocked = busy || paused || !!session.attempt || !!storageError;
     const roomConfirmationRequired = !checkout && !!session.roomConfirmationRequired;
-    const locked = roomLocked || roomConfirmationRequired || !!groupEditor;
+    const locked = roomLocked || roomConfirmationRequired || !!groupEditor || !!storageError;
     const rooms = (reviewedRooms ?? data.rooms).filter(isSelectableRoom), unresolvedIssues = session.issues.filter(issue => !issue.acknowledged);
     const recovering = !!session.attempt || !!session.queue.length;
 
     function change(update: (previous: ScanSession) => ScanSession) {
+        if (unreadableStorage.current) return false;
         const next = update(current.current);
         current.current = next;
-        try { sessionStorage.setItem(storageKey, JSON.stringify(next)); }
-        catch { setStorageError("Local reload recovery is unavailable in this browser. Keep this page open until every pending request has been resolved."); }
         setSession(next);
+        try { saveScanSession(sessionStorage, storageKey, next); setStorageError(""); return true; }
+        catch { setStorageError("Recovery data could not be saved and verified. No new movement will be sent. Keep this page open and retry saving the same recovery data."); return false; }
     }
     function addIssue(category: ScanIssue["category"], tagId: string, message: string, acknowledged = false) {
         change(previous => ({ ...previous, issues: [...previous.issues, { id: crypto.randomUUID(), category, tagId, message, acknowledged }] }));
     }
     function startWork() {
-        if (running.current || paused) return false;
+        if (running.current || paused || unreadableStorage.current) return false;
         running.current = true; setBusy(true); setNotice(""); return true;
     }
     function finishWork() { running.current = false; setBusy(false); }
     useEffect(() => {
-        if (!busy && !paused && !session.attempt) tagInput.current?.focus();
+        if (!busy && !paused && !session.attempt) tagInput.current?.focus({ preventScroll: true });
     }, [busy, paused, session.attempt]);
     useEffect(() => {
         if (!busy && !session.queue.length && !session.attempt) return;
@@ -97,7 +104,10 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
     }, [toast]);
 
     async function runAttempt(attempt: ScanAttempt) {
-        change(previous => ({ ...previous, attempt: { ...attempt, status: "uncertain", message: "Waiting for the server to confirm this exact request." } }));
+        if (!change(previous => ({ ...previous, attempt: { ...attempt, status: "uncertain", message: "Waiting for the server to confirm this exact request." } }))) return false;
+        const captured = JSON.stringify(current.current);
+        try { await verifySavedScanSession(sessionStorage, storageKey, captured); }
+        catch (error) { setStorageError(`Recovery data is not confirmed. ${errorMessage(error)} No new movement was sent; the original request is retained.`); return false; }
         try {
             const result = await write("movement", attempt.payload) as ScanReceipt;
             if (!result || result.kind !== kind || result.requestId !== attempt.payload.requestId || !Array.isArray(result.batteryIds)
@@ -106,6 +116,12 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
             }
             verifyGroupEvidence(result.teachingGroup, attempt.payload.teachingGroup, attempt.payload.requestId, attempt.payload.batteryIds, data.user.id);
             const ids = new Set(attempt.reads.map(read => read.battery.id));
+            const acknowledged = { ...current.current, queue: current.current.queue.filter(read => !ids.has(read.battery.id)), completed: [...current.current.completed, ...attempt.reads.filter(read => !current.current.completed.some(saved => saved.battery.id === read.battery.id && saved.receipt.requestId === result.requestId)).map(read => ({ ...read, receipt: result }))], attempt: null,
+                issues: current.current.issues.map(issue => issue.id === attempt.payload.requestId ? { ...issue, acknowledged: true } : issue) };
+            // Retain the uncertain original request until its receipt acknowledgement is durable.
+            const saved = saveScanSession(sessionStorage, storageKey, acknowledged);
+            await verifySavedScanSession(sessionStorage, storageKey, saved);
+            current.current = acknowledged; setSession(acknowledged); setStorageError("");
             setConfirmedSelectionSnapshots(previous => {
                 const next = new Map(previous);
                 for (const id of ids) {
@@ -115,8 +131,6 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
                 return next;
             });
             setSelectedIds(previous => previous.filter(id => !ids.has(id)));
-            change(previous => ({ ...previous, queue: previous.queue.filter(read => !ids.has(read.battery.id)), completed: [...previous.completed, ...attempt.reads.filter(read => !previous.completed.some(saved => saved.battery.id === read.battery.id && saved.receipt.requestId === result.requestId)).map(read => ({ ...read, receipt: result }))], attempt: null,
-                issues: previous.issues.map(issue => issue.id === attempt.payload.requestId ? { ...issue, acknowledged: true } : issue) }));
             setLatest(null);
             setToast(`${result.count === 1 ? result.batteryIds[0] : `${result.count} batteries`} ${checkout ? "checked out" : "returned"}${result.replayed ? " · original request confirmed" : ""}. Ready for the next read.`);
             return true;
@@ -187,6 +201,22 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
             }
         } finally { finishWork(); }
     }
+    async function retryStorage() {
+        if (running.current || busy || paused) return;
+        setBusy(true);
+        try {
+            if (unreadableStorage.current) {
+                const restored = loadSession(storageKey, kind);
+                if (restored.error) throw new Error(restored.error);
+                current.current = restored.session; setSession(restored.session); unreadableStorage.current = false;
+            } else {
+                const saved = saveScanSession(sessionStorage, storageKey, current.current);
+                await verifySavedScanSession(sessionStorage, storageKey, saved);
+            }
+            setStorageError(""); setNotice("The same recovery data is now saved. Review the queue or retry only the captured original request.");
+        } catch (error) { setStorageError(errorMessage(error)); }
+        finally { setBusy(false); }
+    }
     async function reviewLatest() {
         const attempt = current.current.attempt;
         if (!attempt || attempt.status !== "rejected" || !startWork()) return;
@@ -212,7 +242,7 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
         finally { finishWork(); }
     }
     function confirmLocalAction() {
-        if (running.current || busy || paused || current.current.attempt?.status === "uncertain") return;
+        if (running.current || busy || paused || storageError || current.current.attempt?.status === "uncertain") return;
         if (confirmation === "discard") {
             const attempt = current.current.attempt;
             if (!attempt || latest?.requestId !== attempt.payload.requestId) return;
@@ -232,7 +262,7 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
         setConfirmation(null);
     }
     function requestExit() {
-        if (running.current || busy || paused) return;
+        if (running.current || busy || paused || storageError) return;
         if (current.current.queue.length || current.current.attempt || current.current.issues.some(issue => !issue.acknowledged)) setConfirmation("exit");
         else {
             try { sessionStorage.removeItem(storageKey); } catch { /* No pending movement remains. */ }
@@ -278,6 +308,9 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
         finally { finishWork(); }
     }
     const latestMatchesAttempt = latest && latest.requestId === session.attempt?.payload.requestId;
+    const lastReceipt = session.completed.at(-1)?.receipt;
+    const movementConfirmation = lastReceipt ? { identity: lastReceipt.requestId, count: lastReceipt.count, text: `${lastReceipt.count} ${lastReceipt.count === 1 ? "battery" : "batteries"} ${checkout ? "checked out" : "returned"}` } : null;
+    const movementReviewKey = session.queue.map(read => read.battery.id).join("|");
 
     function chooseRoom(value: string) {
         const state = current.current;
@@ -288,9 +321,9 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
     }
 
     return <section className="scan-station" aria-label={`${checkout ? "Checkout" : "Return"} scan station`} aria-busy={busy}>
-        <div className="scan-station-header station-exit-bar"><div><span className="eyebrow">STAFF SCAN STATION</span><h2>{checkout ? "Check out batteries" : "Return batteries"}</h2><p>{checkout ? "Review selected batteries, then confirm checkout to your signed-in staff account. Responsible ownership remains unchanged." : "Receive reviewed active loans from any staff holder. Return placement is recorded separately from registered storage home."}</p><p className="station-exit-hint">{busy ? "Wait for the current action to finish before leaving." : session.attempt?.status === "uncertain" ? "Resolve the preserved request before exiting. Use Retry same request below." : "Choose Exit scanning to finish this session and restore sidebar navigation."}</p></div><Button type="button" size="lg" className="station-exit-button" onClick={requestExit} disabled={busy || paused}><LogOut size={20}/>Exit scanning</Button></div>
+        <div className="scan-station-header station-exit-bar"><div><span className="eyebrow">STAFF SCAN STATION</span><h2>{checkout ? "Check out batteries" : "Return batteries"}</h2><p>{checkout ? "Review selected batteries, then confirm checkout to your signed-in staff account. Responsible ownership remains unchanged." : "Receive reviewed active loans from any staff holder. Return placement is recorded separately from registered storage home."}</p><p className="station-exit-hint">{busy ? "Wait for the current action to finish before leaving." : storageError ? "Resolve recovery storage before leaving. The saved original work must be preserved." : session.attempt?.status === "uncertain" ? "Resolve the preserved request before exiting. Use Retry same request below." : "Choose Exit scanning to finish this session and restore sidebar navigation."}</p></div><Button type="button" size="lg" className="station-exit-button" onClick={requestExit} disabled={busy || paused || !!storageError}><LogOut size={20}/>Exit scanning</Button></div>
         <div className="scan-station-info connection-message"><Radio size={18}/><span><strong>No real RFID reader is connected.</strong> Enter a registered tag or choose batteries with Manual selection. Both options are available in each inventory.</span></div>
-        {storageError && <p className="form-error" role="alert">{storageError}</p>}
+        {storageError && <div className="form-error" role="alert"><p>{storageError}</p><Button variant="outline" onClick={retryStorage} disabled={busy || paused}>Retry recovery storage</Button></div>}
         {recovering && <p className="field-hint">Captured reads and request IDs remain in this station until resolved. An uncertain result must be confirmed by retrying its exact request; current loan state alone does not prove the earlier result.</p>}
         <div className="scan-station-toolbar detail-card"><div><strong>Add batteries → Review list → Confirm</strong><p className="field-hint">Add one or more batteries using a registered tag or manual selection. Review up to 100 batteries, then confirm to save. Use one input method per review list.</p></div>
             {checkout ? <div><Label>Current holder for this checkout</Label><strong>{data.user.displayName} · {data.user.username}</strong><p className="field-hint">Signed-in staff account; no proxy holder.</p></div> : <div><Label>Return room · J18 · optional</Label><Select value={roomConfirmationRequired ? "__confirmation_required" : session.room?.id ?? "__unspecified"} onValueChange={chooseRoom} disabled={roomLocked || roomConfirmationRequired && !reviewedRooms || !roomConfirmationRequired && (!!session.queue.length || !!session.completed.length)}><SelectTrigger aria-label="Session return room"><SelectValue/></SelectTrigger><SelectContent>{roomConfirmationRequired && <SelectItem value="__confirmation_required" disabled>Confirm room or choose Room unspecified</SelectItem>}<SelectItem value="__unspecified">Room unspecified</SelectItem>{session.room && !rooms.some(room => room.id === session.room?.id) && <SelectItem value={session.room.id} disabled>{session.room.name} — Captured room unavailable</SelectItem>}{rooms.map(room => <SelectItem key={room.id} value={room.id} disabled={data.dataset === "live" && room.isPlaceholder}>{room.id === session.room?.id ? `${session.room.name}${session.room.isPlaceholder ? " — Placeholder" : ""} · Captured` : data.dataset === "live" && room.isPlaceholder ? `${room.name} — Unverified room, unavailable` : roomLabel(room)}</SelectItem>)}</SelectContent></Select>{roomConfirmationRequired && !reviewedRooms && <Button variant="outline" onClick={reloadReturnRooms} disabled={busy || paused}>Reload current return rooms</Button>}<p className="field-hint">{roomConfirmationRequired ? "Confirm a reviewed room or explicitly choose Room unspecified before another read. Completed movements retain their original placement evidence." : session.room?.isPlaceholder ? "Demonstration placeholder only; this is not verified physical location evidence." : "Choose once before accepted reads. Unspecified records no room; there is no registered-home fallback."}</p></div>}
@@ -317,7 +350,7 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
         {session.attempt && <section className="scan-station-conflict detail-card" role="alert"><h2>{busy ? "Submitting captured request…" : session.attempt.status === "uncertain" ? "Movement result uncertain" : "Movement rejected"}</h2><p>{session.attempt.message}</p><p className="field-hint">Captured request: {session.attempt.payload.requestId}. The review list, input method and room remain locked.</p>{!busy && <div className="flex flex-wrap gap-2"><Button onClick={retry} disabled={paused}><RefreshCw size={16}/>Retry same request</Button>{session.attempt.status === "rejected" && <Button variant="outline" onClick={reviewLatest} disabled={paused}>Review current records</Button>}</div>}
             {latestMatchesAttempt && <div className="mt-4"><h3>Review before discarding the rejected request</h3>{session.attempt.reads.map(read => { const now = latest.inventory.batteries.find(item => item.id === read.battery.id); return <article className="history-entry" key={read.battery.id}><strong>{read.battery.id}</strong><p>Captured: version {read.battery.version}, tag {read.tagId || "not recorded"}{read.battery.loanId ? `; holder ${read.battery.borrowerName} · checked out ${formatTime(read.battery.checkedOutAt)}` : "; in store"}.</p><p>Current: {now ? `version ${now.version}, tag ${now.tagId || "not recorded"}${now.loanId ? `; holder ${now.borrowerName} · ${now.loanId === read.battery.loanId ? "same loan" : "different loan"}` : "; no active loan"}` : "battery unavailable"}.</p></article>; })}{session.room && <p>Captured room version {session.room.version}; current version {latest.inventory.rooms.find(room => room.id === session.room?.id)?.version ?? "unavailable"}. The captured room has not been replaced.</p>}<Button variant="outline" onClick={() => setConfirmation("discard")} disabled={busy || paused}>Discard rejected request after review</Button><p className="field-hint">Discard does not process the latest loan. A new explicit read is required.</p></div>}
         </section>}
-        <section className="scan-station-queue inventory-panel"><div className="panel-top"><h2>Review queue · {session.queue.length}</h2><div className="panel-actions"><Button onClick={confirmQueue} disabled={locked || !session.queue.length}>{busy ? "Processing…" : `Confirm ${checkout ? "checkout" : "return"} (${session.queue.length})`}</Button><Button variant="outline" onClick={() => setConfirmation("clear")} disabled={locked || !session.queue.length}>Clear queue</Button></div></div><Table><TableHeader><TableRow><TableHead>BATTERY / TAG</TableHead><TableHead>RESPONSIBLE OWNER</TableHead><TableHead>CURRENT HOLDER</TableHead><TableHead>SOURCE</TableHead><TableHead/></TableRow></TableHeader><TableBody>{session.queue.map(read => <TableRow key={read.battery.id}><TableCell><strong>{read.battery.id} · {read.battery.name}</strong><span className="cell-secondary">{read.tagId || "No registered tag"}</span></TableCell><TableCell>{read.battery.ownerName}</TableCell><TableCell>{read.battery.borrowerName || "No active loan"}</TableCell><TableCell>{sourceLabel(read.source)}</TableCell><TableCell><Button variant="ghost" size="icon" aria-label={`Remove queued ${read.battery.id}`} disabled={locked} onClick={() => change(previous => ({ ...previous, queue: previous.queue.filter(item => item.battery.id !== read.battery.id) }))}><Trash2 size={16}/></Button></TableCell></TableRow>)}</TableBody></Table>{!session.queue.length && <div className="empty-state"><ScanLine/><p>Add a registered tag or select batteries above to prepare the review list.</p></div>}</section>
+        <section className="scan-station-queue inventory-panel"><div className="panel-top"><h2>Review queue · {session.queue.length}</h2><div className="panel-actions"><ReceiptAction pending={busy && !!session.attempt} confirmation={movementConfirmation} reviewKey={movementReviewKey} actionLabel={`Confirm ${checkout ? "checkout" : "return"} (${session.queue.length})`} onClick={confirmQueue} disabled={locked || !session.queue.length}>{busy ? "Processing…" : `Confirm ${checkout ? "checkout" : "return"} (${session.queue.length})`}</ReceiptAction><Button variant="outline" onClick={() => setConfirmation("clear")} disabled={locked || !session.queue.length}>Clear queue</Button></div></div><Table><TableHeader><TableRow><TableHead>BATTERY / TAG</TableHead><TableHead>RESPONSIBLE OWNER</TableHead><TableHead>CURRENT HOLDER</TableHead><TableHead>SOURCE</TableHead><TableHead/></TableRow></TableHeader><TableBody>{session.queue.map(read => <TableRow key={read.battery.id}><TableCell><strong>{read.battery.id} · {read.battery.name}</strong><span className="cell-secondary">{read.tagId || "No registered tag"}</span></TableCell><TableCell>{read.battery.ownerName}</TableCell><TableCell>{read.battery.borrowerName || "No active loan"}</TableCell><TableCell>{sourceLabel(read.source)}</TableCell><TableCell><Button variant="ghost" size="icon" aria-label={`Remove queued ${read.battery.id}`} disabled={locked} onClick={() => change(previous => ({ ...previous, queue: previous.queue.filter(item => item.battery.id !== read.battery.id) }))}><Trash2 size={16}/></Button></TableCell></TableRow>)}</TableBody></Table>{!session.queue.length && <div className="empty-state"><ScanLine/><p>Add a registered tag or select batteries above to prepare the review list.</p></div>}</section>
         <section className="scan-station-completed inventory-panel"><div className="section-heading"><h2>Completed this session</h2><div className="teaching-group-actions"><Button variant="outline" disabled={locked || !completedGroupIds.length} onClick={() => setGroupEditor(completedGroupIds)}>Add selected to teaching group</Button><Button variant="outline" disabled={locked || !session.completed.length || new Set(session.completed.map(read => read.battery.id)).size > 100} onClick={() => setGroupEditor([...new Set(session.completed.map(read => read.battery.id))])}>Add all session batteries to group</Button></div><span>{visibleCompleted.length} of {session.completed.length} movements · {completedGroupIds.length} selected</span></div><div className="p-5"><BatteryFilterControls data={data} filters={completedFilters} onChange={changeCompletedFilters} onClear={() => changeCompletedFilters()} disabled={locked} defaultLifecycle="all" scopeNote="Filters use current battery details within this session. Clear battery criteria to include receipts whose current details are unavailable. Recorded movements and selections stay unchanged."/>{completedFilterError && <p className="form-error" role="alert">{completedFilterError}</p>}</div><Table><TableHeader><TableRow><TableHead>BATTERY</TableHead><TableHead>CONFIRMED AT</TableHead><TableHead>SOURCE</TableHead><TableHead>RESULT</TableHead></TableRow></TableHeader><TableBody>{visibleCompleted.map(read => <TableRow key={`${read.receipt.requestId}-${read.battery.id}`} className="battery-selection-row" data-selectable={!locked && (completedGroupIds.includes(read.battery.id) || completedGroupIds.length < 100)} data-selected={completedGroupIds.includes(read.battery.id)} aria-selected={completedGroupIds.includes(read.battery.id)} data-state={completedGroupIds.includes(read.battery.id) ? "selected" : undefined} onClick={event => { if (!locked && !running.current && shouldToggleSelection(event)) setCompletedGroupIds(previous => previous.includes(read.battery.id) ? previous.filter(id => id !== read.battery.id) : previous.length < 100 ? [...previous, read.battery.id] : previous); }}><TableCell><label className="group-member-selection" onClick={event => { if (locked || hasRowTextSelection(event)) event.preventDefault(); }}><Checkbox aria-label={`Select completed ${read.battery.id} for a teaching group`} checked={completedGroupIds.includes(read.battery.id)} disabled={locked || !completedGroupIds.includes(read.battery.id) && completedGroupIds.length >= 100} onCheckedChange={checked => { if (!locked && !running.current) setCompletedGroupIds(previous => checked === true ? [...new Set([...previous, read.battery.id])] : previous.filter(id => id !== read.battery.id)); }}/><strong>{read.battery.id} · {read.battery.name}</strong></label><span className="cell-secondary">Responsible owner: {read.battery.ownerName}</span></TableCell><TableCell>{formatTime(read.receipt.at)}</TableCell><TableCell>{sourceLabel(read.source)}</TableCell><TableCell>{checkout ? `Checked out to ${read.receipt.borrower || data.user.displayName}` : "Returned"}{!checkout && <span className="cell-secondary">{read.receipt.returnPlacement ? read.receipt.returnPlacement.roomName : "Room unspecified"}</span>}</TableCell></TableRow>)}</TableBody></Table>{!visibleCompleted.length && <div className="empty-state"><CheckCircle2/><p>{session.completed.length ? "No completed movements match these filters. Clear filters to show all session records." : "No server-confirmed movements in this session yet."}</p></div>}</section>
         {!!session.issues.length && <section className="scan-station-issues inventory-panel"><div className="section-heading"><h2>Read issues and ignored duplicates</h2><span>{session.issues.length} {session.issues.length === 1 ? "record" : "records"}</span></div>{session.issues.map(issue => <article className="history-entry px-5" key={issue.id}><strong>{issue.resolvedBatteryId ? "Registered tag" : issue.category === "duplicate" ? "Duplicate read ignored" : issue.category === "unknown" ? "Unregistered tag" : issue.category === "state" ? "Battery or loan state" : "Read issue"} · {issue.tagId}</strong><p>{issue.resolvedBatteryId ? `Tag lookup now identifies ${issue.resolvedBatteryId}.` : issue.message}</p><div className="flex flex-wrap gap-2">{issue.category === "unknown" && !issue.resolvedBatteryId && <Button variant="outline" size="sm" onClick={() => onRegister(issue.tagId)} disabled={locked}>Register new battery</Button>}{!issue.acknowledged && issue.id !== session.attempt?.payload.requestId && <Button variant="ghost" size="sm" onClick={() => change(previous => ({ ...previous, issues: previous.issues.map(item => item.id === issue.id ? { ...item, acknowledged: true } : item) }))} disabled={busy || paused}>Acknowledge</Button>}{issue.acknowledged && <span className="field-hint">{issue.resolvedBatteryId ? "Resolved" : "Acknowledged"}</span>}</div></article>)}</section>}
         {groupEditor && <TeachingGroupsPanel data={data} initialIds={groupEditor} addToExisting onClose={() => setGroupEditor(null)} onChanged={onChanged} onSaved={group => { setNotice(`Selected batteries saved in ${group.name}. Earlier movements retain their original activity context.`); setGroupEditor(null); }} onFilter={() => setNotice("Open Teaching groups after exiting this scanning session.")} onSelect={() => setNotice("Open Teaching groups after exiting this scanning session.")}/>}

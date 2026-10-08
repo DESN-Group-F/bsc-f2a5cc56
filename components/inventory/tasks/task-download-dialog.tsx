@@ -1,24 +1,20 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { DownloadAction } from "@/components/ui/download-action";
+import { MotionPresence } from "@/components/ui/workspace-motion";
+import { useDownloadFeedback } from "@/hooks/use-download-feedback";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { downloadTaskReport } from "@/lib/client-utils";
 
 export type TaskDownloadRequest = { url: string; filename: string; title: string; scope: string };
 export function TaskDownloadDialog({ request, onClose, onBusyChange }: { request: TaskDownloadRequest; onClose: () => void; onBusyChange: (busy: boolean) => void }) {
   const [format, setFormat] = useState<"xlsx" | "json">("xlsx");
-  const [busy, setBusy] = useState(false), [error, setError] = useState("");
-  const running = useRef(false);
+  const reviewKey = JSON.stringify({ request, format });
+  const { busy, error, completion, running, run } = useDownloadFeedback(reviewKey);
   async function download() {
-    if (running.current) return;
-    running.current = true;
-    setBusy(true); onBusyChange(true); setError("");
-    try {
-      await downloadTaskReport(`${request.url}&download=${format}`, format, `${request.filename}.${format}`);
-      onClose();
-    } catch (failure) { setError((failure as Error).message); }
-    finally { running.current = false; setBusy(false); onBusyChange(false); }
+    await run(() => downloadTaskReport(`${request.url}&download=${format}`, format, `${request.filename}.${format}`), onBusyChange);
   }
   return <Dialog open onOpenChange={open => { if (!open && !running.current) onClose(); }}>
     <DialogContent showCloseButton={!busy} onEscapeKeyDown={event => { if (running.current) event.preventDefault(); }} onInteractOutside={event => { if (running.current) event.preventDefault(); }}>
@@ -37,10 +33,10 @@ export function TaskDownloadDialog({ request, onClose, onBusyChange }: { request
           <span><strong>JSON · Technical data</strong><small>Original structured fields and internal identifiers for analysis, reconciliation or system integration.</small></span>
         </label>
       </fieldset>
-      {error && <p className="form-error" role="alert">{error}</p>}
+      <MotionPresence>{error && <p className="form-error" role="alert">{error}</p>}</MotionPresence>
       <DialogFooter>
-        <Button variant="outline" onClick={onClose} disabled={busy}>Cancel</Button>
-        <Button onClick={() => void download()} disabled={busy}>{busy ? "Preparing…" : format === "xlsx" ? "Download Excel report" : "Download JSON data"}</Button>
+        <Button variant="outline" onClick={onClose} disabled={busy}><span key={completion ? "done" : "cancel"} className="download-close-label">{completion ? "Done" : "Cancel"}</span></Button>
+        <DownloadAction onClick={() => void download()} disabled={busy} pending={busy} completion={completion} reviewKey={reviewKey} actionLabel={format === "xlsx" ? "Download Excel report" : "Download JSON data"}>{format === "xlsx" ? "Download Excel report" : "Download JSON data"}</DownloadAction>
       </DialogFooter>
     </DialogContent>
   </Dialog>;

@@ -604,16 +604,15 @@
   width: 8px;
   height: 8px;
   flex-shrink: 0;
-  margin: 0 3px 4px;
+  margin: 0 3px;
   border-right: 2px solid currentColor;
   border-bottom: 2px solid currentColor;
   transform: rotate(45deg);
+  transition: transform 200ms var(--ease-out);
 }
 
 .filter-group[open] > summary::after {
   transform: rotate(225deg);
-  margin-top: 5px;
-  margin-bottom: 0;
 }
 
 .filter-group > summary:hover {

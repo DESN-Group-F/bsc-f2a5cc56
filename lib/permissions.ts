@@ -5,6 +5,9 @@ const staffPermissions = Object.freeze({
   registerBatteries: true,
   operateLoans: true,
   retireBatteries: true,
+  recoverRetiredBatteries: true,
+  purgeRetiredBatteries: false,
+  recordInspections: true,
   createModels: true,
   manageOwnGroups: true,
   manageOwnMessages: true,
@@ -16,6 +19,7 @@ const staffPermissions = Object.freeze({
   recordCharges: false,
   recordDemoObservations: false,
   correctLoans: false,
+  correctInspections: false,
   manageTaskPlans: false,
   completeAnyTask: false,
 });
@@ -26,6 +30,7 @@ export type RolePermissions = Readonly<{
 
 const adminPermissions: RolePermissions = Object.freeze({
   ...staffPermissions,
+  purgeRetiredBatteries: true,
   manageAccounts: true,
   editBatteryRecords: true,
   manageDirectories: true,
@@ -33,6 +38,7 @@ const adminPermissions: RolePermissions = Object.freeze({
   recordCharges: true,
   recordDemoObservations: true,
   correctLoans: true,
+  correctInspections: true,
   manageTaskPlans: true,
   completeAnyTask: true,
 });

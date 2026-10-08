@@ -7,6 +7,7 @@ import { getFilteredBatteries } from "@/lib/battery-selection-query";
 import { hasRowTextSelection, shouldToggleSelection } from "@/lib/client/row-selection";
 import { CheckCircle2, LogOut, ScanLine, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ReceiptAction } from "@/components/ui/receipt-action";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +19,10 @@ import { formatTime } from "@/lib/client-utils";
 import { captureLifecycleAttempt, lifecycleFailureStatus, lifecycleStorageKey, recoverLifecycleSession, verifyLifecycleReceipt, type LifecycleAttempt, type LifecyclePayload, type LifecycleReceipt } from "@/lib/lifecycle-session";
 import { captureRemovalDraft, recoverRemovalDraft, removalDraftStorageKey, type RemovalDraft } from "@/lib/removal-draft";
 import type { WriteAction } from "@/lib/client/inventory-contracts";
+import { getRolePermissions } from "@/lib/permissions";
+import { recoverRetiredAssetAttempt, retiredAssetStorageKey } from "@/lib/retired-asset-actions";
+import { RetiredAssetActionDialog, type RetiredAssetReview } from "./retired-asset-action-dialog";
+import historyStyles from "./retired-asset-action-dialog.module.css";
 
 import type { TeachingGroupReference } from "@/lib/teaching-context";
 
@@ -89,6 +94,9 @@ export function RemovalStation({ data, write, onChanged, onDetail, paused = fals
     const candidates = data.batteries.filter(battery => (!groupRef || group?.batteryIds.includes(battery.id)) && eligible(battery) && !completedIds.has(battery.id) && !queue.some(item => item.batteryId === battery.id));
     const { batteries: matching, error: filterError } = getFilteredBatteries(data, filters, candidates);
     const stale = queue.filter(item => !sameBinding(data.batteries.find(battery => battery.id === item.batteryId), item));
+    const lastReceipt = completed.at(-1);
+    const removalConfirmation = lastReceipt ? { identity: lastReceipt.requestId, count: lastReceipt.items.length, text: `${lastReceipt.items.length} ${lastReceipt.items.length === 1 ? "battery" : "batteries"} ${lifecycleLabel(lastReceipt.kind).toLowerCase()}` } : null;
+    const removalReviewKey = `${kind}|${queue.map(item => item.batteryId).join("|")}|${selected.join("|")}`;
 
     useEffect(() => { live.current = contextMatches; return () => { live.current = false; }; }, [contextMatches, data.dataset, data.user.id]);
     useEffect(() => { onBusyChange?.(busy || !!attempt || !!storageCandidate || !!draftCandidate || !!storageError || recovery.invalid); }, [busy, attempt, storageCandidate, draftCandidate, storageError, recovery.invalid, onBusyChange]);
@@ -217,7 +225,7 @@ export function RemovalStation({ data, write, onChanged, onDetail, paused = fals
                 <div className="form-field"><Label htmlFor="removal-kind">Final status</Label><Select value={kind} disabled={locked} onValueChange={(next: LifecyclePayload["kind"]) => { changeDraft({ kind: next }); }}><SelectTrigger id="removal-kind"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="scrapped">Scrapped</SelectItem><SelectItem value="permanently_removed">Permanently removed</SelectItem></SelectContent></Select><p className="field-hint">Scrapped records a battery retired from use. Permanently removed records stock that has left this inventory. Neither deletes history or certifies physical disposal.</p></div>
                 <div className="form-field"><Label htmlFor="removal-reason">Reason — optional</Label><Textarea id="removal-reason" value={reason} onChange={event => { changeDraft({ reason: event.target.value }); }} disabled={locked} maxLength={1000} placeholder="Add a reason for this batch, if available…"/></div>
                 {kind === "permanently_removed" && <div className="form-field"><Label htmlFor="removal-destination">Destination — optional</Label><Input id="removal-destination" value={destination} onChange={event => { changeDraft({ destination: event.target.value }); }} disabled={locked} maxLength={200} placeholder="Known transfer or disposal destination…"/></div>}
-                <div className="removal-actions"><Button type="button" onClick={() => confirm(currentDraft.current.selectedIds)} disabled={locked || !selected.length}>Confirm selected</Button><Button type="button" variant="outline" onClick={() => confirm(currentDraft.current.items.map(item => item.batteryId))} disabled={locked || !queue.length}>Confirm all queued</Button></div>
+                <div className="removal-actions"><ReceiptAction type="button" pending={busy} confirmation={removalConfirmation} reviewKey={removalReviewKey} actionLabel="Confirm selected" onClick={() => confirm(currentDraft.current.selectedIds)} disabled={locked || !selected.length}>Confirm selected</ReceiptAction><ReceiptAction type="button" variant="outline" pending={busy} confirmation={removalConfirmation} reviewKey={removalReviewKey} actionLabel="Confirm all queued" onClick={() => confirm(currentDraft.current.items.map(item => item.batteryId))} disabled={locked || !queue.length}>Confirm all queued</ReceiptAction></div>
             </div>
         </div>
         {attempt && <div className="removal-pending"><strong>Preserved removal: {attempt.payload.items.length} batteries · {lifecycleLabel(attempt.payload.kind)}</strong><p className="field-hint">The original account, inventory, reason, bindings and request ID are retained. This result may already be saved. Resolve this exact request before preparing another confirmation.</p><Button type="button" variant="outline" onClick={() => confirm([], true)} disabled={busy || contextLocked}>Retry exact removal</Button></div>}
@@ -226,8 +234,106 @@ export function RemovalStation({ data, write, onChanged, onDetail, paused = fals
     </section>;
 }
 
-export function RemovalHistory({ data, onDetail, onDownload }: { data: InventorySnapshot; onDetail?: (id: string) => void; onDownload?: (ids: string[]) => void }) {
+function readRetiredReview(data: InventorySnapshot, enabled: boolean): { review: RetiredAssetReview | null; error: string } {
+    if (!enabled || typeof sessionStorage === "undefined") return { review: null, error: "" };
+    try {
+        const raw = sessionStorage.getItem(retiredAssetStorageKey(data.user.id, data.dataset));
+        const attempt = recoverRetiredAssetAttempt(raw, data.user.id, data.dataset);
+        if (raw && !attempt) return { review: null, error: "The saved retired battery request could not be read. It has not been replaced or discarded. Restore readable recovery before starting another action." };
+        return { review: attempt ? { kind: attempt.payload.kind, batteries: attempt.payload.items.flatMap(item => data.batteries.find(battery => battery.id === item.batteryId) ?? []), attempt } : null, error: "" };
+    } catch (error) { return { review: null, error: `Saved retired battery recovery is unavailable: ${failureMessage(error)}` }; }
+}
+
+export type RemovalHistoryProps = {
+    data: InventorySnapshot;
+    onDetail?: (id: string) => void;
+    onDownload?: (ids: string[]) => void;
+    write?: WriteAction;
+    onChanged?: () => Promise<unknown> | unknown;
+    onBusyChange?: (locked: boolean) => void;
+    paused?: boolean;
+};
+
+export function RemovalHistory({ data, onDetail, onDownload, write, onChanged, onBusyChange, paused = false }: RemovalHistoryProps) {
     const [filters, setFilters] = useState<InventoryFilter>(() => ({ ...defaultInventoryFilter(), lifecycle: "all" }));
-    const { batteries: matching, error: filterError } = getFilteredBatteries(data, filters, data.batteries.filter(battery => battery.lifecycleStatus !== "active"));
-    return <section className="removal-panel"><div className="removal-panel-heading"><div><h2>Removal history</h2><p className="field-hint">Retired assets remain available for details, recorded evidence and complete-history downloads.</p></div>{onDownload && <Button type="button" variant="outline" onClick={() => onDownload(matching.map(battery => battery.id))} disabled={!matching.length}>Download matching records</Button>}</div><BatteryFilterControls data={data} filters={filters} onChange={patch => setFilters(previous => ({ ...previous, ...patch }))} onClear={() => setFilters({ ...defaultInventoryFilter(), lifecycle: "all" })} defaultLifecycle="all" scopeNote="This view contains retired records only. Search also includes the recorded removal reason and destination. Downloads include every matching record."/>{filterError && <p className="form-error" role="alert">{filterError}</p>}<p className="field-hint">{matching.length} matching records</p><div className="removal-results"><Table><TableHeader><TableRow><TableHead>BATTERY</TableHead><TableHead>STATUS</TableHead><TableHead>REASON / DESTINATION</TableHead><TableHead>RECORDED AT</TableHead></TableRow></TableHeader><TableBody>{matching.map(battery => <TableRow key={battery.id}><TableCell>{onDetail ? <button type="button" className="record-link" onClick={() => onDetail(battery.id)}>{battery.id}</button> : <strong>{battery.id}</strong>}<span className="cell-secondary">{battery.name}</span></TableCell><TableCell>{lifecycleLabel(battery.lifecycleStatus)}</TableCell><TableCell>{battery.lifecycleReason || "Not recorded"}{battery.lifecycleDestination && <span className="cell-secondary">Destination: {battery.lifecycleDestination}</span>}</TableCell><TableCell>{battery.lifecycleAt ? formatTime(battery.lifecycleAt) : "Not recorded"}</TableCell></TableRow>)}</TableBody></Table></div>{!matching.length && <p className="empty-hint">No retired records match these filters.</p>}</section>;
+    const [selection, setSelection] = useState<{ context: string; ids: string[] }>(() => ({ context: `${data.user.id}/${data.dataset}`, ids: [] }));
+    const [recovery, setRecovery] = useState(() => readRetiredReview(data, !!write));
+    const [review, setReview] = useState<RetiredAssetReview | null>(recovery.review);
+    const historyContext = `${data.user.id}/${data.dataset}`;
+    const priorContext = useRef(historyContext);
+    const retired = data.batteries.filter(battery => battery.lifecycleStatus !== "active");
+    const knownIds = new Set(retired.map(battery => battery.id));
+    const selected = selection.context === historyContext ? selection.ids.filter(id => knownIds.has(id)) : [];
+    const selectedAssets = retired.filter(battery => selected.includes(battery.id));
+    const { batteries: matching, error: filterError } = getFilteredBatteries(data, filters, retired);
+    const permissions = getRolePermissions(data.user.role);
+    const operationEligible = selected.length > 0 && selected.length <= 100 && selectedAssets.every(battery => battery.lifecycleStatus === "scrapped" && !battery.loanId);
+    const selectionLocked = paused || !!review || !!recovery.error;
+    useEffect(() => {
+        if (priorContext.current !== historyContext) {
+            priorContext.current = historyContext;
+            setSelection({ context: historyContext, ids: [] });
+            const next = readRetiredReview(data, !!write);
+            setRecovery(next); setReview(next.review);
+        }
+    }, [historyContext, data, write]);
+    useEffect(() => { if (recovery.error) onBusyChange?.(true); return () => { if (recovery.error) onBusyChange?.(false); }; }, [recovery.error, onBusyChange]);
+
+    function changeSelection(id: string, checked?: boolean) {
+        if (selectionLocked || !knownIds.has(id)) return;
+        setSelection(previous => {
+            const ids = previous.context === historyContext ? previous.ids.filter(value => knownIds.has(value)) : [];
+            const include = checked ?? !ids.includes(id);
+            return { context: historyContext, ids: include ? [...new Set([...ids, id])] : ids.filter(value => value !== id) };
+        });
+    }
+    function selectMatching(checked: boolean) {
+        if (selectionLocked) return;
+        const ids = matching.map(battery => battery.id);
+        setSelection(previous => ({ context: historyContext, ids: checked ? [...new Set([...(previous.context === historyContext ? previous.ids.filter(id => knownIds.has(id)) : []), ...ids])] : (previous.context === historyContext ? previous.ids : []).filter(id => knownIds.has(id) && !ids.includes(id)) }));
+    }
+    function openAction(kind: RetiredAssetReview["kind"]) {
+        if (selectionLocked || !write || !operationEligible || !(kind === "purge" ? permissions.purgeRetiredBatteries : permissions.recoverRetiredBatteries)) return;
+        const saved = readRetiredReview(data, true);
+        setRecovery(saved);
+        if (saved.error) return;
+        setReview(saved.review ?? { kind, batteries: structuredClone(selectedAssets) });
+    }
+    function restoreRecovery() {
+        const saved = readRetiredReview(data, !!write);
+        setRecovery(saved); if (saved.review) setReview(saved.review);
+    }
+    const outside = selected.filter(id => !matching.some(battery => battery.id === id)).length;
+
+    return <section className="removal-panel">
+        <div className="removal-panel-heading"><div><h2>Removal history</h2><p className="field-hint">Retired assets remain available for details, recorded evidence and complete-history downloads.</p></div>{onDownload && <Button type="button" variant="outline" onClick={() => onDownload(matching.map(battery => battery.id))} disabled={!matching.length}>Download matching records</Button>}</div>
+        <BatteryFilterControls data={data} filters={filters} onChange={patch => setFilters(previous => ({ ...previous, ...patch }))} onClear={() => setFilters({ ...defaultInventoryFilter(), lifecycle: "all" })} defaultLifecycle="all" scopeNote="This view contains retired records only. Search also includes the recorded removal reason and destination. Downloads include every matching record. Filters do not clear selected records."/>
+        {filterError && <p className="form-error" role="alert">{filterError}</p>}
+        <div className={historyStyles.historyToolbar}>
+            <span className={historyStyles.selectionSummary}><strong>{selected.length} selected</strong> · {matching.length} matching records{outside > 0 && ` · ${outside} selected outside current filters`}</span>
+            <Button variant="outline" size="sm" onClick={() => selectMatching(true)} disabled={selectionLocked || !matching.length}>Select matching</Button>
+            <Button variant="ghost" size="sm" onClick={() => { if (!selectionLocked) setSelection({ context: historyContext, ids: [] }); }} disabled={selectionLocked || !selected.length}>Clear selections</Button>
+            {onDownload && <Button variant="outline" size="sm" onClick={() => onDownload([...selected])} disabled={!selected.length}>Download selected records</Button>}
+            {write && permissions.recoverRetiredBatteries && <Button size="sm" onClick={() => openAction("recover")} disabled={selectionLocked || !operationEligible}>Recover selected ({selected.length})</Button>}
+            {write && permissions.purgeRetiredBatteries && <Button variant="outline" size="sm" onClick={() => openAction("purge")} disabled={selectionLocked || !operationEligible}>Delete selected records ({selected.length})</Button>}
+        </div>
+        {selected.length > 100 && <p className="field-hint">Recover or delete up to 100 reviewed batteries per operation. Downloads retain every selected record.</p>}
+        {selectedAssets.some(battery => battery.lifecycleStatus !== "scrapped") && <p className="field-hint">Only scrapped batteries can be recovered or deleted here. Permanently removed records remain available for details and full downloads.</p>}
+        {recovery.error && <div className="form-error" role="alert"><p>{recovery.error}</p><Button variant="outline" onClick={restoreRecovery}>Restore request recovery</Button></div>}
+        <div className="removal-results"><Table className={historyStyles.historyTable}><TableHeader><TableRow>
+            <TableHead className="checkbox-cell"><Checkbox aria-label="Select all matching retired records" checked={matching.length > 0 && matching.every(battery => selected.includes(battery.id)) ? true : matching.some(battery => selected.includes(battery.id)) ? "indeterminate" : false} onCheckedChange={checked => selectMatching(checked === true)} disabled={selectionLocked || !matching.length}/></TableHead>
+            <TableHead>Battery</TableHead><TableHead>Status</TableHead><TableHead>Reason / destination</TableHead><TableHead>Recorded at</TableHead>
+        </TableRow></TableHeader><TableBody>{matching.map(battery => <TableRow key={battery.id} className="battery-selection-row" data-selected={selected.includes(battery.id)} data-selectable={!selectionLocked} aria-selected={selected.includes(battery.id)} onClick={event => { if (shouldToggleSelection(event)) changeSelection(battery.id); }}>
+            <TableCell className="checkbox-cell"><Checkbox aria-label={`Select retired battery ${battery.id}`} checked={selected.includes(battery.id)} onCheckedChange={checked => changeSelection(battery.id, checked === true)} disabled={selectionLocked}/></TableCell>
+            <TableCell>{onDetail ? <button type="button" className="record-link" onClick={() => onDetail(battery.id)}>{battery.id}</button> : <strong>{battery.id}</strong>}<span className="cell-secondary">{battery.name}</span></TableCell>
+            <TableCell>{lifecycleLabel(battery.lifecycleStatus)}</TableCell><TableCell>{battery.lifecycleReason || "Not recorded"}{battery.lifecycleDestination && <span className="cell-secondary">Destination: {battery.lifecycleDestination}</span>}</TableCell><TableCell>{battery.lifecycleAt ? formatTime(battery.lifecycleAt) : "Not recorded"}</TableCell>
+        </TableRow>)}</TableBody></Table></div>
+        {!matching.length && <p className="empty-hint">No retired records match these filters.</p>}
+        {!!data.purgedBatteries?.length && <details className={historyStyles.deletionEvidence}>
+            <summary><span>Deletion evidence</span><span>{data.purgedBatteries.length} {data.purgedBatteries.length === 1 ? "record" : "records"}</span></summary>
+            <p>Only the battery ID, deleting account and deletion time remain. Detailed records and history were deleted. These battery IDs remain reserved.</p>
+            <div className={historyStyles.deletionEvidenceTable}><Table><TableHeader><TableRow><TableHead>Battery ID</TableHead><TableHead>Deleting account ID</TableHead><TableHead>Deleted at</TableHead></TableRow></TableHeader><TableBody>{data.purgedBatteries.map(record => <TableRow key={record.id}><TableCell><span className={historyStyles.identifier}>{record.id}</span></TableCell><TableCell><span className={historyStyles.accountId}>{record.actorAccountId}</span></TableCell><TableCell>{formatTime(record.at)}</TableCell></TableRow>)}</TableBody></Table></div>
+        </details>}
+        {review && write && <RetiredAssetActionDialog data={data} review={review} write={write} onChanged={onChanged ?? (() => undefined)} onClose={() => { setReview(null); setRecovery({ review: null, error: "" }); }} paused={paused} onBusyChange={onBusyChange} onVerified={receipt => setSelection(previous => ({ context: previous.context, ids: previous.ids.filter(id => !receipt.items.some(item => item.batteryId === id)) }))}/>}
+    </section>;
 }

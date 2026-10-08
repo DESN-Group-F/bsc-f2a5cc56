@@ -2,7 +2,7 @@
 import { getRolePermissions } from "@/lib/permissions";
 import { isActiveBattery, batteryStatusLabel } from "@/lib/battery-lifecycle";
 import { useEffect, useRef, useState } from "react";
-import { Battery, Download, Clock3, Radio, UserRound, Plus, Pencil, RefreshCw } from "lucide-react";
+import { Battery, Download, Clock3, Radio, UserRound, Plus, Pencil, RefreshCw, MapPin, ChevronDown, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
@@ -11,31 +11,36 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { MotionDisclosure } from "@/components/ui/workspace-motion";
 import type { InventorySnapshot, BatteryRecord, BatteryDetail } from "@/lib/domain";
-import { actionNames, formatTime, formatDateOnly, formatBatteryAge, sydneyInput, fromSydneyInput, numberOrNull, buildingLabel, storageRoomLabel, durationLabel, reloadSessionPage } from "@/lib/client-utils";
-import { currentSydneyDate } from "@/lib/battery-age";
+import { actionNames, formatTime, sydneyInput, fromSydneyInput, numberOrNull, buildingLabel, storageRoomLabel, durationLabel, reloadSessionPage } from "@/lib/client-utils";
 import { buildingPickerOptions, isSupportedBuilding, roomPickerOptions } from "@/lib/location-catalog";
 import { RecordPicker } from "./record-picker";
 import { BatteryMovementSummary } from "./battery-movement-summary";
+import { BatteryAgeAndUsage, BatteryInspectionSummary, BatteryInspections, type InspectionRecoveryStatus } from "./battery-history";
 import type { WriteAction } from "@/lib/client/inventory-contracts";
+import styles from "./battery-detail.module.css";
 type DetailDraft = { kind: "charge" } | { kind: "observation" } | {
     kind: "correction";
     loanId: string;
     action: "checkout_voided" | "return_reopened";
     expectedReturnedAt: string | null;
 };
-export function BatteryDetails({ battery: initialBattery, data, revision, onClose, onEdit, onExport, write }: {
+export function BatteryDetails({ battery: initialBattery, data, revision, onClose, onEdit, onExport, onInspectionChanged, write }: {
     battery: BatteryRecord;
     data: InventorySnapshot;
     revision: number;
     onClose: () => void;
     onEdit: (battery: BatteryRecord) => void;
     onExport: () => void;
+    onInspectionChanged?: () => void;
     write: WriteAction;
 }) {
     const permissions = getRolePermissions(data.user.role);
     const [result, setResult] = useState<{ key: string; detail: BatteryDetail | null; error: string } | null>(null);
     const [retry, setRetry] = useState(0), [form, setForm] = useState<DetailDraft | null>(null);
+    const [tab, setTab] = useState("overview"), [specificationsOpen, setSpecificationsOpen] = useState(false);
+    const [inspectionRecovery, setInspectionRecovery] = useState<InspectionRecoveryStatus>({ ready: false, pending: false, error: "" });
     const requestKey = `${data.dataset}:${initialBattery.id}:${revision}:${retry}`;
     const detail = result?.key === requestKey ? result.detail : null;
     const error = result?.key === requestKey ? result.error : "";
@@ -43,26 +48,96 @@ export function BatteryDetails({ battery: initialBattery, data, revision, onClos
     useEffect(() => { const abort = new AbortController(); fetch(`/api/inventory?dataset=${data.dataset}&batteryId=${encodeURIComponent(initialBattery.id)}`, { signal: abort.signal, cache: "no-store" }).then(async (r) => { if (r.status === 401) reloadSessionPage("/signin"); const body = await r.json() as BatteryDetail & {
         error?: string;
     }; if (!r.ok)
-        throw new Error(body.error || "Battery details could not be loaded."); if (abort.signal.aborted) return; if (body.battery?.id !== initialBattery.id || !body.movementSummary) throw new Error("The battery details response was incomplete. Refresh before using this record."); setResult({ key: requestKey, detail: body, error: "" }); }).catch(e => { if (e.name !== "AbortError" && !abort.signal.aborted)
+        throw new Error(body.error || "Battery details could not be loaded."); if (abort.signal.aborted) return; if (body.battery?.id !== initialBattery.id || !body.movementSummary || !body.usageSummary || !body.inspectionSummary || !Array.isArray(body.inspections)) throw new Error("The battery details response was incomplete. Refresh before using this record."); setResult({ key: requestKey, detail: body, error: "" }); }).catch(e => { if (e.name !== "AbortError" && !abort.signal.aborted)
         setResult({ key: requestKey, detail: null, error: e.message }); }); return () => abort.abort(); }, [initialBattery.id, data.dataset, requestKey]);
-    const ageAsOfOn = currentSydneyDate();
-    return <><Sheet open onOpenChange={o => !o && onClose()}><SheetContent className="battery-detail-sheet"><SheetHeader><SheetTitle><span className="detail-title-icon"><Battery size={20}/></span>{battery.id}</SheetTitle><SheetDescription>{battery.name}</SheetDescription></SheetHeader><div className="detail-body">
-    <div className="detail-action-row"><span className={`status-badge ${!isActiveBattery(battery) ? "retired" : battery.loanId ? "out" : "in"}`}>{batteryStatusLabel(battery)}</span><div className="detail-button-group"><Button variant="outline" size="sm" onClick={() => setRetry(value => value + 1)} disabled={!!form}><RefreshCw size={16}/>Refresh details</Button><Button variant="outline" size="sm" onClick={onExport}><Download size={16}/>Download details</Button>{permissions.editBatteryRecords && isActiveBattery(battery) && <Button variant="outline" size="sm" onClick={() => onEdit(battery)}><Pencil />Edit asset</Button>}</div></div>
-    <BatteryMovementSummary detail={detail} error={error} onRetry={() => setRetry(value => value + 1)} />
-    <dl className="spec-grid">{[["Chemistry", battery.chemistry || "Not recorded"], ["Model", battery.model || "Not recorded"], ["Capacity", battery.capacityMah == null ? "Not recorded" : `${battery.capacityMah.toLocaleString()} mAh`], ["Nominal voltage", battery.voltage == null ? "Not recorded" : `${battery.voltage} V`], ["RFID identifier", battery.tagId || "Not assigned"], ["Storage building", battery.homeBuildingId ? buildingLabel({ id: battery.homeBuildingId, name: battery.homeBuildingName! }) : "Building not assigned"], ["Storage room", storageRoomLabel(battery)]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
-    {!isActiveBattery(battery) && <div className="detail-card"><h3>Retirement / permanent removal</h3><p>{batteryStatusLabel(battery)} · {formatTime(battery.lifecycleAt)}</p><p>Reason: {battery.lifecycleReason || "Not recorded"}</p>{battery.lifecycleDestination && <p>Destination: {battery.lifecycleDestination}</p>}<p>This asset is unavailable for borrowing. Its archived storage, responsibility and complete history remain recorded.</p></div>}
-    <div className="detail-card"><h3><Clock3 size={17}/>Battery age</h3><dl className="spec-grid">{[["Registered at", formatTime(battery.registeredAt)], ["Manufactured on", formatDateOnly(battery.manufacturedOn)], ["First used on", formatDateOnly(battery.firstUsedOn)], ["Age since manufacture", formatBatteryAge(battery.manufacturedOn, ageAsOfOn)], ["Time in service", formatBatteryAge(battery.firstUsedOn, ageAsOfOn)]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl><p>Manufacture age uses the recorded production date; time in service uses the recorded first-use date. Registration time is retained separately. Calculated as of {formatDateOnly(ageAsOfOn)} (Sydney).</p></div>
-    <div className="detail-card"><h3><UserRound size={17}/>Responsibility</h3><div className="key-value"><span>Responsible owner</span><strong>{battery.ownerName}</strong></div><div className="key-value"><span>Current holder</span><strong>{battery.borrowerName || "No active holder"}</strong></div>{battery.checkedOutAt && <div className="key-value"><span>Checked out</span><strong>{formatTime(battery.checkedOutAt)}</strong></div>}</div>
-    <div className="detail-card"><h3><Radio size={17}/>Last observed room</h3><strong>{battery.observedRoom || "No observation recorded"}</strong>{battery.observedBuilding && <p>{battery.observedBuilding}</p>}<p>{battery.observedAt ? `${formatTime(battery.observedAt)} · ${battery.observationSource}` : "RFID room detection has not been connected."}</p>{battery.observationRoomSnapshot === "unavailable" && <p>Original room label unavailable; the recorded room ID is retained.</p>}{data.dataset === "demo" && permissions.recordDemoObservations && isActiveBattery(battery) && <Button variant="outline" size="sm" onClick={() => setForm({ kind: "observation" })}><Plus />Add demo observation</Button>}</div>
-    <div className="detail-card"><h3><Clock3 size={17}/>Last recorded charge</h3><strong>{battery.chargedAt ? `Completed ${formatTime(battery.chargedAt)}` : "No charge record"}</strong><p>{battery.chargedAt ? durationLabel(battery.chargeDurationMinutes) : permissions.recordCharges ? "Record the charging duration and completion time." : "Charging records are maintained by an administrator."}</p>{permissions.recordCharges && isActiveBattery(battery) && <Button variant="outline" size="sm" onClick={() => setForm({ kind: "charge" })}><Plus />Record charge</Button>}</div>
-    {error ? <div className="form-error" role="alert">{error}<Button variant="outline" size="sm" onClick={() => setRetry(r => r + 1)}>Retry history</Button></div> : !detail ? <div className="space-y-3"><Skeleton className="h-10 w-full"/><Skeleton className="h-24 w-full"/></div> : <Tabs defaultValue="loans"><TabsList variant="line"><TabsTrigger value="loans">Loans</TabsTrigger><TabsTrigger value="charges">Charges</TabsTrigger><TabsTrigger value="observations">Locations</TabsTrigger><TabsTrigger value="audit">Audit history</TabsTrigger></TabsList>
-      <TabsContent value="loans"><div className="history-list">{detail.loans.length ? detail.loans.map((l, i) => <article className="history-entry" key={l.id}><div className="history-heading"><strong>{l.borrowerName}</strong><span className={`status-badge ${!l.returnedAt && !l.cancelledAt ? "out" : "in"}`}>{l.cancelledAt ? "Corrected" : l.returnedAt ? "Returned" : "In use"}</span></div><p>Checkout</p><p>Out: {formatTime(l.checkedOutAt)} · {l.checkoutActorName}</p>{l.returnedAt && <p>Return: {formatTime(l.returnedAt)} · {l.returnActorName}</p>}{l.cancelledAt && <p>Checkout corrected: {formatTime(l.cancelledAt)}</p>}{l.correctionReason && <p className="correction-reason">Reason: {l.correctionReason}</p>}{permissions.correctLoans && isActiveBattery(battery) && i === 0 && !l.cancelledAt && <Button variant="ghost" size="sm" onClick={() => setForm({ kind: "correction", loanId: l.id, action: l.returnedAt ? "return_reopened" : "checkout_voided", expectedReturnedAt: l.returnedAt })}><RefreshCw />Correct this transaction</Button>}</article>) : <p className="history-empty">No loan history.</p>}</div></TabsContent>
-      <TabsContent value="charges"><div className="history-list">{detail.charges.length ? detail.charges.map(c => <article className="history-entry" key={c.id}><strong>Completed {formatTime(c.completedAt)}</strong><p>{durationLabel(c.durationMinutes)}</p><p>Recorded by {c.actorName} · {formatTime(c.recordedAt)}</p></article>) : <p className="history-empty">No charging history.</p>}</div></TabsContent>
-      <TabsContent value="observations"><div className="history-list">{detail.observations.length ? detail.observations.map(o => <article className="history-entry" key={o.id}><strong>{o.roomName}</strong>{o.roomBuilding && <p>{o.roomBuilding}</p>}<p>Observed {formatTime(o.observedAt)} · {o.source}</p><p>Recorded {formatTime(o.receivedAt)}</p>{o.roomSnapshot === "unavailable" && <p>Original room label unavailable; the recorded room ID is retained.</p>}</article>) : <p className="history-empty">No location observations.</p>}</div></TabsContent>
-      <TabsContent value="audit"><div className="history-list">{detail.events.map(e => <article className="history-entry" key={e.id}><strong>{actionNames[e.action] ?? e.action}</strong><p>{formatTime(e.at)} · {e.actorName}</p>{typeof e.details.reason === "string" && <p className="correction-reason">Reason: {e.details.reason || "Not recorded"}</p>}{typeof e.details.source === "string" && <p>Source: {e.details.source}</p>}</article>)}</div></TabsContent>
-    </Tabs>}
-    <p className="time-note">History lists show up to 200 recent records per section. Downloads include the complete selected histories.</p><p className="time-note">All displayed times use Australia/Sydney.</p>
-  </div></SheetContent></Sheet>{form && <DetailForm key={`${form.kind}-${form.kind === "correction" ? form.loanId : ""}`} form={form} battery={battery} data={data} onClose={() => setForm(null)} write={write}/>}</>;
+    return <>
+        <Sheet open onOpenChange={open => !open && onClose()}>
+            <SheetContent className={`battery-detail-sheet ${styles.sheet}`}>
+                <SheetHeader className={styles.header}>
+                    <span className={styles.eyebrow}>Battery record · {data.dataset === "demo" ? "Demonstration inventory" : "Working inventory"}</span>
+                    <SheetTitle><span className="detail-title-icon"><Battery size={20} aria-hidden="true" /></span>{battery.id}</SheetTitle>
+                    <SheetDescription><span className={styles.assetName}>{battery.name}</span><span>{battery.chemistry || "Chemistry not recorded"} · {battery.voltage == null ? "Nominal voltage not recorded" : `${battery.voltage} V nominal`}</span></SheetDescription>
+                </SheetHeader>
+                <div className={styles.commands}>
+                    <span className={`status-badge ${!isActiveBattery(battery) ? "retired" : battery.loanId ? "out" : "in"}`}>{batteryStatusLabel(battery)}</span>
+                    <div className={styles.commandButtons}>
+                        <Button variant="outline" size="sm" onClick={() => setRetry(value => value + 1)} disabled={!!form}><RefreshCw size={16} />Refresh details</Button>
+                        <Button variant="outline" size="sm" onClick={onExport}><Download size={16} />Download details</Button>
+                        {permissions.editBatteryRecords && isActiveBattery(battery) && <Button variant="outline" size="sm" onClick={() => onEdit(battery)}><Pencil size={16} />Edit asset</Button>}
+                    </div>
+                </div>
+                {(inspectionRecovery.pending || inspectionRecovery.error) && <div className={styles.recovery} role={inspectionRecovery.error ? "alert" : "status"}>
+                    <AlertCircle size={18} aria-hidden="true" />
+                    <div><strong>{inspectionRecovery.error ? "Inspection recovery needs attention" : "An inspection change still needs confirmation"}</strong><p>{inspectionRecovery.error || "The original request is preserved. Review and retry it from Inspections."}</p></div>
+                    <Button variant="outline" size="sm" onClick={() => setTab("inspections")}>Open inspection recovery</Button>
+                </div>}
+                <Tabs value={tab} onValueChange={setTab} className={styles.tabs}>
+                    <TabsList className={styles.tabList} aria-label="Battery detail sections">
+                        <TabsTrigger value="overview">Overview</TabsTrigger>
+                        <TabsTrigger value="usage">Usage</TabsTrigger>
+                        <TabsTrigger value="inspections">Inspections</TabsTrigger>
+                        <TabsTrigger value="history">History</TabsTrigger>
+                    </TabsList>
+                    <div className={styles.body}>
+                        <TabsContent value="overview" className={styles.panel}>
+                            <BatteryInspectionSummary detail={detail} error={error} onViewEvidence={() => setTab("inspections")} />
+                            <div className={styles.overviewGrid}>
+                                <section className={styles.card} aria-label="Responsibility">
+                                    <h3><UserRound size={17} aria-hidden="true" />Responsibility</h3>
+                                    <dl className={styles.values}><div><dt>Responsible owner</dt><dd>{battery.ownerName}</dd></div><div><dt>Current holder</dt><dd>{battery.borrowerName || "No active holder"}</dd></div>{battery.checkedOutAt && <div><dt>Checked out</dt><dd>{formatTime(battery.checkedOutAt)}</dd></div>}</dl>
+                                </section>
+                                <section className={styles.card} aria-label="Registered storage home">
+                                    <h3><MapPin size={17} aria-hidden="true" />Registered home</h3>
+                                    <dl className={styles.values}><div><dt>Building</dt><dd>{battery.homeBuildingId ? buildingLabel({ id: battery.homeBuildingId, name: battery.homeBuildingName! }) : "Building not assigned"}</dd></div><div><dt>Room</dt><dd>{storageRoomLabel(battery)}</dd></div></dl>
+                                    <p className={styles.note}>Registered storage is separate from observed location and current borrowing.</p>
+                                </section>
+                                <section className={styles.card} aria-label="Last recorded location observation">
+                                    <h3><Radio size={17} aria-hidden="true" />Last observed location</h3>
+                                    <strong>{battery.observedRoom || (battery.observedAt ? "Original room label unavailable" : "No observation recorded")}</strong>
+                                    {battery.observedBuilding && <p>{battery.observedBuilding}</p>}
+                                    <p>{battery.observedAt ? `${formatTime(battery.observedAt)} · ${battery.observationSource || "Source not recorded"}` : "RFID room detection has not been connected."}</p>
+                                    {battery.observationRoomSnapshot === "unavailable" && <p className={styles.note}>Original room label unavailable; the recorded room ID is retained.</p>}
+                                    {data.dataset === "demo" && permissions.recordDemoObservations && isActiveBattery(battery) && <Button variant="outline" size="sm" onClick={() => setForm({ kind: "observation" })}><Plus size={15} />Add demo observation</Button>}
+                                </section>
+                                <section className={styles.card} aria-label="Last recorded charge">
+                                    <h3><Clock3 size={17} aria-hidden="true" />Last recorded charge</h3>
+                                    <strong>{battery.chargedAt ? `Completed ${formatTime(battery.chargedAt)}` : "No charge record"}</strong>
+                                    <p>{battery.chargedAt ? durationLabel(battery.chargeDurationMinutes) : permissions.recordCharges ? "Record the charging duration and completion time." : "Charging records are maintained by an administrator."}</p>
+                                    {permissions.recordCharges && isActiveBattery(battery) && <Button variant="outline" size="sm" onClick={() => setForm({ kind: "charge" })}><Plus size={15} />Record charge</Button>}
+                                </section>
+                            </div>
+                            <section className={styles.specifications}>
+                                <Button variant="ghost" className={styles.disclosureButton} onClick={() => setSpecificationsOpen(open => !open)} aria-expanded={specificationsOpen} aria-controls="battery-detail-specifications"><span>Specifications &amp; identification</span><ChevronDown size={16} className={specificationsOpen ? styles.chevronOpen : styles.chevron} aria-hidden="true" /></Button>
+                                <MotionDisclosure open={specificationsOpen} id="battery-detail-specifications">
+                                    <dl className={`spec-grid ${styles.specGrid}`}>{[["Battery ID", battery.id], ["Battery name", battery.name], ["Chemistry", battery.chemistry || "Not recorded"], ["Model", battery.model || "Not recorded"], ["Capacity", battery.capacityMah == null ? "Not recorded" : `${battery.capacityMah.toLocaleString()} mAh`], ["Nominal voltage", battery.voltage == null ? "Not recorded" : `${battery.voltage} V`], ["RFID identifier", battery.tagId || "Not assigned"]].map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+                                </MotionDisclosure>
+                            </section>
+                            {!isActiveBattery(battery) && <section className={styles.card}><h3>Retirement / permanent removal</h3><p>{batteryStatusLabel(battery)} · {formatTime(battery.lifecycleAt)}</p><p>Reason: {battery.lifecycleReason || "Not recorded"}</p>{battery.lifecycleDestination && <p>Destination: {battery.lifecycleDestination}</p>}<p className={styles.note}>This asset is unavailable for borrowing. Its archived storage, responsibility and complete history remain recorded.</p></section>}
+                        </TabsContent>
+                        <TabsContent value="usage" className={styles.panel}>
+                            <div className={styles.card}><BatteryMovementSummary detail={detail} error={error} onRetry={() => setRetry(value => value + 1)} /></div>
+                            <BatteryAgeAndUsage battery={battery} detail={detail} error={error} onRetry={() => setRetry(value => value + 1)} />
+                        </TabsContent>
+                        <TabsContent value="inspections" forceMount hidden={tab !== "inspections"} className={styles.panel}>
+                            <BatteryInspections key={`${data.user.id}:${data.dataset}:${battery.id}`} battery={battery} detail={detail} error={error} data={data} write={write} onChanged={() => setRetry(value => value + 1)} onRecoveryChange={setInspectionRecovery} onSaved={() => { setRetry(value => value + 1); onInspectionChanged?.(); }} />
+                        </TabsContent>
+                        <TabsContent value="history" className={styles.panel}>
+                            {error ? <div className="form-error" role="alert">{error}<Button variant="outline" size="sm" onClick={() => setRetry(value => value + 1)}>Retry history</Button></div> : !detail ? <div className="space-y-3" aria-busy="true"><Skeleton className="h-10 w-full" /><Skeleton className="h-24 w-full" /><span className="sr-only">Loading battery history.</span></div> : <Tabs defaultValue="loans" className={styles.historyTabs}>
+                                <TabsList variant="line" className={styles.historyTabList} aria-label="Recorded battery history"><TabsTrigger value="loans">Loans</TabsTrigger><TabsTrigger value="charges">Charges</TabsTrigger><TabsTrigger value="observations">Locations</TabsTrigger><TabsTrigger value="audit">Audit history</TabsTrigger></TabsList>
+                                <TabsContent value="loans"><div className="history-list">{detail.loans.length ? detail.loans.map((loan, index) => <article className="history-entry" key={loan.id}><div className="history-heading"><strong>{loan.borrowerName}</strong><span className={`status-badge ${!loan.returnedAt && !loan.cancelledAt ? "out" : "in"}`}>{loan.cancelledAt ? "Corrected" : loan.returnedAt ? "Returned" : "In use"}</span></div><p>Checkout</p><p>Out: {formatTime(loan.checkedOutAt)} · {loan.checkoutActorName}</p>{loan.returnedAt && <p>Return: {formatTime(loan.returnedAt)} · {loan.returnActorName}</p>}{loan.cancelledAt && <p>Checkout corrected: {formatTime(loan.cancelledAt)}</p>}{loan.correctionReason && <p className="correction-reason">Reason: {loan.correctionReason}</p>}{permissions.correctLoans && isActiveBattery(battery) && index === 0 && !loan.cancelledAt && <Button variant="ghost" size="sm" onClick={() => setForm({ kind: "correction", loanId: loan.id, action: loan.returnedAt ? "return_reopened" : "checkout_voided", expectedReturnedAt: loan.returnedAt })}><RefreshCw size={15} />Correct this transaction</Button>}</article>) : <p className="history-empty">No loan history.</p>}</div></TabsContent>
+                                <TabsContent value="charges"><div className="history-list">{detail.charges.length ? detail.charges.map(charge => <article className="history-entry" key={charge.id}><strong>Completed {formatTime(charge.completedAt)}</strong><p>{durationLabel(charge.durationMinutes)}</p>{charge.percentage != null && <p>Legacy recorded percentage: {charge.percentage}%</p>}<p>Recorded by {charge.actorName} · {formatTime(charge.recordedAt)}</p></article>) : <p className="history-empty">No charging history.</p>}</div></TabsContent>
+                                <TabsContent value="observations"><div className="history-list">{detail.observations.length ? detail.observations.map(observation => <article className="history-entry" key={observation.id}><strong>{observation.roomName}</strong>{observation.roomBuilding && <p>{observation.roomBuilding}</p>}<p>Observed {formatTime(observation.observedAt)} · {observation.source}</p><p>Recorded {formatTime(observation.receivedAt)}</p>{observation.roomSnapshot === "unavailable" && <p>Original room label unavailable; the recorded room ID is retained.</p>}</article>) : <p className="history-empty">No location observations.</p>}</div></TabsContent>
+                                <TabsContent value="audit"><div className="history-list">{detail.events.length ? detail.events.map(event => <article className="history-entry" key={event.id}><strong>{actionNames[event.action] ?? event.action}</strong><p>{formatTime(event.at)} · {event.actorName}</p>{typeof event.details.reason === "string" && <p className="correction-reason">Reason: {event.details.reason || "Not recorded"}</p>}{typeof event.details.source === "string" && <p>Source: {event.details.source}</p>}</article>) : <p className="history-empty">No audit history.</p>}</div></TabsContent>
+                            </Tabs>}
+                            <p className={styles.note}>History lists show up to 200 recent records per section. Downloads include the complete selected histories.</p>
+                        </TabsContent>
+                    </div>
+                </Tabs>
+                <p className={styles.timeNote}>All displayed times use Australia/Sydney.</p>
+            </SheetContent>
+        </Sheet>
+        {form && <DetailForm key={`${form.kind}-${form.kind === "correction" ? form.loanId : ""}`} form={form} battery={battery} data={data} onClose={() => setForm(null)} write={write} />}
+    </>;
 }
 function DetailForm({ form, battery, data, onClose, write }: {
     form: DetailDraft;

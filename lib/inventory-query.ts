@@ -1,8 +1,9 @@
 import { z } from "zod";
 import { DomainError, type BatteryRecord } from "./domain";
 import type { TeachingGroup } from "./teaching-groups";
-import { ageInDays, currentSydneyDate, isDateOnly } from "./battery-age";
+import { ageInDays, currentSydneyDate, isDateOnly, serviceAgeAsOfOn } from "./battery-age";
 import { isActiveBattery } from "./battery-lifecycle";
+import { recentNewArrivals, type NewArrivals } from "./new-arrivals";
 const availability = z.enum(["any", "known", "unknown"]).default("any");
 const positiveBound = z.number().finite().positive().nullable().default(null);
 const ageBound = z.number().finite().int().nonnegative().max(3652058).nullable().default(null);
@@ -20,6 +21,7 @@ export const inventoryFilterSchema = z.object({
     sortBy: z.enum(["id", "name", "registered", "manufactured", "age", "service_age", "checkout", "charge", "observed", "capacity", "voltage", "charge_duration"]).default("id"),
     sortDirection: z.enum(["asc", "desc"]).default("asc"),
     personalScope: z.enum(["all", "responsible", "borrowed"]).default("all"),
+    newArrivalsOnly: z.boolean().default(false),
     lifecycle: z.enum(["active", "all", "scrapped", "permanently_removed"]).default("active"),
     status: z.enum(["all", "in", "out"]).default("all"), building: z.string().max(64).default("all"), room: z.string().max(64).default("all"), owner: z.string().max(64).default("all"), search: z.string().max(200).default(""),
     observedRoom: z.string().max(64).default("all"),
@@ -90,7 +92,7 @@ export function sortBatteries(batteries: BatteryRecord[], input: InventoryFilter
             case "registered": return time(battery.registeredAt);
             case "manufactured": return time(battery.manufacturedOn);
             case "age": return ageInDays(battery.manufacturedOn, asOfOn);
-            case "service_age": return ageInDays(battery.firstUsedOn, asOfOn);
+            case "service_age": return ageInDays(battery.firstUsedOn, serviceAgeAsOfOn(battery, asOfOn) ?? "");
             case "checkout": return time(battery.lastCheckedOutAt);
             case "charge": return time(battery.chargedAt);
             case "observed": return time(battery.observedAt);
@@ -107,13 +109,15 @@ export function sortBatteries(batteries: BatteryRecord[], input: InventoryFilter
         return compared ? (filter.sortDirection === "desc" ? -compared : compared) : a.id.localeCompare(b.id, "en", { numeric: true }) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
     });
 }
-export function filterBatteries(batteries: BatteryRecord[], input: InventoryFilterInput, asOfOn: string = currentSydneyDate(), viewerAccountId: string | null = null, teachingGroups: TeachingGroup[] = []) {
+export function filterBatteries(batteries: BatteryRecord[], input: InventoryFilterInput, asOfOn: string = currentSydneyDate(), viewerAccountId: string | null = null, teachingGroups: TeachingGroup[] = [], newArrivals?: NewArrivals) {
     const filter = inventoryFilterSchema.parse(input);
     const group = filter.groupId ? teachingGroups.find(item => item.id === filter.groupId && item.ownerAccountId === viewerAccountId && item.state === "active") : null;
     if (filter.groupId && !group) throw new DomainError(409, "This teaching group is no longer available in your account and inventory. Clear the group filter or choose a current group.");
     const memberIds = group ? new Set(group.batteryIds) : null;
+    const arrivalIds = filter.newArrivalsOnly ? new Set(recentNewArrivals(newArrivals).map(item => item.batteryId)) : null;
     const query = filter.search.trim().toLowerCase();
     return sortBatteries(batteries.filter(battery => (!memberIds || memberIds.has(battery.id)) && (filter.personalScope === "all" || !!viewerAccountId && (filter.personalScope === "responsible" ? battery.ownerAccountId === viewerAccountId : !!battery.loanId && battery.borrowerAccountId === viewerAccountId))
+        && (!arrivalIds || isActiveBattery(battery) && arrivalIds.has(battery.id))
         && (filter.lifecycle === "all" || (filter.lifecycle === "active" ? isActiveBattery(battery) : battery.lifecycleStatus === filter.lifecycle))
         && (filter.status === "all" || isActiveBattery(battery) && (filter.status === "out" ? !!battery.loanId : !battery.loanId))
         && (filter.building === "all" || battery.homeBuildingId === filter.building)
@@ -132,12 +136,13 @@ export function filterBatteries(batteries: BatteryRecord[], input: InventoryFilt
 }
 export const exportSections = [
     { id: "specifications", label: "Identity and specifications", note: "Identifiers, specifications, registration time, manufacture and first-use dates, age and record version" },
-    { id: "responsibility", label: "Responsibility and current loan", note: "Responsible owner, current borrower and checkout time" },
+    { id: "responsibility", label: "Responsibility and borrowing summary", note: "Responsible owner, current borrower, total checkouts and total checked-out time" },
     { id: "storage", label: "Registered storage", note: "Building and optional room" },
     { id: "latest", label: "Latest observation and charge", note: "Dated location evidence, source and charging duration" },
     { id: "loans", label: "Complete loan history", note: "Borrowers, operators, times, returns and corrections" },
     { id: "observations", label: "Complete observation history", note: "Every location reading, received time, saved labels and source" },
     { id: "charges", label: "Complete charging history", note: "Duration, completion time, operator and preserved legacy percentage" },
+    { id: "inspections", label: "Complete inspection history", note: "Recorded checks, inspectors, methods, findings and retained voided records" },
     { id: "audit", label: "Complete operation history", note: "Recorded actions and their full supporting details" },
     { id: "directories", label: "Related people and locations", note: "Directory records referenced by these batteries and histories" },
 ] as const;

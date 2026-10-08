@@ -1,6 +1,6 @@
-import { test } from "node:test";
+import { after, test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
@@ -11,6 +11,7 @@ import { getRolePermissions } from "../work/qa/permissions.mjs";
 const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "battery-model-ui-"));
+after(() => rm(scratch, { recursive: true, force: true }));
 for (const name of ["battery-models", "client-utils", "battery-age", "location-catalog"]) {
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
@@ -18,6 +19,7 @@ for (const name of ["battery-models", "client-utils", "battery-age", "location-c
 }
 const [models, client, locations] = await Promise.all(["battery-models", "client-utils", "location-catalog"].map(name => import(pathToFileURL(join(scratch, `${name}.mjs`)))));
 const ui = Object.fromEntries(["Button", "Checkbox", "Input", "Label", "Textarea", "RecordPicker", "BatteryModelPicker", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter"].map(name => [name, name]));
+Object.assign(ui, { MotionDisclosure: "MotionDisclosure", MotionPresence: "MotionPresence" });
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 function hooks() {
     const state = [], effects = [];
@@ -113,6 +115,24 @@ test("conflicting and unknown specifications are preserved unless individually r
         assert.equal(view.props.values.voltage, "7.4");
         assert.equal(nodes(view.render()).some(node => node.type === "RecordPicker" && node.props.showClearFilters === false), false);
         view.unmount();
+    });
+});
+
+test("model preview and editor use shared presence without clearing a closing draft or submitting it", async () => {
+    const model = choice();
+    await environment(() => response({ dataset: "demo", models: [model], issues: [] }), async ({ requests }) => {
+        const view = await picker(); await settled(view);
+        const editor = () => nodes(view.render()).find(node => node.type === "MotionDisclosure" && nodes(node).some(child => child.props.className === "battery-model-create"));
+        assert.equal(editor().props.open, false); assert.equal(nodes(editor()).find(node => node.type === "fieldset").props.disabled, true);
+        choose(view, model);
+        const preview = nodes(view.render()).find(node => node.type === "MotionPresence");
+        assert.equal(preview.props.children.key, `saved:${model.id}:${model.contentHash}`);
+        button(view.render(), "Add reusable model").props.onClick(); draftFields(view, { model: "UNCOMMITTED-DRAFT", name: "Retained model draft" });
+        assert.equal(editor().props.open, true); assert.equal(nodes(editor()).find(node => node.type === "fieldset").props.disabled, false);
+        button(view.render(), "Cancel model").props.onClick();
+        assert.equal(editor().props.open, false); assert.equal(nodes(editor()).find(node => node.type === "fieldset").props.disabled, true);
+        assert.equal(input(view.render(), "new-model-model").props.value, "UNCOMMITTED-DRAFT");
+        assert.equal(requests.some(request => request.options.method === "POST"), false); assert.equal(view.applied.length, 0); view.unmount();
     });
 });
 

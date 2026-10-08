@@ -13,6 +13,22 @@ export function currentSydneyDate(now: Date = new Date()): string {
     return `${part("year").padStart(4, "0")}-${part("month")}-${part("day")}`;
 }
 
+/** Service time ends at recorded retirement; manufacture age continues independently. */
+export function serviceAgeAsOfOn(
+    battery: { lifecycleStatus?: string; lifecycleAt?: string | null },
+    asOfOn: string,
+): string | null {
+    if (!isDateOnly(asOfOn)) return null;
+    if (!battery.lifecycleStatus || battery.lifecycleStatus === "active") return asOfOn;
+    if (!["scrapped", "permanently_removed"].includes(battery.lifecycleStatus)) return null;
+    const value = battery.lifecycleAt;
+    if (!value || !/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d+)?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/.test(value) || !isDateOnly(value.slice(0, 10))) return null;
+    const recordedAt = new Date(value);
+    if (!Number.isFinite(recordedAt.getTime())) return null;
+    const retiredOn = currentSydneyDate(recordedAt);
+    return isDateOnly(retiredOn) && retiredOn <= asOfOn ? retiredOn : null;
+}
+
 export function ageInDays(startOn: string | null, asOfOn: string): number | null {
     if (!startOn || !isDateOnly(startOn) || !isDateOnly(asOfOn) || startOn > asOfOn) return null;
     return Math.round((Date.parse(`${asOfOn}T00:00:00Z`) - Date.parse(`${startOn}T00:00:00Z`)) / dayMilliseconds);

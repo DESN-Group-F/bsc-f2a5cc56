@@ -4,6 +4,9 @@ import { isActiveBattery } from "@/lib/battery-lifecycle";
 import { useState } from "react";
 import { Plus, Download, Upload, Pencil, Settings2, Copy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { DownloadAction } from "@/components/ui/download-action";
+import { MotionPresence } from "@/components/ui/workspace-motion";
+import { useDownloadFeedback } from "@/hooks/use-download-feedback";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -54,9 +57,10 @@ export function RecordManagement({
   onImport: (kind: ImportKind) => void;
 }) {
   const [kind, setKind] = useState<ImportKind>("people");
-  const [query, setQuery] = useState(""),
-    [downloadError, setDownloadError] = useState("");
+  const [query, setQuery] = useState("");
   const [batteryFilters, setBatteryFilters] = useState<InventoryFilter>(() => ({ ...defaultInventoryFilter(), lifecycle: "all" }));
+  const downloadReviewKey = JSON.stringify({ dataset: data.dataset, kind, search: kind === "batteries" ? "" : query, filter: kind === "batteries" ? batteryFilters : undefined });
+  const download = useDownloadFeedback(downloadReviewKey);
   const filteredBatteries = getFilteredBatteries(data, batteryFilters);
   const [copyingOwnerId, setCopyingOwnerId] = useState(""),
     [copiedOwnerId, setCopiedOwnerId] = useState(""),
@@ -188,25 +192,27 @@ export function RecordManagement({
           Clear filters
         </Button>
         </>}
-        <Button
+        <DownloadAction
           variant="outline"
-          disabled={!records.length}
+          disabled={!records.length || download.busy}
+          pending={download.busy}
+          completion={download.completion}
+          reviewKey={downloadReviewKey}
+          actionLabel="Download filtered list"
           onClick={() =>
-            downloadRecordList(data.dataset, kind === "batteries" ? "" : query, kind, batteryFilters).catch((error) =>
-              setDownloadError(error.message),
-            )
+            download.run(() => downloadRecordList(data.dataset, kind === "batteries" ? "" : query, kind, batteryFilters))
           }
         >
           <Download size={16} />
           Download filtered list
-        </Button>
+        </DownloadAction>
         <span>{records.length} records</span>
       </div>
-      {downloadError && (
+      <MotionPresence>{download.error && (
         <p className="form-error" role="alert">
-          {downloadError}
+          {download.error}
         </p>
-      )}
+      )}</MotionPresence>
       {kind === "people" && (
         <>
           {copyError && (

@@ -22,12 +22,15 @@ export type InventoryAction =
   | "scan_lookup"
   | "intake"
   | "lifecycle"
+  | "retired_asset"
   | "group_maintenance"
   | "person"
   | "room"
   | "building"
   | "battery"
   | "charge"
+  | "inspection"
+  | "inspection_void"
   | "observation"
   | "correction"
   | "import";
@@ -46,6 +49,7 @@ export type EditorDraft = {
 
 export type ExportDraft = {
   batteryId?: string;
+  teachingGroup?: TeachingGroupReference;
   selectedIds?: string[];
   selectedOnly?: boolean;
   filter: InventoryFilter;

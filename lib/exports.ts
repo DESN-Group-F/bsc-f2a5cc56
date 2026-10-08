@@ -1,19 +1,28 @@
 import { z } from "zod";
 import { DomainError, datasetSchema, identifier, uniqueIds, type BatteryRecord } from "./domain";
 import { filterBatteries, sortBatteries, inventoryFilterSchema, exportSections, type ExportSection } from "./inventory-query";
-import { ageInDays, currentSydneyDate } from "./battery-age";
+import { ageInDays, currentSydneyDate, serviceAgeAsOfOn } from "./battery-age";
 import { batteryStatusLabel } from "./battery-lifecycle";
+import { summarizeBatteryUsage } from "./battery-usage";
+import type { InspectionRecord } from "./battery-inspections";
 import { groupActivity, filterActivity, hasActivityBatteryCriteria } from "./group-activity";
 import type { AuditEvent } from "./domain";
 import type { InventoryStore } from "./store";
+import { teachingGroupReferenceSchema } from "./teaching-context";
 type Row = Record<string, unknown>;
 export type ExportDocument = { metadata: Record<string, unknown>; tables: Record<string, Row[]> };
 const sectionIds = exportSections.map(section => section.id) as [ExportSection, ...ExportSection[]];
-const requestSchema = z.object({ dataset: datasetSchema, mode: z.enum(["summary", "detail", "records", "activity"]), activityScope: z.enum(["all", "mine"]).default("all"), activityGroupId: z.string().uuid().nullable().default(null), activityDepth: z.enum(["group_summary", "battery_details"]).default("group_summary"), activityBatteryFilter: inventoryFilterSchema.optional(), activityIds: z.array(z.string().min(1).max(100)).optional(), range: z.enum(["filtered", "page", "selected"]).default("filtered"), batteryIds: z.array(identifier).optional(), filter: inventoryFilterSchema.default({}), page: z.number().int().nonnegative().default(0), pageSize: z.enum(["10", "25", "50", "100"]).default("25"), batteryId: identifier.optional(), sections: z.array(z.enum(sectionIds)).default(sectionIds), kind: z.enum(["people", "buildings", "rooms", "batteries"]).optional(), search: z.string().max(200).default("") });
+const requestSchema = z.object({ dataset: datasetSchema, mode: z.enum(["summary", "detail", "records", "activity"]), activityScope: z.enum(["all", "mine"]).default("all"), activityGroupId: z.string().uuid().nullable().default(null), activityDepth: z.enum(["group_summary", "battery_details"]).default("group_summary"), activityBatteryFilter: inventoryFilterSchema.optional(), activityIds: z.array(z.string().min(1).max(100)).optional(), range: z.enum(["filtered", "page", "selected"]).default("filtered"), batteryIds: z.array(identifier).optional(), filter: inventoryFilterSchema.default({}), teachingGroup: teachingGroupReferenceSchema.optional(), page: z.number().int().nonnegative().default(0), pageSize: z.enum(["10", "25", "50", "100"]).default("25"), batteryId: identifier.optional(), sections: z.array(z.enum(sectionIds)).default(sectionIds), kind: z.enum(["people", "buildings", "rooms", "batteries"]).optional(), search: z.string().max(200).default("") });
 const pick = (row: Row, columns: string[]) => Object.fromEntries(columns.map(column => [column, row[column] ?? null]));
+function usageFields(loans: readonly Row[], asOf: Date): Row {
+    const summary = summarizeBatteryUsage(loans.map(row => ({ checkedOutAt: row.checked_out_at, returnedAt: row.returned_at, cancelledAt: row.cancelled_at })), asOf);
+    return { total_checkouts: summary.totalCheckouts, completed_checkouts: summary.completedCheckouts, active_checkouts: summary.activeCheckouts, total_checked_out_seconds: summary.totalCheckedOutSeconds, usage_as_of_utc: summary.asOf, invalid_duration_count: summary.invalidDurationCount };
+}
 export async function createExport(store: InventoryStore, input: unknown): Promise<ExportDocument> {
     const exportedAt = new Date(), ageAsOfDate = currentSydneyDate(exportedAt);
     const request = requestSchema.parse(input), selectedIds = uniqueIds(request.batteryIds ?? []);
+    if (request.teachingGroup && (request.batteryId || !["summary", "detail"].includes(request.mode) || request.filter.groupId !== request.teachingGroup.id))
+        throw new DomainError(400, "A teaching-group download must use its matching fixed group view and a summary or detailed batch range.");
     if (request.mode === "records" && request.kind === "batteries" && (!input || typeof input !== "object" || !("filter" in input))) {
         request.filter.lifecycle = "all";
         request.filter.search = request.search;
@@ -26,6 +35,15 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
         throw new DomainError(400, "Choose the selected-batteries range when supplying battery IDs.");
     }
     const source = await store.exportData(), raw = source.raw;
+    // Rows committed while the snapshot was being read must not appear to come from the future.
+    const usageAsOf = new Date();
+    const loansByBatteryKey = new Map<string, Row[]>();
+    for (const loan of raw.loans) {
+        const key = String(loan.battery_key), entries = loansByBatteryKey.get(key) ?? [];
+        entries.push(loan);
+        loansByBatteryKey.set(key, entries);
+    }
+    const usageById = new Map(raw.batteries.map(battery => [String(battery.id), usageFields(loansByBatteryKey.get(String(battery.key)) ?? [], usageAsOf)]));
     const currentPeople = new Map(source.snapshot.people.map(person => [person.id, person]));
     const currentBuildings = new Map(source.snapshot.buildings.map(building => [building.id, building]));
     const currentRooms = new Map(source.snapshot.rooms.map(room => [room.id, room]));
@@ -39,18 +57,24 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
         return { ...stored, building_code: current?.buildingId ?? null, building_name: current?.buildingId ? currentBuildings.get(current.buildingId)?.name ?? null : null };
     };
     const selected = new Set(selectedIds);
-    const personalBase = filterBatteries(all, { personalScope: request.filter.personalScope, lifecycle: "all" }, ageAsOfDate, store.viewerAccountId);
-    let matching = request.batteryId ? personalBase.filter(battery => battery.id === request.batteryId) : request.range === "selected" ? personalBase.filter(battery => selected.has(battery.id)) : filterBatteries(all, request.filter, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? []);
+    const teachingGroup = source.snapshot.teachingGroups?.find(group => group.id === request.filter.groupId && group.ownerAccountId === store.viewerAccountId && group.state === "active");
+    if (request.teachingGroup && (!teachingGroup || teachingGroup.version !== request.teachingGroup.version))
+        throw new DomainError(409, "This teaching group changed or is no longer available. Your selected batteries are retained. Close the download, refresh the group and review its current members before downloading. No partial download was prepared.");
+    // An opened group is a fixed boundary; an ordinary group filter remains selection context.
+    const personalBase = filterBatteries(all, { personalScope: request.filter.personalScope, lifecycle: "all", ...(request.teachingGroup ? { groupId: request.teachingGroup.id } : {}) }, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? []);
+    let matching = request.batteryId ? personalBase.filter(battery => battery.id === request.batteryId) : request.range === "selected" ? personalBase.filter(battery => selected.has(battery.id)) : filterBatteries(all, request.filter, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? [], source.snapshot.newArrivals);
     matching = sortBatteries(matching, request.filter, ageAsOfDate);
     if (request.range === "selected" && matching.length !== selectedIds.length)
-        throw new DomainError(409, "One or more selected batteries are no longer available in this inventory or personal view. Refresh and review your selection. No partial download was prepared.");
+        throw new DomainError(409, "One or more selected batteries are no longer available in this inventory, personal view or fixed teaching group. Refresh and review your selection. No partial download was prepared.");
     if (request.batteryId && !matching.length) throw new DomainError(404, "Battery not found in this inventory or personal view. Refresh and review its current responsibility or loan.");
     const matchingCount = matching.length;
-    const teachingGroup = source.snapshot.teachingGroups?.find(group => group.id === request.filter.groupId && group.ownerAccountId === store.viewerAccountId && group.state === "active");
     const pageRange = !request.batteryId && request.range === "page";
     if (pageRange) matching = matching.slice(request.page * Number(request.pageSize), (request.page + 1) * Number(request.pageSize));
     const metadata = { exported_at_utc: exportedAt.toISOString(), age_as_of_date: ageAsOfDate, age_date_timezone: "Australia/Sydney", dataset: request.dataset, operator: source.snapshot.actor, mode: request.mode, range: request.batteryId ? "single" : request.range, filters: request.range === "selected" ? null : request.filter, selected_battery_ids: request.range === "selected" ? selectedIds : null, selection_filter_context: request.range === "selected" ? request.filter : null, page: pageRange ? request.page + 1 : null, page_size: pageRange ? Number(request.pageSize) : null, matching_batteries: matchingCount, exported_batteries: matching.length, selected_sections: request.mode === "detail" ? request.sections : null, timestamps: "UTC ISO 8601; battery lifecycle dates are YYYY-MM-DD", location_meaning: "Registered storage is the home; observations are dated evidence with their recorded source.", unknown_values: "Null or blank means not recorded; no history is inferred.", consistency: "All inventory and history tables read in one D1 batch." };
     Object.assign(metadata, { sort: { by: request.filter.sortBy, direction: request.filter.sortDirection, missing_values: "last", tie_breaker: "Battery ID ascending" }, teaching_group: teachingGroup ? { id: teachingGroup.id, name: teachingGroup.name, version: teachingGroup.version } : null });
+    if (request.filter.newArrivalsOnly) Object.assign(metadata, { new_arrivals_as_of_utc: source.snapshot.newArrivals?.serverNow ?? null, new_arrivals_meaning: "Active batteries first registered within the preceding 48 hours, based on native registration evidence. Viewing a reminder does not end this window." });
+    Object.assign(metadata, { fixed_teaching_group_scope: request.teachingGroup ? { ...request.teachingGroup, name: teachingGroup!.name } : null, teaching_group_meaning: request.teachingGroup ? "The reviewed current private group and version bound this download; selected batteries may cross ordinary filters but remain members." : "A teaching-group filter is selection context only for a selected download; selected IDs may cross ordinary filters." });
+    Object.assign(metadata, { usage_as_of_utc: usageAsOf.toISOString(), usage_meaning: "Recorded borrowing only, not charge/discharge cycles, battery health or remaining life. Voided checkouts are excluded; open loans run to the borrowing calculation time captured after the inventory snapshot was read. Missing or inconsistent timestamps make the total duration unavailable.", inspection_meaning: "Staff-entered checks and their recorded methods and findings. A saved outcome is not automatic safety certification. Voided records remain as correction evidence." });
     Object.assign(metadata, { filter_labels: {
         owner: currentPeople.get(request.filter.owner)?.name ?? null,
         holder: source.snapshot.staffDirectory?.find(person => person.id === request.filter.holder)?.displayName ?? null,
@@ -66,18 +90,18 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
         const activityBatteryFilter = request.activityBatteryFilter;
         const batteryCriteriaActive = hasActivityBatteryCriteria(activityBatteryFilter);
         const filteredBatteryIds = !selected && batteryCriteriaActive
-            ? new Set(filterBatteries(all, activityBatteryFilter!, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? []).map(battery => battery.id))
+            ? new Set(filterBatteries(all, activityBatteryFilter!, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? [], source.snapshot.newArrivals).map(battery => battery.id))
             : null;
         const matching = selected ? entries.filter(entry => selected.has(entry.id)) : filterActivity(entries, request.search, request.activityGroupId, filteredBatteryIds);
         if (selected && matching.length !== selected.size) throw new DomainError(409, "Selected activity is unavailable in this inventory or personal activity scope. No partial export was prepared.");
         const rowById = new Map(rows.map(row => [String(row.id), row]));
-        const summaries: Row[] = matching.map(entry => entry.teachingGroup ? { id: entry.id, scope: store.scope, action: entry.action, teaching_group_name: entry.teachingGroup.name, teaching_group_id: entry.teachingGroup.id, teaching_group_version: entry.teachingGroup.version, group_operation_id: entry.teachingGroup.operationId, affected_battery_count: entry.members!.length, actor_id: rowById.get(entry.members![0].id)!.actor_id, actor_name: entry.actorName, at: entry.at } : rowById.get(entry.id)!);
+        const summaries: Row[] = matching.map(entry => entry.teachingGroup ? { id: entry.id, scope: store.scope, action: entry.action, teaching_group_name: entry.teachingGroup.name, teaching_group_id: entry.teachingGroup.id, teaching_group_version: entry.teachingGroup.version, group_operation_id: entry.teachingGroup.operationId, affected_battery_count: entry.members!.length, actor_id: rowById.get(entry.members![0].id)!.actor_id, actor_name: entry.actorName, at: entry.at, ...(entry.details.teachingCheckout ? { details: entry.details, teaching_checkout_run: entry.details.teachingCheckout } : {}) } : rowById.get(entry.id)!);
         const tables: Record<string, Row[]> = { Activity: summaries };
         if (request.activityDepth === "battery_details") {
             if (!request.sections.length) throw new DomainError(400, "Select at least one battery information section.");
             const memberEvents = matching.flatMap(entry => entry.members ?? []), ids = new Set(matching.flatMap(entry => entry.members ?? [entry]).map(event => event.batteryId));
             tables.ActivityMembers = memberEvents.map(event => ({ group_activity_id: matching.find(entry => entry.members?.some(member => member.id === event.id))!.id, ...rowById.get(event.id)! }));
-            Object.assign(tables, detailedBatteryTables(raw, all.filter(battery => ids.has(battery.id)), request.sections, ageAsOfDate, directoryPerson, directoryRoom));
+            Object.assign(tables, detailedBatteryTables(raw, all.filter(battery => ids.has(battery.id)), request.sections, ageAsOfDate, directoryPerson, directoryRoom, usageById, source.inspections ?? []));
         }
         const batteryFilterLabels = activityBatteryFilter ? {
             owner: currentPeople.get(activityBatteryFilter.owner)?.name ?? null,
@@ -98,7 +122,7 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
             if (request.kind === "rooms") return directoryRoom(stored);
             if (request.kind === "batteries") {
                 const battery = all.find(battery => battery.id === stored.id)!;
-                return { ...stored, owner_name: battery.ownerName, status: batteryStatusLabel(battery), current_borrower_name: battery.borrowerName, checked_out_at_utc: battery.checkedOutAt, home_building_id: battery.homeBuildingId, home_building_name: battery.homeBuildingName, home_room_number: battery.homeRoomNumber, home_room_name: battery.homeRoomName, home_room_is_placeholder: battery.homeRoomIsPlaceholder };
+                return { ...stored, ...usageById.get(battery.id), owner_name: battery.ownerName, status: batteryStatusLabel(battery), current_borrower_name: battery.borrowerName, checked_out_at_utc: battery.checkedOutAt, home_building_id: battery.homeBuildingId, home_building_name: battery.homeBuildingName, home_room_number: battery.homeRoomNumber, home_room_name: battery.homeRoomName, home_room_is_placeholder: battery.homeRoomIsPlaceholder };
             }
             return stored;
         });
@@ -106,19 +130,19 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
     }
     if (!matching.length) throw new DomainError(400, "No batteries match this export. Review the filters or page.");
     if (request.mode === "summary") {
-        return { metadata, tables: { Inventory: matching.map(b => ({ battery_id: b.id, name: b.name, model: b.model, chemistry: b.chemistry, registered_at_utc: b.registeredAt, manufactured_on: b.manufacturedOn, first_used_on: b.firstUsedOn, manufacturing_age_days: ageInDays(b.manufacturedOn, ageAsOfDate), time_in_service_days: ageInDays(b.firstUsedOn, ageAsOfDate), age_as_of_date: ageAsOfDate, status: batteryStatusLabel(b), lifecycle_status: b.lifecycleStatus ?? "active", lifecycle_at_utc: b.lifecycleAt, lifecycle_reason: b.lifecycleReason, lifecycle_destination: b.lifecycleDestination, responsible_owner: b.ownerName, responsible_owner_account_id: b.ownerAccountId, current_borrower: b.borrowerName, current_borrower_account_id: b.borrowerAccountId, current_borrower_kind: b.borrowerKind, checked_out_at_utc: b.checkedOutAt, last_checked_out_at_utc: b.lastCheckedOutAt, storage_building_code: b.homeBuildingId, storage_building_name: b.homeBuildingName, storage_room_number: b.homeRoomNumber, storage_room_name: b.homeRoomName, storage_room_is_placeholder: b.homeRoomIsPlaceholder, storage_room_selectable: b.homeRoomSelectable, last_observed_room: b.observedRoom, last_observed_building: b.observedBuilding, observed_at_utc: b.observedAt, observation_source: b.observationSource, observation_label_status: b.observationRoomSnapshot })) } };
+        return { metadata, tables: { Inventory: matching.map(b => ({ battery_id: b.id, ...usageById.get(b.id), name: b.name, model: b.model, chemistry: b.chemistry, registered_at_utc: b.registeredAt, manufactured_on: b.manufacturedOn, first_used_on: b.firstUsedOn, manufacturing_age_days: ageInDays(b.manufacturedOn, ageAsOfDate), time_in_service_days: serviceAgeAsOfOn(b, ageAsOfDate) ? ageInDays(b.firstUsedOn, serviceAgeAsOfOn(b, ageAsOfDate)!) : null, service_age_as_of_date: serviceAgeAsOfOn(b, ageAsOfDate), age_as_of_date: ageAsOfDate, status: batteryStatusLabel(b), lifecycle_status: b.lifecycleStatus ?? "active", lifecycle_at_utc: b.lifecycleAt, lifecycle_reason: b.lifecycleReason, lifecycle_destination: b.lifecycleDestination, responsible_owner: b.ownerName, responsible_owner_account_id: b.ownerAccountId, current_borrower: b.borrowerName, current_borrower_account_id: b.borrowerAccountId, current_borrower_kind: b.borrowerKind, checked_out_at_utc: b.checkedOutAt, last_checked_out_at_utc: b.lastCheckedOutAt, storage_building_code: b.homeBuildingId, storage_building_name: b.homeBuildingName, storage_room_number: b.homeRoomNumber, storage_room_name: b.homeRoomName, storage_room_is_placeholder: b.homeRoomIsPlaceholder, storage_room_selectable: b.homeRoomSelectable, last_observed_room: b.observedRoom, last_observed_building: b.observedBuilding, observed_at_utc: b.observedAt, observation_source: b.observationSource, observation_label_status: b.observationRoomSnapshot })) } };
     }
     if (!request.sections.length) throw new DomainError(400, "Select at least one information section.");
-    return { metadata, tables: detailedBatteryTables(raw, matching, request.sections, ageAsOfDate, directoryPerson, directoryRoom) };
+    return { metadata, tables: detailedBatteryTables(raw, matching, request.sections, ageAsOfDate, directoryPerson, directoryRoom, usageById, source.inspections ?? []) };
 }
-function detailedBatteryTables(raw: Record<string, Row[]>, matching: BatteryRecord[], sections: ExportSection[], ageAsOfDate: string, directoryPerson: (row: Row) => Row, directoryRoom: (row: Row) => Row): Record<string, Row[]> {
+function detailedBatteryTables(raw: Record<string, Row[]>, matching: BatteryRecord[], sections: ExportSection[], ageAsOfDate: string, directoryPerson: (row: Row) => Row, directoryRoom: (row: Row) => Row, usageById: Map<string, Row>, inspections: readonly InspectionRecord[]): Record<string, Row[]> {
     const ids = new Set(matching.map(b => b.id)), batteries = raw.batteries.filter(row => ids.has(String(row.id))), keys = new Set(batteries.map(row => String(row.key))), idByKey = new Map(batteries.map(row => [String(row.key), String(row.id)]));
     const loans = raw.loans.filter(row => keys.has(String(row.battery_key))), observations = raw.observations.filter(row => keys.has(String(row.battery_key))), charges = raw.charges.filter(row => keys.has(String(row.battery_key)));
     const current = matching.map(b => {
         const stored = batteries.find(row => row.id === b.id)!;
         const row: Row = { battery_id: b.id };
-        if (sections.includes("specifications")) Object.assign(row, pick(stored, ["key", "scope", "name", "chemistry", "model", "capacity_mah", "voltage", "tag_id", "manufactured_on", "first_used_on", "created_at", "version", "lifecycle_status", "lifecycle_at", "lifecycle_reason", "lifecycle_destination"]), { registered_at_utc: b.registeredAt, manufacturing_age_days: ageInDays(b.manufacturedOn, ageAsOfDate), time_in_service_days: ageInDays(b.firstUsedOn, ageAsOfDate), age_as_of_date: ageAsOfDate });
-        if (sections.includes("responsibility")) Object.assign(row, { owner_key: stored.owner_key, owner_id: b.ownerId, owner_name: b.ownerName, owner_account_id: b.ownerAccountId, status: batteryStatusLabel(b), lifecycle_status: b.lifecycleStatus ?? "active", lifecycle_at_utc: b.lifecycleAt, lifecycle_reason: b.lifecycleReason, lifecycle_destination: b.lifecycleDestination, current_loan_id: b.loanId, current_borrower_id: b.borrowerId, current_borrower_name: b.borrowerName, current_borrower_account_id: b.borrowerAccountId, current_borrower_kind: b.borrowerKind, checked_out_at_utc: b.checkedOutAt, last_checked_out_at_utc: b.lastCheckedOutAt });
+        if (sections.includes("specifications")) Object.assign(row, pick(stored, ["key", "scope", "name", "chemistry", "model", "capacity_mah", "voltage", "tag_id", "manufactured_on", "first_used_on", "created_at", "version", "lifecycle_status", "lifecycle_at", "lifecycle_reason", "lifecycle_destination"]), { registered_at_utc: b.registeredAt, manufacturing_age_days: ageInDays(b.manufacturedOn, ageAsOfDate), time_in_service_days: serviceAgeAsOfOn(b, ageAsOfDate) ? ageInDays(b.firstUsedOn, serviceAgeAsOfOn(b, ageAsOfDate)!) : null, service_age_as_of_date: serviceAgeAsOfOn(b, ageAsOfDate), age_as_of_date: ageAsOfDate });
+        if (sections.includes("responsibility")) Object.assign(row, { ...usageById.get(b.id), owner_key: stored.owner_key, owner_id: b.ownerId, owner_name: b.ownerName, owner_account_id: b.ownerAccountId, status: batteryStatusLabel(b), lifecycle_status: b.lifecycleStatus ?? "active", lifecycle_at_utc: b.lifecycleAt, lifecycle_reason: b.lifecycleReason, lifecycle_destination: b.lifecycleDestination, current_loan_id: b.loanId, current_borrower_id: b.borrowerId, current_borrower_name: b.borrowerName, current_borrower_account_id: b.borrowerAccountId, current_borrower_kind: b.borrowerKind, checked_out_at_utc: b.checkedOutAt, last_checked_out_at_utc: b.lastCheckedOutAt });
         if (sections.includes("storage")) Object.assign(row, { home_building_key: stored.home_building_key, home_room_key: stored.home_room_key, home_building_id: b.homeBuildingId, home_building_name: b.homeBuildingName, home_room_id: b.homeRoomId, home_room_number: b.homeRoomNumber, home_room_name: b.homeRoomName, home_room_is_placeholder: b.homeRoomIsPlaceholder, home_room_selectable: b.homeRoomSelectable });
         if (sections.includes("latest")) Object.assign(row, { last_observed_room_id: b.observedRoomId, last_observed_room: b.observedRoom, last_observed_building: b.observedBuilding, observation_label_status: b.observationRoomSnapshot, observed_at_utc: b.observedAt, observation_source: b.observationSource, last_charge_completed_utc: b.chargedAt, last_charge_duration_minutes: b.chargeDurationMinutes });
         return row;
@@ -128,6 +152,7 @@ function detailedBatteryTables(raw: Record<string, Row[]>, matching: BatteryReco
     if (sections.includes("loans")) tables.Loans = linked(loans);
     if (sections.includes("observations")) tables.Observations = linked(observations);
     if (sections.includes("charges")) tables.Charges = linked(charges);
+    if (sections.includes("inspections")) tables.Inspections = inspections.filter(record => ids.has(record.batteryId)).map(record => ({ battery_id: record.batteryId, ...record }));
     if (sections.includes("audit")) {
         const related = raw.audit_events.filter(row => ids.has(String(row.battery_id)));
         const importRequests = new Set(related.filter(row => row.action === "battery_registered").map(row => JSON.parse(String(row.details_json)).importRequestId).filter(value => typeof value === "string" && value.length > 0));

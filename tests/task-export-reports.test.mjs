@@ -2,6 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import ts from "typescript";
+import { bindDownloadFeedback } from "./helpers/download-feedback-harness.mjs";
 import ExcelJS from "exceljs";
 import { taskPlanSchema, taskSchedulePreview } from "../work/qa/task-schedule.mjs";
 import { createTaskReportDocument, createMessageReportDocument } from "../work/qa/task-export-report.mjs";
@@ -166,11 +167,14 @@ test("download dialog defaults to the readable report, shows transfer errors and
     const state = [], calls = [], busy = [], jsx = (type, props) => ({ type, props: props ?? {} });
     let pointer = 0, closes = 0, fail = true;
     const bindings = {
-        ...Object.fromEntries(["Button", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"].map(name => [name, name])),
+        ...Object.fromEntries(["Button", "MotionPresence", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"].map(name => [name, name])),
+        DownloadAction: "Button",
+        useEffect() {},
         useState(initial) { const i = pointer++; if (!(i in state)) state[i] = initial; return [state[i], next => { state[i] = next; }]; },
         useRef(initial) { const i = pointer++; if (!(i in state)) state[i] = { current: initial }; return state[i]; },
         async downloadTaskReport(...args) { calls.push(args); if (fail) throw new Error("File transfer interrupted; no file was downloaded."); },
     };
+    bindings.useDownloadFeedback = bindDownloadFeedback(bindings);
     const component = new Function(...Object.keys(bindings), "_jsx", "_jsxs", `${compiled}; return TaskDownloadDialog;`)(...Object.values(bindings), jsx, jsx);
     function nodes(node) { if (Array.isArray(node)) return node.flatMap(nodes); if (!node || typeof node !== "object") return []; return [node, ...nodes(node.props.children)]; }
     function label(node) { if (Array.isArray(node)) return node.map(label).join(""); return node && typeof node === "object" ? label(node.props.children) : String(node ?? ""); }
@@ -187,5 +191,9 @@ test("download dialog defaults to the readable report, shows transfer errors and
     fail = false; tree = render();
     nodes(tree).find(node => node.type === "Button" && label(node) === "Download JSON data").props.onClick();
     await new Promise(resolve => setTimeout(resolve, 0));
-    assert.equal(closes, 1); assert.equal(calls[1][1], "json"); assert.deepEqual(busy, [true, false, true, false]);
+    tree = render();
+    assert.equal(closes, 0); assert.equal(calls[1][1], "json"); assert.deepEqual(busy, [true, false, true, false]);
+    assert.equal(nodes(tree).find(node => node.type === "Button" && label(node) === "Download JSON data").props.completion !== null, true);
+    nodes(tree).find(node => node.type === "Button" && label(node) === "Done").props.onClick();
+    assert.equal(closes, 1);
 });

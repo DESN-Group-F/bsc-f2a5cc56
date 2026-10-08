@@ -14,7 +14,7 @@ export default function SignInForm() {
         fetch("/api/session", { cache: "no-store" }).then(async response => {
             const body = await response.json() as { error?: string; user?: object; setupRequired: boolean };
             if (!response.ok) throw new Error(body.error);
-            if (body.user) { reloadSessionPage("/"); return; }
+            if (body.user) { reloadSessionPage(safeReturnPath(new URLSearchParams(window.location.search).get("return_to"))); return; }
             setSetup(body.setupRequired); setLoaded(true);
         }).catch(error => { setError(error.message); });
     }, []);

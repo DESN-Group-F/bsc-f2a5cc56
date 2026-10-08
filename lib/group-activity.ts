@@ -1,8 +1,17 @@
 import type { AuditEvent } from "./domain";
 import { teachingGroupEvidenceSchema, type TeachingGroupEvidence } from "./teaching-context";
 import { defaultInventoryFilter, type InventoryFilter } from "./inventory-query";
+import { teachingCheckoutRunSchema } from "./teaching-checkouts";
 
 export type ActivityEntry = AuditEvent & { teachingGroup?: TeachingGroupEvidence; members?: AuditEvent[] };
+export function teachingReplacementDescription(event: AuditEvent): string | null {
+    const parsed = teachingCheckoutRunSchema.safeParse(event.details.teachingCheckout);
+    if (!parsed.success) return null;
+    const mapping = parsed.data.mappings.find(item => item.actual.batteryId === event.batteryId);
+    if (!mapping) return null;
+    const method = mapping.method === "manual" ? "Manual alternative" : mapping.method === "automatic" ? "Same known model and specifications" : "Original member";
+    return `${mapping.original.batteryId} → ${mapping.actual.batteryId} · ${method} · Input: ${mapping.source?.kind === "native_nfc" ? "Native NFC" : mapping.source?.kind === "tag" ? "Entered registered tag" : mapping.source ? "Inventory selection" : "Deleted evidence"} · Exact loan: ${mapping.loanId ?? "Deleted evidence"}`;
+}
 /** Group only persisted operation snapshots; current private definitions never rewrite history. */
 export function groupActivity(events: readonly AuditEvent[]): ActivityEntry[] {
     const result: ActivityEntry[] = [], grouped = new Map<string, ActivityEntry>();

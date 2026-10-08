@@ -5,6 +5,8 @@ import { Miniflare } from "miniflare";
 import { InventoryStore } from "../work/qa/store.mjs";
 import { verifyLifecycleReceipt } from "../work/qa/lifecycle-session.mjs";
 import { createExport } from "../work/qa/exports.mjs";
+import { InventoryDatabase } from "../work/qa/server/inventory/database.mjs";
+import { ensureInventoryReferenceData } from "../work/qa/server/inventory/provisioning.mjs";
 
 const mf = new Miniflare({ modules: true, script: "export default {fetch(){return new Response('lifecycle-test')}}", compatibilityDate: "2026-05-15", d1Databases: { DB: "lifecycle-test" }, d1Persist: false });
 const db = await mf.getD1Database("DB"), journal = JSON.parse(await readFile("drizzle/meta/_journal.json", "utf8"));
@@ -26,6 +28,16 @@ const rows = async (table, scope, database = db) => (await database.prepare(`SEL
 const status = expected => error => error.status === expected;
 const rejected = pattern => error => error.code === "lifecycle_rejected_final" && pattern.test(error.message);
 const invalid = error => error.name === "ZodError" || error.status === 400;
+// Historical migration fixtures use their historical schema directly. The
+// current registration service intentionally requires all current migrations.
+async function registerHistoricalBattery(database, scope, actor, battery) {
+    await ensureInventoryReferenceData(new InventoryDatabase(database, scope));
+    await database.batch([
+        database.prepare("INSERT INTO batteries(key,scope,id,name,tag_id,owner_key,home_building_key,manufactured_on,first_used_on,created_at) VALUES(?,?,?,?,?,?,?,?,?,?)").bind(`${scope}/${battery.id}`, scope, battery.id, battery.name, battery.tagId, `${scope}/${battery.ownerId}`, `${scope}/J18`, battery.manufacturedOn ?? null, battery.firstUsedOn ?? null, at),
+        database.prepare("INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) VALUES(?,?,'battery_registered',?,?,?,1)").bind(`${scope}/${crypto.randomUUID()}`, scope, JSON.stringify(battery), JSON.stringify({ id: battery.id, version: 1 }), at),
+        database.prepare("INSERT INTO audit_events(id,scope,action,battery_id,actor_id,actor_name,at,details_json) VALUES(?,?,'battery_registered',?,?,?,?,?)").bind(crypto.randomUUID(), scope, battery.id, actor.id, actor.name, at, JSON.stringify({ before: null, after: { ...battery, version: 1 } })),
+    ]);
+}
 async function fixture(name, dataset = "demo", count = 2) {
     const scope = `lifecycle-${name}:${dataset}`, store = (actor = self, database = db, clock = () => new Date(at)) => new InventoryStore(database, scope, dataset, actor, clock);
     await store(admin).snapshot();
@@ -293,15 +305,17 @@ test("additive migration preserves earlier metadata and history while defaulting
         const scope = "lifecycle-migration:demo", actor = { id: "migration-admin", name: "Migration Administrator", role: "admin", authVersion: 1 };
         await database.prepare("INSERT INTO staff_accounts(id,username,display_name,role,password_hash,password_salt,hash_iterations,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)").bind(actor.id, actor.id, actor.name, actor.role, "test-only-no-login", "test-only-no-login", 600000, at, at).run();
         const store = new InventoryStore(database, scope, "demo", actor, () => new Date(at));
-        await store.saveBattery({ id: "BEFORE", name: "Earlier registered battery", ownerId: "staff-migration-admin", homeBuildingId: "J18", tagId: "EARLIER-TAG", manufacturedOn: "2026-01-01", firstUsedOn: "2026-02-01" });
+        await registerHistoricalBattery(database, scope, actor, { id: "BEFORE", name: "Earlier registered battery", ownerId: "staff-migration-admin", homeBuildingId: "J18", tagId: "EARLIER-TAG", manufacturedOn: "2026-01-01", firstUsedOn: "2026-02-01" });
         const before = (await rows("batteries", scope, database))[0], auditBefore = await rows("audit_events", scope, database);
         await migrate(database, latest);
         const after = (await rows("batteries", scope, database))[0];
         assert.deepEqual(Object.fromEntries(Object.keys(before).map(key => [key, after[key]])), before);
         assert.equal(after.lifecycle_status, "active"); assert.equal(after.lifecycle_at, null); assert.equal(after.lifecycle_reason, null);
         assert.deepEqual(await rows("audit_events", scope, database), auditBefore);
-        const record = (await store.detail("BEFORE")).battery; assert.equal(record.lifecycleStatus, "active");
         await assert.rejects(database.prepare("UPDATE batteries SET owner_key='foreign/staff-migration-admin',version=version+1 WHERE scope=? AND id='BEFORE'").bind(scope).run(), /owner/);
+        // Verify migration 12 in isolation before exercising the current read model.
+        await migrate(database, journal.entries.filter(entry => entry.idx > 12));
+        const record = (await store.detail("BEFORE")).battery; assert.equal(record.lifecycleStatus, "active");
     } finally { await isolated.dispose(); }
 });
 
@@ -315,8 +329,8 @@ test("the optional-reason migration preserves saved removals and every other tri
         await migrate(database, journal.entries.filter(entry => entry.idx <= 12));
         for (const actor of [administrator, staff]) await database.prepare("INSERT INTO staff_accounts(id,username,display_name,role,password_hash,password_salt,hash_iterations,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)")
             .bind(actor.id, actor.id, actor.name, actor.role, "test-only-no-login", "test-only-no-login", 600000, at, at).run();
-        for (const id of ["OLD-RETIRED", "NO-REASON", "ON-LOAN", "CHECK-GUARDS"]) await nativeStore(administrator).saveBattery({ id, name: "Migration battery", ownerId: "staff-optional-staff", homeBuildingId: "J18", tagId: `TAG-${id}` });
-        const saved = (await nativeStore(staff).detail("OLD-RETIRED")).battery;
+        for (const id of ["OLD-RETIRED", "NO-REASON", "ON-LOAN", "CHECK-GUARDS"]) await registerHistoricalBattery(database, scope, administrator, { id, name: "Migration battery", ownerId: "staff-optional-staff", homeBuildingId: "J18", tagId: `TAG-${id}` });
+        const saved = await database.prepare("SELECT id,version,tag_id AS tagId FROM batteries WHERE scope=? AND id='OLD-RETIRED'").bind(scope).first();
         const originalPayload = { requestId: crypto.randomUUID(), kind: "permanently_removed", reason: "Earlier recorded reason", destination: "Earlier recorded destination", source: "manual_selection", items: [{ batteryId: saved.id, version: saved.version, tagId: saved.tagId }] };
         const originalReceipt = await nativeStore(staff).lifecycle(originalPayload);
         await nativeStore(staff).movement({ requestId: crypto.randomUUID(), kind: "checkout", batteryIds: ["ON-LOAN"] });
@@ -336,9 +350,15 @@ test("the optional-reason migration preserves saved removals and every other tri
         await assert.rejects(database.prepare("UPDATE batteries SET lifecycle_status='scrapped',lifecycle_at=?,version=version+1 WHERE key=?").bind(at, `${scope}/ON-LOAN`).run(), /return the active loan/);
         await assert.rejects(database.prepare("UPDATE batteries SET name='Rewrite earlier history',version=version+1 WHERE key=?").bind(`${scope}/OLD-RETIRED`).run(), /terminal battery records are immutable/);
         await assert.rejects(database.prepare("DELETE FROM batteries WHERE key=?").bind(guardKey).run(), /retain battery identity/);
-        const blank = (await nativeStore(staff).detail("NO-REASON")).battery;
+        const blank = await database.prepare("SELECT id,version,tag_id AS tagId FROM batteries WHERE scope=? AND id='NO-REASON'").bind(scope).first();
         const blankReceipt = await nativeStore(staff).lifecycle({ requestId: crypto.randomUUID(), kind: "scrapped", source: "manual_selection", items: [{ batteryId: blank.id, version: blank.version, tagId: blank.tagId }] });
-        assert.equal(blankReceipt.reason, ""); assert.equal((await nativeStore(staff).detail(blank.id)).battery.lifecycleReason, null);
+        assert.equal(blankReceipt.reason, "");
+        assert.equal((await database.prepare("SELECT lifecycle_reason FROM batteries WHERE scope=? AND id=?").bind(scope, blank.id).first()).lifecycle_reason, null);
+        assert.equal((await database.prepare("SELECT lifecycle_reason FROM batteries WHERE scope=? AND id='OLD-RETIRED'").bind(scope).first()).lifecycle_reason, originalPayload.reason);
+        // Current detail queries require later additive evidence tables; apply
+        // them only after migration 13's data and trigger guarantees are checked.
+        await migrate(database, journal.entries.filter(entry => entry.idx > 13));
+        assert.equal((await nativeStore(staff).detail(blank.id)).battery.lifecycleReason, null);
         assert.equal((await nativeStore(staff).detail("OLD-RETIRED")).battery.lifecycleReason, originalPayload.reason);
     } finally { await isolated.dispose(); }
 });

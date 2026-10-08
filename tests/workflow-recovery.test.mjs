@@ -10,6 +10,7 @@ import {
 } from "../work/qa/movement-session.mjs";
 import { removalDraftStorageKey } from "../work/qa/removal-draft.mjs";
 import { groupMaintenanceKey } from "../work/qa/group-maintenance.mjs";
+import { retiredAssetStorageKey } from "../work/qa/retired-asset-actions.mjs";
 
 const actor = "recovery-staff";
 const storage = (entries) => {
@@ -119,4 +120,19 @@ test("unavailable browser storage cannot be mistaken for an empty recovery state
     () => readWorkflowRecovery(unavailable, actor),
     /Storage denied/,
   );
+});
+
+test("saved or damaged retired battery requests route to exact recovery before any new workflow without rewriting storage", () => {
+  for (const raw of ["damaged request", JSON.stringify({ requestId: "original-request" })]) {
+    const saved = storage([
+      [retiredAssetStorageKey(actor, "live"), raw],
+      [groupMaintenanceKey(actor, "demo"), "earlier group operation"],
+    ]), before = [...saved.values];
+    const pending = readWorkflowRecovery(saved, actor);
+    assert.deepEqual(pending.retiredActions, [{ dataset: "live" }]);
+    assert.deepEqual(nextPendingWorkflow(pending), { type: "retired", pending: { dataset: "live" } });
+    assert.deepEqual(nextPendingWorkflow(pending, "retired"), { type: "group", pending: { dataset: "demo" } });
+    assert.deepEqual([...saved.values], before);
+    assert.equal(nextPendingWorkflow(readWorkflowRecovery(saved, "another-staff")), null);
+  }
 });

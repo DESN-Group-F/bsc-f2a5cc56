@@ -1,4 +1,5 @@
 import { DomainError, type Dataset } from "./domain";
+import { rejectPurgedReplay } from "./server/purge-evidence";
 import type { Actor } from "./store";
 import { teachingGroupRequestSchema, teachingGroupSchema, type TeachingGroup, type TeachingGroupReceipt } from "./teaching-groups";
 
@@ -22,6 +23,7 @@ export class TeachingGroupStore {
     private async replay(requestId: string, fingerprint: string): Promise<TeachingGroupReceipt | null> {
         const row = await this.statement("SELECT * FROM teaching_group_operations WHERE key=? AND scope=? AND owner_account_id=?", this.key(requestId), this.scope, this.actor.id).first<Row>();
         if (!row) return null;
+        rejectPurgedReplay(row.result_json, "teaching_group_rejected_final");
         if (row.fingerprint !== fingerprint) throw new DomainError(409, "This group request identifier already belongs to different changes.", "idempotency_conflict");
         const result = JSON.parse(String(row.result_json));
         if (row.outcome === "rejected") throw new DomainError(result.status, result.error, "teaching_group_rejected_final");
@@ -40,7 +42,8 @@ export class TeachingGroupStore {
             if (payload.action !== "create" && before!.version !== payload.expectedVersion) throw new DomainError(409, "This teaching group changed. Your draft is preserved; reopen the latest group before editing it.");
             const group: TeachingGroup = payload.action === "remove" ? { ...this.group(before!), version: payload.expectedVersion + 1, state: "archived", updatedAt: at } : { id: payload.id, name: payload.name, notes: payload.notes, batteryIds: payload.batteryIds, version: payload.action === "create" ? 1 : payload.expectedVersion + 1, ownerAccountId: this.actor.id, state: "active", createdAt: before ? String(before.created_at) : at, updatedAt: at };
             if (payload.action !== "remove") {
-                const count = await this.statement("SELECT COUNT(*) AS count FROM batteries WHERE scope=? AND id IN (SELECT value FROM json_each(?))", this.scope, JSON.stringify(group.batteryIds)).first<number>("count");
+                const retainedIds = before ? JSON.parse(String(before.member_ids_json)) as string[] : [];
+                const count = await this.statement("SELECT COUNT(*) AS count FROM json_each(?) j WHERE EXISTS(SELECT 1 FROM batteries WHERE scope=? AND id=j.value) OR (EXISTS(SELECT 1 FROM purged_batteries WHERE scope=? AND id=j.value) AND j.value IN (SELECT value FROM json_each(?)))", JSON.stringify(group.batteryIds), this.scope, this.scope, JSON.stringify(retainedIds)).first<number>("count");
                 if (count !== group.batteryIds.length) throw new DomainError(409, "One or more batteries are unavailable in this inventory. Review the complete group; no partial group was saved.");
                 const duplicate = await this.statement("SELECT id FROM teaching_groups WHERE scope=? AND owner_account_id=? AND state='active' AND name=? COLLATE NOCASE AND id<>?", this.scope, this.actor.id, group.name, group.id).first();
                 if (duplicate) throw new DomainError(409, "You already have a teaching group with this name. Choose a different name or edit that group.");

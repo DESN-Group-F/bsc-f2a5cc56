@@ -3,6 +3,7 @@ import { sharedInventoryScope } from "@/lib/shared-inventory";
 import { getD1Database } from "@/db";
 import { InventoryStore } from "@/lib/store";
 import { IntakeStore } from "@/lib/intake-store";
+import { MobileRegistrationStore } from "@/lib/server/inventory/mobile-registration";
 import { datasetSchema, identifier, DomainError } from "@/lib/domain";
 import { z } from "zod";
 export const dynamic = "force-dynamic";
@@ -20,6 +21,7 @@ async function context(request: Request, dataset: unknown) {
       authVersion: actor.authVersion,
     }),
     intake: new IntakeStore(db, scope, mode, actor),
+    mobileRegistration: new MobileRegistrationStore(db, scope, mode, actor),
   };
 }
 function fail(error: unknown) {
@@ -71,7 +73,7 @@ export async function POST(request: Request) {
         records: z.array(z.unknown()).optional(),
       })
       .parse(raw);
-    const { store, intake } = await context(request, body.dataset),
+    const { store, intake, mobileRegistration } = await context(request, body.dataset),
       payload = body.payload;
     let result;
     switch (body.action) {
@@ -87,8 +89,17 @@ export async function POST(request: Request) {
       case "intake":
         result = await intake.register(payload);
         break;
+      case "mobile_register":
+        result = await mobileRegistration.register(payload);
+        break;
       case "lifecycle":
         result = await store.lifecycle(payload);
+        break;
+      case "retired_asset":
+        result = await store.retiredAsset(payload);
+        break;
+      case "new_arrivals_ack":
+        result = await store.acknowledgeNewArrivals(payload);
         break;
       case "group_maintenance":
         result = await store.groupMaintenance(payload);
@@ -107,6 +118,12 @@ export async function POST(request: Request) {
         break;
       case "charge":
         result = await store.charge(payload);
+        break;
+      case "inspection":
+        result = await store.inspection(payload);
+        break;
+      case "inspection_void":
+        result = await store.voidInspection(payload);
         break;
       case "observation":
         result = await store.observation(payload);

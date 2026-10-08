@@ -7,6 +7,7 @@ import ts from "typescript";
 import { getRolePermissions } from "../work/qa/permissions.mjs";
 import * as groups from "../work/qa/teaching-groups.mjs";
 import * as query from "../work/qa/inventory-query.mjs";
+import * as arrivals from "../work/qa/new-arrivals.mjs";
 import * as lifecycle from "../work/qa/battery-lifecycle.mjs";
 import * as client from "../work/qa/client-utils.mjs";
 import * as locations from "../work/qa/location-catalog.mjs";
@@ -14,6 +15,7 @@ import * as locations from "../work/qa/location-catalog.mjs";
 // Actual component handlers with inert UI boundaries; no browser or hardware claims.
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 const ui = Object.fromEntries(["Battery", "Package", "Plus", "Download", "Upload", "Pencil", "Settings2", "ClipboardList", "Copy", "Search", "X", "Button", "Input", "Textarea", "Label", "Checkbox", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Tabs", "TabsList", "TabsTrigger", "Skeleton", "AppliedFilters", "InventoryFilterPanel", "BatteryFilterControls", "TeachingGroupsPanel"].map(name => [name, name]));
+Object.assign(ui, { MotionDisclosure: "MotionDisclosure", transitionWorkspace: update => update(), ChevronDown: "ChevronDown", AlertTriangle: "AlertTriangle", styles: new Proxy({}, { get: (_, name) => String(name) }) });
 function hooks() {
     const state = [], effects = []; let pointer = 0, ep = 0, scheduled = [];
     return {
@@ -26,7 +28,7 @@ function hooks() {
 }
 async function component(file, exports, state, extra = {}) {
     const source = ts.transpileModule(await readFile(file, "utf8"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
-    const bindings = { hasRowTextSelection, ...batterySelection, getRolePermissions, ...ui, ...query, ...groups, ...lifecycle, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03", ...extra }, names = Object.keys(bindings);
+    const bindings = { hasRowTextSelection, ...batterySelection, getRolePermissions, ...ui, ...query, ...arrivals, ...groups, ...lifecycle, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03", ...extra }, names = Object.keys(bindings);
     return new Function(...names, "_jsx", "_jsxs", "_Fragment", `${source}\nreturn {${exports.join(",")}};`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
 }
 function nodes(node, result = []) { if (Array.isArray(node)) node.forEach(child => nodes(child, result)); else if (node && typeof node === "object") { result.push(node); nodes(node.props?.children, result); } return result; }
@@ -62,6 +64,18 @@ test("saving a selected teaching set sends no stock movement and persists a revi
     assert.equal(view.requests.length, 0); await button(view.render(), "Save new group").props.onClick();
     assert.equal(view.requests.length, 1); assert.equal(view.requests[0].payload.name, "Week 3 class"); assert.deepEqual(view.requests[0].payload.batteryIds, ["BAT-A", "BAT-B"]);
     assert.equal(view.changed.length, 1); assert.equal(view.entries.size, 0); assert.ok(button(view.render(), "New group"));
+});
+
+test("group mode transitions retain the current draft and disable each inactive mode without duplicating its fields", async () => {
+    const view = await panel();
+    const mode = name => nodes(view.render()).find(node => node.type === "MotionDisclosure" && nodes(node).some(child => name === "list" ? child.props.className === "teaching-group-toolbar" : name === "edit" ? child.props.id === "teaching-group-name" : child.props.className === "detail-card"));
+    assert.equal(mode("list").props.open, true); assert.equal(mode("edit").props.open, false); assert.equal(nodes(mode("edit")).find(node => node.type === "fieldset").props.disabled, true);
+    button(view.render(), "New group").props.onClick(); control(view.render(), "teaching-group-name").props.onChange({ target: { value: "My retained draft" } });
+    assert.equal(mode("list").props.open, false); assert.equal(nodes(mode("list")).find(node => node.type === "fieldset").props.disabled, true); assert.equal(mode("edit").props.open, true);
+    button(view.render(), "Back to groups").props.onClick();
+    assert.equal(mode("edit").props.open, false); assert.equal(control(view.render(), "teaching-group-name").props.value, "My retained draft"); assert.equal(view.requests.length, 0);
+    button(view.render(), "Remove group").props.onClick(); assert.equal(mode("remove").props.open, true); assert.equal(mode("list").props.open, false); assert.equal(mode("edit").props.open, false);
+    assert.equal(nodes(view.render()).filter(node => node.props.id === "teaching-group-name").length, 1); assert.equal(nodes(view.render()).filter(node => node.props.id === "teaching-group-notes").length, 1); view.unmount();
 });
 
 test("saved groups support filtering or whole-group selection without a write; clear group search preserves saved membership", async () => {

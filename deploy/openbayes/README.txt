@@ -1,6 +1,15 @@
+Historical OpenBayes demonstration adapter
+
+The current dated native-account upgrade and launch guide is
+2026-10-08/README.md, with acceptance recorded in
+../../docs/deployment-openbayes-2026-10-08.md.
+Do not use the legacy gateway/bootstrap below to replace existing native accounts
+or to resume the current authoritative database. Older Git-download scripts do
+not contain the directly uploaded 2026-10-08 build.
+
 OpenBayes CPU demonstration
 
-Current operating request
+Historical operating request (2026-10-02)
 On 2026-10-02 the operator moved this phase to convenient local testing and no
 longer requested OpenBayes execution. Execution d1jh04u8xzi3 was stopped through
 the console and visibly confirmed closed, with displayed duration 16:43:34.

@@ -43,7 +43,7 @@ export async function requestExportAttachment(input: unknown, format: ExportDown
 export async function downloadExportAttachment(input: unknown, format: ExportDownloadFormat, fallbackFilename: string) {
     saveDownloadAttachment(await requestExportAttachment(input, format, fallbackFilename));
 }
-function saveDownloadAttachment(attachment: DownloadAttachment) {
+export function saveDownloadAttachment(attachment: DownloadAttachment) {
     const url = URL.createObjectURL(attachment.blob), link = document.createElement("a");
     try {
         link.href = url; link.download = attachment.filename;
@@ -116,7 +116,7 @@ export function fromSydneyInput(value: string) {
         throw new Error("This Sydney time is invalid or ambiguous during a daylight-saving transition. Choose an unambiguous time.");
     return matches[0].toISOString();
 }
-export const actionNames: Record<string, string> = { battery_scrapped: "Battery scrapped", battery_permanently_removed: "Battery permanently removed", battery_model_registered: "Battery model saved", battery_model_updated: "Battery model updated", task_plan_created: "Periodic task created", task_plan_updated: "Periodic task updated", task_cycle_completed: "Periodic task completed", task_cycle_created: "Periodic task opened", task_message_read: "Message read", checkout: "Checked out", return: "Returned", charge_recorded: "Charge recorded", demo_observation: "Demo room observation", battery_registered: "Battery registered", battery_updated: "Battery updated", person_registered: "Person registered", person_updated: "Person updated", building_registered: "Building registered", building_updated: "Building updated", room_registered: "Room registered", room_updated: "Room updated", checkout_voided: "Checkout corrected", return_reopened: "Return corrected", records_imported: "Records imported", demo_initialized: "Demonstration inventory initialized" };
+export const actionNames: Record<string, string> = { battery_recovered: "Battery recovered", battery_purged: "Battery permanently deleted", battery_scrapped: "Battery scrapped", battery_permanently_removed: "Battery permanently removed", battery_model_registered: "Battery model saved", battery_model_updated: "Battery model updated", task_plan_created: "Periodic task created", task_plan_updated: "Periodic task updated", task_cycle_completed: "Periodic task completed", task_cycle_created: "Periodic task opened", task_message_read: "Message read", checkout: "Checked out", return: "Returned", charge_recorded: "Charge recorded", inspection_recorded: "Inspection recorded", inspection_voided: "Inspection marked as entered in error", demo_observation: "Demo room observation", battery_registered: "Battery registered", battery_updated: "Battery updated", person_registered: "Person registered", person_updated: "Person updated", building_registered: "Building registered", building_updated: "Building updated", room_registered: "Room registered", room_updated: "Room updated", checkout_voided: "Checkout corrected", return_reopened: "Return corrected", records_imported: "Records imported", demo_initialized: "Demonstration inventory initialized" };
 export function csvCell(value: unknown) {
     let s = value == null ? "" : String(value);
     if (/^[=+@\-\t\r]/.test(s))

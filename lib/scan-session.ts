@@ -76,7 +76,7 @@ function isRead(value: unknown): value is ScanRead {
 }
 
 /** Recover only unfinished local work, without assuming that an uncertain write failed. */
-export function recoverScanSession(raw: string | null, kind: ScanMovement["kind"]): ScanSession | null {
+export function recoverScanSession(raw: string | null, kind: ScanMovement["kind"], includeFinished = false): ScanSession | null {
     if (!raw) return null;
     try {
         const saved = JSON.parse(raw) as ScanSession;
@@ -99,6 +99,22 @@ export function recoverScanSession(raw: string | null, kind: ScanMovement["kind"
         }
         // Older sessions may contain an unfinished immediate-processing request.
         // Keep its exact payload; only future queue submissions use review and confirmation.
-        return saved.attempt || saved.queue.length || saved.roomConfirmationRequired || saved.issues.some(issue => !issue.acknowledged) ? { ...saved, mode: "batch" } : null;
+        return includeFinished || saved.attempt || saved.queue.length || saved.roomConfirmationRequired || saved.issues.some(issue => !issue.acknowledged) ? { ...saved, mode: "batch" } : null;
     } catch { return null; }
+}
+
+export type ScanRecoveryStorage = Pick<Storage, "getItem" | "setItem"> & { flush?: () => Promise<void> };
+
+/** A successful setItem alone does not establish that exact recovery data was saved. */
+export function saveScanSession(storage: ScanRecoveryStorage, key: string, session: ScanSession): string {
+    const captured = JSON.stringify(session);
+    storage.setItem(key, captured);
+    if (storage.getItem(key) !== captured) throw new Error("The captured scan request could not be read back from recovery storage.");
+    return captured;
+}
+
+/** Mobile storage acknowledgement must complete before a movement can be sent. */
+export async function verifySavedScanSession(storage: ScanRecoveryStorage, key: string, captured: string): Promise<void> {
+    await storage.flush?.();
+    if (storage.getItem(key) !== captured) throw new Error("The original scan request is not confirmed in recovery storage. No movement was sent.");
 }

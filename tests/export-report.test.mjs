@@ -55,7 +55,7 @@ test("loan history preserves recorded names, voided evidence and open duration s
     assert.equal(rows[0]["Checkout recorded by"], "Original checkout staff");
     assert.equal(rows[1]["Loan status"], "In use");
     assert.equal(rows[1]["Time out (hours)"], 3);
-    assert.match(rows[1]["Duration measured to"], /Report creation/);
+    assert.match(rows[1]["Duration measured to"], /Borrowing calculation/);
     assert.equal(rows[2]["Loan status"], "Checkout voided");
     assert.equal(rows[2]["Time out (hours)"], "Not applicable: checkout voided");
     assert.equal(rows[2]["Correction reason"], "Mistaken identity");

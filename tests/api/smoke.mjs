@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import ExcelJS from "exceljs";
 import { checkTaskRemoval } from "./tasks.mjs";
+import { checkBatteryInspections } from "./inspections.mjs";
+import { checkRetiredAssetActions } from "./retired-assets.mjs";
+import { checkNewArrivals } from "./new-arrivals.mjs";
+import { checkTeachingCheckouts } from "./teaching-checkouts.mjs";
 
 /** Actual HTTP checks against a caller-owned, freshly initialized local Worker. */
 export async function runApiSmoke({
@@ -945,6 +949,10 @@ export async function runApiSmoke({
   assert.ok(accountWorkbook.getWorksheet("Staff accounts"));
   assert.doesNotMatch(JSON.stringify(accountWorkbook.model), /password_hash|password_salt|token_hash|authVersion/);
   await checkTaskRemoval({ check, json, adminCookie, staffCookie });
+  await checkBatteryInspections({ check, json, adminCookie, staffCookie });
+  await checkRetiredAssetActions({ check, json, adminCookie, staffCookie });
+  await checkNewArrivals({ check, json, adminCookie, staffCookie });
+  await checkTeachingCheckouts({ check, json, adminCookie, staffCookie });
   await check(
     "staff sign-out invalidates their session",
     "/api/session",

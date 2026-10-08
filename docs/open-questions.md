@@ -25,6 +25,18 @@ The items below distinguish confirmed scope from remaining evidence gaps. Empty 
 | Email and unattended delivery | Email preferences are saved; local Messages evaluate due reminders during authenticated use; no sender, recipient confirmation or unattended scheduler | Authorized sending identity/service, confirmed recipients, continuous host, background timezone scheduling and actual receipt evidence |
 | Safety agent | Deferred | User need, trusted data, thresholds and controlled actions |
 
+## Confirmed local lifecycle extension: recovery and permanent deletion
+
+8 October 2026 · The user approved recovery of selected Scrapped batteries by both staff and administrators, with original history retained and a new attributed recovery record. Administrators alone may explicitly delete selected Scrapped data permanently. Unless deleted, retained assets and histories remain indefinitely. Permanently removed assets remain terminal.
+
+The user also confirmed minimal BAT ID/deleting account/time evidence and preservation of other assets' and Tasks' independent human notes. Cleanup removes the target's own records/history and system-held structured asset snapshots, retaining minimal deleted-ID references in independent Task/group records. Technical request reservations and irreversible tag hashes remain to prevent reuse and delayed writes. These decisions supersede the earlier no-reactivation/no-deletion baseline only within this explicit scope; no normal or hosted data deletion is authorized for development checks.
+
+The local implementation and actual checks are recorded in [validation.md](validation.md#local-workbench-refinement-and-scrapped-asset-actions). Remaining gates include realistic-history cleanup performance, operational authorization/retention and backup/restore policy. Database deletion does not retract independent notes, earlier downloaded files or backup copies.
+
+## Resolved local web audit finding: teaching-group download boundary
+
+8 October 2026 · A captured selected download from an opened Teaching group could previously include a battery removed from that group in another tab: the server validated inventory and personal scope but treated the group only as filter context. The local fix captures the opened group's ID and version, then validates its current private ownership, active state, version and selected membership from the export's existing consistent D1 snapshot. A conflict produces no partial download; the dialog preserves selected IDs and information choices for explicit review. Ordinary inventory filters remain variable criteria, so their cross-page and cross-filter selected downloads retain the original behavior. This fix changes neither assets nor group membership and is not a snapshot-history export mode. Local verification results are recorded separately in the web retention audit.
+
 ## Future RFID adapter contract
 
 The [Messages and periodic reminders plan](messages-and-reminders-plan.md) describes the implemented local notification scope and future delivery gates. Email conditions are not yet satisfied; an in-app message or a preview must not be described as an email sent. Local request-driven generation cannot promise a reminder while the computer/server is off or no authenticated request occurs.

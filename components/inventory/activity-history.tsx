@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Download, ClipboardList, LogIn, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MotionDisclosure } from "@/components/ui/workspace-motion";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -28,7 +29,7 @@ import {
   durationLabel,
   reloadSessionPage,
 } from "@/lib/client-utils";
-import { groupActivity, filterActivity, hasActivityBatteryCriteria } from "@/lib/group-activity";
+import { groupActivity, filterActivity, hasActivityBatteryCriteria, teachingReplacementDescription } from "@/lib/group-activity";
 import { defaultInventoryFilter, type InventoryFilter } from "@/lib/inventory-query";
 import { getFilteredBatteries } from "@/lib/battery-selection-query";
 import { shouldToggleSelection } from "@/lib/client/row-selection";
@@ -274,7 +275,7 @@ export function ActivityHistory({
           Download filtered history
         </Button>
       </div>
-      <div className="px-5 pb-4">
+      <div className="activity-filter-controls">
       <BatteryFilterControls
         data={data}
         filters={batteryFilter}
@@ -295,17 +296,17 @@ export function ActivityHistory({
             `Recorded teaching group: ${groupChoices.find(([id]) => id === groupId)?.[1] ?? "Recorded group"}`}
         </p>
       )}
-      {!!chosen.length && (
+      <MotionDisclosure open={!!chosen.length}>
         <div className="selection-toolbar">
           <strong>{chosen.length} operations selected</strong>
-          <Button variant="outline" onClick={() => setDownloadOpen(true)}>
+          <Button variant="outline" onClick={() => setDownloadOpen(true)} disabled={!chosen.length}>
             Download selected activity
           </Button>
-          <Button variant="ghost" onClick={() => setSelected([])}>
+          <Button variant="ghost" onClick={() => setSelected([])} disabled={!chosen.length}>
             Clear selection
           </Button>
         </div>
-      )}
+      </MotionDisclosure>
       {loading ? (
         <div className="loading-panel" role="status">
           <p>
@@ -401,6 +402,7 @@ export function ActivityHistory({
                         <p className="field-hint">
                           {event.teachingGroup.name} · Group version{" "}
                           {event.teachingGroup.version} at operation time
+                          {event.details.teachingCheckout ? " · Temporary checkout mapping retained" : ""}
                         </p>
                         {event.members!.map((member) => (
                           <article className="history-entry" key={member.id}>
@@ -558,5 +560,6 @@ function EventDescription({ event }: { event: AuditEvent }) {
                 : typeof d.note === "string"
                   ? d.note
                   : "";
-  return text ? <span className="cell-secondary">{text}</span> : null;
+  const replacement = teachingReplacementDescription(event);
+  return text || replacement ? <><span className="cell-secondary">{text}</span>{replacement && <span className="cell-secondary">{replacement}</span>}</> : null;
 }

@@ -7,10 +7,12 @@ import type { InventorySnapshot } from "@/lib/domain";
 import { inventorySortOptions, lastObservedLocations, type InventoryFilter } from "@/lib/inventory-query";
 import { buildingLabel, roomLabel, staffIdentityLabel } from "@/lib/client-utils";
 import { isSupportedBuilding, isSelectableRoom } from "@/lib/location-catalog";
+import { transitionWorkspace } from "@/lib/client/workspace-motion";
 
 type FilterChip = { key: string; label: string; reset: Partial<InventoryFilter> };
 export function appliedFilterChips(filters: InventoryFilter, data: InventorySnapshot, defaultLifecycle: InventoryFilter["lifecycle"] = "active"): FilterChip[] {
     const chips: FilterChip[] = [];
+    if (filters.newArrivalsOnly) chips.push({ key: "newArrivals", label: "New arrivals · last 48 hours", reset: { newArrivalsOnly: false } });
     if (filters.groupId) chips.push({ key: "group", label: `Teaching group: ${data.teachingGroups?.find(group => group.id === filters.groupId)?.name || "Unavailable group"}`, reset: { groupId: null } });
     if ((filters.sortBy || "id") !== "id" || (filters.sortDirection || "asc") !== "asc") chips.push({ key: "sort", label: `Sort: ${inventorySortOptions.find(option => option.id === filters.sortBy)?.label || "Battery ID"} · ${filters.sortDirection === "desc" ? "Descending" : "Ascending"}`, reset: { sortBy: "id", sortDirection: "asc" } });
     if (filters.lifecycle !== defaultLifecycle) chips.push({ key: "lifecycle", label: `Record status: ${filters.lifecycle === "all" ? "All including removed" : filters.lifecycle === "active" ? "Active batteries" : filters.lifecycle === "scrapped" ? "Scrapped" : "Permanently removed"}`, reset: { lifecycle: defaultLifecycle } });
@@ -55,7 +57,7 @@ export function appliedFilterChips(filters: InventoryFilter, data: InventorySnap
 }
 
 export function AppliedFilters({ chips, onRemove, onClear }: { chips: FilterChip[]; onRemove: (patch: Partial<InventoryFilter>) => void; onClear: () => void }) {
-    return <section className="applied-filters" aria-label="Applied filters"><strong>Applied filters</strong>{chips.length ? <div className="filter-chips">{chips.map(chip => <button type="button" key={chip.key} className="filter-chip" onClick={() => onRemove(chip.reset)} aria-label={`Remove ${chip.label}`} title={chip.label}><span>{chip.label}</span><X size={14}/></button>)}</div> : <span className="muted">None</span>}<Button type="button" variant="ghost" size="sm" onClick={onClear} disabled={!chips.length}>Clear filters</Button></section>;
+    return <section className="applied-filters" aria-label="Applied filters"><strong>Applied filters</strong>{chips.length ? <div className="filter-chips">{chips.map(chip => <button type="button" key={chip.key} className="filter-chip" onClick={() => transitionWorkspace(() => onRemove(chip.reset))} aria-label={`Remove ${chip.label}`} title={chip.label}><span>{chip.label}</span><X size={14}/></button>)}</div> : <span className="muted">None</span>}<Button type="button" variant="ghost" size="sm" onClick={() => transitionWorkspace(onClear)} disabled={!chips.length}>Clear filters</Button></section>;
 }
 
 export function InventoryFilterPanel({ fixedGroup = false, data, filters, asOfOn, onChange, id = "inventory-filter-panel", showLifecycle = true, showSort = true, defaultLifecycle = "active" }: { fixedGroup?: boolean; data: InventorySnapshot; filters: InventoryFilter; asOfOn: string; onChange: (patch: Partial<InventoryFilter>) => void; id?: string; showLifecycle?: boolean; showSort?: boolean; defaultLifecycle?: InventoryFilter["lifecycle"] }) {

@@ -78,6 +78,45 @@ test("group filters, sorted pages and summary/detail/selected exports share one 
     assert.throws(() => filterBatteries(snapshot.batteries, filter, "2026-10-03", b.id, snapshot.teachingGroups), error => error.status === 409);
 });
 
+test("opened-group selected exports preserve cross-filter choices inside the fixed current membership only", async () => {
+    const context = await fixture("fixed-export-members"), saved = await context.groups().save(draft());
+    const teachingGroup = { id: saved.group.id, version: saved.group.version };
+    const input = { dataset: "demo", mode: "summary", range: "selected", batteryIds: ["BAT-10", "BAT-2"], filter: { groupId: saved.group.id, search: "No matching rows", sortBy: "capacity", sortDirection: "desc" }, teachingGroup };
+    const document = await createExport(context.inventory(), input);
+    assert.deepEqual(document.tables.Inventory.map(row => row.battery_id), ["BAT-2", "BAT-10"]);
+    assert.deepEqual(document.metadata.fixed_teaching_group_scope, { ...teachingGroup, name: saved.group.name });
+    assert.deepEqual(input.batteryIds, ["BAT-10", "BAT-2"], "Downloading does not rewrite the captured selection");
+    await assert.rejects(createExport(context.inventory(), { ...input, batteryIds: ["BAT-10", "BAT-3"] }), error => error.status === 409 && /fixed teaching group/.test(error.message));
+    const ordinaryFilter = await createExport(context.inventory(), { ...input, teachingGroup: undefined, batteryIds: ["BAT-10", "BAT-3"] });
+    assert.deepEqual(ordinaryFilter.tables.Inventory.map(row => row.battery_id), ["BAT-10", "BAT-3"], "An ordinary group filter is not a fixed view boundary");
+    assert.equal(ordinaryFilter.metadata.fixed_teaching_group_scope, null);
+});
+
+test("concurrent opened-group membership changes reject the captured export instead of producing a partial download", async () => {
+    const context = await fixture("fixed-export-race"), saved = await context.groups().save(draft());
+    const input = { dataset: "demo", mode: "detail", range: "selected", batteryIds: ["BAT-10", "BAT-2"], filter: { groupId: saved.group.id }, teachingGroup: { id: saved.group.id, version: saved.group.version }, sections: ["specifications", "audit"] };
+    const captured = structuredClone(input);
+    const edited = await context.groups().save({ action: "update", requestId: crypto.randomUUID(), id: saved.group.id, expectedVersion: saved.group.version, name: saved.group.name, notes: saved.group.notes, batteryIds: ["BAT-2"] });
+    await assert.rejects(createExport(context.inventory(), input), error => error.status === 409 && /changed|no longer available/.test(error.message));
+    assert.deepEqual(input, captured, "The conflict preserves every captured export field and selected ID");
+    await assert.rejects(createExport(context.inventory(), { ...input, teachingGroup: { id: saved.group.id, version: edited.group.version } }), error => error.status === 409 && /fixed teaching group/.test(error.message));
+    const reviewed = await createExport(context.inventory(), { ...input, batteryIds: ["BAT-2"], teachingGroup: { id: edited.group.id, version: edited.group.version } });
+    assert.deepEqual(reviewed.tables.Batteries.map(row => row.battery_id), ["BAT-2"]);
+    assert.equal((await context.inventory().snapshot()).batteries.length, 3, "A rejected download never removes assets");
+});
+
+test("opened-group export guards reject renamed versions, archived groups and another account's private group", async () => {
+    const context = await fixture("fixed-export-authority"), saved = await context.groups().save(draft());
+    const input = { dataset: "demo", mode: "summary", batteryIds: ["BAT-2"], filter: { groupId: saved.group.id }, teachingGroup: { id: saved.group.id, version: saved.group.version } };
+    await assert.rejects(createExport(context.inventory(b), { ...input, range: "selected" }), error => error.status === 409);
+    const edited = await context.groups().save({ action: "update", requestId: crypto.randomUUID(), id: saved.group.id, expectedVersion: saved.group.version, name: "Renamed in another tab", notes: saved.group.notes, batteryIds: saved.group.batteryIds });
+    for (const range of ["selected", "filtered", "page"])
+        await assert.rejects(createExport(context.inventory(), { ...input, range, batteryIds: range === "selected" ? input.batteryIds : undefined }), error => error.status === 409);
+    await context.groups().save({ action: "remove", requestId: crypto.randomUUID(), id: edited.group.id, expectedVersion: edited.group.version });
+    await assert.rejects(createExport(context.inventory(), { ...input, range: "selected", teachingGroup: { id: edited.group.id, version: edited.group.version } }), error => error.status === 409);
+    await assert.rejects(createExport(context.inventory(), { ...input, range: "selected", teachingGroup: { id: crypto.randomUUID(), version: 1 } }), error => error.status === 400);
+});
+
 test("group updates and removals are versioned preferences; retained retired members cannot be silently borrowed", async () => {
     const context = await fixture("edit"), original = await context.groups().save(draft()), record = (await context.inventory().snapshot()).batteries.find(battery => battery.id === "BAT-2");
     await context.inventory().lifecycle({ requestId: crypto.randomUUID(), kind: "scrapped", source: "manual_selection", items: [{ batteryId: record.id, version: record.version, tagId: record.tagId }] });

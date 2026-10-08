@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { StaffUser } from "@/lib/accounts";
 import type { Dataset, InventorySnapshot } from "@/lib/domain";
 import { inventoryResponse } from "@/lib/client/inventory-request";
+import { inventoryRevisionKey } from "@/lib/new-arrivals";
 
 /** Own the authoritative snapshot and reject late responses from older contexts. */
 export function useInventoryData(initialUser: StaffUser) {
@@ -37,9 +38,10 @@ export function useInventoryData(initialUser: StaffUser) {
       );
       if (signal?.aborted || sequence !== loadSequence.current) return;
       if (JSON.stringify(snapshot) !== JSON.stringify(current.current)) {
+        const changed = inventoryRevisionKey(snapshot) !== inventoryRevisionKey(current.current);
         current.current = snapshot;
         setData(snapshot);
-        setRevision((value) => value + 1);
+        if (changed) setRevision((value) => value + 1);
       }
       setUser(snapshot.user);
       setError("");

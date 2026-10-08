@@ -1,4 +1,5 @@
 import type { StaffUser } from "./accounts";
+import { rejectPurgedReplay } from "./server/purge-evidence";
 import { DomainError, recordKey, type Dataset } from "./domain";
 import { canonicalModelJson, modelChoiceContentHash, modelSelectionSchema, newBatteryModelSchema, updateBatteryModelSchema, type BatteryModelChoice, type ModelSelection, type NewBatteryModel } from "./battery-models";
 
@@ -73,6 +74,7 @@ export class BatteryModelStore {
         const operation = await this.first("SELECT kind,fingerprint,result_json FROM operations WHERE id=? AND scope=?", this.key(id), this.scope);
         if (!operation) return null;
         await this.requireActor();
+        rejectPurgedReplay(operation.result_json, "model_rejected_final");
         if (operation.kind !== kind || operation.fingerprint !== fingerprint) throw new DomainError(409, "This model draft identifier was already used for different changes or by another staff account.", "idempotency_conflict");
         return { ...JSON.parse(String(operation.result_json)) as ModelCreateResult, replayed: true };
     }

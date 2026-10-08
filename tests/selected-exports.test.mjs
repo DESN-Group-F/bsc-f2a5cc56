@@ -99,7 +99,7 @@ test("selected summary exports exactly the checked batteries, even outside the f
 test("selected detail includes complete linked histories and only referenced directories", async () => {
     const document = await createExport(store, request());
     assert.deepEqual(rowIds(document.tables.Batteries), selectedIds);
-    assert.deepEqual(sorted(Object.keys(document.tables)), sorted(["Batteries", "Loans", "Observations", "Charges", "Operations", "People", "Rooms", "Buildings"]));
+    assert.deepEqual(sorted(Object.keys(document.tables)), sorted(["Batteries", "Loans", "Observations", "Charges", "Inspections", "Operations", "People", "Rooms", "Buildings"]));
     for (const [table, source] of [["Loans", "loans"], ["Charges", "charges"], ["Observations", "observations"]]) {
         assert.deepEqual(sorted(document.tables[table].map(row => row.id)), await expectedHistory(source));
         assert.ok(document.tables[table].every(row => selectedIds.includes(row.battery_id)));

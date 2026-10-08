@@ -1,0 +1,36 @@
+.dialog { max-width: 780px; }
+.notice, .destructiveNotice, .recoveryNotice, .success { padding: 14px 16px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-subtle); font-size: 13px; line-height: 1.6; }
+.notice strong, .destructiveNotice strong, .recoveryNotice strong, .success strong { font-size: 14px; font-weight: 600; }
+.notice p, .destructiveNotice p, .recoveryNotice p, .success p { margin-top: 5px; overflow-wrap: anywhere; }
+.destructiveNotice { border-color: var(--danger-border); background: var(--danger-surface); }
+.destructiveNotice strong { color: var(--danger-foreground); }
+.recoveryNotice { border-color: var(--warning-border); background: var(--warning-surface); }
+.recoveryNotice [data-slot="button"] { margin-top: 12px; }
+.success { border-color: var(--success-border); background: var(--success-surface); }
+.success strong { color: var(--success-foreground); }
+.success p:last-child { color: var(--muted-foreground); font-size: 12px; }
+.reviewHeading { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 13px; }
+.reviewHeading strong { font-size: 14px; font-weight: 600; }
+.reviewHeading > span { color: var(--muted-foreground); }
+.reviewList { max-height: 280px; overflow: auto; border: 1px solid var(--border); border-radius: 10px; }
+.reviewList table { min-width: 550px; }
+.reviewList td { padding: 12px 16px; font-size: 13px; }
+.identifier { font-family: var(--font-code), monospace; font-size: 14px; font-weight: 600; }
+.historyToolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 9px; padding: 14px 0; border-block: 1px solid var(--border); margin-block: 16px; }
+.selectionSummary { margin-right: auto; font-size: 13px; color: var(--muted-foreground); }
+.selectionSummary strong { color: var(--foreground); font-weight: 600; }
+.historyTable { min-width: 740px; }
+.historyTable td { padding-block: 14px; }
+.historyTable td:first-child { width: 42px; }
+.historyTable td:nth-child(2) { min-width: 190px; }
+.historyTable td:nth-child(4) { min-width: 190px; }
+.historyTable [data-selected="true"] { box-shadow: inset 3px 0 var(--brand-yellow); }
+.deletionEvidence { margin-top: 20px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface-subtle); }
+.deletionEvidence > summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 16px; font-size: 13px; font-weight: 600; cursor: pointer; }
+.deletionEvidence > summary > span:last-child { color: var(--muted-foreground); font-size: 12px; font-weight: 500; }
+.deletionEvidence > p { margin: 0; padding: 0 16px 14px; font-size: 13px; line-height: 1.6; color: var(--muted-foreground); }
+.deletionEvidenceTable { max-height: 300px; overflow: auto; border-top: 1px solid var(--border); background: var(--surface); }
+.deletionEvidenceTable table { min-width: 600px; }
+.deletionEvidenceTable td { font-size: 13px; }
+.accountId { font-family: var(--font-code), monospace; font-size: 12px; overflow-wrap: anywhere; }
+@media (max-width: 600px) { .dialog { padding: 18px; } .reviewList { max-height: 230px; } .historyToolbar [data-slot="button"] { flex: 1 1 auto; } .selectionSummary { flex-basis: 100%; } }

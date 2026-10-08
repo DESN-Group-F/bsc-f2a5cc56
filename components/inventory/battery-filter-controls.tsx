@@ -3,6 +3,7 @@
 import { useId, useState } from "react";
 import { Settings2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MotionDisclosure } from "@/components/ui/workspace-motion";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { InventorySnapshot } from "@/lib/domain";
 import type { InventoryFilter } from "@/lib/inventory-query";
@@ -37,7 +38,7 @@ export function BatteryFilterControls({ data, filters, onChange, onClear, disabl
             <Button type="button" variant={open ? "secondary" : "outline"} disabled={disabled} aria-expanded={open} aria-controls={panelId} onClick={() => setOpen(value => !value)}><Settings2 size={16}/>Filter{chips.length ? ` (${chips.length})` : ""}</Button>
         </div>
         {scopeNote && <p className="field-hint">{scopeNote}</p>}
-        {open && <InventoryFilterPanel id={panelId} data={data} filters={filters} asOfOn={currentSydneyDate()} onChange={change} fixedGroup={fixedGroup} showLifecycle={showLifecycle} showSort={showSort} defaultLifecycle={defaultLifecycle}/>}
+        <MotionDisclosure open={open} id={panelId}><InventoryFilterPanel data={data} filters={filters} asOfOn={currentSydneyDate()} onChange={change} fixedGroup={fixedGroup} showLifecycle={showLifecycle} showSort={showSort} defaultLifecycle={defaultLifecycle}/></MotionDisclosure>
         <AppliedFilters chips={chips} onRemove={change} onClear={() => { if (!disabled) onClear(); }}/>
     </fieldset>;
 }

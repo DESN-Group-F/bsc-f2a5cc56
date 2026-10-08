@@ -9,23 +9,25 @@ import {
 } from "../movement-session";
 import { recoverRemovalDraft, removalDraftStorageKey } from "../removal-draft";
 import { recoverScanSession } from "../scan-session";
+import { retiredAssetStorageKey } from "../retired-asset-actions";
 
 export type PendingDataset = { dataset: Dataset };
 export type PendingMovement = PendingDataset & { kind: "checkout" | "return" };
 export type RecoveryState = {
   groups: PendingDataset[];
   removals: PendingDataset[];
+  retiredActions: PendingDataset[];
   intakes: PendingDataset[];
   movements: PendingMovement[];
   scans: PendingMovement[];
 };
 export type PendingWorkflow =
-  | { type: "group" | "removal" | "intake"; pending: PendingDataset }
+  | { type: "group" | "removal" | "retired" | "intake"; pending: PendingDataset }
   | { type: "movement" | "scan"; pending: PendingMovement };
 export type RecoveryStorage = Pick<Storage, "getItem">;
 
 export function emptyRecoveryState(): RecoveryState {
-  return { groups: [], removals: [], intakes: [], movements: [], scans: [] };
+  return { groups: [], removals: [], retiredActions: [], intakes: [], movements: [], scans: [] };
 }
 
 /** Read tab recovery without rewriting any captured transaction or draft. */
@@ -35,6 +37,8 @@ export function readWorkflowRecovery(
 ): RecoveryState {
   const result = emptyRecoveryState();
   for (const dataset of ["demo", "live"] as const) {
+    if (storage.getItem(retiredAssetStorageKey(accountId, dataset)))
+      result.retiredActions.push({ dataset });
     if (storage.getItem(groupMaintenanceKey(accountId, dataset)))
       result.groups.push({ dataset });
     const removalAttempt = storage.getItem(
@@ -82,6 +86,8 @@ export function nextPendingWorkflow(
   state: RecoveryState,
   exclude?: PendingWorkflow["type"],
 ): PendingWorkflow | null {
+  if (exclude !== "retired" && state.retiredActions?.[0])
+    return { type: "retired", pending: state.retiredActions[0] };
   if (exclude !== "group" && state.groups[0])
     return { type: "group", pending: state.groups[0] };
   if (exclude !== "removal" && state.removals[0])

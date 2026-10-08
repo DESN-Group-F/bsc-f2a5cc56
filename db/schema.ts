@@ -75,6 +75,21 @@ export const auditEvents = sqliteTable("audit_events", {
 export const operations = sqliteTable("operations", {
     id: text("id").primaryKey(), scope: text("scope").notNull(), kind: text("kind").notNull(), fingerprint: text("fingerprint").notNull(), resultJson: text("result_json").notNull(), createdAt: text("created_at").notNull(), guard: integer("guard").notNull().default(1),
 }, t => [check("operation_guard", sql `${t.guard}=1`)]);
+export const batteryInspections = sqliteTable("battery_inspections", {
+    id: text("id").primaryKey(), scope: text("scope").notNull(), batteryKey: text("battery_key").notNull().references(() => batteries.key), expectedBatteryVersion: integer("expected_battery_version").notNull(),
+    operationId: text("operation_id").notNull().unique().references(() => operations.id), kind: text("kind").notNull(), outcome: text("outcome").notNull(), performedAt: text("performed_at").notNull(), recordedAt: text("recorded_at").notNull(),
+    inspectorAccountId: text("inspector_account_id").notNull().references(() => staffAccounts.id), inspectorAuthVersion: integer("inspector_auth_version").notNull(), inspectorName: text("inspector_name").notNull(),
+    method: text("method").notNull().default(""), notes: text("notes").notNull().default(""), reference: text("reference").notNull().default(""), capacityMah: real("capacity_mah"),
+}, t => [index("idx_inspections_battery_time").on(t.scope, t.batteryKey, t.performedAt, t.recordedAt),
+    check("inspection_kind", sql`${t.kind} IN ('visual_check','functional_check','capacity_measurement','other')`), check("inspection_outcome", sql`${t.outcome} IN ('no_concern_observed','concern_observed','inconclusive')`),
+    check("inspection_times", sql`julianday(${t.performedAt}) IS NOT NULL AND julianday(${t.recordedAt}) IS NOT NULL AND julianday(${t.performedAt})<=julianday(${t.recordedAt})`),
+    check("inspection_text_lengths", sql`length(${t.method})<=1000 AND length(${t.notes})<=2000 AND length(${t.reference})<=1000 AND length(trim(${t.inspectorName}))>0`),
+    check("inspection_notes", sql`(${t.outcome}<>'concern_observed' AND ${t.kind}<>'other') OR length(trim(${t.notes}))>0`),
+    check("inspection_capacity", sql`(${t.kind}='capacity_measurement' AND ${t.capacityMah} IS NOT NULL AND ${t.capacityMah}>0 AND ${t.capacityMah}<=1000000 AND length(trim(${t.method}))>0) OR (${t.kind}<>'capacity_measurement' AND ${t.capacityMah} IS NULL)`)]);
+export const batteryInspectionVoids = sqliteTable("battery_inspection_voids", {
+    id: text("id").primaryKey(), scope: text("scope").notNull(), inspectionId: text("inspection_id").notNull().unique().references(() => batteryInspections.id), operationId: text("operation_id").notNull().unique().references(() => operations.id),
+    voidedAt: text("voided_at").notNull(), actorAccountId: text("actor_account_id").notNull().references(() => staffAccounts.id), actorAuthVersion: integer("actor_auth_version").notNull(), actorName: text("actor_name").notNull(), reason: text("reason").notNull(),
+}, t => [index("idx_inspection_voids_scope").on(t.scope, t.inspectionId), check("inspection_void_time", sql`julianday(${t.voidedAt}) IS NOT NULL`), check("inspection_void_reason", sql`length(trim(${t.reason})) BETWEEN 5 AND 1000`)]);
 export const taskPlans = sqliteTable("task_plans", {
     removedAt: text("removed_at"),
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), title: text("title").notNull(), description: text("description").notNull(), category: text("category").notNull(),
@@ -87,7 +102,7 @@ export const taskPlanAssignees = sqliteTable("task_plan_assignees", {
     key: text("key").primaryKey(), planKey: text("plan_key").notNull().references(() => taskPlans.key), accountId: text("account_id").notNull().references(() => staffAccounts.id),
 }, t => [uniqueIndex("idx_task_plan_assignee").on(t.planKey, t.accountId)]);
 export const taskPlanBatteries = sqliteTable("task_plan_batteries", {
-    key: text("key").primaryKey(), planKey: text("plan_key").notNull().references(() => taskPlans.key), batteryKey: text("battery_key").notNull().references(() => batteries.key),
+    key: text("key").primaryKey(), planKey: text("plan_key").notNull().references(() => taskPlans.key), batteryKey: text("battery_key").notNull(),
 }, t => [uniqueIndex("idx_task_plan_battery").on(t.planKey, t.batteryKey)]);
 export const taskCycles = sqliteTable("task_cycles", {
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), planKey: text("plan_key").notNull().references(() => taskPlans.key), planVersion: integer("plan_version").notNull(), snapshotJson: text("snapshot_json").notNull(),
@@ -98,12 +113,42 @@ export const teachingGroups = sqliteTable("teaching_groups", {
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), ownerAccountId: text("owner_account_id").notNull().references(() => staffAccounts.id),
     name: text("name").notNull(), notes: text("notes").notNull().default(""), memberIdsJson: text("member_ids_json").notNull(), version: integer("version").notNull().default(1), state: text("state").notNull().default("active"), createdAt: text("created_at").notNull(), updatedAt: text("updated_at").notNull(),
 }, t => [uniqueIndex("teaching_groups_identity").on(t.scope, t.ownerAccountId, t.id), uniqueIndex("teaching_groups_active_name").on(t.scope, t.ownerAccountId, sql`${t.name} COLLATE NOCASE`).where(sql`${t.state}='active'`), check("teaching_group_state", sql`${t.state} IN ('active','archived')`)]);
+export const teachingCheckouts = sqliteTable("teaching_checkouts", {
+    key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), actorAccountId: text("actor_account_id").notNull().references(() => staffAccounts.id), groupId: text("group_id").notNull(), createdAt: text("created_at").notNull(), snapshotJson: text("snapshot_json").notNull(),
+}, t => [uniqueIndex("teaching_checkouts_identity").on(t.scope, t.id), index("teaching_checkouts_actor_time").on(t.scope, t.actorAccountId, t.createdAt), check("teaching_checkout_key", sql`${t.key}=${t.scope} || '/' || ${t.id}`), check("teaching_checkout_time", sql`julianday(${t.createdAt}) IS NOT NULL`), check("teaching_checkout_snapshot", sql`json_valid(${t.snapshotJson}) AND json_type(${t.snapshotJson},'$.mappings')='array' AND json_array_length(${t.snapshotJson},'$.mappings') BETWEEN 1 AND 100`)]);
 export const teachingGroupOperations = sqliteTable("teaching_group_operations", {
     key: text("key").primaryKey(), scope: text("scope").notNull(), ownerAccountId: text("owner_account_id").notNull().references(() => staffAccounts.id), requestId: text("request_id").notNull(), fingerprint: text("fingerprint").notNull(), outcome: text("outcome").notNull(), resultJson: text("result_json").notNull(), createdAt: text("created_at").notNull(), guard: integer("guard").notNull(),
 }, t => [check("teaching_group_operation_guard", sql`${t.guard}=1`)]);
 export const teachingGroupEvents = sqliteTable("teaching_group_events", {
     id: text("id").primaryKey(), scope: text("scope").notNull(), ownerAccountId: text("owner_account_id").notNull().references(() => staffAccounts.id), groupKey: text("group_key").notNull().references(() => teachingGroups.key), action: text("action").notNull(), at: text("at").notNull(), beforeJson: text("before_json"), afterJson: text("after_json").notNull(), requestId: text("request_id").notNull(),
 });
+export const purgedBatteries = sqliteTable("purged_batteries", {
+    key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), actorId: text("actor_id").notNull().references(() => staffAccounts.id), at: text("at").notNull(),
+}, t => [uniqueIndex("purged_batteries_identity").on(t.scope, t.id), check("purged_battery_key", sql`${t.key}=${t.scope} || '/' || ${t.id}`), check("purged_battery_time", sql`julianday(${t.at}) IS NOT NULL`)]);
+export const purgedTagReservations = sqliteTable("purged_tag_reservations", {
+    scope: text("scope").notNull(), tagHash: text("tag_hash").notNull(),
+}, t => [uniqueIndex("purged_tag_reservation_identity").on(t.scope, t.tagHash), check("purged_tag_hash", sql`length(${t.tagHash})=71 AND substr(${t.tagHash},1,7)='sha256:'`)]);
+export const retiredAssetContext = sqliteTable("retired_asset_context", {
+    scope: text("scope").primaryKey(), requestKey: text("request_key").notNull().references(() => operations.id), actorId: text("actor_id").notNull().references(() => staffAccounts.id),
+    actorAuthVersion: integer("actor_auth_version").notNull(), kind: text("kind").notNull(), at: text("at").notNull(),
+}, t => [check("retired_asset_kind", sql`${t.kind} IN ('recover','purge')`)]);
+export const taskTargetRetentions = sqliteTable("task_target_retentions", {
+    scope: text("scope").notNull(), planKey: text("plan_key").notNull().references(() => taskPlans.key), batteryKey: text("battery_key").notNull().references(() => purgedBatteries.key),
+    actorId: text("actor_id").notNull().references(() => staffAccounts.id), actorAuthVersion: integer("actor_auth_version").notNull(), planVersion: integer("plan_version").notNull(),
+}, t => [uniqueIndex("task_target_retention_identity").on(t.planKey, t.batteryKey)]);
+export const inventoryEvidenceRevisions = sqliteTable("inventory_evidence_revisions", {
+    scope: text("scope").primaryKey(), version: integer("version").notNull(),
+}, t => [check("inventory_evidence_revision", sql`${t.version}>=0`)]);
+export const inventoryArrivalCounters = sqliteTable("inventory_arrival_counters", {
+    scope: text("scope").primaryKey(), lastSequence: integer("last_sequence").notNull(),
+}, t => [check("inventory_arrival_sequence", sql`${t.lastSequence} BETWEEN 0 AND 9007199254740991`)]);
+export const inventoryArrivals = sqliteTable("inventory_arrivals", {
+    batteryKey: text("battery_key").primaryKey().references(() => batteries.key), scope: text("scope").notNull(), sequence: integer("sequence").notNull(),
+    actorAccountId: text("actor_account_id").notNull().references(() => staffAccounts.id), registeredAt: text("registered_at").notNull(),
+}, t => [uniqueIndex("inventory_arrivals_scope_sequence").on(t.scope, t.sequence), index("inventory_arrivals_scope_time").on(t.scope, t.registeredAt), check("inventory_arrival_positive_sequence", sql`${t.sequence} BETWEEN 1 AND 9007199254740991`), check("inventory_arrival_registration_time", sql`julianday(${t.registeredAt}) IS NOT NULL`)]);
+export const inventoryArrivalAcknowledgements = sqliteTable("inventory_arrival_acknowledgements", {
+    key: text("key").primaryKey(), scope: text("scope").notNull(), accountId: text("account_id").notNull().references(() => staffAccounts.id), throughSequence: integer("through_sequence").notNull(),
+}, t => [uniqueIndex("inventory_arrival_acknowledgements_account").on(t.scope, t.accountId), check("inventory_arrival_acknowledgement_key", sql`${t.key}=${t.scope} || '/' || ${t.accountId}`), check("inventory_arrival_acknowledgement_sequence", sql`${t.throughSequence} BETWEEN 0 AND 9007199254740991`)]);
 export const taskMessages = sqliteTable("task_messages", {
     removedAt: text("removed_at"), version: integer("version").notNull().default(1),
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), cycleKey: text("cycle_key").notNull().references(() => taskCycles.key), recipientId: text("recipient_id").notNull().references(() => staffAccounts.id), occurrence: text("occurrence").notNull(), title: text("title").notNull(), body: text("body").notNull(), reminderOn: text("reminder_on"), reminderTime: text("reminder_time"), reminderAtUtc: text("reminder_at_utc"), createdAt: text("created_at").notNull(), readAt: text("read_at"),

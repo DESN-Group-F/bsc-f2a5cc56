@@ -76,6 +76,12 @@ export type Room = {
     number: string | null;
 };
 export type Building = { version: number; id: string; name: string };
+export type BatteryInspectionPreview = {
+    validRecords: number;
+    concernRecords: number;
+    latest: Pick<import("./battery-inspections").InspectionRecord, "id" | "kind" | "outcome" | "performedAt" | "recordedAt" | "inspectorName"> | null;
+    latestConcern: Pick<import("./battery-inspections").InspectionRecord, "id" | "kind" | "performedAt" | "recordedAt" | "inspectorName"> | null;
+};
 export type BatteryRecord = {
     registeredAt: string;
     lifecycleStatus: LifecycleStatus;
@@ -117,8 +123,11 @@ export type BatteryRecord = {
     observationSource: string | null;
     chargedAt: string | null;
     chargeDurationMinutes: number | null;
+    inspectionPreview?: BatteryInspectionPreview;
 };
 export type InventorySnapshot = {
+    newArrivals?: import("./new-arrivals").NewArrivalsSnapshot;
+    purgedBatteries?: { id: string; actorAccountId: string; at: string }[];
     teachingGroups: import("./teaching-groups").TeachingGroup[];
     user: StaffUser;
     dataset: Dataset;
@@ -153,6 +162,9 @@ export type LoanRecord = {
 };
 export type BatteryDetail = {
     battery: BatteryRecord;
+    usageSummary: import("./battery-usage").UsageSummary;
+    inspections: import("./battery-inspections").InspectionRecord[];
+    inspectionSummary: import("./battery-inspections").InspectionSummary;
     movementSummary: {
         activeLoan: LoanRecord | null;
         latestReturn: LoanRecord | null;

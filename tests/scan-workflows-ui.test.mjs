@@ -1,6 +1,6 @@
-import { test } from "node:test";
+import { after, test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import { join } from "node:path";
 import ts from "typescript";
@@ -11,7 +11,8 @@ import ts from "typescript";
 const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "scan-workflows-ui-"));
-for (const name of ["teaching-context", "scan-session", "client-utils", "battery-age", "location-catalog", "battery-lifecycle", "domain", "inventory-query", "battery-selection-query", "movement-session"]) {
+after(() => rm(scratch, { recursive: true, force: true }));
+for (const name of ["teaching-context", "scan-session", "client-utils", "battery-age", "location-catalog", "battery-lifecycle", "domain", "new-arrivals", "inventory-query", "battery-selection-query", "movement-session"]) {
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
     const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
         .replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
@@ -29,6 +30,7 @@ const componentSource = ts.transpileModule(source, { compilerOptions: { target: 
     .replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
 const uiNames = ["BatteryFilterControls", "RecordPicker", "Plus", "TeachingGroupsPanel", "CheckCircle2", "LogOut", "Radio", "RefreshCw", "ScanLine", "Trash2", "Button", "Input", "Label", "Checkbox", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"];
 const ui = Object.fromEntries(uiNames.map(name => [name, name]));
+Object.assign(ui, { ReceiptAction: "Button" });
 const movementComponentSource = ts.transpileModule(await readFile(new URL("../components/inventory/movement-dialog.tsx", import.meta.url), "utf8"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 function hooks() {
@@ -113,7 +115,7 @@ async function withStorage(run) {
     Object.defineProperty(globalThis, "window", { configurable: true, writable: true, value: { addEventListener() {}, removeEventListener() {}, dispatchEvent() {} } });
     Object.defineProperty(globalThis, "sessionStorage", { configurable: true, writable: true, value: storage });
     try {
-        await run({ read: () => { assert.equal(entries.size, 1); return JSON.parse([...entries.values()][0]); } });
+        await run({ storage, entries, read: () => { assert.equal(entries.size, 1); return JSON.parse([...entries.values()][0]); } });
     } finally {
         for (const [name, descriptor] of Object.entries(saved)) {
             if (descriptor) Object.defineProperty(globalThis, name, descriptor);
@@ -134,6 +136,63 @@ const loanA = "11111111-1111-4111-8111-111111111111";
 const loanB = "22222222-2222-4222-8222-222222222222";
 const loanC = "33333333-3333-4333-8333-333333333333";
 const loanD = "44444444-4444-4444-8444-444444444444";
+
+test("scan movements fail closed on recovery write or readback failure and retry only the captured request", async () => {
+    for (const failure of ["write", "readback"]) await withStorage(async store => {
+        const first = battery("PERSISTENCE-GUARD", "GUARDED-TAG"), inventory = data([first]), calls = [];
+        const station = mount({ data: inventory, kind: "checkout", onExit() {}, onRegister() {}, async write(action, payload) {
+            if (action === "scan_lookup") return { source: payload.source, results: [{ tagId: first.tagId, battery: first }] };
+            calls.push(structuredClone(payload)); return receipt(payload, inventory);
+        } });
+        await station.read(first.tagId);
+        const set = store.storage.setItem;
+        store.storage.setItem = () => { if (failure === "write") throw new Error("Controlled write denial"); return undefined; };
+        await confirmQueue(station, "checkout", 1);
+        assert.equal(calls.length, 0, "a movement cannot be sent without confirmed exact recovery data");
+        const alert = text(station.render()); assert.match(alert, /Recovery data could not be saved/);
+        store.storage.setItem = set;
+        await button(station.render(), "Retry recovery storage").props.onClick();
+        const original = structuredClone(store.read().attempt.payload);
+        await button(station.render(), "Retry same request").props.onClick();
+        assert.deepEqual(calls, [original]); assert.equal(store.read().attempt, null);
+        assert.equal(store.read().completed.length, 1);
+    });
+});
+
+test("scan native-style flush failure prevents a POST and retained receipt acknowledgement failure preserves original retry", async () => withStorage(async store => {
+    const first = battery("DURABLE-GUARD", "DURABLE-TAG"), inventory = data([first]), calls = [];
+    const station = mount({ data: inventory, kind: "checkout", onExit() {}, onRegister() {}, async write(action, payload) {
+        if (action === "scan_lookup") return { source: payload.source, results: [{ tagId: first.tagId, battery: first }] };
+        calls.push(structuredClone(payload)); return receipt(payload, inventory);
+    } });
+    await station.read(first.tagId);
+    store.storage.flush = async () => { throw new Error("Controlled durable acknowledgement denial"); };
+    await confirmQueue(station, "checkout", 1); assert.equal(calls.length, 0);
+    const original = structuredClone(store.read().attempt.payload);
+    store.storage.flush = async () => {};
+    await button(station.render(), "Retry recovery storage").props.onClick();
+    const set = store.storage.setItem;
+    store.storage.setItem = (key, value) => { const next = JSON.parse(value); if (!next.attempt && next.completed.length) throw new Error("Controlled receipt-save denial"); return set(key, value); };
+    await button(station.render(), "Retry same request").props.onClick();
+    assert.deepEqual(calls, [original]); assert.deepEqual(store.read().attempt.payload, original); assert.equal(store.read().completed.length, 0);
+    assert.equal(text(station.render()).includes("Ready for the next read."), false);
+    store.storage.setItem = set;
+    await button(station.render(), "Retry same request").props.onClick();
+    assert.deepEqual(calls, [original, original]); assert.equal(store.read().completed.length, 1);
+}));
+
+test("unreadable scan recovery is preserved and blocks reads, submissions and exit", async () => withStorage(async store => {
+    const key = "battery-scan:review-account:demo:checkout", raw = "{damaged-original-request";
+    store.entries.set(key, raw);
+    let calls = 0, exits = 0;
+    const station = mount({ data: data(), kind: "checkout", onExit() { exits++; }, onRegister() {}, async write() { calls++; } });
+    assert.match(text(station.render()), /Saved scan recovery data is unreadable/);
+    await station.read("ANY-TAG");
+    button(station.render(), "Exit scanning").props.onClick();
+    assert.equal(calls, 0); assert.equal(exits, 0); assert.equal(store.entries.get(key), raw);
+    await button(station.render(), "Retry recovery storage").props.onClick();
+    assert.equal(store.entries.get(key), raw);
+}));
 function battery(id, tagId, loanId = null) {
     return { id, tagId, chemistry: "", model: "", capacityMah: null, voltage: null, manufacturedOn: null, firstUsedOn: null, lifecycleStatus: "active", name: "Scenario battery", version: 1, ownerName: "Responsible staff", loanId, borrowerName: loanId ? "Current staff holder" : null, borrowerAccountId: loanId ? "holder-account" : null, checkedOutAt: loanId ? "2026-10-03T00:00:00.000Z" : null };
 }
@@ -524,6 +583,8 @@ test("rejected, uncertain and unverified manual selection results preserve the e
         const original = structuredClone(captured.attempt.payload);
         assert.equal(selectionChoice(tree, selected.id).props.checked, true, `${failure}: unconfirmed work must retain the deliberate selection`);
         assert.equal(captured.completed.length, 0); assert.equal(calls.length, 1);
+        assert.equal(button(tree, "Confirm return (1)").props.pending, false);
+        assert.equal(button(tree, "Confirm return (1)").props.confirmation, null);
         assert.equal(captured.attempt.status, failure === "rejected" ? "rejected" : "uncertain");
         assert.equal(selectionChoice(tree, selected.id).props.disabled, true); assert.equal(selectionSubmit(tree).props.disabled, true);
         assert.deepEqual(original.scan.bindings, [{ batteryId: selected.id, tagId: null, version: 1 }]);
@@ -539,6 +600,8 @@ test("rejected, uncertain and unverified manual selection results preserve the e
         tree = station.render(); captured = store.read();
         assert.equal(calls.length, 2); assert.deepEqual(calls[1].payload, original, "retry must retain the original tag, version, loan and request ID");
         assert.equal(captured.completed.length, 1); assert.equal(captured.attempt, null);
+        assert.equal(button(tree, "Confirm return (0)").props.confirmation.identity, original.requestId);
+        assert.equal(button(tree, "Confirm return (0)").props.confirmation.count, 1);
         assert.equal(captured.completed[0].battery.version, 1); assert.equal(captured.completed[0].battery.tagId, null);
         const refreshedChoice = selectionChoice(tree, selected.id);
         if (refreshedChoice) assert.equal(refreshedChoice.props.checked, false);

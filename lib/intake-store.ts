@@ -1,4 +1,5 @@
 import type { StaffUser } from "./accounts";
+import { registeredTagHash, rejectPurgedReplay } from "./server/purge-evidence";
 import { currentSydneyDate } from "./battery-age";
 import { BatteryModelStore } from "./battery-model-store";
 import {
@@ -20,6 +21,7 @@ import {
   type IntakeReceipt,
 } from "./intake-session";
 import { isSupportedBuilding } from "./location-catalog";
+import { mobileRegistrationPayloadSchema, MOBILE_REGISTRATION_SOURCE, type MobileRegistrationPayload, type MobileRegistrationReceipt } from "./mobile-registration-session";
 import { InventoryDatabase } from "./server/inventory/database";
 import { ensureInventoryReferenceData } from "./server/inventory/provisioning";
 
@@ -54,16 +56,23 @@ type IntakeContext = {
 };
 type Guard = { sql: string; values: unknown[] };
 const automaticIdPattern = "BAT-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]";
+type RegistrationMode = "simulated_intake" | "manual_registration";
+type RegistrationPayload = IntakePayload | MobileRegistrationPayload;
+type RegistrationReceipt = IntakeReceipt | MobileRegistrationReceipt;
+type ReceiptFor<Mode extends RegistrationMode> = Mode extends "manual_registration" ? MobileRegistrationReceipt : IntakeReceipt;
 
 /** Deliberate demo scans create individual assets with atomic shared numbering. */
-export class IntakeStore {
+export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
   constructor(
     private db: D1Database,
     readonly scope: string,
     readonly dataset: Dataset,
     private actor: IntakeActor,
     private clock: () => Date = () => new Date(),
+    private readonly mode: Mode = "simulated_intake" as Mode,
   ) {}
+  private get source() { return this.mode === "manual_registration" ? MOBILE_REGISTRATION_SOURCE : "simulated_intake" as const; }
+  private get rejectionCode() { return this.mode === "manual_registration" ? "registration_rejected_final" : "intake_rejected_final"; }
   private key(id: string) {
     return recordKey(this.scope, id);
   }
@@ -95,7 +104,7 @@ export class IntakeStore {
   private async replay(
     requestId: string,
     fingerprint: string,
-  ): Promise<IntakeReceipt | null> {
+  ): Promise<RegistrationReceipt | null> {
     const row = await this.first(
       "SELECT kind,fingerprint,result_json FROM operations WHERE id=? AND scope=?",
       this.key(requestId),
@@ -103,8 +112,9 @@ export class IntakeStore {
     );
     if (!row) return null;
     await this.requireActor();
+    rejectPurgedReplay(row.result_json, this.rejectionCode);
     if (
-      !["simulated_intake", "simulated_intake_rejected"].includes(
+      ![this.mode, `${this.mode}_rejected`].includes(
         String(row.kind),
       ) ||
       row.fingerprint !== fingerprint
@@ -115,19 +125,19 @@ export class IntakeStore {
         "idempotency_conflict",
       );
     const result = JSON.parse(String(row.result_json));
-    if (row.kind === "simulated_intake_rejected" && result.rejected === true)
+    if (row.kind === `${this.mode}_rejected` && result.rejected === true)
       throw new DomainError(
         Number(result.status),
         String(result.error),
-        "intake_rejected_final",
+        this.rejectionCode,
       );
-    return { ...(result as IntakeReceipt), replayed: true };
+    return { ...(result as RegistrationReceipt), replayed: true };
   }
   private async reject(
-    payload: IntakePayload,
+    payload: RegistrationPayload,
     fingerprint: string,
     rejection: DomainError,
-  ): Promise<IntakeReceipt> {
+  ): Promise<RegistrationReceipt> {
     const authorization = this.actorGuard();
     const result = {
       rejected: true,
@@ -140,7 +150,7 @@ export class IntakeStore {
       // same immutable key. A rejected scan cannot create a later ghost asset.
       await this.db.batch([
         this.statement(
-          `INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) SELECT ?,?,'simulated_intake_rejected',?,?,?,CASE WHEN (${authorization.sql}) THEN 1 ELSE 0 END`,
+          `INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) SELECT ?,?,'${this.mode}_rejected',?,?,?,CASE WHEN (${authorization.sql}) THEN 1 ELSE 0 END`,
           this.key(payload.requestId),
           this.scope,
           fingerprint,
@@ -160,7 +170,7 @@ export class IntakeStore {
     throw new DomainError(
       rejection.status,
       rejection.message,
-      "intake_rejected_final",
+      this.rejectionCode,
     );
   }
   private async savedSession(id: string, configuration: string) {
@@ -319,7 +329,7 @@ export class IntakeStore {
     };
   }
   private async frozenModelGuard(
-    payload: IntakePayload,
+    payload: RegistrationPayload,
     context: IntakeContext,
   ): Promise<Guard> {
     const evidence = context.modelReference;
@@ -359,14 +369,17 @@ export class IntakeStore {
         ?.allowed === 1
     );
   }
-  async register(input: unknown): Promise<IntakeReceipt> {
+  async register(input: unknown): Promise<ReceiptFor<Mode>> {
+    return await this.registerInput(input) as ReceiptFor<Mode>;
+  }
+  private async registerInput(input: unknown): Promise<RegistrationReceipt> {
     await this.requireActor();
     if (this.dataset !== "demo")
       throw new DomainError(
         501,
-        "Simulated first-time intake is available only in Demonstration inventory. Real RFID intake requires validated hardware.",
+        this.mode === "manual_registration" ? "Operator-entered mobile registration is available only in Demonstration inventory until native hardware validation is complete." : "Simulated first-time intake is available only in Demonstration inventory. Real RFID intake requires validated hardware.",
       );
-    const payload = intakePayloadSchema.parse(input),
+    const payload = this.mode === "manual_registration" ? mobileRegistrationPayloadSchema.parse(input) : intakePayloadSchema.parse(input),
       fingerprint = canonicalModelJson({
         actorAccountId: this.actor.id,
         payload,
@@ -377,7 +390,7 @@ export class IntakeStore {
       if (
         error instanceof DomainError &&
         [400, 404, 409].includes(error.status) &&
-        !["idempotency_conflict", "intake_rejected_final"].includes(
+        !["idempotency_conflict", this.rejectionCode].includes(
           error.code ?? "",
         )
       )
@@ -386,11 +399,14 @@ export class IntakeStore {
     }
   }
   private async registerReviewed(
-    payload: IntakePayload,
+    payload: RegistrationPayload,
     fingerprint: string,
-  ): Promise<IntakeReceipt> {
+  ): Promise<RegistrationReceipt> {
     const previous = await this.replay(payload.requestId, fingerprint);
     if (previous) return previous;
+    const tagHash = payload.tagId === null ? null : await registeredTagHash(this.scope, payload.tagId);
+    if (tagHash && await this.first("SELECT tag_hash FROM purged_tag_reservations WHERE scope=? AND tag_hash=?", this.scope, tagHash))
+      throw new DomainError(409, "This registered tag belongs to permanently deleted battery data and remains reserved. Use a different unassigned tag.");
     if (
       await this.first(
         "SELECT id FROM batteries WHERE scope=? AND tag_id=?",
@@ -407,6 +423,7 @@ export class IntakeStore {
       actorAccountId: this.actor.id,
       common: payload.common,
       firstUseMode: payload.firstUseMode,
+      ...(this.mode === "manual_registration" ? { source: this.source } : {}),
     });
     let session = await this.savedSession(payload.sessionId, configuration);
     let prepared = session
@@ -463,7 +480,7 @@ export class IntakeStore {
       const sessionValues = session
         ? [this.scope, payload.sessionId, this.actor.id, configuration]
         : [this.scope, payload.sessionId];
-      const result: IntakeReceipt = {
+      const result = {
         requestId: payload.requestId,
         sessionId: payload.sessionId,
         dataset: this.dataset,
@@ -471,8 +488,8 @@ export class IntakeStore {
         batteryId,
         tagId: payload.tagId,
         registeredAt,
-        ...(payload.scannedAt ? { scannedAt: payload.scannedAt } : {}),
-        source: "simulated_intake",
+        ...("scannedAt" in payload && payload.scannedAt ? { scannedAt: payload.scannedAt } : {}),
+        source: this.source,
         replayed: false,
         name: common.name,
         model: common.model,
@@ -484,7 +501,7 @@ export class IntakeStore {
         homeRoomId: common.homeRoomId,
         manufacturedOn: common.manufacturedOn,
         firstUsedOn,
-      };
+      } as RegistrationReceipt;
       const after = {
         id: batteryId,
         ...common,
@@ -493,7 +510,7 @@ export class IntakeStore {
         registeredAt,
         version: 1,
       };
-      const guardSql = `(${authorization.sql}) AND (${directories.sql}) AND (${prepared.modelGuard.sql}) AND (${counterGuard}) AND (${sessionGuard}) AND NOT EXISTS(SELECT 1 FROM batteries WHERE scope=? AND (id=? OR tag_id=?))`;
+      const guardSql = `(${authorization.sql}) AND (${directories.sql}) AND (${prepared.modelGuard.sql}) AND (${counterGuard}) AND (${sessionGuard}) AND NOT EXISTS(SELECT 1 FROM batteries WHERE scope=? AND (id=? OR tag_id=?)) AND NOT EXISTS(SELECT 1 FROM purged_tag_reservations WHERE scope=? AND tag_hash=?)`;
       const guardValues = [
         ...authorization.values,
         ...directories.values,
@@ -503,10 +520,12 @@ export class IntakeStore {
         this.scope,
         batteryId,
         payload.tagId,
+        this.scope,
+        tagHash,
       ];
       const writes = [
         this.statement(
-          `INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) SELECT ?,?,'simulated_intake',?,?,?,CASE WHEN (${guardSql}) THEN 1 ELSE 0 END`,
+          `INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) SELECT ?,?,'${this.mode}',?,?,?,CASE WHEN (${guardSql}) THEN 1 ELSE 0 END`,
           this.key(payload.requestId),
           this.scope,
           fingerprint,
@@ -571,8 +590,8 @@ export class IntakeStore {
           JSON.stringify({
             before: null,
             after,
-            source: "simulated_intake",
-            ...(payload.scannedAt
+            source: this.source,
+            ...("scannedAt" in payload && payload.scannedAt
               ? {
                   scannedAt: payload.scannedAt,
                   scanTimeSource: "client_demo_draft",

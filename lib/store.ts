@@ -4,7 +4,10 @@ import { InventoryDatabase } from "./server/inventory/database";
 import { InventoryDirectories } from "./server/inventory/directories";
 import { InventoryGroups } from "./server/inventory/groups";
 import { InventoryImports } from "./server/inventory/imports";
+import { InventoryInspections } from "./server/inventory/inspections";
 import { InventoryLifecycle } from "./server/inventory/lifecycle";
+import { InventoryRetiredAssets } from "./server/inventory/retired-assets";
+import { InventoryNewArrivals } from "./server/inventory/new-arrivals";
 import { InventoryMaintenance } from "./server/inventory/maintenance";
 import { InventoryMovements } from "./server/inventory/movements";
 import { InventoryQueries } from "./server/inventory/queries";
@@ -21,8 +24,11 @@ export class InventoryStore {
   private readonly registration: InventoryRegistration;
   private readonly movements: InventoryMovements;
   private readonly lifecycleOperations: InventoryLifecycle;
+  private readonly retiredAssetOperations: InventoryRetiredAssets;
+  private readonly newArrivals: InventoryNewArrivals;
   private readonly maintenance: InventoryMaintenance;
   private readonly imports: InventoryImports;
+  private readonly inspections: InventoryInspections;
 
   constructor(
     db: D1Database,
@@ -59,6 +65,8 @@ export class InventoryStore {
       transactions,
       groups,
     );
+    this.retiredAssetOperations = new InventoryRetiredAssets(database, this.session, transactions);
+    this.newArrivals = new InventoryNewArrivals(database, this.session);
     this.maintenance = new InventoryMaintenance(
       database,
       this.session,
@@ -66,6 +74,7 @@ export class InventoryStore {
       groups,
     );
     this.imports = new InventoryImports(database, this.session, transactions);
+    this.inspections = new InventoryInspections(database, this.session, transactions);
   }
 
   get viewerAccountId() {
@@ -110,8 +119,20 @@ export class InventoryStore {
   lifecycle(input: unknown) {
     return this.lifecycleOperations.lifecycle(input);
   }
+  retiredAsset(input: unknown) {
+    return this.retiredAssetOperations.execute(input);
+  }
+  acknowledgeNewArrivals(input: unknown) {
+    return this.newArrivals.acknowledge(input);
+  }
   charge(input: unknown) {
     return this.maintenance.charge(input);
+  }
+  inspection(input: unknown) {
+    return this.inspections.record(input);
+  }
+  voidInspection(input: unknown) {
+    return this.inspections.void(input);
   }
   observation(input: unknown) {
     return this.maintenance.observation(input);

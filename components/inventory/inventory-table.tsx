@@ -3,8 +3,10 @@
 import { isActiveBattery, batteryStatusLabel } from "@/lib/battery-lifecycle";
 import { useEffect, useState, type MouseEvent } from "react";
 import { shouldToggleSelection } from "@/lib/client/row-selection";
-import { Battery, Package, Plus, Download, Settings2 } from "lucide-react";
+import { Battery, Package, Plus, Download, Settings2, ChevronDown, AlertTriangle, Clock3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { MotionDisclosure } from "@/components/ui/workspace-motion";
+import { transitionWorkspace } from "@/lib/client/workspace-motion";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Select,
@@ -25,6 +27,7 @@ import {
 import {
   formatTime,
   formatBatteryAge,
+  formatDateOnly,
   buildingLabel,
   storageRoomLabel,
 } from "@/lib/client-utils";
@@ -47,6 +50,8 @@ import type {
   RecordActions,
   ExportDraft,
 } from "@/lib/client/inventory-contracts";
+import styles from "./inventory-table.module.css";
+import { recentNewArrivals, type NewArrivals } from "@/lib/new-arrivals";
 
 export function InventoryTable({
   data,
@@ -62,7 +67,12 @@ export function InventoryTable({
   group,
   onRemoval,
   onGroupMaintenance,
+  onGroupCheckouts,
   personalScope = "all",
+  newArrivals = data.newArrivals,
+  onViewNewArrivals,
+  arrivalsPending = false,
+  arrivalsError = "",
 }: RecordActions & {
   onMovement: (kind: "checkout" | "return", ids: string[]) => void;
   onSetup: () => void;
@@ -72,10 +82,17 @@ export function InventoryTable({
   onOpenGroups?: () => void;
   onRemoval?: (ids: string[]) => void;
   onGroupMaintenance?: (ids: string[]) => void;
+  onGroupCheckouts?: () => void;
   onGroupsChanged?: () => Promise<void>;
   onGroupDialogChange?: (open: boolean) => void;
+  newArrivals?: NewArrivals;
+  onViewNewArrivals?: (throughSequence: number) => Promise<void>;
+  arrivalsPending?: boolean;
+  arrivalsError?: string;
 }) {
   const permissions = getRolePermissions(data.user.role);
+  const instancePrefix = `inventory-${data.dataset}-${personalScope}-${group ? `group-${encodeURIComponent(group.id)}` : "shared"}`;
+  const filterDisclosureId = `${instancePrefix}-filter-disclosure`;
   const [savedFilters, setFilters] = useState<InventoryFilter>(() => ({
       ...defaultInventoryFilter(),
       personalScope,
@@ -88,6 +105,7 @@ export function InventoryTable({
     ...(group ? { groupId: group.id } : {}),
   };
   const [selectedIds, setSelected] = useState<string[]>([]);
+  const [expandedIds, setExpanded] = useState<string[]>([]);
   const [page, setPage] = useState(0),
     [pageSize, setPageSize] = useState<"10" | "25" | "50" | "100">("25");
   const [groupEditor, setGroupEditor] = useState<{ ids: string[] } | null>(
@@ -113,6 +131,13 @@ export function InventoryTable({
     data.teachingGroups ?? [],
   );
   const onLoan = baseBatteries.filter((b) => b.loanId).length;
+  const arrivalItems = recentNewArrivals(newArrivals);
+  const activeScopeIds = new Set(baseBatteries.map(battery => battery.id));
+  const recentIds = new Set(arrivalItems.map(item => item.batteryId));
+  const scopeArrivals = arrivalItems.filter(item => activeScopeIds.has(item.batteryId));
+  const unreadArrivals = scopeArrivals.filter(item => item.isUnread);
+  const unreadInStore = unreadArrivals.filter(item => !batteries.find(battery => battery.id === item.batteryId)?.loanId).length;
+  const unreadInUse = unreadArrivals.length - unreadInStore;
   const knownIds = new Set(batteries.map((battery) => battery.id));
   const selected = [...new Set(selectedIds)].filter((id) => knownIds.has(id));
   const baseIds = new Set(
@@ -147,6 +172,7 @@ export function InventoryTable({
           asOfOn,
           data.user.id,
           data.teachingGroups ?? [],
+          newArrivals,
         )
       : [];
   const allStatuses =
@@ -157,6 +183,7 @@ export function InventoryTable({
           asOfOn,
           data.user.id,
           data.teachingGroups ?? [],
+          newArrivals,
         )
       : [];
   const matchingOnLoan = allStatuses.filter(
@@ -200,16 +227,18 @@ export function InventoryTable({
     changeBatterySelection(id);
   }
   function updateFilters(patch: Partial<InventoryFilter>) {
-    setFilters((previous) => ({ ...previous, ...patch }));
-    setPage(0);
+    transitionWorkspace(() => {
+      setFilters((previous) => ({ ...previous, ...patch }));
+      setPage(0);
+    });
   }
   function clearFilters() {
-    setFilters({
+    transitionWorkspace(() => { setFilters({
       ...defaultInventoryFilter(),
       personalScope,
       ...(group ? { groupId: group.id, lifecycle: "all" as const } : {}),
     });
-    setPage(0);
+    setPage(0); });
   }
   function selectGroup(group: TeachingGroup) {
     const allowed = group.batteryIds.filter(
@@ -226,6 +255,7 @@ export function InventoryTable({
     if (validation.success && !selectionScopeChanged)
       onExport({
         selectedIds: [...selected],
+        teachingGroup: group ? { id: group.id, version: group.version } : undefined,
         filter: validation.data,
         page: currentPage,
         pageSize,
@@ -250,18 +280,18 @@ export function InventoryTable({
           </span>
         </div>
       )}
-      <div className="summary-grid">
+      <details className={styles.summaryDisclosure}>
+        <summary><span>Active scope totals</span><span><strong>{baseBatteries.length}</strong> batteries · <strong>{baseBatteries.length - onLoan}</strong> in store · <strong>{onLoan}</strong> in use</span><ChevronDown size={16} aria-hidden="true" /></summary>
+      <div className={styles.summaryStrip} aria-label="Inventory totals">
         {[
           [
-            personalScope === "responsible"
-              ? "My responsible batteries"
-              : personalScope === "borrowed"
-                ? "My batteries in use"
-                : "Registered batteries",
+            "Active batteries",
             baseBatteries.length,
-            personalScope === "all"
-              ? "Across registered storage locations"
-              : "In this personal view",
+            group
+              ? "In this teaching group"
+              : personalScope === "all"
+                ? "Across registered storage locations"
+                : "In this personal view",
           ],
           [
             "In store",
@@ -270,13 +300,13 @@ export function InventoryTable({
           ],
           ["In use", onLoan, "Linked to a current staff holder"],
         ].map(([label, count, note]) => (
-          <div className="summary-card" key={label}>
-            <span>{label}</span>
+          <div className={styles.summaryItem} key={label}>
             <strong>{count}</strong>
-            <p>{note}</p>
+            <div><span>{label}</span><small>{note}</small></div>
           </div>
         ))}
       </div>
+      </details>
       <section
         className="inventory-panel"
         aria-label="Battery inventory records"
@@ -293,10 +323,10 @@ export function InventoryTable({
             </Button>
             <Button
               variant="outline"
-              onClick={() => onMovement("return", group.batteryIds)}
+              onClick={() => onGroupCheckouts ? onGroupCheckouts() : onMovement("return", group.batteryIds)}
               disabled={!ready}
             >
-              Return group
+              {onGroupCheckouts ? "Actual group checkouts" : "Return group"}
             </Button>
             <Button
               variant="outline"
@@ -331,15 +361,40 @@ export function InventoryTable({
                 <TabsTrigger value="all">
                   All batteries{" "}
                   <span className="tab-count">{allStatuses.length}</span>
+                  <span className={styles.arrivalDot} data-visible={!!unreadArrivals.length} aria-hidden="true" />
+                  {!!unreadArrivals.length && <span className="sr-only">{unreadArrivals.length} unread new registrations</span>}
                 </TabsTrigger>
                 <TabsTrigger value="in">
                   In store <span className="tab-count">{matchingInStore}</span>
+                  <span className={styles.arrivalDot} data-visible={!!unreadInStore} aria-hidden="true" />
+                  {!!unreadInStore && <span className="sr-only">{unreadInStore} unread new registrations</span>}
                 </TabsTrigger>
                 <TabsTrigger value="out">
                   In use <span className="tab-count">{matchingOnLoan}</span>
+                  <span className={styles.arrivalDot} data-visible={!!unreadInUse} aria-hidden="true" />
+                  {!!unreadInUse && <span className="sr-only">{unreadInUse} unread new registrations</span>}
                 </TabsTrigger>
               </TabsList>
             </Tabs>
+            {!group && onViewNewArrivals && <Button
+              variant="ghost"
+              className={styles.arrivalsButton}
+              aria-pressed={filters.newArrivalsOnly}
+              aria-busy={arrivalsPending}
+              disabled={!ready || arrivalsPending}
+              onClick={() => {
+                updateFilters({ ...defaultInventoryFilter(), personalScope, newArrivalsOnly: true, sortBy: "registered", sortDirection: "desc" });
+                void onViewNewArrivals(newArrivals?.throughSequence ?? 0);
+              }}
+              title="View batteries first registered within the last 48 hours and acknowledge this inventory's new registrations for your account."
+            >
+              <span className={styles.arrivalsIcon} aria-hidden="true">
+                <Clock3 size={15} />
+                <span className={styles.arrivalsUnreadDot} data-visible={!!unreadArrivals.length} />
+              </span>
+              <span>New arrivals</span><span className={styles.arrivalsCount}>{scopeArrivals.length}</span>
+              {!!unreadArrivals.length && <span className="sr-only">{unreadArrivals.length} unread new registrations</span>}
+            </Button>}
             {!group && (
               <Button
                 variant="ghost"
@@ -362,16 +417,23 @@ export function InventoryTable({
             Register battery
           </Button>
         </div>
+        <MotionDisclosure open={filters.newArrivalsOnly || !!arrivalsError}>
+          <div className={styles.arrivalsNote}>
+            {arrivalsError ? <p className="form-error" role="alert">{arrivalsError}</p> : <p>Registered in the last 48 hours, newest first. Opening New arrivals marks the displayed registration notices as read for your account. Later notices remain unread; the 48-hour labels and selected batteries are retained.</p>}
+            {arrivalsPending && <span role="status">Updating your reminder…</span>}
+          </div>
+        </MotionDisclosure>
         <div className="table-toolbar inventory-filter-toolbar">
           <Button
             variant="outline"
             onClick={() => setFilterOpen((open) => !open)}
             aria-expanded={filterOpen}
-            aria-controls="inventory-filter-panel"
+            aria-controls={filterDisclosureId}
           >
             <Settings2 size={16} />
             Filter{chips.length ? ` (${chips.length})` : ""}
           </Button>
+          <AppliedFilters chips={chips} onRemove={updateFilters} onClear={clearFilters} />
           <span className="toolbar-meta">
             {matching.length} matching{" "}
             {matching.length === 1 ? "battery" : "batteries"}
@@ -390,20 +452,16 @@ export function InventoryTable({
             <span>Download</span>
           </Button>
         </div>
-        {filterOpen && (
+        <MotionDisclosure open={filterOpen} id={filterDisclosureId}>
           <InventoryFilterPanel
+            id={`${instancePrefix}-filter-panel`}
             fixedGroup={!!group}
             data={data}
             filters={filters}
             asOfOn={asOfOn}
             onChange={updateFilters}
           />
-        )}
-        <AppliedFilters
-          chips={chips}
-          onRemove={updateFilters}
-          onClear={clearFilters}
-        />
+        </MotionDisclosure>
         {groupMissing && (
           <p className="form-error" role="alert">
             This teaching group is no longer available. Clear the group filter
@@ -416,7 +474,7 @@ export function InventoryTable({
             {groupNotice}
           </p>
         )}
-        {!!selected.length && (
+        <MotionDisclosure open={!!selected.length}>
           <div className="teaching-group-actions">
             {group && (
               <>
@@ -460,6 +518,7 @@ export function InventoryTable({
               onClick={() => setGroupEditor({ ids: [...selected] })}
               disabled={
                 !ready || selected.length > 100 || selectionScopeChanged
+                || !selected.length
               }
             >
               Save as teaching group
@@ -471,7 +530,7 @@ export function InventoryTable({
               </span>
             )}
           </div>
-        )}
+        </MotionDisclosure>
         {groupEditor && (
           <TeachingGroupsPanel
             data={data}
@@ -491,7 +550,7 @@ export function InventoryTable({
             {validation.error.issues.map((issue) => issue.message).join(" ")}
           </p>
         )}
-        {!!selected.length && (
+        <MotionDisclosure open={!!selected.length}>
           <div className="selection-toolbar">
             <strong>
               {selected.length} selected
@@ -503,7 +562,7 @@ export function InventoryTable({
               variant="outline"
               size="sm"
               onClick={exportInventory}
-              disabled={!validation.success || selectionScopeChanged}
+              disabled={!selected.length || !validation.success || selectionScopeChanged}
             >
               <Download size={16} />
               Download selected
@@ -515,10 +574,11 @@ export function InventoryTable({
               disabled={
                 !ready ||
                 selectionScopeChanged ||
+                !selected.length ||
                 selected.length > 100 ||
                 selected.some(
                   (id) =>
-                    batteries.find((b) => b.id === id)?.loanId ||
+                    (!group && batteries.find((b) => b.id === id)?.loanId) ||
                     !isActiveBattery(batteries.find((b) => b.id === id)!),
                 )
               }
@@ -532,6 +592,7 @@ export function InventoryTable({
               disabled={
                 !ready ||
                 selectionScopeChanged ||
+                !selected.length ||
                 selected.length > 100 ||
                 selected.some(
                   (id) =>
@@ -542,11 +603,11 @@ export function InventoryTable({
             >
               Return selected
             </Button>
-            <Button variant="ghost" size="sm" onClick={() => setSelected([])}>
+            <Button variant="ghost" size="sm" disabled={!selected.length} onClick={() => setSelected([])}>
               Clear selection
             </Button>
           </div>
-        )}
+        </MotionDisclosure>
         {selectionScopeChanged && (
           <div className="selection-scope-warning" role="alert">
             <strong>Your selected batteries have changed scope.</strong>
@@ -589,7 +650,7 @@ export function InventoryTable({
             all selected batteries together.
           </p>
         )}
-        <Table>
+        <Table className={styles.table}>
           <TableHeader>
             <TableRow>
               <TableHead className="checkbox-cell">
@@ -607,23 +668,24 @@ export function InventoryTable({
                   onCheckedChange={(v) => selectAll(v === true)}
                 />
               </TableHead>
-              <TableHead>BATTERY</TableHead>
-              <TableHead>STATUS</TableHead>
-              <TableHead>RESPONSIBLE OWNER</TableHead>
-              <TableHead>CURRENT HOLDER</TableHead>
-              <TableHead>STORAGE LOCATION</TableHead>
-              <TableHead>LAST OBSERVED</TableHead>
+              <TableHead className={styles.expansionColumn}><span className="sr-only">Additional battery information</span></TableHead>
+              <TableHead className={styles.assetColumn}>Battery</TableHead>
+              <TableHead className={styles.statusColumn}>Status</TableHead>
+              <TableHead className={styles.holderColumn}>Current holder</TableHead>
+              <TableHead className={styles.storageColumn}>Registered home</TableHead>
+              <TableHead className={styles.ownerColumn}>Responsible owner</TableHead>
               {group && permissions.editBatteryRecords && (
                 <TableHead>ACTIONS</TableHead>
               )}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {visible.map((b) => (
+            {visible.map((b) => [
               <TableRow
                 key={b.id}
                 className="battery-selection-row"
                 data-selected={selected.includes(b.id)}
+                data-expanded={expandedIds.includes(b.id)}
                 data-selectable={ready}
                 aria-selected={selected.includes(b.id)}
                 onClick={(event) => selectBatteryRow(b.id, event)}
@@ -638,46 +700,59 @@ export function InventoryTable({
                     }
                   />
                 </TableCell>
-                <TableCell>
-                  <div className="battery-cell">
-                    <span className="battery-icon">
+                <TableCell className={styles.expansionColumn}>
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
+                    className={styles.expandButton}
+                    aria-label={`${expandedIds.includes(b.id) ? "Hide" : "Show"} additional information for ${b.id}`}
+                    aria-expanded={expandedIds.includes(b.id)}
+                    aria-controls={`${instancePrefix}-battery-evidence-${encodeURIComponent(b.id)}`}
+                    onClick={() => setExpanded(previous => previous.includes(b.id) ? previous.filter(id => id !== b.id) : [...previous, b.id])}
+                  ><ChevronDown size={16} /></Button>
+                </TableCell>
+                <TableCell className={styles.assetColumn}>
+                  <div className={`battery-cell ${styles.identity}`}>
+                    <span className={`battery-icon ${styles.assetIcon}`}>
                       <Battery size={19} />
                     </span>
                     <div>
-                      <button
-                        className="record-link"
-                        onClick={() => onDetail(b.id)}
-                        aria-label={`View ${b.id}`}
-                      >
-                        {b.id}
-                      </button>
-                      <span>{b.name}</span>
+                      <div className={styles.assetHeading}>
+                        <button
+                          className={`record-link ${styles.identifier}`}
+                          onClick={() => onDetail(b.id)}
+                          aria-label={`View ${b.id}`}
+                        >
+                          {b.id}
+                        </button>
+                        <span className={styles.newArrivalBadge} data-visible={isActiveBattery(b) && recentIds.has(b.id)} aria-hidden={!isActiveBattery(b) || !recentIds.has(b.id)} title={`First registered ${formatTime(b.registeredAt)}. This label lasts 48 hours from registration.`}><span aria-hidden="true">New</span><span className="sr-only">Newly registered</span></span>
+                      </div>
+                      <span className={styles.assetName}>{b.name}</span>
                       <small>
                         {b.chemistry || "Chemistry not recorded"}
-                        {b.capacityMah != null
-                          ? ` · ${b.capacityMah.toLocaleString()} mAh`
-                          : ""}
-                        {b.voltage != null ? ` · ${b.voltage} V` : ""}
+                        {b.voltage != null ? ` · ${b.voltage} V` : " · Voltage not recorded"}
                       </small>
-                      <small>
-                        Age since manufacture:{" "}
-                        {formatBatteryAge(b.manufacturedOn)}
-                      </small>
+                      {!!b.inspectionPreview?.concernRecords && <button
+                        type="button"
+                        className={styles.concernLink}
+                        aria-label={`View recorded concern evidence for ${b.id}`}
+                        onClick={() => onDetail(b.id)}
+                        title={`${b.inspectionPreview.concernRecords} retained inspection ${b.inspectionPreview.concernRecords === 1 ? "record reports" : "records report"} a concern. Historical findings do not establish a current unresolved condition or an availability decision.`}
+                      ><AlertTriangle size={13} />{b.inspectionPreview.latest?.outcome === "concern_observed" ? "Latest inspection: concern" : "Concern in history"}<span className={styles.concernCount}>{b.inspectionPreview.concernRecords}</span></button>}
                     </div>
                   </div>
                 </TableCell>
-                <TableCell>
+                <TableCell className={styles.statusColumn}>
                   <span
-                    className={`status-badge ${!isActiveBattery(b) ? "retired" : b.loanId ? "out" : "in"}`}
+                    className={`status-badge ${styles.statusBadge} ${!isActiveBattery(b) ? "retired" : b.loanId ? "out" : "in"}`}
                   >
                     {batteryStatusLabel(b)}
                   </span>
                 </TableCell>
-                <TableCell>{b.ownerName}</TableCell>
-                <TableCell>
-                  {b.borrowerName || <span className="muted">—</span>}
+                <TableCell className={styles.holderColumn}>
+                  {b.borrowerName ? <span className={styles.holderName}>{b.borrowerName}</span> : <span className="muted">—</span>}
                 </TableCell>
-                <TableCell>
+                <TableCell className={styles.storageColumn}>
                   <strong>
                     {b.homeBuildingId
                       ? buildingLabel({
@@ -688,26 +763,7 @@ export function InventoryTable({
                   </strong>
                   <span className="cell-secondary">{storageRoomLabel(b)}</span>
                 </TableCell>
-                <TableCell>
-                  {b.observedAt ? (
-                    <>
-                      <strong>{b.observedRoom}</strong>
-                      {b.observedBuilding && (
-                        <span className="cell-secondary">
-                          {b.observedBuilding}
-                        </span>
-                      )}
-                      <span className="cell-secondary">
-                        {formatTime(b.observedAt)}
-                      </span>
-                      <span className="cell-secondary">
-                        {b.observationSource}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="muted">Not yet observed</span>
-                  )}
-                </TableCell>
+                <TableCell className={styles.ownerColumn}>{b.ownerName}</TableCell>
                 {group && permissions.editBatteryRecords && (
                   <TableCell>
                     <Button
@@ -720,8 +776,58 @@ export function InventoryTable({
                     </Button>
                   </TableCell>
                 )}
+              </TableRow>,
+              <TableRow key={`${b.id}-evidence`} className={styles.evidenceRow} data-expanded={expandedIds.includes(b.id)}>
+                <TableCell colSpan={group && permissions.editBatteryRecords ? 8 : 7}>
+                  <MotionDisclosure open={expandedIds.includes(b.id)} id={`${instancePrefix}-battery-evidence-${encodeURIComponent(b.id)}`}>
+                    <div className={styles.evidenceGrid}>
+                      <section aria-label={`Specifications for ${b.id}`}>
+                        <h3>Specifications</h3>
+                        <dl>
+                          <div><dt>Registered model</dt><dd>{b.model || "Not recorded"}</dd></div>
+                          <div><dt>Chemistry</dt><dd>{b.chemistry || "Not recorded"}</dd></div>
+                          <div><dt>Registered capacity</dt><dd>{b.capacityMah != null ? `${b.capacityMah.toLocaleString()} mAh` : "Not recorded"}</dd></div>
+                          <div><dt>Nominal voltage</dt><dd>{b.voltage != null ? `${b.voltage} V` : "Not recorded"}</dd></div>
+                          <div><dt>RFID tag</dt><dd>{b.tagId || "No tag registered"}</dd></div>
+                        </dl>
+                      </section>
+                      <section aria-label={`Age and activity for ${b.id}`}>
+                        <h3>Age & activity</h3>
+                        <dl>
+                          <div><dt>Manufactured on</dt><dd>{formatDateOnly(b.manufacturedOn)}</dd></div>
+                          <div><dt>Age since manufacture</dt><dd>{formatBatteryAge(b.manufacturedOn)}</dd></div>
+                          <div><dt>Registered at</dt><dd>{formatTime(b.registeredAt)}</dd></div>
+                          <div><dt>First used on</dt><dd>{formatDateOnly(b.firstUsedOn)}</dd></div>
+                          <div><dt>Latest checkout</dt><dd>{formatTime(b.lastCheckedOutAt)}</dd></div>
+                          <div><dt>Latest charge</dt><dd>{formatTime(b.chargedAt)}{b.chargedAt && ` · ${b.chargeDurationMinutes != null ? `${b.chargeDurationMinutes} min` : "Duration not recorded"}`}</dd></div>
+                        </dl>
+                      </section>
+                      <section aria-label={`Last observed location for ${b.id}`}>
+                        <h3>Last observed location</h3>
+                        {b.observedAt ? <>
+                          <dl>
+                            <div><dt>Room</dt><dd>{b.observedRoom || "Recorded address unavailable"}</dd></div>
+                            <div><dt>Building</dt><dd>{b.observedBuilding || "Recorded address unavailable"}</dd></div>
+                            <div><dt>Observed at</dt><dd>{formatTime(b.observedAt)}</dd></div>
+                            <div><dt>Source</dt><dd>{b.observationSource || "Not recorded"}</dd></div>
+                          </dl>
+                          {b.observationRoomSnapshot === "unavailable" && <p>Historical address labels were not recorded.</p>}
+                        </> : <p>Not yet observed</p>}
+                        <p>Separate, dated evidence. The registered home is shown in the main row.</p>
+                      </section>
+                      {!!b.inspectionPreview?.concernRecords && <section className={styles.concernEvidence} aria-label={`Recorded inspection concern evidence for ${b.id}`}>
+                        <div>
+                          <strong>{b.inspectionPreview.latest?.outcome === "concern_observed" ? "Latest inspection: concern" : "Concern in history"}</strong>
+                          <p>{b.inspectionPreview.concernRecords} retained inspection {b.inspectionPreview.concernRecords === 1 ? "record" : "records"}{b.inspectionPreview.latestConcern && ` · Latest ${formatTime(b.inspectionPreview.latestConcern.performedAt)}`}</p>
+                        </div>
+                        <p>Recorded findings do not establish a current unresolved condition.</p>
+                        <button type="button" className="record-link" onClick={() => onDetail(b.id)}>View inspection evidence</button>
+                      </section>}
+                    </div>
+                  </MotionDisclosure>
+                </TableCell>
               </TableRow>
-            ))}
+            ])}
           </TableBody>
         </Table>
         {!matching.length && (
@@ -767,8 +873,7 @@ export function InventoryTable({
             <Select
               value={pageSize}
               onValueChange={(value) => {
-                setPageSize(value as typeof pageSize);
-                setPage(0);
+                transitionWorkspace(() => { setPageSize(value as typeof pageSize); setPage(0); });
               }}
             >
               <SelectTrigger aria-label="Batteries per page">
@@ -785,7 +890,7 @@ export function InventoryTable({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setPage(currentPage - 1)}
+              onClick={() => transitionWorkspace(() => setPage(currentPage - 1))}
               disabled={!currentPage}
             >
               Previous
@@ -796,7 +901,7 @@ export function InventoryTable({
             <Button
               variant="outline"
               size="sm"
-              onClick={() => setPage(currentPage + 1)}
+              onClick={() => transitionWorkspace(() => setPage(currentPage + 1))}
               disabled={currentPage >= pageCount - 1}
             >
               Next
@@ -810,7 +915,7 @@ export function InventoryTable({
           </span>
           <span>
             {baseBatteries.length}{" "}
-            {baseBatteries.length === 1 ? "battery" : "batteries"} in this view
+            active {baseBatteries.length === 1 ? "battery" : "batteries"} in this scope
           </span>
         </div>
       </section>

@@ -1,6 +1,6 @@
-import { test } from "node:test";
+import { after, test } from "node:test";
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
@@ -10,7 +10,8 @@ import ts from "typescript";
 const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "removal-ui-"));
-for (const name of ["teaching-context", "battery-age", "domain", "location-catalog", "client-utils", "lifecycle-session", "removal-draft", "battery-lifecycle", "inventory-query", "battery-selection-query"]) {
+after(() => rm(scratch, { recursive: true, force: true }));
+for (const name of ["teaching-context", "battery-age", "domain", "location-catalog", "client-utils", "lifecycle-session", "removal-draft", "battery-lifecycle", "new-arrivals", "inventory-query", "battery-selection-query", "permissions", "retired-asset-actions"]) {
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
     await writeFile(join(scratch, `${name}.mjs`), compiled);
@@ -21,9 +22,12 @@ const selectionQuery = await import(pathToFileURL(join(scratch, "battery-selecti
 const rowSource = await readFile(new URL("../lib/client/row-selection.ts", import.meta.url), "utf8");
 await writeFile(join(scratch, "row-selection.mjs"), ts.transpileModule(rowSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText);
 const rowSelection = await import(pathToFileURL(join(scratch, "row-selection.mjs")));
+const permissions = await import(pathToFileURL(join(scratch, "permissions.mjs")));
+const retiredActions = await import(pathToFileURL(join(scratch, "retired-asset-actions.mjs")));
 const source = await readFile(new URL("../components/inventory/removal-station.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
 const ui = Object.fromEntries(["BatteryFilterControls", "CheckCircle2", "LogOut", "ScanLine", "Trash2", "Button", "Checkbox", "Input", "Label", "Textarea", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow"].map(name => [name, name]));
+Object.assign(ui, { ReceiptAction: "Button", RetiredAssetActionDialog: "RetiredAssetActionDialog", historyStyles: new Proxy({}, { get: (_, name) => String(name) }) });
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 function hooks() {
     const state = [], effects = [];
@@ -60,7 +64,7 @@ async function environment(run, seed = []) {
 }
 function mount(overrides = {}, component = "RemovalStation") {
     const state = hooks(), writes = [], changes = [], details = [], locks = [], downloads = [];
-    const bindings = { ...ui, ...query, ...selectionQuery, ...rowSelection, ...lifecycle, ...client, ...removalDraft, ...state }, names = Object.keys(bindings);
+    const bindings = { ...ui, ...query, ...selectionQuery, ...rowSelection, ...lifecycle, ...client, ...removalDraft, ...permissions, ...retiredActions, ...state }, names = Object.keys(bindings);
     const Component = new Function(...names, "_jsx", "_jsxs", "_Fragment", `${compiled}\nreturn ${component};`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
     const props = { data: fixture(), onChanged: () => changes.push(true), onDetail: id => details.push(id), onBusyChange: locked => locks.push(locked), onDownload: ids => downloads.push(ids), async write(action, payload) { writes.push({ action, payload: structuredClone(payload) }); return receipt(payload, { dataset: props.data.dataset }); }, ...overrides };
     return { props, writes, changes, details, locks, downloads, render() { state.reset(); const tree = Component(props); state.commit(); return tree; }, unmount: state.unmount };
@@ -173,13 +177,18 @@ test("unknown and authorization outcomes keep the same immutable request and dis
     await environment(async ({ entries }) => {
         const view = mount({ async write(action, payload) { writes.push(structuredClone(payload)); if (writes.length === 1) throw new Error("Connection interrupted"); if (writes.length === 2) throw Object.assign(new Error("Sign in again"), { status: 401 }); if (writes.length === 3) throw Object.assign(new Error("Conflict without final reservation"), { status: 409 }); return receipt(payload, { replayed: true }); } });
         queue(view, "BAT-A"); reason(view); await button(view.render(), "Confirm selected").props.onClick(); const saved = pendingValues(entries)[0];
+        assert.equal(button(view.render(), "Confirm selected").props.pending, false);
+        assert.equal(button(view.render(), "Confirm selected").props.confirmation, null);
         assert.equal(button(view.render(), "Clear queue").props.disabled, true); assert.equal(control(view.render(), "removal-reason").props.disabled, true);
         control(view.render(), "removal-reason").props.onChange({ target: { value: "Changed after submission" } }); button(view.render(), "Clear queue").props.onClick();
         assert.equal(control(view.render(), "removal-reason").props.value, "Retired after staff review");
         await button(view.render(), "Retry exact removal").props.onClick(); assert.equal(pendingValues(entries)[0], saved);
         await button(view.render(), "Retry exact removal").props.onClick(); assert.equal(pendingValues(entries)[0], saved);
         await button(view.render(), "Retry exact removal").props.onClick();
-        assert.equal(new Set(writes.map(payload => JSON.stringify(payload))).size, 1); assert.equal(pendingValues(entries).length, 0); assert.ok(text(view.render()).includes("Saved result recovered")); view.unmount();
+        assert.equal(new Set(writes.map(payload => JSON.stringify(payload))).size, 1); assert.equal(pendingValues(entries).length, 0); assert.ok(text(view.render()).includes("Saved result recovered"));
+        assert.equal(button(view.render(), "Confirm selected").props.confirmation.identity, writes[0].requestId);
+        assert.equal(button(view.render(), "Confirm selected").props.confirmation.count, 1);
+        view.unmount();
     });
 });
 
@@ -196,7 +205,9 @@ test("a verified final rejection preserves the editable queue and requires a new
 test("forged identity, scope or asset receipts never show removal success and retain the exact request", async () => {
     for (const alter of [value => ({ ...value, actorAccountId: "another-actor" }), value => ({ ...value, dataset: "demo" }), value => ({ ...value, source: "tag_entry" }), value => ({ ...value, items: value.items.map(item => ({ ...item, version: 99 })) }), value => ({ ...value, items: [...value.items].reverse() })]) await environment(async ({ entries }) => {
         const view = mount({ async write(action, payload) { return alter(receipt(payload)); } }); queue(view, "BAT-A"); queue(view, "BAT-B"); reason(view); await button(view.render(), "Confirm all queued").props.onClick();
-        assert.equal(pendingValues(entries).length, 1); assert.ok(button(view.render(), "Retry exact removal")); assert.equal(text(view.render()).includes("Recorded this session"), false); assert.equal(view.changes.length, 0); view.unmount();
+        assert.equal(pendingValues(entries).length, 1); assert.ok(button(view.render(), "Retry exact removal")); assert.equal(text(view.render()).includes("Recorded this session"), false); assert.equal(view.changes.length, 0);
+        assert.equal(button(view.render(), "Confirm all queued").props.confirmation, null);
+        view.unmount();
     });
 });
 

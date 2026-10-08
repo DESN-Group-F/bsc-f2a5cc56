@@ -4,6 +4,8 @@ Draft for review · Revised 2 October 2026 · Proposed extension beyond release 
 
 **Decision status: Provisional outline for discussion and later refinement.** The four-part outline below is the current recommendation. It is not an approved safety procedure or implemented feature. The earlier seven-day initial deadline and universal thirty-day repeat interval remain unadopted. See the [battery inspection evidence review](battery-inspection-evidence-review.md) for source details and limitations.
 
+6 October 2026 local implementation note: [basic per-battery inspection records](battery-usage-and-inspections.md) now support actual checks, attributed findings and retained corrections. This narrower feature does not implement the proposed schedules, protocols or automatic availability decisions below.
+
 ## Current provisional outline
 
 Provide a prepared plan with four distinct activities. Staff can customize it, but should not have to design its basic workflow. The purpose is to fit useful checks into existing work, maintain a shared record of exceptions and avoid duplicate per-battery tasks.

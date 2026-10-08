@@ -5,6 +5,8 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { Tabs as TabsPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
+import { spring } from "@/lib/client/workspace-motion"
+import { MotionDisclosure } from "@/components/ui/workspace-motion"
 
 function Tabs({
   className,
@@ -43,16 +45,56 @@ const tabsListVariants = cva(
 function TabsList({
   className,
   variant = "default",
+  children,
+  ref,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.List> &
   VariantProps<typeof tabsListVariants>) {
+  const list = React.useRef<HTMLDivElement>(null)
+  const marker = React.useRef<HTMLSpanElement>(null)
+  React.useLayoutEffect(() => {
+    const element = list.current, indicator = marker.current
+    if (!element || !indicator) return
+    let stopStart: (() => void) | undefined, stopEnd: (() => void) | undefined
+    let start = 0, end = 0, initialized = false
+    const startMotion = { value: 0, velocity: 0 }, endMotion = { value: 0, velocity: 0 }
+    const update = () => {
+      const active = element.querySelector<HTMLElement>('[data-slot="tabs-trigger"][data-state="active"]')
+      if (!active) { indicator.style.visibility = "hidden"; return }
+      const vertical = element.getAttribute("aria-orientation") === "vertical"
+      const nextStart = vertical ? active.offsetTop : active.offsetLeft
+      const nextEnd = nextStart + (vertical ? active.offsetHeight : active.offsetWidth)
+      const draw = () => {
+        indicator.style.setProperty("--tab-start", `${start}px`)
+        indicator.style.setProperty("--tab-size", `${Math.max(0, end - start)}px`)
+      }
+      stopStart?.(); stopEnd?.()
+      indicator.style.visibility = "visible"
+      element.dataset.motionReady = "true"
+      if (!initialized) { start = nextStart; end = nextEnd; initialized = true; draw() }
+      else {
+        stopStart = spring(start, nextStart, value => { start = value; draw() }, undefined, 35, startMotion)
+        stopEnd = spring(end, nextEnd, value => { end = value; draw() }, undefined, 25, endMotion)
+      }
+    }
+    update()
+    const mutations = new MutationObserver(update)
+    mutations.observe(element, { subtree: true, attributes: true, attributeFilter: ["data-state", "aria-orientation"], childList: true, characterData: true })
+    const resize = new ResizeObserver(update)
+    resize.observe(element)
+    return () => { mutations.disconnect(); resize.disconnect(); stopStart?.(); stopEnd?.() }
+  }, [])
   return (
     <TabsPrimitive.List
+      ref={node => { list.current = node; if (typeof ref === "function") ref(node); else if (ref) ref.current = node }}
       data-slot="tabs-list"
       data-variant={variant}
       className={cn(tabsListVariants({ variant }), className)}
       {...props}
-    />
+    >
+      <span ref={marker} className="tabs-motion-indicator" aria-hidden="true" />
+      {children}
+    </TabsPrimitive.List>
   )
 }
 
@@ -77,14 +119,24 @@ function TabsTrigger({
 
 function TabsContent({
   className,
+  children,
+  forceMount,
+  hidden,
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Content>) {
   return (
     <TabsPrimitive.Content
       data-slot="tabs-content"
       className={cn("flex-1 outline-none", className)}
+      forceMount={forceMount}
+      hidden={forceMount ? undefined : hidden}
+      aria-hidden={forceMount ? hidden : undefined}
+      tabIndex={forceMount && hidden ? -1 : undefined}
+      inert={forceMount && hidden ? true : undefined}
       {...props}
-    />
+    >
+      {forceMount && typeof hidden === "boolean" ? <MotionDisclosure open={!hidden}>{children}</MotionDisclosure> : children}
+    </TabsPrimitive.Content>
   )
 }
 

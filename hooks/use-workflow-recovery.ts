@@ -13,6 +13,7 @@ const events = [
   "battery-movement-recovery",
   "battery-intake-recovery",
   "battery-lifecycle-recovery",
+  "battery-retired-action-recovery",
   "battery-group-maintenance-recovery",
 ];
 function subscribe(onChange: () => void) {
