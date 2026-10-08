@@ -1,5 +1,7 @@
 # Mobile NFC development and first physical test
 
+The current full business App iteration is Test `0.2.0`: see [scope, actual checks and remaining acceptance](mobile-app-test-0.2.md). The sections below retain the original diagnostic Test `0.1.0` preparation and signing context; they are not the current feature list.
+
 This is local development, outside the frozen hosted release. The first target is an iPhone 13 with a user-reported iOS version of 26.6 and NTAG213 stickers. Apple Developer Program identity review is pending. Android is also a target; no Android phone has been tested yet.
 
 The user approved the current prototype on 4 October 2026 for functional testing only. Its independent test version `0.1.0` is excluded from the formal release sequence and does not advance the main application's version. This is approval of the prototype's scope, not evidence of Apple review completion, physical NFC acceptance or authorization to publish/deploy.
@@ -50,7 +52,7 @@ The development workspace's `codemagic.yaml` contains three manually started wor
 | `mobile-ios-testflight` | Sign and upload the beta | Uploads a build to App Store Connect and requests TestFlight processing; does not submit a public App Store release |
 | `mobile-android-debug` | Produce an Android debug APK | Uses cloud build resources; does not publish to Google Play |
 
-No workflow has been run as part of this local preparation. A reviewed source snapshot and explicit authorization for cloud building and test distribution are required before publishing code or starting the TestFlight workflow. Do not upload local databases, `work/`, `.env` files, account credentials or signing material.
+At the initial local preparation checkpoint, no workflow had been run. The user subsequently authorized test-source publication into the existing project's `codex/nfc-functional-test` branch. That public branch is connected to Codemagic, and the first unsigned iOS compile check has passed. See the dated [actual validation record](mobile-nfc-validation.md). Test distribution still requires its own authorization and signing preparation. Do not upload local databases, `work/`, `.env` files, account credentials or signing material.
 
 After Apple membership becomes active, prepare:
 
@@ -65,6 +67,8 @@ Codemagic's environment and account limits may change. Confirm Xcode 26.6 availa
 Public App Store publication is a later milestone requiring product metadata, screenshots, privacy declarations, support details and Apple review. The diagnostic prototype is not represented as ready for public release. Its iOS resource bundle includes the filesystem plugin's required file-timestamp privacy reason for local report export; final App Store privacy answers must be reviewed again when account login, telemetry or server-side submissions are added.
 
 ## First physical test
+
+For an iPhone-only setup while native signing is pending, use the separate [NFC Tools and Shortcuts trial guide](mobile-nfc-without-signing.md). It tests physical sticker reading and system automation without installing this project's native app. Its results must remain separately attributed.
 
 Until our own signed app is installed, an existing NFC reader utility can establish whether the phone reads the sticker. Keep those results separately attributed to that utility; do not present them as this application's results. No Apple identity workaround is needed for that preliminary sticker test.
 

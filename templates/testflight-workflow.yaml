@@ -1,7 +1,7 @@
-# Inactive reference template. Review signing inputs and obtain explicit test-distribution authorization before intentionally enabling this workflow.
+# Reference copy of the internal-only manual workflow in codemagic.yaml. No external beta review or App Store review is configured.
 workflows:
   mobile-ios-testflight:
-    name: Mobile iOS functional test beta
+    name: Mobile iOS internal functional test
     instance_type: mac_mini_m2
     max_build_duration: 45
     integrations:
@@ -24,7 +24,7 @@ workflows:
       - name: Apply provisioned NFC signing profiles
         script: |
           cd mobile
-          xcode-project use-profiles
+          xcode-project use-profiles --custom-export-options='{"testFlightInternalTestingOnly": true}'
       - name: Set the build number and produce the signed package
         script: |
           cd mobile
@@ -40,5 +40,5 @@ workflows:
     publishing:
       app_store_connect:
         auth: integration
-        submit_to_testflight: true
+        submit_to_testflight: false
         submit_to_app_store: false

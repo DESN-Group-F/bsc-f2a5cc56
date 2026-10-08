@@ -47,7 +47,7 @@ async function prepareIos(checkOnly) {
   }
   if (!checkOnly) {
     await replace(plist, (source) => {
-      let output = source;
+      let output = source.replace(/(<key>CFBundleDisplayName<\/key>\s*<string>)[^<]+(<\/string>)/, '$1Battery Inventory$2');
       if (!output.includes("<key>NFCReaderUsageDescription</key>")) {
         output = output.replace(/<\/dict>\s*<\/plist>/, "\t<key>NFCReaderUsageDescription</key>\n\t<string>Read battery identification tags during an explicit NFC test.</string>\n</dict>\n</plist>");
       }
@@ -71,12 +71,12 @@ async function prepareIos(checkOnly) {
     readFile(project, "utf8"),
     readFile(path.join(mobile, "ios/App/CapApp-SPM/Package.swift"), "utf8"),
   ]);
-  if (!info.includes("NFCReaderUsageDescription") || !entitlementText.includes("com.apple.developer.nfc.readersession.formats") || !entitlementText.includes("<string>TAG</string>") || !projectText.includes("CODE_SIGN_ENTITLEMENTS = App/App.entitlements;") || !packages.includes("BatteryInventoryNfc")) {
-    throw new Error("The iOS NFC purpose, entitlement, signing setting or plugin package is missing.");
+  if (!info.includes("NFCReaderUsageDescription") || !entitlementText.includes("com.apple.developer.nfc.readersession.formats") || !entitlementText.includes("<string>TAG</string>") || !projectText.includes("CODE_SIGN_ENTITLEMENTS = App/App.entitlements;") || !packages.includes("BatteryInventoryNfc") || !packages.includes("BatteryInventoryService")) {
+    throw new Error("The iOS NFC purpose, entitlement, signing setting or required native plugin package is missing.");
   }
   const privacy = await readFile(path.join(mobile, "ios/App/App/PrivacyInfo.xcprivacy"), "utf8");
-  if (!privacy.includes("NSPrivacyAccessedAPICategoryFileTimestamp") || !privacy.includes("C617.1") || !projectText.includes("PrivacyInfo.xcprivacy in Resources")) {
-    throw new Error("The report-export filesystem privacy manifest is missing from the iOS resources.");
+  if (!privacy.includes("NSPrivacyAccessedAPICategoryFileTimestamp") || !privacy.includes("C617.1") || !privacy.includes("NSPrivacyAccessedAPICategoryUserDefaults") || !privacy.includes("CA92.1") || !projectText.includes("PrivacyInfo.xcprivacy in Resources")) {
+    throw new Error("The filesystem/service-configuration privacy declarations are missing from the iOS resources.");
   }
   console.log("iOS project prepared: NFC declarations and plugin binding checked. Native compilation and device reading still require macOS and a physical phone.");
 }
@@ -93,10 +93,11 @@ async function prepareAndroid(checkOnly) {
   }
   if (!checkOnly) {
     await replace(project, (source) => source.replace(/versionName "[^"]+"/g, `versionName "${version}"`));
+    await replace(path.join(mobile, 'android/app/src/main/res/values/strings.xml'), (source) => source.replaceAll('Battery Inventory NFC', 'Battery Inventory'));
     runCap(["sync", "android"]);
   }
   const pluginSettings = await readFile(path.join(mobile, "android/capacitor.settings.gradle"), "utf8");
-  if (!pluginSettings.includes("battery-inventory-nfc")) throw new Error("The Android NFC plugin has not been linked.");
+  if (!pluginSettings.includes("battery-inventory-nfc") || !pluginSettings.includes("battery-inventory-service")) throw new Error("The Android NFC and secure service plugins must both be linked.");
   console.log("Android project prepared: plugin binding checked. Native compilation and device reading are separate checks.");
 }
 

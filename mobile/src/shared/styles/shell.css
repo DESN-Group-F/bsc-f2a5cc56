@@ -1,0 +1,479 @@
+/* Application navigation, workspace framing and authentication pages. */
+
+.skip-link {
+  position: fixed;
+  z-index: 100;
+  top: 12px;
+  left: 12px;
+  padding: 10px 16px;
+  border: 2px solid var(--foreground);
+  border-radius: var(--radius-control);
+  background: var(--brand-yellow);
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 650;
+  transform: translateY(calc(-100% - 16px));
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+.app-sidebar {
+  border-right: 1px solid var(--border);
+}
+
+.brand {
+  height: 88px;
+  flex-direction: row;
+  align-items: center;
+  gap: 11px;
+  padding: 22px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  background: var(--brand-yellow);
+  color: var(--foreground);
+  border-radius: 11px;
+  flex-shrink: 0;
+}
+
+.brand strong {
+  display: block;
+  font-size: 17px;
+  letter-spacing: -.035em;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.brand div > span {
+  font-size: 12px;
+  letter-spacing: .05em;
+  color: var(--muted-foreground);
+  margin-top: 3px;
+}
+
+[data-slot="sidebar-group"] {
+  padding: 20px 14px 8px;
+}
+
+[data-slot="sidebar-group-label"] {
+  font-size: 12px;
+  letter-spacing: .09em;
+  color: var(--muted-foreground);
+  padding-left: 12px;
+  margin-bottom: 8px;
+  font-weight: 650;
+}
+
+[data-slot="sidebar-menu-button"] {
+  height: 42px;
+  font-size: 14px;
+  padding: 0 12px;
+  gap: 11px;
+  border-radius: var(--radius-control);
+  font-weight: 500;
+  color: var(--sidebar-foreground);
+  transition: background-color var(--motion-fast), color var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+[data-slot="sidebar-menu-button"][data-active="true"] {
+  box-shadow: inset 3px 0 var(--brand-yellow);
+  font-weight: 650;
+  background: var(--selection-surface);
+  color: var(--foreground);
+}
+
+.sidebar-bottom {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--border);
+  margin-top: 12px;
+  color: var(--muted-foreground);
+}
+
+.sidebar-bottom strong {
+  display: block;
+  font-size: 13px;
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.sidebar-bottom span {
+  display: block;
+  font-size: 12px;
+  color: var(--muted-foreground);
+  margin-top: 5px;
+  line-height: 1.5;
+}
+
+.app-main {
+  background: var(--canvas);
+  min-width: 0;
+}
+
+.topbar {
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 14px 32px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+
+.breadcrumb-slash {
+  color: var(--border-strong);
+  margin: 0 7px;
+}
+
+.prototype-badge {
+  border: 1px solid var(--border);
+  padding: 5px 8px;
+  border-radius: var(--radius-control);
+  font-size: 13px;
+  letter-spacing: .07em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.workspace {
+  padding: 30px 32px 32px;
+  width: 100%;
+  max-width: 1680px;
+  margin: auto;
+  flex: 1;
+}
+
+.page-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: .1em;
+  color: var(--muted-foreground);
+  font-weight: 650;
+  margin-bottom: 9px;
+}
+
+.page-description {
+  color: var(--muted-foreground);
+  margin-top: 10px;
+  font-size: 15px;
+  line-height: 1.65;
+  max-width: 760px;
+}
+
+.heading-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.workspace-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 18px 32px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted-foreground);
+}
+
+.workspace-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.dataset-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+
+.operator-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.dataset-control label {
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.dataset-control [data-slot="select-trigger"] {
+  min-width: 226px;
+  background: var(--surface);
+  font-size: 14px;
+}
+
+.signin-page {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 48px 24px;
+  background: var(--canvas);
+  border-top: 4px solid var(--brand-yellow);
+  position: relative;
+}
+
+.signin-card {
+  width: min(100%, 440px);
+  padding: 36px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-dialog);
+  border-color: var(--border);
+}
+
+.signin-brand {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 36px;
+}
+
+.signin-brand strong {
+  display: block;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -.035em;
+}
+
+.signin-brand span:not(.brand-mark) {
+  display: block;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  margin-top: 3px;
+}
+
+.signin-card h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  letter-spacing: -.04em;
+}
+
+.signin-card > p {
+  color: var(--muted-foreground);
+  line-height: 1.65;
+  margin-bottom: 28px;
+  font-size: 14px;
+}
+
+.signin-note {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 13px;
+  color: var(--muted-foreground);
+  border-top: 1px solid var(--border);
+  padding-top: 24px;
+  margin-top: 28px;
+  line-height: 1.65;
+}
+
+.signin-note svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.topbar-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: var(--foreground);
+}
+
+.role-badge {
+  border: 1px solid var(--border);
+  background: var(--surface-subtle);
+  color: var(--muted-foreground);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  border-color: var(--border);
+}
+
+[data-slot="sidebar-menu"] {
+  gap: 4px;
+}
+
+[data-slot="sidebar-menu-button"]:hover:not(:disabled) {
+  background: var(--surface-subtle);
+  color: var(--foreground);
+}
+
+[data-slot="sidebar-menu-button"][data-active="true"]:hover:not(:disabled) {
+  background: var(--selection-hover);
+}
+
+[data-slot="sidebar-menu-button"].h-auto {
+  height: auto;
+  min-height: 58px;
+  padding-block: 10px;
+}
+
+[data-slot="sidebar-menu-button"] .opacity-70 {
+  opacity: 1;
+  color: var(--muted-foreground);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+[data-slot="sidebar-menu-button"][data-active="true"] > svg {
+  color: var(--foreground);
+}
+
+.workspace-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+
+.workspace-breadcrumb strong {
+  color: var(--foreground);
+  font-weight: 550;
+}
+
+.signin-card [data-slot="input"] {
+  min-height: 44px;
+}
+
+.signin-card [data-slot="button"][type="submit"] {
+  min-height: 44px;
+  margin-top: 4px;
+}
+
+@media (max-width: 1100px) {
+  .workspace {
+    padding: 24px 22px;
+  }
+
+  .page-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .heading-actions {
+    width: 100%;
+  }
+
+  .topbar {
+    padding: 12px 22px;
+  }
+}
+
+@media (max-width: 800px) {
+  .topbar {
+    height: auto;
+    min-height: 64px;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-block: 12px;
+  }
+
+  .topbar-account {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .workspace {
+    padding: 22px 14px;
+  }
+
+  .topbar {
+    padding: 12px 14px;
+  }
+
+  .topbar > div > span {
+    font-size: 13px;
+  }
+
+  .prototype-badge {
+    display: none;
+  }
+
+  .heading-actions {
+    flex-wrap: wrap;
+  }
+
+  .workspace-footer {
+    padding: 16px 14px;
+  }
+
+  .workspace-footer > span:last-child {
+    display: none;
+  }
+
+  .workspace-controls {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 22px;
+  }
+
+  .dataset-control {
+    width: 100%;
+  }
+
+  .dataset-control [data-slot="select-trigger"] {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .operator-control {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .workspace-breadcrumb {
+    font-size: 12px;
+    gap: 6px;
+  }
+}
+
+@media (max-width: 480px) {
+  .signin-card {
+    padding: 28px 24px;
+  }
+
+  .signin-page {
+    padding: 24px 16px;
+  }
+}

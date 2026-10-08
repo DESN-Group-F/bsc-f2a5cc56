@@ -2,7 +2,7 @@
 
 This guide prepares the standalone NFC diagnostic prototype for an iPhone 13 and NTAG213 stickers. The computer runs Windows. Apple Developer Program identity review is still pending. Account login, repository connection, cloud compilation and test distribution are separate checkpoints.
 
-Account and pricing information was checked against the official documentation on 4 October 2026. GitHub authentication was visibly complete, Personal onboarding was selected and GitHub was selected as the source provider. The page is waiting at **Next: Authorize Codemagic**. No repository permission, source upload, cloud build or TestFlight submission has been completed.
+Account and pricing information was checked against the official documentation on 4 October 2026. GitHub authentication and Personal onboarding completed. The user chose to publish the reviewed mobile source into the existing project's `codex/nfc-functional-test` branch instead of creating a private repository. This repository is public. It was connected through **Add URL manually → Public repository**, without an additional GitHub repository permission step. The first unsigned iOS cloud build has passed; signing, installation and TestFlight submission remain pending.
 
 ## Checkpoint 1 — Sign in and select Personal onboarding
 
@@ -19,7 +19,7 @@ The current individual plan includes **500 free build minutes per month on macOS
 
 ## Checkpoint 2 — Connect the separate source snapshot
 
-The intended source is a new, reviewed Git repository containing the mobile prototype only:
+The reviewed mobile source is on [the existing project's functional-test branch](https://github.com/DESN-Group-F/bsc-f2a5cc56/tree/codex/nfc-functional-test). That branch contains the mobile prototype only, with a fresh neutral source commit:
 
 ```text
 codemagic.yaml
@@ -40,9 +40,11 @@ node scripts/export-mobile-test-source.mjs
 
 The command produces a new source directory, ZIP and artifact-hash manifest under ignored `work/mobile-test-snapshots/`. The source directory includes `source-manifest.json`, with each file's SHA-256 hash and byte size. Existing snapshots are never overwritten. Inspect the file list and preserve required third-party notices before approving publication; filename exclusion and secret-pattern checks are safeguards, not proof that every possible embedded secret has been detected.
 
-A local ZIP is a transfer/archive artifact, not a Codemagic source connection. Codemagic builds from a Git repository it can access. After source publication is authorized, use **Add application**, connect the Git provider and select the dedicated snapshot repository. For GitHub, grant the Codemagic app access to that repository only. Keep `codemagic.yaml` at the Git repository root and use YAML configuration; this project is not a Flutter workflow. See [Adding apps to Codemagic](https://docs.codemagic.io/getting-started/adding-apps/).
+A local ZIP is a transfer/archive artifact, not a Codemagic source connection. Codemagic builds from a Git repository it can access. For this public source, use **Add URL manually**, clone URL `https://github.com/DESN-Group-F/bsc-f2a5cc56.git`, and **Public repository**. Select **Ionic** manually for the Capacitor application, then choose branch **codex/nfc-functional-test** in application settings. Its root `codemagic.yaml` contains the two active workflows. The default `main` branch does not contain this test configuration. See [Adding apps to Codemagic](https://docs.codemagic.io/getting-started/adding-apps/).
 
-**Done means:** the dedicated repository and its YAML workflows are visible in the Personal account. No build needs to start automatically.
+Future private-source integration requires separately reviewed repository access. GitHub app access is configured at repository scope, not limited to one branch. The public URL route used here grants no additional GitHub repository permission.
+
+**Done means:** the existing repository, exact test branch and its YAML workflows are visible in the Personal account. Builds are started manually.
 
 ## Checkpoint 3 — Run the unsigned compile check
 
@@ -50,7 +52,7 @@ Once the cloud run is authorized, choose **`mobile-ios-verify`**, select the rev
 
 This job can run while Apple membership is pending. It needs neither a distribution certificate nor App Store Connect credentials. It is a native compilation check, not a physical NFC test. Its unsigned `.app` artifact cannot be installed on the iPhone. Real-device installation requires signing; see [Codemagic iOS signing](https://docs.codemagic.io/yaml-code-signing/signing-ios/).
 
-**Done means:** the Xcode build passed and its logs identify the tested commit. Record any failure as a compile result and fix it before preparing a signed package.
+**Actual result:** the first run passed on 4 October 2026 for commit `1b753fc`, on Mac mini M2, in 1 minute 13 seconds. Its log ended with `BUILD SUCCEEDED`; see [the actual validation record](mobile-nfc-validation.md). This compile check does not establish a physical NFC read.
 
 ## Checkpoint 4 — Sign after Apple membership becomes active
 
@@ -71,9 +73,9 @@ Membership activation, successful compilation, completed signing, TestFlight ava
 
 | Checkpoint | Evidence to keep | Current evidence in this guide |
 | --- | --- | --- |
-| Personal account | Signed-in page and Personal onboarding | Observed on 4 October 2026; GitHub source option selected, authorization pending |
-| Source connection | Dedicated repository and reviewed commit | Not yet connected |
-| Unsigned native build | Successful `mobile-ios-verify` log | Not yet run |
+| Personal account | Signed-in page and Personal onboarding | Confirmed on 4 October 2026; 0/500 free minutes used before the first run, subscription not enabled |
+| Source connection | Exact test branch and reviewed commit | Public project branch connected, commit `1b753fc` |
+| Unsigned native build | Successful `mobile-ios-verify` log | First run passed, Xcode `BUILD SUCCEEDED`, 1 minute 13 seconds |
 | Apple signing | Active membership, App ID and matching profile | Membership review pending |
 | TestFlight installation | Processed build installed on the iPhone | Not yet completed |
 | Physical NFC test | Exported app diagnostic report from real stickers | Not yet completed |

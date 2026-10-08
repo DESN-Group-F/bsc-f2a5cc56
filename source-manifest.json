@@ -2,8 +2,21 @@
   "formatVersion": 1,
   "purpose": "functional-test-source",
   "formalRelease": false,
-  "testVersion": "0.1.0",
-  "createdAt": "2026-10-04T08:58:10.841Z",
+  "testVersion": "0.2.0",
+  "createdAt": "2026-10-08T00:25:31.979Z",
+  "derivedFrom": {
+    "archive": "nfc-scan-trial-020-20261008-b.zip",
+    "archiveSha256": "9a54221a15d6406db4ec257ed6f5be96a9ee7f78fdecdca6edc1ea3caa5873cf",
+    "sourceManifestSha256": "7acc3839d2d60b7c190ab8e55021dbb76e2a8757e02e4b882f9c07a034bd3f37"
+  },
+  "baselineArchiveSha256": "116968d32ce108bcd0347d27a51842132d8f9e82a224aa363e8191fd10f28b61",
+  "changesFromPreviousCandidate": {
+    "modified": [
+      "README.md",
+      "mobile/README.md"
+    ],
+    "codeChanged": false
+  },
   "files": [
     {
       "path": ".gitattributes",
@@ -19,20 +32,32 @@
     },
     {
       "path": "codemagic.yaml",
-      "bytes": 1916,
-      "sha256": "9715f97009e191802ae944394f7b16e7914414be3579163d55d306f6c2e22b86",
+      "bytes": 4909,
+      "sha256": "d7367f94e21b65ac6fdcfa8d491569f08d775b6945acc9c52551e28abfc9a63f",
+      "mode": "0644"
+    },
+    {
+      "path": "docs/mobile-app-test-0.2.md",
+      "bytes": 9739,
+      "sha256": "1ec07df8e73bd4a8f3fefcb26ba467bcbd18aed44e861138563669c13eb6b2f6",
       "mode": "0644"
     },
     {
       "path": "docs/mobile-codemagic-setup.md",
-      "bytes": 9157,
-      "sha256": "cf27f268c8c9238e4ff2f68ee1c366295ef39c8fc409763956e75b1a5ca99b87",
+      "bytes": 10054,
+      "sha256": "9543aa9f608bcc314234a86cf0afd0cfae908b9db9891e58393bb822edc220d3",
       "mode": "0644"
     },
     {
       "path": "docs/mobile-nfc-development.md",
-      "bytes": 12044,
-      "sha256": "ae69003609cba73cc48b40efd930c82da5f6e107ba6d174d4b7211937bd02f0a",
+      "bytes": 12820,
+      "sha256": "d09fc38c80804dc3bf695752eecdff39b13c21451f2fa560d566863fd4bc1865",
+      "mode": "0644"
+    },
+    {
+      "path": "docs/mobile-nfc-scan-trial.md",
+      "bytes": 19425,
+      "sha256": "e5abffa5cfd0d546c789c528cbb1ab9c8f108ce640e2794997efac543668492d",
       "mode": "0644"
     },
     {
@@ -43,8 +68,8 @@
     },
     {
       "path": "docs/mobile-nfc-validation.md",
-      "bytes": 4595,
-      "sha256": "5e771f5aa4d0c1d27d94889c57fed4e7c243d4f010141ae32f5eba6c7bb87f04",
+      "bytes": 14708,
+      "sha256": "abc986e2d15d56179948b819514e31402943f7db315bd32111ba1da930cc3ba8",
       "mode": "0644"
     },
     {
@@ -68,13 +93,13 @@
     {
       "path": "mobile/android/app/build.gradle",
       "bytes": 2154,
-      "sha256": "1c08aa7793c0302321fefc5d8ad6cbf3923f49bee2090c233b3d3f972bb28ee3",
+      "sha256": "cc0e8281dd8346dc39c631e6c0621fc2f06b33a3915b0cd8b8a6aa498281e1fe",
       "mode": "0644"
     },
     {
       "path": "mobile/android/app/capacitor.build.gradle",
-      "bytes": 570,
-      "sha256": "7a7dd62b777ae93c92314e465b7d0fe5358ed7be1f112cd32bed93d2282339ee",
+      "bytes": 627,
+      "sha256": "efd51dd677a254a8f532869b8dff82c76147d459aead418672d5e85fec695708",
       "mode": "0644"
     },
     {
@@ -295,8 +320,8 @@
     },
     {
       "path": "mobile/android/app/src/main/res/values/strings.xml",
-      "bytes": 336,
-      "sha256": "421d19c9eb77a0a00a97ff6eb3e58b7a26391089820e518b2b9b62c70fd27d9e",
+      "bytes": 328,
+      "sha256": "631f902133ace131fa34823a3bcd05e0f1b090330a39f8a0fcbec7712ff6f610",
       "mode": "0644"
     },
     {
@@ -319,8 +344,8 @@
     },
     {
       "path": "mobile/android/capacitor.settings.gradle",
-      "bytes": 734,
-      "sha256": "53e685bdf75f98b753520cf4e009f30d9acd276e9ee35c7c484de0eb4bc28013",
+      "bytes": 886,
+      "sha256": "4c384fb283037d432890c846bf68b3e9f762b81b4530271fcc5ee5491e80ea15",
       "mode": "0644"
     },
     {
@@ -367,14 +392,14 @@
     },
     {
       "path": "mobile/capacitor.config.ts",
-      "bytes": 211,
-      "sha256": "e9475bb7d6935e86e03014c4e96127174075362ea2b349953df934fbd209c987",
+      "bytes": 207,
+      "sha256": "279fba2f0d6ad0eb1e0c98d27cd7cae507d63d1fc63e4ed300ad2b1e1f94c6ed",
       "mode": "0644"
     },
     {
       "path": "mobile/index.html",
-      "bytes": 378,
-      "sha256": "a09a472731c9e6740759b70954bac51b4826e8dd1c3e087b011bd5e44a7c9af2",
+      "bytes": 389,
+      "sha256": "c116ef6063e82e5e89e908e899dbd0062a672d69cf600c6ad90b8ba7cbbb66f6",
       "mode": "0644"
     },
     {
@@ -386,7 +411,7 @@
     {
       "path": "mobile/ios/App/App.xcodeproj/project.pbxproj",
       "bytes": 15515,
-      "sha256": "4b98d10b2250c88b623e5e3682b84c2244df1001f0dba7c048a91e1883c9cdab",
+      "sha256": "22790c40a6d185afb84995467535269e8cab1bfab8f27dea3ecf61022b722c96",
       "mode": "0644"
     },
     {
@@ -409,8 +434,8 @@
     },
     {
       "path": "mobile/ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png",
-      "bytes": 38956,
-      "sha256": "e1f8e9b81f70173bbb5975d12138d82ba9cb9c9f15569be666ea21e86c0040dd",
+      "bytes": 14332,
+      "sha256": "d66e91008f82bff1f34132d5bd9e35302ba81837cbb923a713ae95c615aff287",
       "mode": "0644"
     },
     {
@@ -463,14 +488,14 @@
     },
     {
       "path": "mobile/ios/App/App/Info.plist",
-      "bytes": 2444,
-      "sha256": "de1966528b38c88bb323504a24c9190707b6e83ae49fd6e739f0d11fa4a4cdd0",
+      "bytes": 2440,
+      "sha256": "91cf8cc2a952cec31fd5c19421ed148c07ffbb758a1eebcce53938bf58209a26",
       "mode": "0644"
     },
     {
       "path": "mobile/ios/App/App/PrivacyInfo.xcprivacy",
-      "bytes": 665,
-      "sha256": "07dce369fdb242c84a7191bc2a0718c259c9f42f927c6ef3c6662aee92cd3b8a",
+      "bytes": 920,
+      "sha256": "1e2cc539a5c95db339a2e847962932712c0bf977c4aad8a40a8041ee4e5be3c5",
       "mode": "0644"
     },
     {
@@ -487,8 +512,8 @@
     },
     {
       "path": "mobile/ios/App/CapApp-SPM/Package.swift",
-      "bytes": 1415,
-      "sha256": "e7a17e0522c29df1d02ab0cac6c9fb47825ceaaf0e35a65a02433bee9aca492a",
+      "bytes": 1619,
+      "sha256": "34c53c94c4e3369ce398243c5c3b92ad5fdca9484c8cf5165bc57850b2c5bf8b",
       "mode": "0644"
     },
     {
@@ -511,14 +536,14 @@
     },
     {
       "path": "mobile/package-lock.json",
-      "bytes": 74990,
-      "sha256": "7f1a3e7b326949b8f6262f14e8bc9506faa7ac3b62e13ffc4e9b7fb74370213b",
+      "bytes": 171536,
+      "sha256": "2fbd6b644177871a473f264c81a4dfe4318f1efe0099f8b26e064a973341ff00",
       "mode": "0644"
     },
     {
       "path": "mobile/package.json",
-      "bytes": 910,
-      "sha256": "a148b6992b8d477aee59a501319d4d80f4aadac80f10cc8613cca1fb731ea8b6",
+      "bytes": 1400,
+      "sha256": "0f5cb5ace9bc139667501adfa6e84962eea9583148d0f5aed9ce4bb89ecf195a",
       "mode": "0644"
     },
     {
@@ -600,15 +625,207 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/plugins/battery-service/.gitignore",
+      "bytes": 7,
+      "sha256": "07cc0e3f57247b75f5278d110feba3719a32f4b2383e41234cf01325de774d40",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/android/build.gradle",
+      "bytes": 844,
+      "sha256": "568b967b4bd085ef550462abb564cbbc2cbab3441fbef4aba8f4a9fc4d36475f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/android/src/main/AndroidManifest.xml",
+      "bytes": 149,
+      "sha256": "678647a824ef7ab16066708585790ab265135d32fdf84bcd918a4b050f8891b9",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/android/src/main/java/com/batteryinventory/service/BatteryServicePlugin.java",
+      "bytes": 11661,
+      "sha256": "79836f0b3ae5f603c497788cf271f4f484faa6f6059fe7f0e21c1b4668a8ab39",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/android/src/main/java/com/batteryinventory/service/BusinessDataStore.java",
+      "bytes": 6010,
+      "sha256": "b3e360a244e063342f8f95a5266a239172c404f62bd1c5f5a5ea8758ab7fffc2",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/android/src/main/java/com/batteryinventory/service/SecureSessionStore.java",
+      "bytes": 3785,
+      "sha256": "6edc838ab15f73502f9b3af4c6667515419a8b1299b3e5c6693be0885c4ccbb4",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/android/src/main/java/com/batteryinventory/service/ServicePolicy.java",
+      "bytes": 7570,
+      "sha256": "ed42baebc27a69158a81f5fc253c011f2508c435ce96017e59b34211e872bbb7",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/index.d.ts",
+      "bytes": 836,
+      "sha256": "0e368a0a098bbf4070e2e1dd1728f4fea349117089351102ef92aa85e981929e",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/index.js",
+      "bytes": 210,
+      "sha256": "9cc668496eef57d86f77ab4e20cf3d5f924e884ce3313e9d8b7a13de49e7e865",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/ios/Sources/BatteryServicePlugin/BatteryServicePlugin.swift",
+      "bytes": 7720,
+      "sha256": "f829ac671827945cc9cd166d3173050056a17400d5063ca953d691fa6f2d3a16",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/ios/Sources/BatteryServicePlugin/BusinessDataStore.swift",
+      "bytes": 3437,
+      "sha256": "3d4a495548cdfb99e63c7b00aeee82778cc2f329f3ee1f146e11a8c365298d96",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/ios/Sources/BatteryServicePlugin/SecureSessionStore.swift",
+      "bytes": 2384,
+      "sha256": "19e88a3f8ab370f3898aaab98c7207a4716c094faf6fca91ae59308ab6eeff25",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/ios/Sources/BatteryServicePlugin/ServicePolicy.swift",
+      "bytes": 8146,
+      "sha256": "9ca9a35a86bcec071f9df95615f024909375a3742a7e0e8ffcd41992f6f1e3e5",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/ios/Sources/BatteryServicePlugin/ServiceTransfer.swift",
+      "bytes": 4161,
+      "sha256": "678d1e7832f3eb344fe1ff5e4f24cff015dcb779c972fb0c9e35308fd3613964",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/LICENSE-APACHE-2.0.txt",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/NOTICE-OKHTTP-PUBLICSUFFIX.txt",
+      "bytes": 218,
+      "sha256": "8a9c58fbded5ea3474315e4a9824ca8b1486098a1a03e897e0b19419d5e1876a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/package.json",
+      "bytes": 753,
+      "sha256": "34383dcdfeb22e2af6afe52013e8b467b0fdf05167e2192f3479e40b3cf822fa",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/Package.swift",
+      "bytes": 634,
+      "sha256": "410e25751417af4b8c881225fde5612d7389df3e5cadb4d3f153062a71bbc834",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/README.md",
+      "bytes": 8616,
+      "sha256": "620d57466e94d7d86d980e84da2665523699f5ecb10fd81ad1a8c8bcdec84fcb",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/tests/android-bridge.test.mjs",
+      "bytes": 22891,
+      "sha256": "27af2d7fb4e76b7d7b9948e4bd6b7330b93a3406b41a6e9064c56e9e5e0231a4",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/tests/policy.test.mjs",
+      "bytes": 6688,
+      "sha256": "69070b1aff9486ac19e7ba09afcc78fef8fc044dc362bb68ac7260f5c5666857",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/tests/web.test.mjs",
+      "bytes": 747,
+      "sha256": "b3bb0ce26c8d9389c2afc010105aab81402fa842a21f539c228f820395b669f5",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/THIRD_PARTY_NOTICES.md",
+      "bytes": 1021,
+      "sha256": "3630c485d937645288b395de76e86cd79ff5e2f80ae2b5009a1ad6c98c23c112",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/web.js",
+      "bytes": 816,
+      "sha256": "2e3b5d493c51cc0117a326c515552dd364ae72e5bedd5667a06dd0b675897989",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/postcss.config.js",
+      "bytes": 60,
+      "sha256": "f50058e0d309cdb3e7c25a1123337338641fb71e988572607d57f47209db1fd1",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/README.md",
-      "bytes": 2027,
-      "sha256": "15ed14032b2e96632bf61f4b83862ee005459bffd20bf1cf863583dc2995037c",
+      "bytes": 3726,
+      "sha256": "9eaa47b0d26d0feaa9055e57edee2a3567b57ea11d57c93203180f733a2c1aa8",
       "mode": "0644"
     },
     {
       "path": "mobile/resources/app-icon.svg",
       "bytes": 270,
       "sha256": "c9e6d73901a35062716fd0a4a8c7529a65361521594fd616074b8b7623a7e94d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app.css",
+      "bytes": 3201,
+      "sha256": "df63a76b6f55cbdac0cd99cbef254ec0840f362e9dcc268e035e2483fb23d64f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/business/nfc-controller.mjs",
+      "bytes": 2917,
+      "sha256": "9863287d7d0daaa8fde495f5b526bedff4b35e68790e74c3f6134601616db724",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/business/nfc-read.jsx",
+      "bytes": 3373,
+      "sha256": "af753bca28f8d8a71f39a7f6d0610e51f0074786cf4e4c290c9d68ed11c5e59f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/business/registration.jsx",
+      "bytes": 13637,
+      "sha256": "ccf8fa49215982fd3d6c5ae32f6672aa0436b3dbce333f53ec5907deece067db",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/business/workflow-boundary.jsx",
+      "bytes": 624,
+      "sha256": "c7b22ff49b3e4ac04279d57a6702920d2b492e26719916a72c4dfefdb3dd7d10",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/diagnostics-app.jsx",
+      "bytes": 19992,
+      "sha256": "2b3260106edd144fadb38de0108ce468cd29ba44f627fc9dcdcbe1db23e81af7",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/diagnostics.css",
+      "bytes": 11247,
+      "sha256": "e74e17173c419f4095f7aad315eaf89c6cad0b32367794a1255c1a1cc5a284b0",
       "mode": "0644"
     },
     {
@@ -619,14 +836,638 @@
     },
     {
       "path": "mobile/src/main.jsx",
-      "bytes": 20068,
-      "sha256": "f0c9aade5016b9a1124d14a79fd12fc16f9970fd71393a29f0119774de7ddbc5",
+      "bytes": 7617,
+      "sha256": "89ca0c819775f993c73412221a107ae791840369c8b3952a5a4917c4cadffa3d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/platform/durable-storage.mjs",
+      "bytes": 3861,
+      "sha256": "9e32e1931d0d8fd8854514ee3da107d95c39a56538842e0b750eaa3100ab47ce",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/platform/runtime.mjs",
+      "bytes": 4276,
+      "sha256": "253af5262935314a9ab49d59d19f235b15425675c8686b99e9e9f3bad196c751",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/app/globals.css",
+      "bytes": 425,
+      "sha256": "e90c8100c4621bb5240d323eef7e055de01a44933d10681665475b2c9b4ccc36",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/app/inventory-app.js",
+      "bytes": 28087,
+      "sha256": "c84cdf46bf93bbb931486d03ec112ab47a33b2c761430f4d9620054c52e558c6",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/application/application-shell.js",
+      "bytes": 9390,
+      "sha256": "0a9d867d985ace08465e6b7fb0d42bc16794f67ce4c514fb7bdc65109d475285",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/application/recovery-notices.js",
+      "bytes": 3592,
+      "sha256": "f71ac618444e20c26ccae00b817dc05d2c21f4946720066f4067c8aa73954376",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/application/workspace-heading.js",
+      "bytes": 4176,
+      "sha256": "c8f63fd3e2d4c7d3ce028e40c44e5a39cdd426205559a7080f6563016fb6edfb",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/accounts-panel.js",
+      "bytes": 20186,
+      "sha256": "079242f7e0ed5a9997d7ab1ef9cc9a270075db40babdbd2985da6b4ff7b7533f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/activity-export-dialog.js",
+      "bytes": 5809,
+      "sha256": "4345527ee996b31b5940782ed83f36e6cc0cf79d2018e34c438df746503b2d60",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/activity-history.js",
+      "bytes": 18328,
+      "sha256": "11cb6285ade92dd2666d97556765bd20a61891d96819bc76407d36279a11599c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/battery-detail.js",
+      "bytes": 18890,
+      "sha256": "32d3c0c0d7dc399f2968e92f0dabd8ddbe62b19e7ec19c15a839d65d2c02730a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/battery-filter-controls.js",
+      "bytes": 2377,
+      "sha256": "43da3be3dcbe3d5d6d8c30cfcdd5c1d809b226b022c3cc7ae5fe3bccedac05a6",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/battery-model-picker.js",
+      "bytes": 25471,
+      "sha256": "1c7397d417fb57941b4d1c60f1cfa79fc9d13347b7ac917eb6d2b93bd4b10e41",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/battery-movement-summary.js",
+      "bytes": 5055,
+      "sha256": "d403d2e52178538574737e070c6053013e3519db67d3159e1d8567fb3242704f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/export-dialog.js",
+      "bytes": 6789,
+      "sha256": "9c2d6d9aca9ac0c5d27805316db3570f120f42c8c5cdba93972130eb582c15f7",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/group-maintenance-dialog.js",
+      "bytes": 10801,
+      "sha256": "b1b8e5f69641b51861527b78595fdad9fb73f680070a59e18cefea0c564b5ed2",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/import-dialog.js",
+      "bytes": 4224,
+      "sha256": "8190aff038bf6e48f73c395a9b22678c6e9d1d5d60876831da03e1d3f917d32f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/intake-station.js",
+      "bytes": 45576,
+      "sha256": "11b3fb28167b4d7f9040e7efcce15a2de0b31cd7a39858adea67d23b18302594",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/inventory-filter-panel.js",
+      "bytes": 21768,
+      "sha256": "9eb2f3a2a45266b51f3103a671185e042fb76710eb05b882b1a9c69218fa3a8b",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/inventory-table.js",
+      "bytes": 23928,
+      "sha256": "722aad8ad5a3395964da834845159f457e0b112fa786b222a0131e9417c9b480",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/messages-panel.js",
+      "bytes": 18820,
+      "sha256": "85b367055068d8a206faedd4d33e2a41731f4ca03dfb2aeaa63d77d9b72e0309",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/movement-dialog.js",
+      "bytes": 24134,
+      "sha256": "3a38d74c8efc7494fff9d97c1ac5a85c3cd68c55824b7be07661f07c2a74a0eb",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/record-editor.js",
+      "bytes": 16056,
+      "sha256": "a4b6812760a3feb6b2407fbd7c4b37eba4e03aff37ab194a3e95428f8ae7dc41",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/record-management.js",
+      "bytes": 14910,
+      "sha256": "ea0f67f695f43a86f9fc9baa64dc450e71ee93229459bffddf73b99e67a9e409",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/record-picker.js",
+      "bytes": 2123,
+      "sha256": "099ecac30d67c488efdcb21c5eda7307c65c98d8b1205c3b7e24f0f47665f7bf",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/removal-station.js",
+      "bytes": 33224,
+      "sha256": "045659ef41c6bf2aaa9eb4f6276dcab1b91b493f3d531d66421ad5690df7596a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/scan-station.js",
+      "bytes": 47423,
+      "sha256": "96af238d8b1de8a76eaa948fc331739591cd3bad55c85916808e057cf97fa08f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/task-plans-panel.js",
+      "bytes": 23163,
+      "sha256": "5ad6534c14e24956bbe81c147afbaa04903181b8942109a427d7c1ddcabc62c8",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/tasks/task-cycle-dialog.js",
+      "bytes": 11821,
+      "sha256": "c513eaa658905f254f880b882cb630b13d837ef07988777165a63c668e8b1582",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/tasks/task-download-dialog.js",
+      "bytes": 3192,
+      "sha256": "d45c844f9e93d42a1642e40176f8286d1016d8d0298a7b5c0c5bca37c2bb4e26",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/tasks/task-notices.js",
+      "bytes": 1110,
+      "sha256": "6c0bd383aa26504ae450494ed87abe3c861167e92f2ff576a0efb3d19a780a71",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/tasks/task-plan-details.js",
+      "bytes": 4726,
+      "sha256": "0b67215a2dec022f83b683a27726303d759bb39151fc71adfd4f278b3ee90d7b",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/tasks/task-plan-editor.js",
+      "bytes": 42129,
+      "sha256": "ebaf1d2c29c325190dc79c64ed17335f011e9bdb2ea7bf85d66fdad427c70853",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/tasks/task-plan-editor.module.css",
+      "bytes": 3174,
+      "sha256": "b6da5bc3d7eb195fb18f3dedfd80a11fb7be3105e9f3c3500e5b3ac36af7fab0",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/tasks/task-plan-removal-dialog.js",
+      "bytes": 7356,
+      "sha256": "5afd641011680ec83b93323ff86809e4c4cb6206477083e07d67a32e240f9eb6",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/tasks/task-presentation.js",
+      "bytes": 1951,
+      "sha256": "fbb8a67747ba6e75594a21fae7ee8cd87bfe0c377e584bb3445c88393ef74dee",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/teaching-groups-panel.js",
+      "bytes": 16402,
+      "sha256": "966773ac2ef5665c643074b496eb5e61b1a2987708d257421975b38fd9cfcd62",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/teaching-groups-workspace.js",
+      "bytes": 5616,
+      "sha256": "d82241d5a3b8d26c2bd7d768559253ef76106f233f4f4ad6210c318f705f791f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/inventory/views.js",
+      "bytes": 185,
+      "sha256": "e7cdbd65b323c5a79e1dd530bc24419ade345c93748d6edf365cf897a5a21b12",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/button.js",
+      "bytes": 2318,
+      "sha256": "d56a6ad80e0bb730cadff7a6bc71283d8ee1ba1870ed564a5b7c363ee32ba08c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/calendar.js",
+      "bytes": 6936,
+      "sha256": "877fdc67e35601fdc285812370eba53ae345a5dfc744e6b58dc4299408646384",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/checkbox.js",
+      "bytes": 1114,
+      "sha256": "204341089d22e15cc5af274aa7f3389610ae3b13aee4f8d0d3c75c7b96ec7652",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/combobox.js",
+      "bytes": 7502,
+      "sha256": "fb8c9465dda91f46e7ee7bce62554a3f4c1900e150b81dda88d39ff5ecaf546d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/dialog.js",
+      "bytes": 3480,
+      "sha256": "598de672c1c8e26cabd6b87e70614db29d5e94ab0231ccb8e147cf6b12f3fcb7",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/input-group.js",
+      "bytes": 4453,
+      "sha256": "452f77a51291b7e50b02bed0c50a114fdb7d37a8d5381ccae7f995bebf6278d4",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/input.js",
+      "bytes": 1441,
+      "sha256": "59c6c44a2376f8db9bd2a1706ba73cda41b6fdce7780f856fc8d7433b7346099",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/label.js",
+      "bytes": 567,
+      "sha256": "e8484a6862a2f5922f2f601797eaa92c2282d84694401efa62e12628b1c89764",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/popover.js",
+      "bytes": 1974,
+      "sha256": "ad89c599f12d0649708bcc1144ea1999c374b1d9260d6ff41c0f2b095689cf49",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/select.js",
+      "bytes": 5246,
+      "sha256": "93266ffb6c7e39508b36ecaf12f2e8659a3631e216588d77d940900650554eea",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/separator.js",
+      "bytes": 635,
+      "sha256": "0bf8974f14e0806abe0824fd8cde85de75a956d7e195d499a3a9bba79fc06cba",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/sheet.js",
+      "bytes": 3461,
+      "sha256": "ef57c38512279d7bf049a38e056f2b18a048033c15ddb2db5bb8cd0a2a9694d2",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/sidebar.js",
+      "bytes": 18469,
+      "sha256": "39dcb534548baae321806fd69764264ee1d8cbe13bc2f752eb87a64fe7afdd5c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/skeleton.js",
+      "bytes": 287,
+      "sha256": "8134bfcad5ed2e67c75b63e4f0261256ad6c42df92475026ef7396de0aa4ff40",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/table.js",
+      "bytes": 2027,
+      "sha256": "3d0110ef6bdadbd36832abb274b47b5d5cb2423c27e4749e609a04802f59b12b",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/tabs.js",
+      "bytes": 3402,
+      "sha256": "4d42cc5b61860c4b13fbf486a711464c39e8dedf25ab3cf7b27ec15d24f12457",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/temporal-input.js",
+      "bytes": 6297,
+      "sha256": "f5e60a322e5fea563450b8829414db8ebed5864bf2389c5f4edef5e28df2a596",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/textarea.js",
+      "bytes": 741,
+      "sha256": "43ed8d284146e196f5d7fc36d5895b4bb5b10a68d5d71f285ea5dcdc12da1ea9",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/components/ui/tooltip.js",
+      "bytes": 1561,
+      "sha256": "697cf0cf516e602389666e789cccd74ca61ca52498fb7b34d4c2484418e7f954",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/hooks/use-inventory-data.js",
+      "bytes": 4023,
+      "sha256": "7b1e6b9e663b7794d6fd7cbe1ce28b90711048aa79c5aea3ca7b703d5b72de1a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/hooks/use-message-count.js",
+      "bytes": 2019,
+      "sha256": "1c32cdc37116fb497624bb30ee947f4bae50c4543a39d0b7b1f12fe895f97c43",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/hooks/use-mobile.js",
+      "bytes": 589,
+      "sha256": "816eb0a451b62c509ceeb64784f311c6bf5d80fd442cb72d07cfa5818db9a0a0",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/hooks/use-task-endpoint.js",
+      "bytes": 1872,
+      "sha256": "d9c2d6d0d507cb255f12311a3394737670f6bf009b737b94501b5eb504d4da50",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/hooks/use-workflow-recovery.js",
+      "bytes": 1369,
+      "sha256": "7cf8dc76aaa5a3125f52736db62f9587266a0943a7f24ab758b530a4cdf2b7ac",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/battery-age.js",
+      "bytes": 1927,
+      "sha256": "338b8d1dc6c38648456a27bc356e5ba20bf6c4d55906a65aeb19651a5791886d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/battery-lifecycle.js",
+      "bytes": 366,
+      "sha256": "712b8de5edb4fb28446be0c27ff422fd62bf00974d0718a3330038ac9545d1e8",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/battery-models.js",
+      "bytes": 2333,
+      "sha256": "382e5266841b8606cd910c22ca4edee5938ba319c9156769780932fece57f6fa",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/battery-movement-summary.js",
+      "bytes": 6082,
+      "sha256": "c98dec045a690e93d88d774d3f426a179862c00587885e92e779ecd7425a8fb7",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/battery-selection-query.js",
+      "bytes": 1186,
+      "sha256": "d905c42cbab8b8f2411cb9b455ba52c6b395c47e604a6e02b1eb5298601130ff",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/browser-tools.js",
+      "bytes": 3715,
+      "sha256": "2aa1e1b8877ad1bb1d1c3451a9baaf465fc9a265c769dac62370c96fad0576ca",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/client-session.js",
+      "bytes": 379,
+      "sha256": "e66bbc9d51cc0f278b2be5f962b81a88a200f9de6f6d46f737a519590cc9eb8a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/client-utils.js",
+      "bytes": 13114,
+      "sha256": "e23dac9c607c0d51686cdb7cd1cc06fd2dbe90bd0858961e3237e7d84ed719d7",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/client/inventory-request.js",
+      "bytes": 639,
+      "sha256": "7af8fd56be845dcca9c32c26fcd593422ed5beeac3bc3d81722434695fca79ef",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/client/row-selection.js",
+      "bytes": 910,
+      "sha256": "e1b4344827aa2ac06265614b1afca6aa8de2442cab47443d2cd98b91cf1b4761",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/client/task-api.js",
+      "bytes": 693,
+      "sha256": "ff38ad7f7589a8b21fde9b2b9222e4b0d34a3ed1e74768dbaf2d6adef676d889",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/client/task-record-action.js",
+      "bytes": 4654,
+      "sha256": "6e88640115f1c0db19ede593d13e52cada16f93000a3be64009199516a010345",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/client/workflow-recovery.js",
+      "bytes": 2716,
+      "sha256": "2b1372a869bc22f84e37c4744592b416aea17fbb6676852e7386e2ce97ed916b",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/domain.js",
+      "bytes": 5452,
+      "sha256": "5c2adc04d1150a2b9d64eb0ee03fac8bd92677c85863ba054eafee649a0b58fd",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/group-activity.js",
+      "bytes": 2058,
+      "sha256": "004deab1503ee80e42c6c200b0ea74b080023f33db29cc5867e67d07494ac1c7",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/group-maintenance.js",
+      "bytes": 2892,
+      "sha256": "a5616cf5abe6baaad7814cd0d73035ec801bb5078ed505b849c2221d1b9b018d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/intake-draft.js",
+      "bytes": 3795,
+      "sha256": "4a571bc0ab3ef4ef77f43f939715e8e5d33cd55f4db8346369f49382f5368c22",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/intake-session.js",
+      "bytes": 4945,
+      "sha256": "5dffffc7598cbbb0d05144b61d71c069e0a02290e2a4a4802d514d4cec36f2ee",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/inventory-query.js",
+      "bytes": 11985,
+      "sha256": "b8bc697cce1e9f01453c3326d5c40979582d59dcb6502952e350fe3c56a9d012",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/lifecycle-session.js",
+      "bytes": 4881,
+      "sha256": "6aa69ffd92286d75eb995462c514bf412e8fb27a2961cd5fb327b33198c41a11",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/location-catalog.js",
+      "bytes": 1615,
+      "sha256": "5022bb99b69bea5901b06cef9a8aed4aa2afd784307ed9b7e8c375b1dd4e023a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/mobile-registration-session.js",
+      "bytes": 4946,
+      "sha256": "3479d4e1160a5c59d4608fec3721966994284178f13f1073c9ac449590efc18a",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/movement-session.js",
+      "bytes": 5438,
+      "sha256": "cc42f2a22219859dccff2170a621b791c1c8c14de647cb83c241d5a3ef2a230f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/permissions.js",
+      "bytes": 1291,
+      "sha256": "bcae6cbea688b5a1d22e3a4797dfbe3a1f0b3bb49a2e23913d5197f53fa4a310",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/removal-draft.js",
+      "bytes": 1737,
+      "sha256": "72d05998b5710b902c819d5a60a7059ec94c503f9ff44a17aabf868ddd109616",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/scan-session.js",
+      "bytes": 7944,
+      "sha256": "1a104128fd987a4104fcdbf6adae2147a6fa660cb4f6f618c465abd55f67aa1c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/task-create-session.js",
+      "bytes": 2787,
+      "sha256": "6d0ac886c64956433652baef84f55a55ee7f29bd83c897a30358f6692ce7d367",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/task-schedule.js",
+      "bytes": 15934,
+      "sha256": "29d0723ef25cdf233c1b30f5a775342e139357bf7ec78d25b145670838107df6",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/teaching-context.js",
+      "bytes": 1125,
+      "sha256": "b7ce001928130ea81aada88c340183cb765d899fbd3df48a236ada6f527e1cfb",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/teaching-groups.js",
+      "bytes": 3256,
+      "sha256": "e4580b6701d52301e2e84a6bc3eb6431950c0ad4a13c43595f21f32097f9d9db",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/temporal-input.js",
+      "bytes": 2137,
+      "sha256": "cfdf849c41ce9a76d3a69a2d83bbe9f1fae4e40e4920bef345e16b00f5c6310e",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/lib/utils.js",
+      "bytes": 139,
+      "sha256": "3ed9a6b9bbfd7777c835f14ea89f45614483f1c40eeffcacaa49766125a3df10",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/source-manifest.json",
+      "bytes": 28840,
+      "sha256": "05955c6b7f52782b1ba81452935b99d72ff97cc48cb82fbf56a2a3ec0c0c564f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/styles/base.css",
+      "bytes": 1899,
+      "sha256": "9c3014d32a3a25a861cb7e8902e625fe21a1fd7c2145795a5991f0dd0ed83ff9",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/styles/components.css",
+      "bytes": 16208,
+      "sha256": "1b4ba71df0f70228f96a01522ad9f2586c729cf1d9124ae9eb32ae1765f23e46",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/styles/inventory.css",
+      "bytes": 17754,
+      "sha256": "6e1ec5564f4b44e48f7c4d0a295f379edda5b313cd56edc3789c3f414f7b5f17",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/styles/shell.css",
+      "bytes": 8304,
+      "sha256": "9c872d96aeaaf4b2f87a26d6fac3c53f99a6e6aeaa751a81019eda6c9469e8e3",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/styles/theme.css",
+      "bytes": 3703,
+      "sha256": "6871150f51f612a6d18784d3e3fa90770b78ab264fb6c466ecad89af96446ac5",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/styles/workflows.css",
+      "bytes": 24235,
+      "sha256": "c4ea21969de04ef66527a1c140125b3cccf75b35a4fc29c8f4f3e92c74142a55",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/shared/vendor/shadcn-tailwind-4.13.0.css",
+      "bytes": 16041,
+      "sha256": "bc7d83425702955b4cb67cb14ede9d603f9d912376d57a2d81d661094d2a782a",
       "mode": "0644"
     },
     {
       "path": "mobile/src/styles.css",
       "bytes": 9031,
       "sha256": "f8536498ed6a9c7f33e4824fd16c90c6fdcbd13b892d7f04836cb80eef27c16f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/tests/business-adapters.test.mjs",
+      "bytes": 17779,
+      "sha256": "cbd64c6f0220bd4001d886ffb4143cf947f01c69b7f6a6f6b6b693bc98bd31da",
       "mode": "0644"
     },
     {
@@ -637,26 +1478,32 @@
     },
     {
       "path": "mobile/vite.config.js",
-      "bytes": 187,
-      "sha256": "6a5f357c6032a51c5042bd18f611863ec5cf23f7ad0669dff978542aa94adfcf",
+      "bytes": 232,
+      "sha256": "0e50ba899bf7568e0447c19079327e783ac5ff20938f5512799eb25a5f41a33a",
       "mode": "0644"
     },
     {
       "path": "README.md",
-      "bytes": 2593,
-      "sha256": "44331c39e9cfded9285392ebac1d0177fa144111424c61bff0138ca019d4a2a6",
+      "bytes": 5793,
+      "sha256": "361d4dda84944f1b71f9bc25b8e2ea4f36f857599a906e5850897ce96c6958f6",
       "mode": "0644"
     },
     {
       "path": "scripts/prepare-mobile-native.mjs",
-      "bytes": 6510,
-      "sha256": "895136cec9c1f29eeb54d246e603ca94ebfb2501f8cdb6feeba9542414ec6249",
+      "bytes": 7021,
+      "sha256": "2e50ae40f87a9f5a0b95eb744f52991347feee72189b346b7815db887fec8943",
+      "mode": "0644"
+    },
+    {
+      "path": "scripts/sync-mobile-frontend.mjs",
+      "bytes": 8407,
+      "sha256": "1b758b4fc794a4e86cbf91191ee6d4c86445340282f2f9e16ef5fbc23a4c9c53",
       "mode": "0644"
     },
     {
       "path": "templates/testflight-workflow.yaml",
-      "bytes": 1690,
-      "sha256": "1351545e6c6f29a3b1518d0c7e7a6c9640fbb1f878e99abdd423323979a37794",
+      "bytes": 1743,
+      "sha256": "f18963dda9eb08e4c23c453c24a34b4cf897829b5825fd6b1a244fe94ef33759",
       "mode": "0644"
     }
   ]
