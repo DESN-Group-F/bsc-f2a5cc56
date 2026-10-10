@@ -1,0 +1,21 @@
+import styles from "./mapping-workspace.module.css";
+
+/** A schematic shape only: its geometry is not a measured building plan. */
+export function MappingRoomDrawing({ unknown = false }: { unknown?: boolean }) {
+  return (
+    <svg className={styles.roomDrawing} viewBox="0 0 280 156" aria-hidden="true" focusable="false">
+      <path className={styles.side} d="M20 88 143 137 265 87 265 96 143 146 20 97Z" />
+      <path className={styles.floor} d="M20 88 142 40 265 87 143 137Z" />
+      <path className={styles.floorLines} d="M51 76 173 125M81 64 203 112M112 52 234 100M51 100 173 52M81 113 203 64M112 125 234 76" />
+      {!unknown && <>
+        <path className={styles.wall} d="M20 88 20 58 142 10 142 40Z" />
+        <path className={styles.side} d="M20 58 26 61 148 13 142 10Z" />
+        <path className={styles.wall} d="M142 40 142 10 265 57 265 87Z" />
+        <path className={styles.side} d="M142 10 148 7 271 54 265 57Z" />
+        <path className={styles.rack} d="M48 79 76 68 100 77 72 88Z M48 79 48 86 72 96 72 88 M72 88 100 77 100 84 72 96 M165 65 195 77 217 68 187 56Z M165 65 165 72 195 84 195 77 M195 77 217 68 217 75 195 84" />
+      </>}
+      {unknown && <text className={styles.unknownMark} x="143" y="100" textAnchor="middle">?</text>}
+      <path className={styles.highlight} d={unknown ? "M20 88 142 40 265 87 143 137Z" : "M20 88 20 58 142 10 265 57 265 87 143 137Z"} />
+    </svg>
+  );
+}

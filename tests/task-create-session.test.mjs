@@ -74,7 +74,7 @@ function dialogHarness() {
         useRef(initial) { const index = pointer++; if (!(index in state)) state[index] = { current: initial }; return state[index]; },
         useEffect() {},
     };
-    const uiNames = ["BatteryFilterControls", "CalendarDays", "CheckCircle2", "Download", "Pencil", "Plus", "RefreshCw", "Button", "Input", "Textarea", "Label", "Checkbox", "Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Skeleton"];
+    const uiNames = ["BatteryFilterControls", "CalendarDays", "CheckCircle2", "Download", "Pencil", "Plus", "RefreshCw", "Button", "Input", "Textarea", "Label", "Checkbox", "Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Skeleton", "LoadingState", "RefreshStatus"];
     return { reset() { pointer = 0; }, hooks, jsx, ui: Object.fromEntries(uiNames.map(name => [name, name])) };
 }
 function nodes(node, result = []) {

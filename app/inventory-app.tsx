@@ -10,7 +10,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingState, RefreshStatus } from "@/components/ui/loading-state";
 import { MovementDialog } from "@/components/inventory/movement-dialog";
 import { RecordEditor } from "@/components/inventory/record-editor";
 import { BatteryDetails } from "@/components/inventory/battery-detail";
@@ -55,6 +55,10 @@ import {
   type MovementPayload,
 } from "@/lib/movement-session";
 import { TeachingGroupsWorkspace } from "@/components/inventory/teaching-groups-workspace";
+import { MappingWorkspace } from "@/components/inventory/mapping-workspace";
+import { LocationToolsPanel } from "@/components/inventory/location-tools-panel";
+import type { LocationAttempt } from "@/lib/client/location-request";
+import { useLocationRecovery } from "@/hooks/use-location-recovery";
 import { GroupMaintenanceDialog } from "@/components/inventory/group-maintenance-dialog";
 import { TeachingCheckoutDialog, type TeachingCheckoutDraft } from "@/components/inventory/teaching-checkout-dialog";
 import { recoverTeachingCheckoutAttempt, teachingCheckoutStorageKey, type TeachingCheckoutAttempt } from "@/lib/client/teaching-checkout-request";
@@ -155,6 +159,9 @@ export default function InventoryApp({
   const activeAssetTab = !intake && retiredActionLocked ? "history" : removalLocked && !intake ? "removal" : assetTab;
   const [detailId, setDetailId] = useState<string | null>(null),
     [importKind, setImportKind] = useState<ImportKind | null>(null);
+  const [detailMappingRoom, setDetailMappingRoom] = useState<string | null>(null);
+  const [locationToolsOpen, setLocationToolsOpen] = useState(false);
+  const { recovery: locationRecovery, read: readLocationRecovery } = useLocationRecovery(user.id);
   const [groupsOpen, setGroupsOpen] = useState(false);
   const [activeGroupId, setActiveGroupId] = useState<string | null>(null),
     [activityGroupId, setActivityGroupId] = useState<string | null>(null);
@@ -171,9 +178,10 @@ export default function InventoryApp({
     ids: string[];
   } | null>(null);
   const [groupRemoval, setGroupRemoval] = useState<{
-    teachingGroup: TeachingGroupReference;
+    teachingGroup?: TeachingGroupReference;
     ids: string[];
     nonce: string;
+    returnView?: View;
   } | null>(null);
   const [teachingCheckout, setTeachingCheckout] = useState<TeachingCheckoutDraft | null>(null);
   const [teachingRecovery, setTeachingRecovery] = useState<{ attempts: TeachingCheckoutAttempt[]; drafts: SavedTeachingCheckoutDraft[]; error: string }>({ attempts: [], drafts: [], error: "" });
@@ -274,6 +282,7 @@ export default function InventoryApp({
       assetLocked ||
       groupsOpen ||
       groupMaintenance ||
+      locationToolsOpen ||
       teachingCheckout
     ),
     ready = !!data && !loading && !error && !teachingRecovery.error && !teachingRecovery.attempts.length && !teachingRecovery.drafts.length;
@@ -318,6 +327,9 @@ export default function InventoryApp({
     }
   }
   function interceptPendingWorkflow(exclude?: PendingWorkflow["type"]) {
+    const locations = readLocationRecovery();
+    if (locations.error) { setError(locations.error); return true; }
+    if (locations.attempts.length) { resumeLocationWork(locations.attempts[0]); return true; }
     if (interceptPendingTeachingCheckout()) return true;
     try {
       const pending = nextPendingWorkflow(readRecovery(), exclude);
@@ -356,6 +368,12 @@ export default function InventoryApp({
     if (view !== "teaching-groups") setGroupsReturnView(view);
     setView("teaching-groups"); setNotice("");
     setTeachingCheckout("payload" in pending ? { kind: "recover", attempt: pending } : { kind: "resume", saved: pending });
+  }
+  function resumeLocationWork(pending: LocationAttempt) {
+    if (modalOpen) return;
+    if (pending.dataset !== dataset) selectDataset(pending.dataset);
+    setView("mapping");
+    setLocationToolsOpen(true);
   }
   function interceptPendingTeachingCheckout() {
     try {
@@ -445,12 +463,13 @@ export default function InventoryApp({
     kind: "checkout" | "return",
     ids: string[] = [],
     teachingGroup?: TeachingGroupReference,
+    separateCheckout = false,
   ) {
     if (modalOpen || interceptPendingWorkflow()) return;
     if (kind === "checkout" && teachingGroup) {
       const group = data?.teachingGroups.find(item => item.id === teachingGroup.id && item.version === teachingGroup.version);
       if (!group) { setError("The reviewed teaching group changed. Refresh and reopen it before checkout."); return; }
-      setTeachingCheckout({ kind: "checkout", group, ids: [...ids], personalScope: inventoryPersonalScope }); setNotice(""); return;
+      setTeachingCheckout({ kind: "checkout", group, ids: [...ids], personalScope: inventoryPersonalScope, separateCheckout }); setNotice(""); return;
     }
     const reviewed = teachingGroup
       ? (data?.batteries.filter(
@@ -520,7 +539,7 @@ export default function InventoryApp({
       ),
     [modalOpen, readRecovery, readTeachingRecovery, current],
   );
-  useInventoryPolling({ paused: modalOpen, dataset, load, onError: setError });
+  useInventoryPolling({ paused: modalOpen || loading || !data, dataset, load, onError: setError });
   const taskChanged = useCallback(async () => {
     setRevision((value) => value + 1);
     await load(dataset);
@@ -554,7 +573,7 @@ export default function InventoryApp({
       view={navigationView}
       scan={scan?.kind ?? null}
       intake={!!intake}
-      locked={!!(scan || intake || assetLocked || teachingCheckout || teachingPending)}
+      locked={!!(scan || intake || assetLocked || teachingCheckout || teachingPending || locationToolsOpen)}
       ready={ready}
       unreadCount={unreadCount}
       inventoryNoticeCount={newArrivals.arrivals?.unreadCount ?? 0}
@@ -618,6 +637,8 @@ export default function InventoryApp({
           onRegister={() => { setEditorGroup(undefined); setEditor({ kind: "battery" }); }}
         />
         {teachingRecovery.error && <div className="load-error" role="alert">The preserved teaching workflow cannot be recovered safely: {teachingRecovery.error}</div>}
+        {locationRecovery.error && <div className="load-error" role="alert">Saved location work needs review: {locationRecovery.error}</div>}
+        {!locationToolsOpen && locationRecovery.attempts.length > 0 && <div className="load-error" role="alert"><span>A location request is retained. Resolve its original result before starting another operation.</span><Button variant="outline" disabled={modalOpen || loading || !data} onClick={() => resumeLocationWork(locationRecovery.attempts[0])}>Resume location request</Button></div>}
         {!teachingCheckout && (teachingRecovery.attempts.length > 0 || teachingRecovery.drafts.length > 0) && <div className="load-error" role="alert"><span>{teachingRecovery.attempts.length ? "An unfinished teaching checkout or return must be resolved with its original request." : "A reviewed teaching checkout draft is saved in this tab. Resume it before preparing another operation."}</span><Button variant="outline" disabled={!data || loading || !!error || modalOpen} onClick={() => resumeTeachingCheckout(teachingRecovery.attempts[0] ?? teachingRecovery.drafts[0])}>Resume teaching checkout</Button></div>}
         <RecoveryNotices
           recovery={recovery}
@@ -662,11 +683,9 @@ export default function InventoryApp({
             </Button>
           </div>
         )}</MotionPresence>
+        <RefreshStatus active={loading && !!data} />
         {loading && !data ? (
-          <div className="loading-panel" aria-label="Loading inventory">
-            <Skeleton className="h-24 w-full" />
-            <Skeleton className="h-72 w-full" />
-          </div>
+          <LoadingState label="Loading your workspace" detail="Preparing the inventory and your saved views." />
         ) : (
           data && (
             <>
@@ -749,7 +768,7 @@ export default function InventoryApp({
                         onBusyChange={setRemovalLocked}
                         onExit={() =>
                           setView(
-                            groupRemoval ? "teaching-groups" : "inventory",
+                            groupRemoval?.returnView ?? (groupRemoval ? "teaching-groups" : "inventory"),
                           )
                         }
                         onChanged={() => load(dataset)}
@@ -834,6 +853,26 @@ export default function InventoryApp({
                   />
                 </div>
               )}
+                <div hidden={view !== "mapping" || !!scan || !!intake}>
+                  <MappingWorkspace
+                    key={`mapping-${dataset}-${user.id}`}
+                    active={view === "mapping" && !scan && !intake}
+                    data={data}
+                    ready={ready}
+                    overlayOpen={modalOpen}
+                    onMovement={startMovement}
+                    onScan={startScan}
+                    onRemoval={ids => { if (!modalOpen && ready && !interceptPendingWorkflow()) { setGroupRemoval({ ids: [...ids], nonce: crypto.randomUUID(), returnView: "mapping" }); setView("assets"); setAssetTab("removal"); setNotice(""); } }}
+                    onEdit={draft => { setEditorGroup(undefined); setEditor(draft); }}
+                    onDetail={(id, roomId) => { setDetailGroup(undefined); setDetailMappingRoom(roomId ?? null); setDetailId(id); }}
+                    onSetup={() => setView("manage")}
+                    onExport={setExportDraft}
+                    onGroupsChanged={taskChanged}
+                    onGroupDialogChange={setGroupsOpen}
+                    onOpenGroups={openTeachingGroups}
+                    onLocationTools={() => { if (!modalOpen) setLocationToolsOpen(true); }}
+                  />
+                </div>
               {!scan && !intake && view === "teaching-groups" && (
                 <TeachingGroupsWorkspace
                   overlayOpen={modalOpen}
@@ -844,6 +883,12 @@ export default function InventoryApp({
                   personalScope={inventoryPersonalScope}
                   onReturnCheckout={(run: TeachingCheckoutListedRun) => {
                     if (!modalOpen && !interceptPendingWorkflow()) setTeachingCheckout({ kind: "return", run, personalScope: inventoryPersonalScope });
+                  }}
+                  onContinueCheckout={(run, group, ids) => {
+                    if (ready && !modalOpen && !interceptPendingWorkflow()) setTeachingCheckout({ kind: "continue", run, group, ids: [...ids], personalScope: inventoryPersonalScope });
+                  }}
+                  onExchangeCheckout={(run, item) => {
+                    if (ready && !modalOpen && !interceptPendingWorkflow()) setTeachingCheckout({ kind: "exchange", run, item, personalScope: inventoryPersonalScope });
                   }}
                   onDownloadCheckout={(run, format) => downloadTeachingCheckoutReport(dataset, run.id, format)}
                   activeId={activeGroupId}
@@ -989,7 +1034,7 @@ export default function InventoryApp({
       )}
       {data && teachingCheckout && (teachingCheckout.kind !== "recover" && teachingCheckout.kind !== "resume" || (teachingCheckout.kind === "recover" ? teachingCheckout.attempt.dataset : teachingCheckout.saved.dataset) === data.dataset) && (
         <TeachingCheckoutDialog
-          key={`${data.dataset}-${data.user.id}-${teachingCheckout.kind === "recover" ? teachingCheckout.attempt.payload.requestId : teachingCheckout.kind === "resume" ? "saved-draft" : teachingCheckout.kind === "return" ? teachingCheckout.run.id : teachingCheckout.group.id}`}
+          key={`${data.dataset}-${data.user.id}-${teachingCheckout.kind === "recover" ? teachingCheckout.attempt.payload.requestId : teachingCheckout.kind === "resume" ? "saved-draft" : teachingCheckout.kind === "return" || teachingCheckout.kind === "exchange" ? teachingCheckout.run.id : teachingCheckout.group.id}`}
           data={data}
           draft={teachingCheckout}
           onChanged={async () => {
@@ -1024,11 +1069,12 @@ export default function InventoryApp({
           onClose={() => {
             setDetailId(null);
             setDetailGroup(undefined);
+            setDetailMappingRoom(null);
           }}
           onExport={() =>
             setExportDraft({
               batteryId: detailBattery.id,
-              filter: { ...defaultInventoryFilter(), personalScope },
+              filter: { ...defaultInventoryFilter(), personalScope, mappingRoom: view === "mapping" ? detailMappingRoom : null },
               page: 0,
               pageSize: "25",
               matching: 1,
@@ -1037,6 +1083,7 @@ export default function InventoryApp({
           }
           onEdit={(battery) => {
             setDetailId(null);
+            setDetailMappingRoom(null);
             setEditorGroup(detailGroup);
             setEditor({ kind: "battery", record: battery });
           }}
@@ -1054,6 +1101,7 @@ export default function InventoryApp({
           onClose={() => setGroupMaintenance(null)}
         />
       )}
+      {data && locationToolsOpen && <LocationToolsPanel data={data} ready={ready} onChanged={taskChanged} onClose={() => setLocationToolsOpen(false)} />}
       {exportDraft && (
         <ExportDialog
           draft={exportDraft}

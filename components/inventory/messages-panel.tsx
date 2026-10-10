@@ -20,7 +20,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingState, RefreshStatus } from "@/components/ui/loading-state";
 import type {
   InboxMessage,
   TaskCycleRecord,
@@ -97,6 +97,8 @@ export function MessagesPanel({
     [notice, setNotice] = useState(""),
     [downloadBusy, setDownloadBusy] = useState(false);
   const [downloadRequest, setDownloadRequest] = useState<TaskDownloadRequest | null>(null);
+  const [expandedMessageIds, setExpandedMessageIds] = useState<string[]>([]);
+  const readInFlight = useRef(false);
   const parameters = new URLSearchParams({
     dataset: data.dataset,
     visibility,
@@ -136,8 +138,10 @@ export function MessagesPanel({
       );
     }
   }
-  async function markRead(id: string) {
-    setBusyId(id);
+  async function markRead(message: InboxMessage) {
+    if (message.readAt || readInFlight.current || busyId || pendingAction || storageError || resource.loading || resource.error) return;
+    readInFlight.current = true;
+    setBusyId(message.id);
     setNotice("");
     try {
       await taskRequest("/api/messages", {
@@ -146,18 +150,19 @@ export function MessagesPanel({
         body: JSON.stringify({
           dataset: data.dataset,
           action: "read",
-          payload: { id },
+          payload: { id: message.id },
         }),
       });
       await changed();
     } catch (error) {
-      setNotice((error as Error).message);
+      if (mounted.current) setNotice((error as Error).message);
     } finally {
-      setBusyId(null);
+      readInFlight.current = false;
+      if (mounted.current) setBusyId(null);
     }
   }
   async function changeVisibility(input: TaskRecordAction) {
-    if (storageError || input.dataset !== data.dataset || busyId) return;
+    if (storageError || input.dataset !== data.dataset || busyId || (!pendingAction && (resource.loading || resource.error))) return;
     try {
       saveTaskRecordAction("messages", data.user.id, input);
     } catch (error) {
@@ -395,11 +400,9 @@ export function MessagesPanel({
             </Button>
           </div>
         )}
-        {resource.loading ? (
-          <div className="loading-panel" role="status">
-            <p>Loading messages addressed to your staff account…</p>
-            <Skeleton className="h-24 w-full" />
-          </div>
+        <RefreshStatus active={resource.loading && !!resource.payload} label="Refreshing messages" detail="Keeping your messages open while the inbox updates." />
+        {resource.loading && !resource.payload ? (
+          <LoadingState label="Loading your messages" detail="Retrieving reminders and their recorded read state." />
         ) : (
           !resource.error && (
             <>
@@ -461,8 +464,23 @@ export function MessagesPanel({
                                 administrator can complete this task.
                               </p>
                             )}
-                          <details className="message-inbox-details">
-                            <summary>Message details</summary>
+                          <details
+                            className="message-inbox-details"
+                            open={expandedMessageIds.includes(message.id)}
+                            onToggle={(event) => {
+                              const open = event.currentTarget.open;
+                              setExpandedMessageIds((previous) => open
+                                ? previous.includes(message.id) ? previous : [...previous, message.id]
+                                : previous.filter((id) => id !== message.id));
+                              if (open) void markRead(message);
+                            }}
+                          >
+                            <summary
+                              aria-disabled={!expandedMessageIds.includes(message.id) && (!!busyId || !!pendingAction || !!storageError)}
+                              onClick={(event) => {
+                                if (!expandedMessageIds.includes(message.id) && (busyId || pendingAction || storageError || resource.loading || resource.error)) event.preventDefault();
+                              }}
+                            >Message details</summary>
                             <p className="whitespace-pre-wrap">
                               {message.body}
                             </p>
@@ -484,9 +502,12 @@ export function MessagesPanel({
                           <Button
                             variant={actionable ? "default" : "outline"}
                             size="sm"
-                            onClick={() => setCycle(message.cycle)}
+                            onClick={() => {
+                              setCycle(message.cycle);
+                              void markRead(message);
+                            }}
                             disabled={
-                              !!busyId || !!pendingAction || !!storageError
+                              !!busyId || !!pendingAction || !!storageError || resource.loading || !!resource.error
                             }
                           >
                             {completed
@@ -499,9 +520,9 @@ export function MessagesPanel({
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => markRead(message.id)}
+                              onClick={() => markRead(message)}
                               disabled={
-                                !!busyId || !!pendingAction || !!storageError
+                                !!busyId || !!pendingAction || !!storageError || resource.loading || !!resource.error
                               }
                               aria-label={`Mark ${message.title} as read`}
                             >
@@ -522,7 +543,7 @@ export function MessagesPanel({
                               )
                             }
                             disabled={
-                              !!busyId || !!pendingAction || !!storageError
+                              !!busyId || !!pendingAction || !!storageError || resource.loading || !!resource.error
                             }
                             aria-label={`${message.removedAt ? "Restore" : "Remove"} message: ${message.title}`}
                           >

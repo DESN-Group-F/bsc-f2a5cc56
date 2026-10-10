@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { DomainError, datasetSchema, identifier, uniqueIds, type BatteryRecord } from "./domain";
+import { DomainError, datasetSchema, identifier, uniqueIds, type BatteryRecord, type Room } from "./domain";
 import { filterBatteries, sortBatteries, inventoryFilterSchema, exportSections, type ExportSection } from "./inventory-query";
 import { ageInDays, currentSydneyDate, serviceAgeAsOfOn } from "./battery-age";
 import { batteryStatusLabel } from "./battery-lifecycle";
@@ -9,6 +9,8 @@ import { groupActivity, filterActivity, hasActivityBatteryCriteria } from "./gro
 import type { AuditEvent } from "./domain";
 import type { InventoryStore } from "./store";
 import { teachingGroupReferenceSchema } from "./teaching-context";
+import { mappingScopeLabel } from "./inventory-mapping";
+import { actionNames } from "./client-utils";
 type Row = Record<string, unknown>;
 export type ExportDocument = { metadata: Record<string, unknown>; tables: Record<string, Row[]> };
 const sectionIds = exportSections.map(section => section.id) as [ExportSection, ...ExportSection[]];
@@ -52,6 +54,7 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
         return current?.accountId ? { ...stored, name: current.name } : stored;
     };
     const all = source.snapshot.batteries as unknown as BatteryRecord[];
+    const mappingRooms = source.snapshot.rooms as unknown as Room[];
     const directoryRoom = (stored: Row) => {
         const current = currentRooms.get(stored.id);
         return { ...stored, building_code: current?.buildingId ?? null, building_name: current?.buildingId ? currentBuildings.get(current.buildingId)?.name ?? null : null };
@@ -61,17 +64,18 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
     if (request.teachingGroup && (!teachingGroup || teachingGroup.version !== request.teachingGroup.version))
         throw new DomainError(409, "This teaching group changed or is no longer available. Your selected batteries are retained. Close the download, refresh the group and review its current members before downloading. No partial download was prepared.");
     // An opened group is a fixed boundary; an ordinary group filter remains selection context.
-    const personalBase = filterBatteries(all, { personalScope: request.filter.personalScope, lifecycle: "all", ...(request.teachingGroup ? { groupId: request.teachingGroup.id } : {}) }, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? []);
-    let matching = request.batteryId ? personalBase.filter(battery => battery.id === request.batteryId) : request.range === "selected" ? personalBase.filter(battery => selected.has(battery.id)) : filterBatteries(all, request.filter, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? [], source.snapshot.newArrivals);
+    const personalBase = filterBatteries(all, { personalScope: request.filter.personalScope, lifecycle: "all", mappingRoom: request.filter.mappingRoom, ...(request.teachingGroup ? { groupId: request.teachingGroup.id } : {}) }, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? [], source.snapshot.newArrivals, mappingRooms);
+    let matching = request.batteryId ? personalBase.filter(battery => battery.id === request.batteryId) : request.range === "selected" ? personalBase.filter(battery => selected.has(battery.id)) : filterBatteries(all, request.filter, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? [], source.snapshot.newArrivals, mappingRooms);
     matching = sortBatteries(matching, request.filter, ageAsOfDate);
     if (request.range === "selected" && matching.length !== selectedIds.length)
-        throw new DomainError(409, "One or more selected batteries are no longer available in this inventory, personal view or fixed teaching group. Refresh and review your selection. No partial download was prepared.");
-    if (request.batteryId && !matching.length) throw new DomainError(404, "Battery not found in this inventory or personal view. Refresh and review its current responsibility or loan.");
+        throw new DomainError(409, "One or more selected batteries are no longer available in this inventory, personal view, fixed teaching group or last-observation room scope. Refresh and review your selection. No partial download was prepared.");
+    if (request.batteryId && !matching.length) throw new DomainError(404, "Battery not found in this inventory or fixed view. Refresh and review its responsibility, loan and last observation.");
     const matchingCount = matching.length;
     const pageRange = !request.batteryId && request.range === "page";
     if (pageRange) matching = matching.slice(request.page * Number(request.pageSize), (request.page + 1) * Number(request.pageSize));
     const metadata = { exported_at_utc: exportedAt.toISOString(), age_as_of_date: ageAsOfDate, age_date_timezone: "Australia/Sydney", dataset: request.dataset, operator: source.snapshot.actor, mode: request.mode, range: request.batteryId ? "single" : request.range, filters: request.range === "selected" ? null : request.filter, selected_battery_ids: request.range === "selected" ? selectedIds : null, selection_filter_context: request.range === "selected" ? request.filter : null, page: pageRange ? request.page + 1 : null, page_size: pageRange ? Number(request.pageSize) : null, matching_batteries: matchingCount, exported_batteries: matching.length, selected_sections: request.mode === "detail" ? request.sections : null, timestamps: "UTC ISO 8601; battery lifecycle dates are YYYY-MM-DD", location_meaning: "Registered storage is the home; observations are dated evidence with their recorded source.", unknown_values: "Null or blank means not recorded; no history is inferred.", consistency: "All inventory and history tables read in one D1 batch." };
     Object.assign(metadata, { sort: { by: request.filter.sortBy, direction: request.filter.sortDirection, missing_values: "last", tie_breaker: "Battery ID ascending" }, teaching_group: teachingGroup ? { id: teachingGroup.id, name: teachingGroup.name, version: teachingGroup.version } : null });
+    Object.assign(metadata, { fixed_mapping_scope: request.filter.mappingRoom ? { roomId: request.filter.mappingRoom, directoryLabel: mappingScopeLabel(request.filter.mappingRoom, mappingRooms) } : null, mapping_meaning: "Last recorded observation only, not a confirmed present location. Map labels use the current directory; saved evidence labels remain unchanged. Unknown includes missing room identity and observations outside the current J18 map." });
     if (request.filter.newArrivalsOnly) Object.assign(metadata, { new_arrivals_as_of_utc: source.snapshot.newArrivals?.serverNow ?? null, new_arrivals_meaning: "Active batteries first registered within the preceding 48 hours, based on native registration evidence. Viewing a reminder does not end this window." });
     Object.assign(metadata, { fixed_teaching_group_scope: request.teachingGroup ? { ...request.teachingGroup, name: teachingGroup!.name } : null, teaching_group_meaning: request.teachingGroup ? "The reviewed current private group and version bound this download; selected batteries may cross ordinary filters but remain members." : "A teaching-group filter is selection context only for a selected download; selected IDs may cross ordinary filters." });
     Object.assign(metadata, { usage_as_of_utc: usageAsOf.toISOString(), usage_meaning: "Recorded borrowing only, not charge/discharge cycles, battery health or remaining life. Voided checkouts are excluded; open loans run to the borrowing calculation time captured after the inventory snapshot was read. Missing or inconsistent timestamps make the total duration unavailable.", inspection_meaning: "Staff-entered checks and their recorded methods and findings. A saved outcome is not automatic safety certification. Voided records remain as correction evidence." });
@@ -90,17 +94,17 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
         const activityBatteryFilter = request.activityBatteryFilter;
         const batteryCriteriaActive = hasActivityBatteryCriteria(activityBatteryFilter);
         const filteredBatteryIds = !selected && batteryCriteriaActive
-            ? new Set(filterBatteries(all, activityBatteryFilter!, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? [], source.snapshot.newArrivals).map(battery => battery.id))
+            ? new Set(filterBatteries(all, activityBatteryFilter!, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? [], source.snapshot.newArrivals, mappingRooms).map(battery => battery.id))
             : null;
         const matching = selected ? entries.filter(entry => selected.has(entry.id)) : filterActivity(entries, request.search, request.activityGroupId, filteredBatteryIds);
         if (selected && matching.length !== selected.size) throw new DomainError(409, "Selected activity is unavailable in this inventory or personal activity scope. No partial export was prepared.");
         const rowById = new Map(rows.map(row => [String(row.id), row]));
         const summaries: Row[] = matching.map(entry => entry.teachingGroup ? { id: entry.id, scope: store.scope, action: entry.action, teaching_group_name: entry.teachingGroup.name, teaching_group_id: entry.teachingGroup.id, teaching_group_version: entry.teachingGroup.version, group_operation_id: entry.teachingGroup.operationId, affected_battery_count: entry.members!.length, actor_id: rowById.get(entry.members![0].id)!.actor_id, actor_name: entry.actorName, at: entry.at, ...(entry.details.teachingCheckout ? { details: entry.details, teaching_checkout_run: entry.details.teachingCheckout } : {}) } : rowById.get(entry.id)!);
-        const tables: Record<string, Row[]> = { Activity: summaries };
+        const tables: Record<string, Row[]> = { Activity: summaries.map(row => ({ ...row, action_label: actionNames[String(row.action)] ?? String(row.action) })) };
         if (request.activityDepth === "battery_details") {
             if (!request.sections.length) throw new DomainError(400, "Select at least one battery information section.");
             const memberEvents = matching.flatMap(entry => entry.members ?? []), ids = new Set(matching.flatMap(entry => entry.members ?? [entry]).map(event => event.batteryId));
-            tables.ActivityMembers = memberEvents.map(event => ({ group_activity_id: matching.find(entry => entry.members?.some(member => member.id === event.id))!.id, ...rowById.get(event.id)! }));
+            tables.ActivityMembers = memberEvents.map(event => ({ group_activity_id: matching.find(entry => entry.members?.some(member => member.id === event.id))!.id, ...rowById.get(event.id)!, action_label: actionNames[event.action] ?? event.action }));
             Object.assign(tables, detailedBatteryTables(raw, all.filter(battery => ids.has(battery.id)), request.sections, ageAsOfDate, directoryPerson, directoryRoom, usageById, source.inspections ?? []));
         }
         const batteryFilterLabels = activityBatteryFilter ? {

@@ -6,7 +6,7 @@ The after-4 checkpoint is a stable engineering foundation, not final product-exp
 
 ## Stylesheet ownership
 
-`app/globals.css` imports theme, base, shell, auth, components, inventory, workflows, motion and finally materials. The application shell imports `sidebar-workbench.css` for its coordinated navigation geometry. The former `workspace.css` and `workbench.css` override layers are no longer imported. Their relevant movement and activity layouts now belong to `inventory.css`.
+`app/globals.css` imports theme, base, shell, auth, components, inventory, workflows, motion, loading and finally materials. The application shell imports `sidebar-workbench.css` for its coordinated navigation geometry. The former `workspace.css` and `workbench.css` override layers are no longer imported. Their relevant movement and activity layouts now belong to `inventory.css`.
 
 | File | Responsibility |
 | --- | --- |
@@ -19,10 +19,19 @@ The after-4 checkpoint is a stable engineering foundation, not final product-exp
 | `styles/inventory.css` | Inventory toolbars, filters, evidence and shared record layouts |
 | `styles/workflows.css` | Stations, teaching groups, tasks, messages, accounts and model workflows |
 | `styles/motion.css` | Common press, disclosure, tab and overlay presentation |
+| `styles/loading.css` | Shared initial-loading skeletons, battery activity and non-disruptive refresh feedback |
 | `styles/materials.css` | Final shared material states, opaque preference fallbacks and toolbar control metrics; no business layout ownership |
 | Component CSS modules | Record-specific layout, the inventory register and Review queue; each detail sheet width has one owner |
 
 Responsive layout rules belong with their component. `materials.css` is the explicit last import for shared surface and control consistency; feature layout must not migrate into this layer. The mobile application copies shared frontend sources through its explicit synchronization script; changing web files does not itself publish or rebuild a native application.
+
+## Sign-in and asynchronous feedback
+
+Sign-in uses the application's battery motif with layered entrance and status transitions. Decorative motion uses transforms and opacity, respects reduced motion and does not obstruct the form. The form performs explicit English validation with field errors and focus on the first invalid input; browser-localized required-field bubbles are suppressed. It reads current form values so password-manager autofill remains supported.
+
+`LoadingState` represents a real initial read; `RefreshStatus` delays brief refresh feedback and retains existing content. The latter uses a short exit transition instead of abruptly removing its status. Slow-request text appears after six seconds for shared reads, with a separate eight-second sign-in hint. Reads time out after thirty seconds with explicit retry. A timed-out authentication write instead offers a session check, avoiding an automatic repeat of credential or setup submission. No progress percentage or success is fabricated.
+
+Refreshes retain data only within the same account and request context. Stale data cannot authorize account, task or beacon changes. Inventory polling is single-flight and pauses during manual refresh, initial loading and blocking workflows. Offline indicators describe browser connectivity only; server confirmation remains necessary for success.
 
 ## Color and material
 

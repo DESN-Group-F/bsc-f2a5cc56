@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { Miniflare } from "miniflare";
 import { AccountStore } from "../work/qa/accounts.mjs";
 import { InventoryStore } from "../work/qa/store.mjs";
+import { PLACEHOLDER_ROOMS } from "../work/qa/location-catalog.mjs";
 import { createExport } from "../work/qa/exports.mjs";
 import { filterBatteries, defaultInventoryFilter } from "../work/qa/inventory-query.mjs";
 
@@ -154,7 +155,7 @@ test("matching names and unlinked directory rows cannot assign a new responsible
 test("reference buildings are real catalog entries; only J18 and selectable rooms may receive new assets", async () => {
     const scope = "reference-policy:demo", store = await fixture(scope), self = inventory(scope, staff), snapshot = await store.snapshot();
     assert.deepEqual(snapshot.buildings.map(row => [row.id, row.name]), [["E10", "Hilmer Building"], ["G17", "Electrical Engineering Building"], ["J18", "Willis Annexe"]]);
-    assert.equal(snapshot.rooms.length, 2); assert.ok(snapshot.rooms.every(row => row.buildingId === "J18" && row.isPlaceholder && row.selectable));
+    assert.deepEqual(snapshot.rooms.map(row => row.id).sort(), PLACEHOLDER_ROOMS.map(row => row.id).sort()); assert.ok(snapshot.rooms.every(row => row.buildingId === "J18" && row.isPlaceholder && row.selectable));
     await assert.rejects(self.saveBattery(asset("WRONG-BUILDING", staff, { homeBuildingId: "E10", homeRoomId: null })), status(400));
     await assert.rejects(store.saveRoom({ id: "E10-ROOM", buildingId: "E10", number: "G19", name: "Unsupported room" }), status(400));
     await assert.rejects(store.importRecords("rooms", [{ id: "G17-ROOM", buildingId: "G17", number: "120", name: "Unsupported room" }]), status(400));

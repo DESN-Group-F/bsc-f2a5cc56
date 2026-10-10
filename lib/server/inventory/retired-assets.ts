@@ -14,6 +14,7 @@ const catalogs = [
   { table: "teaching_group_operations", identity: "key", columns: ["key", "fingerprint", "result_json"] },
   { table: "teaching_group_events", identity: "id", columns: ["id", "before_json", "after_json"] },
   { table: "teaching_checkouts", identity: "key", columns: ["key", "snapshot_json"] },
+  { table: "teaching_checkout_changes", identity: "key", columns: ["key", "snapshot_json"] },
 ] as const;
 
 export class InventoryRetiredAssets {

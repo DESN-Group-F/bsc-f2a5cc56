@@ -65,6 +65,14 @@ export const loans = sqliteTable("loans", {
 export const observations = sqliteTable("observations", {
     id: text("id").primaryKey(), scope: text("scope").notNull(), batteryKey: text("battery_key").notNull().references(() => batteries.key), roomKey: text("room_key").notNull().references(() => rooms.key), observedAt: text("observed_at").notNull(), receivedAt: text("received_at").notNull(), source: text("source").notNull(), roomName: text("room_name"), roomBuilding: text("room_building"),
 }, t => [index("idx_observations_battery_time").on(t.batteryKey, t.observedAt, t.receivedAt)]);
+export const locationBeacons = sqliteTable("location_beacons", {
+    key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), label: text("label").notNull(), identifier: text("identifier").notNull(),
+    roomKey: text("room_key").notNull().references(() => rooms.key), active: integer("active").notNull(), version: integer("version").notNull().default(1),
+    createdAt: text("created_at").notNull(), updatedAt: text("updated_at").notNull(), updatedBy: text("updated_by").notNull().references(() => staffAccounts.id), updatedAuthVersion: integer("updated_auth_version").notNull(),
+}, t => [uniqueIndex("location_beacons_scope_id").on(t.scope, t.id), uniqueIndex("location_beacons_scope_identifier").on(t.scope, t.identifier),
+    check("location_beacon_key", sql`${t.key}=${t.scope} || '/' || ${t.id}`), check("location_beacon_active", sql`${t.active} IN (0,1)`), check("location_beacon_version", sql`${t.version}>0`),
+    check("location_beacon_labels", sql`length(trim(${t.label})) BETWEEN 1 AND 120 AND length(trim(${t.identifier})) BETWEEN 1 AND 128`),
+    check("location_beacon_times", sql`julianday(${t.createdAt}) IS NOT NULL AND julianday(${t.updatedAt}) IS NOT NULL AND julianday(${t.updatedAt})>=julianday(${t.createdAt})`)]);
 export const charges = sqliteTable("charges", {
     id: text("id").primaryKey(), scope: text("scope").notNull(), batteryKey: text("battery_key").notNull().references(() => batteries.key), completedAt: text("completed_at").notNull(), percentage: real("percentage"), recordedAt: text("recorded_at").notNull(), actorId: text("actor_id").notNull(), actorName: text("actor_name").notNull(),
     durationMinutes: real("duration_minutes"),
@@ -116,6 +124,9 @@ export const teachingGroups = sqliteTable("teaching_groups", {
 export const teachingCheckouts = sqliteTable("teaching_checkouts", {
     key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), actorAccountId: text("actor_account_id").notNull().references(() => staffAccounts.id), groupId: text("group_id").notNull(), createdAt: text("created_at").notNull(), snapshotJson: text("snapshot_json").notNull(),
 }, t => [uniqueIndex("teaching_checkouts_identity").on(t.scope, t.id), index("teaching_checkouts_actor_time").on(t.scope, t.actorAccountId, t.createdAt), check("teaching_checkout_key", sql`${t.key}=${t.scope} || '/' || ${t.id}`), check("teaching_checkout_time", sql`julianday(${t.createdAt}) IS NOT NULL`), check("teaching_checkout_snapshot", sql`json_valid(${t.snapshotJson}) AND json_type(${t.snapshotJson},'$.mappings')='array' AND json_array_length(${t.snapshotJson},'$.mappings') BETWEEN 1 AND 100`)]);
+export const teachingCheckoutChanges = sqliteTable("teaching_checkout_changes", {
+    key: text("key").primaryKey(), scope: text("scope").notNull(), id: text("id").notNull(), runKey: text("run_key").notNull().references(() => teachingCheckouts.key), revision: integer("revision").notNull(), actorAccountId: text("actor_account_id").notNull().references(() => staffAccounts.id), createdAt: text("created_at").notNull(), snapshotJson: text("snapshot_json").notNull(),
+}, t => [uniqueIndex("teaching_checkout_changes_identity").on(t.scope, t.id), uniqueIndex("teaching_checkout_changes_revision").on(t.runKey, t.revision), check("teaching_checkout_change_key", sql`${t.key}=${t.scope} || '/' || ${t.id}`), check("teaching_checkout_change_revision", sql`${t.revision}>=2`), check("teaching_checkout_change_time", sql`julianday(${t.createdAt}) IS NOT NULL`), check("teaching_checkout_change_snapshot", sql`json_valid(${t.snapshotJson}) AND json_type(${t.snapshotJson},'$.mappings')='array' AND json_array_length(${t.snapshotJson},'$.mappings') BETWEEN 1 AND 100`)]);
 export const teachingGroupOperations = sqliteTable("teaching_group_operations", {
     key: text("key").primaryKey(), scope: text("scope").notNull(), ownerAccountId: text("owner_account_id").notNull().references(() => staffAccounts.id), requestId: text("request_id").notNull(), fingerprint: text("fingerprint").notNull(), outcome: text("outcome").notNull(), resultJson: text("result_json").notNull(), createdAt: text("created_at").notNull(), guard: integer("guard").notNull(),
 }, t => [check("teaching_group_operation_guard", sql`${t.guard}=1`)]);

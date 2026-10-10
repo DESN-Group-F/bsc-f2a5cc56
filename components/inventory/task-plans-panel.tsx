@@ -29,7 +29,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingState, RefreshStatus } from "@/components/ui/loading-state";
 import type { TaskPlanRecord, TaskCycleRecord } from "@/lib/task-plans";
 import { getRolePermissions } from "@/lib/permissions";
 import {
@@ -130,7 +130,8 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
   );
   const { manageTaskPlans } = getRolePermissions(data.user.role);
   const createBlocked =
-    !manageTaskPlans || resource.loading || !!createRecovery.error || !!draft || actionBlocked;
+    !manageTaskPlans || resource.loading || !!resource.error || !!createRecovery.error || !!draft || actionBlocked;
+  const mutationBlocked = actionBlocked || resource.loading || !!resource.error;
   const plans = resource.payload?.plans ?? [],
     cycles = resource.payload?.cycles ?? [];
   const matching = plans.filter((plan) => taskPlanMatchesQuery(plan, query));
@@ -367,11 +368,9 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
             </Button>
           </div>
         )}
-        {resource.loading ? (
-          <div className="loading-panel" role="status">
-            <p>Loading shared plans and recorded cycles…</p>
-            <Skeleton className="h-24 w-full" />
-          </div>
+        <RefreshStatus active={resource.loading && !!resource.payload} label="Refreshing recurring tasks" detail="Keeping the recorded plans visible while they update." />
+        {resource.loading && !resource.payload ? (
+          <LoadingState label="Loading recurring tasks" detail="Retrieving shared plans and recorded cycles." />
         ) : (
           !resource.error && (
             <>
@@ -417,7 +416,8 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setSelectedCycle(open)}
+                                onClick={() => { if (!mutationBlocked) setSelectedCycle(open); }}
+                                disabled={mutationBlocked}
                               >
                                 {open.planRemoved
                                   ? "View task"
@@ -430,8 +430,8 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setDraft(plan)}
-                                disabled={actionBlocked}
+                                onClick={() => { if (!mutationBlocked) setDraft(plan); }}
+                                disabled={mutationBlocked}
                                 aria-label={`Edit plan: ${plan.title}`}
                               >
                                 <Pencil size={16} />
@@ -442,8 +442,8 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
                               <Button
                                 variant="outline"
                                 size="sm"
-                                onClick={() => setRemovalPlan(plan)}
-                                disabled={actionBlocked}
+                                onClick={() => { if (!mutationBlocked) setRemovalPlan(plan); }}
+                                disabled={mutationBlocked}
                                 aria-label={`${plan.removedAt ? "Restore" : "Remove"} plan: ${plan.title}`}
                               >
                                 {plan.removedAt ? (
@@ -548,7 +548,7 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
           restores it. Recorded deadlines and completion history are retained.
         </div>
       </section>
-      {!resource.loading && !resource.error && matchingCycles.length > 0 && (
+      {!resource.error && matchingCycles.length > 0 && (
         <section className="inventory-panel mt-5">
           <div className="section-heading">
             <h2>Recorded task cycles</h2>
@@ -600,7 +600,8 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => setSelectedCycle(cycle)}
+                      onClick={() => { if (!mutationBlocked) setSelectedCycle(cycle); }}
+                      disabled={mutationBlocked}
                     >
                       {cycle.status === "completed"
                         ? "View completion"

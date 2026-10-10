@@ -5,6 +5,7 @@ import { checkBatteryInspections } from "./inspections.mjs";
 import { checkRetiredAssetActions } from "./retired-assets.mjs";
 import { checkNewArrivals } from "./new-arrivals.mjs";
 import { checkTeachingCheckouts } from "./teaching-checkouts.mjs";
+import { checkLocations } from "./locations.mjs";
 
 /** Actual HTTP checks against a caller-owned, freshly initialized local Worker. */
 export async function runApiSmoke({
@@ -215,7 +216,7 @@ export async function runApiSmoke({
       .filter((room) => room.selectable)
       .map((room) => room.id)
       .sort(),
-    ["J18-DEMO-ROOM", "J18-DEMO-WORKSPACE"],
+    ["J18-DEMO-ROOM", "J18-DEMO-STORAGE", "J18-DEMO-WORKSPACE"],
   );
   assert.ok(
     snapshot.rooms
@@ -953,6 +954,7 @@ export async function runApiSmoke({
   await checkRetiredAssetActions({ check, json, adminCookie, staffCookie });
   await checkNewArrivals({ check, json, adminCookie, staffCookie });
   await checkTeachingCheckouts({ check, json, adminCookie, staffCookie });
+  await checkLocations({ check, json, adminCookie, staffCookie });
   await check(
     "staff sign-out invalidates their session",
     "/api/session",

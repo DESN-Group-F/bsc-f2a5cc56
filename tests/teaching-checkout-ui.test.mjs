@@ -13,7 +13,7 @@ import { inventoryResponse } from "../work/qa/client/inventory-request.mjs";
 
 // Execute real component handlers with inert visual boundaries; browser and NFC hardware are verified separately.
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
-const ui = Object.fromEntries(["ArrowRight", "RefreshCw", "Button", "Checkbox", "Label", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "BatteryFilterControls", "TeachingNfcInput"].map(name => [name, name]));
+const ui = Object.fromEntries(["ArrowRight", "ArrowRightLeft", "ChevronDown", "RotateCcw", "MotionDisclosure", "LoadingState", "Input", "RefreshCw", "Button", "Checkbox", "Label", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "BatteryFilterControls", "TeachingNfcInput"].map(name => [name, name]));
 function hooks() {
     const state = [], effects = []; let pointer = 0, effectPointer = 0, pending = [];
     return {
@@ -41,12 +41,19 @@ function snapshot(value) { return Object.fromEntries(["name", "model", "chemistr
 function receipt(data, attempt) {
     const payload = attempt.payload;
     if (payload.action === "return") {
-        const run = Object.fromEntries(Object.entries(attempt.reviewed.run).filter(([key]) => key !== "items"));
+        const run = Object.fromEntries(Object.entries(attempt.reviewed.run).filter(([key]) => !["items", "revision", "currentMappings", "changes"].includes(key)));
         return { requestId: payload.requestId, actorAccountId: data.user.id, dataset: data.dataset, action: "return", run, returnedItems: payload.items, at: "2026-10-08T06:01:00.000Z" };
     }
-    const run = { id: payload.requestId, dataset: data.dataset, actorAccountId: data.user.id, actorName: "Teacher A", teachingGroup: { ...payload.teachingGroup, name: attempt.reviewed.group.name, ownerAccountId: data.user.id, operationId: payload.requestId, batteryIds: payload.mappings.map(item => item.actual.batteryId) }, requestedBatteryIds: payload.mappings.map(item => item.original.batteryId), mappings: payload.mappings.map(item => {
+    if (payload.action === "continue" || payload.action === "exchange") {
+        const run = Object.fromEntries(Object.entries(attempt.reviewed.run).filter(([key]) => !["items", "revision", "currentMappings", "changes"].includes(key)));
+        const mappings = payload.action === "continue" ? payload.mappings.map(item => { const slot = attempt.reviewed.slots.find(slot => slot.originalId === item.original.batteryId); return { original: snapshot(slot.original), actual: snapshot(slot.actual), originalLoanId: item.originalLoanId, method: item.method, source: item.source, loanId: item.existingLoanId ?? crypto.randomUUID(), loanOrigin: item.existingLoanId ? "existing" : "new", specificationMatch: false, differences: [] }; }) : [{ original: (attempt.reviewed.run.currentMappings ?? run.mappings).find(item => item.original.batteryId === payload.originalBatteryId).original, actual: snapshot(attempt.reviewed.exchange.actual), originalLoanId: null, method: "manual", source: payload.source, loanId: payload.actualLoanId ?? crypto.randomUUID(), loanOrigin: payload.actualLoanId ? "existing" : "new", specificationMatch: false, differences: [] }];
+        const evidenceAt = "2026-10-08T06:01:00.000Z";
+        const change = { id: payload.requestId, runId: run.id, revision: payload.expectedRevision + 1, action: payload.action, actorAccountId: data.user.id, actorName: data.user.displayName, at: evidenceAt, mappings, ...(payload.action === "continue" ? { teachingGroup: { ...payload.teachingGroup, name: attempt.reviewed.group.name, ownerAccountId: data.user.id, operationId: payload.requestId, batteryIds: payload.mappings.map(item => item.actual.batteryId) } } : { outgoing: { batteryId: payload.outgoing.batteryId, loanId: payload.outgoing.loanId, returned: payload.returnOutgoing } }) };
+        return { requestId: payload.requestId, actorAccountId: data.user.id, dataset: data.dataset, action: payload.action, run, change, revision: change.revision, at: evidenceAt };
+    }
+    const run = { id: payload.requestId, ...(payload.separateCheckout ? { separateCheckout: true } : {}), dataset: data.dataset, actorAccountId: data.user.id, actorName: "Teacher A", teachingGroup: { ...payload.teachingGroup, name: attempt.reviewed.group.name, ownerAccountId: data.user.id, operationId: payload.requestId, batteryIds: payload.mappings.map(item => item.actual.batteryId) }, requestedBatteryIds: payload.mappings.map(item => item.original.batteryId), mappings: payload.mappings.map(item => {
         const slot = attempt.reviewed.slots.find(slot => slot.originalId === item.original.batteryId);
-        return { original: snapshot(slot.original), actual: snapshot(slot.actual), originalLoanId: item.originalLoanId, method: item.method, source: item.source, loanId: crypto.randomUUID(), specificationMatch: contract.teachingSpecificationsMatch(slot.original, slot.actual), differences: contract.teachingSpecificationDifferences(slot.original, slot.actual) };
+        return { original: snapshot(slot.original), actual: snapshot(slot.actual), originalLoanId: item.originalLoanId, method: item.method, source: item.source, loanId: item.existingLoanId ?? crypto.randomUUID(), ...(item.existingLoanId ? { loanOrigin: "existing" } : {}), specificationMatch: contract.teachingSpecificationsMatch(slot.original, slot.actual), differences: contract.teachingSpecificationDifferences(slot.original, slot.actual) };
     }), createdAt: at };
     return { requestId: payload.requestId, actorAccountId: data.user.id, dataset: data.dataset, action: "checkout", run, at };
 }
@@ -82,7 +89,7 @@ test("missing strict alternative supports shared filters, unknown manual specifi
     assert.equal(button(page.render(), "Confirm actual checkout (1)").props.disabled, true);
     chooseOriginal(page.render()); filter(page.render()).props.onChange({ search: "BAT-C", capacityMode: "unknown" });
     button(page.render(), "Choose").props.onClick();
-    assert.match(content(page.render()), /Manual alternative/); assert.match(content(page.render()), /capacityMah: unknown information/);
+    assert.match(content(page.render()), /Manual alternative/); assert.match(content(page.render()), /Capacity: unknown information/);
     filter(page.render()).props.onClear();
     assert.equal(filter(page.render()).props.filters.search, ""); assert.match(content(page.render()), /2 actual batteries selected/);
     await button(page.render(), "Confirm actual checkout (2)").props.onClick();
@@ -142,7 +149,7 @@ test("manual tag lookup rejects duplicate and unavailable candidates without rep
     const page = await view({ data }); chooseOriginal(page.render()); button(page.render(), "Entered tag").props.onClick();
     nativeInput(page.render()).props.onChooseTag("nfc:uid:01020304", { kind: "tag" }); page.render(); chooseOriginal(page.render(), second.id);
     assert.throws(() => nativeInput(page.render()).props.onChooseTag("nfc:uid:01020304", { kind: "tag" }), /unavailable, already selected/);
-    assert.throws(() => nativeInput(page.render()).props.onChooseTag("tag-BAT-E", { kind: "tag" }), /unavailable, already selected/);
+    assert.throws(() => nativeInput(page.render()).props.onChooseTag("tag-BAT-F", { kind: "tag" }), /unavailable, already selected/);
     assert.throws(() => nativeInput(page.render()).props.onChooseTag("unknown-tag", { kind: "tag" }), /not registered in this inventory/);
     assert.match(content(page.render()), /2 actual batteries selected/); assert.equal(page.sent.length, 0);
 });
@@ -188,4 +195,167 @@ test("automatic suggestion feedback reports the number of alternatives actually 
     const data = fixture(); Object.assign(data.batteries[2], { model: "PACK-X", capacityMah: 2000, voltage: 7.4 });
     const page = await view({ data }); button(page.render(), "Replace unavailable batteries").props.onClick();
     assert.match(content(page.render()), /1 automatic alternative added to the review list/); assert.equal(button(page.render(), "Confirm actual checkout (2)").props.disabled, false);
+});
+
+
+function currentRun(data) {
+    const original = data.batteries[0], actual = data.batteries[2], loanId = crypto.randomUUID(), runId = crypto.randomUUID();
+    const mapping = { original: snapshot(original), actual: snapshot(actual), originalLoanId: null, method: "manual", source: { kind: "selection" }, loanId, loanOrigin: "new", specificationMatch: false, differences: ["model: differs"] };
+    Object.assign(actual, { loanId, borrowerAccountId: data.user.id, borrowerKind: "staff", borrowerId: "staff-teacher", borrowerName: data.user.displayName, checkedOutAt: at, version: 2 });
+    return { id: runId, dataset: data.dataset, actorAccountId: data.user.id, actorName: data.user.displayName, teachingGroup: { id: data.teachingGroups[0].id, version: 1, name: data.teachingGroups[0].name, ownerAccountId: data.user.id, operationId: runId, batteryIds: [actual.id] }, requestedBatteryIds: [original.id], mappings: [mapping], createdAt: at, revision: 1, currentMappings: [mapping], changes: [], items: [{ batteryId: actual.id, loanId, tagId: actual.tagId, version: 2, status: "outstanding", returnedAt: null, checkedOutAt: at, originalBatteryId: original.id, pendingReturn: false }] };
+}
+
+test("an available default member can be deliberately replaced without changing default membership or inferring current location", async () => {
+    const data = fixture(); data.teachingGroups[0].batteryIds = ["BAT-A"];
+    Object.assign(data.batteries[2], { observedAt: at, observedBuilding: "J18", observedRoom: "Demo room", observationRoomSnapshot: "recorded", observationSource: "Demo observation" });
+    const page = await view({ data }); chooseOriginal(page.render(), "BAT-A");
+    button(page.render(), "Choose").props.onClick();
+    assert.match(content(page.render()), /does not confirm the current location/);
+    await button(page.render(), "Confirm actual checkout (1)").props.onClick();
+    assert.equal(page.sent[0].payload.mappings[0].originalLoanId, null); assert.equal(page.sent[0].payload.mappings[0].actual.batteryId, "BAT-C");
+    assert.deepEqual(data.teachingGroups[0].batteryIds, ["BAT-A"]); assert.equal(page.changed.length, 1);
+});
+
+test("continuing an already held default member requires an explicit choice and preserves the exact original loan", async () => {
+    const data = fixture(); data.teachingGroups[0].batteryIds = ["BAT-E"]; data.batteries[4].checkedOutAt = at;
+    const page = await view({ data }); assert.equal(button(page.render(), "Confirm actual checkout (0)").props.disabled, true);
+    button(page.render(), "Continue using BAT-E").props.onClick();
+    assert.match(content(page.render()), /No new loan or restart/);
+    await button(page.render(), "Confirm actual checkout (1)").props.onClick();
+    assert.equal(page.sent[0].payload.mappings[0].existingLoanId, data.batteries[4].loanId);
+    assert.equal(page.sent[0].payload.mappings[0].originalLoanId, data.batteries[4].loanId); assert.equal(data.batteries[4].checkedOutAt, at); assert.equal(page.changed.length, 1);
+});
+
+test("continuing a checkout appends reviewed missing members to the same run and revision", async () => {
+    const data = fixture(), run = currentRun(data), page = await view({ data, draft: { kind: "continue", group: data.teachingGroups[0], run, ids: ["BAT-B"], personalScope: "all" } });
+    chooseOriginal(page.render(), "BAT-B"); button(page.render(), "Choose").props.onClick();
+    await button(page.render(), "Confirm added batteries (1)").props.onClick();
+    assert.equal(page.sent[0].payload.action, "continue"); assert.equal(page.sent[0].payload.runId, run.id); assert.equal(page.sent[0].payload.expectedRevision, 1); assert.equal(page.changed.length, 1);
+});
+
+test("exchange keeps the previous battery outstanding by default and sends its exact loan guard", async () => {
+    const data = fixture(), run = currentRun(data), page = await view({ data, draft: { kind: "exchange", run, item: run.items[0], personalScope: "all" } });
+    assert.match(content(page.render()), /Both batteries remain your responsibility/); assert.equal(button(page.render(), "Confirm battery exchange").props.disabled, true);
+    nodes(page.render()).find(node => node.props["aria-label"] === "Choose BAT-A for exchange").props.onClick();
+    await button(page.render(), "Confirm battery exchange").props.onClick();
+    assert.equal(page.sent[0].payload.action, "exchange"); assert.equal(page.sent[0].payload.returnOutgoing, false); assert.equal(page.sent[0].payload.outgoing.loanId, run.items[0].loanId); assert.equal(page.sent[0].payload.actual.batteryId, "BAT-A"); assert.equal(page.changed.length, 1);
+});
+
+test("an explicitly handed-back exchange can continue another existing loan and recover the exact request after a lost response", async () => {
+    const data = fixture(), run = currentRun(data), entries = new Map(); let uncertain = true;
+    data.batteries[4].checkedOutAt = at;
+    const transport = async (input, captured) => { if (uncertain) throw new Error("Lost response"); return { ok: true, async json() { return { result: receipt(data, captured) }; } }; };
+    const first = await view({ data, entries, transport, draft: { kind: "exchange", run, item: run.items[0], personalScope: "all" } });
+    nodes(first.render()).find(node => node.props["aria-label"] === "The outgoing battery has actually been handed back").props.onCheckedChange(true);
+    button(first.render(), "Continue using BAT-E").props.onClick(); await button(first.render(), "Confirm battery exchange").props.onClick();
+    assert.equal(first.sent[0].payload.returnOutgoing, true); assert.equal(first.sent[0].payload.actualLoanId, data.batteries[4].loanId); first.unmount();
+    const second = await view({ data, entries, transport }); assert.match(content(second.render()), /one confirmed transaction/); assert.equal(button(second.render(), "Confirm battery exchange").props.disabled, true);
+    uncertain = false; await button(second.render(), "Retry same request").props.onClick(); await new Promise(resolve => setImmediate(resolve));
+    assert.deepEqual(second.sent[0], first.sent[0]); assert.equal(second.changed.length, 1); assert.equal(entries.size, 0);
+});
+
+test("a separate teaching checkout preserves its explicit choice through recovery and allows another actual battery", async () => {
+    const data = fixture(); data.teachingGroups[0].batteryIds = ["BAT-E"];
+    const page = await view({ data, draft: { kind: "checkout", group: data.teachingGroups[0], ids: ["BAT-E"], personalScope: "all", separateCheckout: true } });
+    chooseOriginal(page.render(), "BAT-E"); button(page.render(), "Choose").props.onClick();
+    assert.match(content(page.render()), /Separate teaching session/);
+    await button(page.render(), "Confirm actual checkout (1)").props.onClick(); assert.equal(page.sent[0].payload.separateCheckout, true); assert.notEqual(page.sent[0].payload.mappings[0].actual.batteryId, "BAT-E"); assert.equal(page.changed.length, 1);
+});
+
+
+async function runView(data, run, transport) {
+    const state = hooks(), events = [], loaded = [], props = { data, ready: true, groupId: data.teachingGroups[0].id, onReturn: value => events.push(["return", value]), onExchange: (...args) => events.push(["exchange", ...args]), onContinue: (...args) => events.push(["continue", ...args]), onPermanent: (...args) => events.push(["permanent", ...args]), onRunsChanged: value => loaded.push(value), onDownload: async () => {} };
+    const fetch = async () => transport ? transport() : { ok: true, async json() { return { runs: [run] }; } };
+    const source = ts.transpileModule(await readFile("components/inventory/teaching-checkout-runs.tsx", "utf8"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
+    const bindings = { ...ui, ...state, ...utils, inventoryResponse, fetch, styles: new Proxy({}, { get: (_, key) => String(key) }) }, names = Object.keys(bindings);
+    const component = new Function(...names, "_jsx", "_jsxs", "_Fragment", `${source}\nreturn TeachingCheckoutRuns;`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
+    const render = () => { state.reset(); const tree = component(props); state.commit(); return tree; };
+    render(); await new Promise(resolve => setImmediate(resolve)); return { render, events, loaded, props };
+}
+
+test("actual checkouts expose covered original members and exact exchange actions before default member editing", async () => {
+    const data = fixture(), run = currentRun(data), page = await runView(data, run);
+    assert.match(content(page.render()), /BAT-A is now available to borrow/); assert.match(content(page.render()), /Temporary alternative/); assert.equal(page.events.length, 0);
+    const disclosure = nodes(page.render()).find(node => node.type === "MotionDisclosure"); assert.equal(disclosure.props.open, true);
+    button(page.render(), "Exchange battery").props.onClick(); assert.equal(page.events[0][1].id, run.id); assert.equal(page.events[0][2].loanId, run.items[0].loanId);
+    button(page.render(), "Make replacement permanent").props.onClick(); assert.deepEqual(page.events[1].slice(2), ["BAT-A", "BAT-C"]);
+    button(page.render(), "Add batteries to this checkout").props.onClick(); assert.deepEqual(page.events[2][3], ["BAT-B"]);
+});
+
+test("previous batteries pending return remain visible and cannot be exchanged again", async () => {
+    const data = fixture(), run = currentRun(data);
+    run.items[0].pendingReturn = true;
+    const page = await runView(data, run);
+    assert.match(content(page.render()), /Previous battery pending return/);
+    assert.equal(nodes(page.render()).some(node => node.type === "Button" && content(node) === "Exchange battery"), false);
+    assert.equal(button(page.render(), "Return this checkout").props.disabled, false);
+    button(page.render(), "Return this checkout").props.onClick(); assert.equal(page.events[0][1].items[0].loanId, run.items[0].loanId);
+});
+
+test("a slow checkout refresh retains its records while disabling movement until authoritative data returns", async () => {
+    const data = fixture(), run = currentRun(data); let fetchCount = 0, release;
+    const page = await runView(data, run, async () => { if (++fetchCount > 1) await new Promise(resolve => { release = resolve; }); return { ok: true, async json() { return { runs: [run] }; } }; });
+    button(page.render(), "Refresh checkouts").props.onClick(); page.render(); await new Promise(resolve => setImmediate(resolve));
+    assert.match(content(page.render()), /BAT-A → BAT-C/); assert.equal(button(page.render(), "Exchange battery").props.disabled, true);
+    const loading = nodes(page.render()).find(node => node.type === "LoadingState"); assert.equal(loading.props.compact, true); assert.equal(page.loaded.at(-1), null);
+    release(); await new Promise(resolve => setImmediate(resolve)); assert.equal(button(page.render(), "Exchange battery").props.disabled, false); assert.equal(page.loaded.at(-1)[0].id, run.id);
+});
+
+
+test("exchange cannot accept a receipt that changes original history or claims an unreviewed return", async () => {
+    for (const corrupt of [result => { result.run.teachingGroup.name = "Changed original history"; }, result => { result.change.outgoing.returned = true; }, result => { result.change.mappings[0].actual.version++; }]) {
+        const data = fixture(), run = currentRun(data);
+        const page = await view({ data, draft: { kind: "exchange", run, item: run.items[0], personalScope: "all" }, transport: async (_input, captured) => { const value = receipt(data, captured); corrupt(value); return { ok: true, async json() { return { result: value }; } }; } });
+        nodes(page.render()).find(node => node.props["aria-label"] === "Choose BAT-A for exchange").props.onClick();
+        await button(page.render(), "Confirm battery exchange").props.onClick();
+        assert.equal(page.changed.length, 0); assert.equal(page.closed.length, 0); assert.ok(button(page.render(), "Retry same request")); assert.equal(page.sent[0].payload.returnOutgoing, false);
+    }
+});
+
+test("returning a battery that also appears in older returned history selects only its current outstanding loan", async () => {
+    const data = fixture(), run = currentRun(data), current = run.items[0];
+    run.items.unshift({ ...current, loanId: crypto.randomUUID(), status: "returned", version: 1, returnedAt: at });
+    const page = await view({ data, draft: { kind: "return", run, personalScope: "all" } });
+    const boxes = nodes(page.render()).filter(node => node.type === "Checkbox" && node.props["aria-label"] === "Return BAT-C");
+    assert.equal(boxes[0].props.checked, false); assert.equal(boxes[0].props.disabled, true); assert.equal(boxes[1].props.checked, true);
+    await button(page.render(), "Confirm exact return (1)").props.onClick();
+    assert.equal(page.sent[0].payload.items.length, 1); assert.equal(page.sent[0].payload.items[0].loanId, current.loanId); assert.equal(page.changed.length, 1);
+});
+
+
+test("making a temporary alternative permanent does not offer the same active battery for another addition", async () => {
+    const data = fixture(), run = currentRun(data);
+    data.teachingGroups[0].batteryIds = ["BAT-C"];
+    const originalRun = structuredClone(run), page = await runView(data, run);
+    assert.match(content(page.render()), /Default membership updated/);
+    assert.equal(nodes(page.render()).some(node => node.type === "Button" && content(node) === "Add batteries to this checkout"), false);
+    assert.deepEqual(run, originalRun); assert.equal(run.currentMappings[0].original.batteryId, "BAT-A");
+    data.teachingGroups[0].batteryIds.push("BAT-D");
+    button(page.render(), "Add batteries to this checkout").props.onClick();
+    assert.deepEqual(page.events[0][3], ["BAT-D"]);
+});
+
+test("an outstanding previous battery is a return responsibility rather than effective member coverage", async () => {
+    const data = fixture(), run = currentRun(data), previous = run.items[0], nextLoanId = crypto.randomUUID();
+    previous.pendingReturn = true;
+    const mapping = { ...run.mappings[0], actual: snapshot(data.batteries[3]), loanId: nextLoanId };
+    run.currentMappings = [mapping];
+    run.items.push({ batteryId: "BAT-D", originalBatteryId: "BAT-A", loanId: nextLoanId, tagId: data.batteries[3].tagId, version: 2, status: "returned", returnedAt: at, checkedOutAt: at, pendingReturn: false });
+    data.teachingGroups[0].batteryIds = ["BAT-A", "BAT-C", "BAT-D"];
+    const page = await runView(data, run);
+    assert.match(content(page.render()), /Default members awaiting a previous battery return: BAT-A, BAT-C, BAT-D/);
+    assert.equal(nodes(page.render()).some(node => node.type === "Button" && content(node) === "Add batteries to this checkout"), false);
+    assert.match(content(page.render()), /Previous battery pending return/);
+    assert.equal(button(page.render(), "Return this checkout").props.disabled, false);
+});
+
+
+test("teaching difference labels use readable English while preserving saved specification evidence", async () => {
+    const data = fixture(), run = currentRun(data);
+    const differences = ["model: differs", "chemistry: differs", "capacityMah: differs", "voltage: differs"];
+    run.mappings[0].differences = [...differences];
+    const page = await runView(data, run);
+    assert.match(content(page.render()), /Model: differs · Chemistry: differs · Capacity: differs · Voltage: differs/);
+    assert.doesNotMatch(content(page.render()), /capacityMah/);
+    assert.deepEqual(run.mappings[0].differences, differences);
 });

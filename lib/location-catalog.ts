@@ -9,6 +9,7 @@ export const REFERENCE_BUILDINGS = [
 export const PLACEHOLDER_ROOMS = [
     { id: "J18-DEMO-ROOM", buildingId: "J18", number: "DEMO-ROOM", name: "Demo room", isPlaceholder: true, selectable: true },
     { id: "J18-DEMO-WORKSPACE", buildingId: "J18", number: "DEMO-WORKSPACE", name: "Demo workspace", isPlaceholder: true, selectable: true },
+    { id: "J18-DEMO-STORAGE", buildingId: "J18", number: "DEMO-STORAGE", name: "Demo storage", isPlaceholder: true, selectable: true },
 ] as const;
 
 type BuildingChoice = { id: string; name: string };

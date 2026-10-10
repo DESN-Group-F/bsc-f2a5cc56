@@ -167,6 +167,7 @@ function app(data, extra = {}) {
     useInventoryData: () => ({ user: data.user, dataset: data.dataset, data, loading: false, error: "", revision: 1, current: { current: data }, setError() {}, setRevision() {}, load: async dataset => { loadCalls.push(dataset); }, refresh() {}, changeDataset() {}, acceptReviewedInventory() {} }),
     useNewArrivals: nativeData => { assert.equal(nativeData.user.id, data.user.id); assert.equal(nativeData.dataset, data.dataset); return arrivalState; },
     useMessageCount: () => ({ unreadCount: 7, acceptUnreadCount() {} }), useWorkflowRecovery: () => ({ recovery, unavailable: false, read: () => recovery }),
+    useLocationRecovery: () => ({ recovery: { attempts: [], error: "" }, read: () => ({ attempts: [], error: "" }) }),
     useInventoryPolling() {},
   });
   return { acknowledgements, loadCalls, render() { state.reset(); return InventoryApp({ initialUser: data.user }); } };

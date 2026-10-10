@@ -151,6 +151,8 @@ function harness(
     "SelectContent",
     "SelectItem",
     "Skeleton",
+    "LoadingState",
+    "RefreshStatus",
     "Table",
     "TableHeader",
     "TableBody",
@@ -197,9 +199,17 @@ function harness(
       if (!(index in state)) state[index] = { current: initial };
       return state[index];
     },
-    useEffect(callback) {
+    useEffect(callback, dependencies) {
       const index = effectPointer++;
-      if (!(index in effects)) effects[index] = callback();
+      const previous = effects[index];
+      if (
+        !previous ||
+        !dependencies ||
+        dependencies.some((value, position) => !Object.is(value, previous.dependencies?.[position]))
+      ) {
+        previous?.cleanup?.();
+        effects[index] = { dependencies, cleanup: callback() };
+      }
     },
     useTaskEndpoint(url) {
       urls.push(url);
@@ -237,7 +247,7 @@ function harness(
     urls,
     storage,
     unmount() {
-      effects.forEach((cleanup) => cleanup?.());
+      effects.forEach((effect) => effect.cleanup?.());
     },
     render(name, props) {
       pointer = 0;
@@ -286,6 +296,182 @@ test("message cards distinguish completion, current authority and removed plans 
       .every((node) => !node.props.open),
     true,
   );
+});
+
+const messageDetails = (tree) => nodes(tree).find((node) => node.type === "details");
+const unreadDots = (tree) => nodes(tree).filter((node) => node.props?.className === "unread-dot");
+const settleMessageAction = () => new Promise((resolve) => setImmediate(resolve));
+
+test("opening message details acknowledges only that message in its current inventory", async () => {
+  for (const dataset of ["demo", "live"]) {
+    const inputs = [], counts = [];
+    let changed = 0;
+    const h = harness({ messages: [message], unreadCount: 1 }, async (url, options) => {
+      assert.equal(url, "/api/messages");
+      assert.equal(options.method, "POST");
+      inputs.push(JSON.parse(options.body));
+      return { ok: true };
+    });
+    const props = {
+      data: { ...data, dataset },
+      onUnreadCount: (value) => counts.push(value),
+      async onChanged() { changed++; },
+    };
+    const render = () => h.render("MessagesPanel", props);
+    let tree = render();
+    assert.equal(inputs.length, 0, "Displaying an inbox is not reading every message");
+    assert.equal(messageDetails(tree).props.open, false);
+    messageDetails(tree).props.onToggle({ currentTarget: { open: false } });
+    assert.equal(inputs.length, 0, "Closing details must not acknowledge a message");
+    messageDetails(tree).props.onToggle({ currentTarget: { open: true } });
+    await settleMessageAction();
+    assert.deepEqual(inputs, [{ dataset, action: "read", payload: { id: message.id } }]);
+    assert.equal(changed, 1);
+    assert.equal(h.resource.refreshes, 1);
+    tree = render();
+    assert.equal(messageDetails(tree).props.open, true);
+    assert.equal(unreadDots(tree).length, 1, "Unread evidence remains until the refreshed server result arrives");
+    assert.ok(button(tree, "Complete task"), "Reading must not complete the shared task");
+    assert.equal(nodes(tree).some((node) => node.type === h.components.TaskCycleDialog), false);
+
+    h.resource.payload = {
+      messages: [{ ...message, readAt: "2026-10-03T02:00:00Z" }],
+      unreadCount: 0,
+    };
+    tree = render();
+    assert.equal(messageDetails(tree).props.open, true, "Refreshing read evidence must preserve expanded details");
+    assert.equal(unreadDots(tree).length, 0);
+    assert.equal(button(tree, "Mark read"), undefined);
+    assert.equal(counts.at(-1), 0, "The refreshed own unread count must reach the sidebar callback");
+    messageDetails(tree).props.onToggle({ currentTarget: { open: false } });
+    tree = render();
+    assert.equal(messageDetails(tree).props.open, false);
+    messageDetails(tree).props.onToggle({ currentTarget: { open: true } });
+    await settleMessageAction();
+    assert.equal(inputs.length, 1, "Reopening an already read message must not send another acknowledgement");
+  }
+});
+
+test("opening a message task or completion records reading without completing the task", async () => {
+  for (const [taskStatus, canComplete, action] of [
+    ["open", true, "Complete task"],
+    ["open", false, "View task"],
+    ["completed", false, "View completion"],
+  ]) {
+    const current = {
+      ...message,
+      taskStatus,
+      cycle: { ...cycle, status: taskStatus, canComplete },
+    };
+    const inputs = [];
+    const h = harness({ messages: [current], unreadCount: 1 }, async (url, options) => {
+      inputs.push({ url, input: JSON.parse(options.body) });
+      return { ok: true };
+    });
+    let tree = h.render("MessagesPanel", { data });
+    assert.equal(inputs.length, 0, "A completed task can still have an unread message");
+    button(tree, action).props.onClick();
+    await settleMessageAction();
+    assert.deepEqual(inputs, [{
+      url: "/api/messages",
+      input: { dataset: data.dataset, action: "read", payload: { id: message.id } },
+    }]);
+    tree = h.render("MessagesPanel", { data });
+    const dialog = nodes(tree).find((node) => node.type === h.components.TaskCycleDialog);
+    assert.equal(dialog.props.cycle, current.cycle);
+    assert.equal(dialog.props.cycle.status, taskStatus);
+  }
+});
+
+test("already read messages open their task without sending an acknowledgement", async () => {
+  let sent = 0;
+  const h = harness({ messages: [{ ...message, readAt: "2026-10-03T02:00:00Z" }], unreadCount: 0 }, async () => { sent++; });
+  let tree = h.render("MessagesPanel", { data });
+  messageDetails(tree).props.onToggle({ currentTarget: { open: true } });
+  button(tree, "Complete task").props.onClick();
+  await settleMessageAction();
+  tree = h.render("MessagesPanel", { data });
+  assert.equal(sent, 0);
+  assert.ok(nodes(tree).find((node) => node.type === h.components.TaskCycleDialog));
+  assert.equal(unreadDots(tree).length, 0);
+});
+
+test("repeated open and explicit read events share one in-flight message acknowledgement", async () => {
+  const inputs = [];
+  let resolve;
+  const response = new Promise((done) => { resolve = done; });
+  const h = harness({ messages: [message], unreadCount: 1 }, async (_url, options) => {
+    inputs.push(JSON.parse(options.body));
+    return response;
+  });
+  const tree = h.render("MessagesPanel", { data });
+  messageDetails(tree).props.onToggle({ currentTarget: { open: true } });
+  messageDetails(tree).props.onToggle({ currentTarget: { open: true } });
+  button(tree, "Complete task").props.onClick();
+  button(tree, "Mark read").props.onClick();
+  assert.equal(inputs.length, 1, "Events arriving before a React rerender must not duplicate the read request");
+  assert.equal(button(h.render("MessagesPanel", { data }), "Mark read").props.disabled, true);
+  resolve({ ok: true });
+  await settleMessageAction();
+  assert.equal(h.resource.refreshes, 1);
+});
+
+test("a failed implicit read remains unread and can be retried explicitly", async () => {
+  const inputs = [];
+  let failed = true;
+  const h = harness({ messages: [message], unreadCount: 1 }, async (_url, options) => {
+    inputs.push(JSON.parse(options.body));
+    if (failed) throw new Error("Read could not be saved");
+    return { ok: true };
+  });
+  const render = () => h.render("MessagesPanel", { data });
+  messageDetails(render()).props.onToggle({ currentTarget: { open: true } });
+  await settleMessageAction();
+  let tree = render();
+  assert.match(label(tree), /Read could not be saved/);
+  assert.equal(messageDetails(tree).props.open, true);
+  assert.equal(unreadDots(tree).length, 1);
+  assert.equal(button(tree, "Mark read").props.disabled, false);
+  assert.equal(h.resource.refreshes, 0);
+  render();
+  await settleMessageAction();
+  assert.equal(inputs.length, 1, "Leaving failed details open must not retry without another action");
+  failed = false;
+  await button(tree, "Mark read").props.onClick();
+  assert.equal(inputs.length, 2);
+  assert.deepEqual(inputs[0], inputs[1]);
+  assert.equal(h.resource.refreshes, 1);
+  h.resource.payload = { messages: [{ ...message, readAt: "2026-10-03T02:00:00Z" }], unreadCount: 0 };
+  tree = render();
+  assert.equal(unreadDots(tree).length, 0);
+  assert.equal(button(tree, "Mark read"), undefined);
+});
+
+test("opening details cannot bypass pending or malformed message-request recovery", async () => {
+  const storage = sessionStore();
+  const first = harness({ messages: [message] }, async () => { throw new Error("Response lost"); }, storage);
+  await button(first.render("MessagesPanel", { data }), "Remove").props.onClick();
+  first.unmount();
+  const key = `battery-task-messages-action:${data.user.id}:${data.dataset}`;
+  const saved = storage.getItem(key);
+  assert.ok(saved);
+  for (const raw of [saved, "{broken"]) {
+    storage.setItem(key, raw);
+    let sent = 0;
+    const h = harness({ messages: [message], unreadCount: 1 }, async () => { sent++; }, storage);
+    const tree = h.render("MessagesPanel", { data });
+    const summary = nodes(tree).find((node) => node.type === "summary");
+    let prevented = false;
+    summary.props.onClick({ preventDefault() { prevented = true; } });
+    assert.equal(summary.props["aria-disabled"], true);
+    assert.equal(prevented, true, "Blocked recovery must prevent the browser's native detail opening action");
+    messageDetails(tree).props.onToggle({ currentTarget: { open: true } });
+    button(tree, "Mark read").props.onClick();
+    await settleMessageAction();
+    assert.equal(sent, 0);
+    assert.equal(storage.getItem(key), raw);
+    assert.equal(unreadDots(h.render("MessagesPanel", { data })).length, 1);
+  }
 });
 
 test("message removal retries its exact version and request ID after an uncertain response", async () => {
@@ -668,6 +854,31 @@ test("switching from Admin to Staff hides plan management while preserving share
   assert.ok(button(tree, "View plan"));
   assert.ok(button(tree, "Download filtered task records"));
   assert.ok(nodes(tree).find((node) => node.type === "TabsTrigger" && label(node) === "Removed"));
+});
+
+test("refreshing task plans keeps readable details but blocks starting changes from stale records", () => {
+  for (const removedAt of [null, "2026-10-03"]) {
+    const h = harness({ plans: [{ ...plan, removedAt }], cycles: [cycle] });
+    h.resource.loading = true;
+    let tree = h.render("TaskPlansPanel", { data });
+    for (const action of ["Create task", removedAt ? "Restore" : "Remove", ...(!removedAt ? ["Edit plan"] : [])]) {
+      assert.equal(button(tree, action).props.disabled, true);
+      button(tree, action).props.onClick();
+    }
+    const tasks = nodes(tree).filter(node => node.type === "Button" && label(node) === "Complete task");
+    assert.equal(tasks.length, 2, "Both plan-row and recorded-cycle actions must be protected");
+    for (const action of tasks) { assert.equal(action.props.disabled, true); action.props.onClick(); }
+    tree = h.render("TaskPlansPanel", { data });
+    assert.equal(nodes(tree).some(node => ["TaskPlanEditor", h.components.TaskCycleDialog, h.components.TaskPlanRemovalDialog].includes(node.type)), false);
+    button(tree, "View plan").props.onClick();
+    assert.ok(nodes(h.render("TaskPlansPanel", { data })).find(node => node.type === h.components.TaskPlanDetails));
+  }
+  const h = harness({ plans: [plan], cycles: [cycle] });
+  h.resource.error = "The server is taking too long to respond.";
+  const tree = h.render("TaskPlansPanel", { data });
+  assert.equal(button(tree, "Create task").props.disabled, true);
+  button(tree, "Create task").props.onClick();
+  assert.equal(button(h.render("TaskPlansPanel", { data }), "Start from scratch"), undefined);
 });
 
 test("task completion controls continue to follow current server authority for either role", () => {

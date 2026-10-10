@@ -110,6 +110,8 @@ const actionNames: Record<string, string> = {
     battery_scrapped: "Battery scrapped", battery_permanently_removed: "Battery permanently removed", charge_recorded: "Charging recorded",
     inspection_recorded: "Inspection recorded", inspection_voided: "Inspection record voided",
     demo_observation: "Demo location observation", checkout_voided: "Checkout voided", return_reopened: "Check-in reversed (loan reopened)",
+    location_beacon_created: "Room beacon mapping created", location_beacon_updated: "Room beacon mapping updated",
+    location_observation_recorded: "Simulated last observation recorded", location_scan_unresolved: "Room scan unresolved",
     records_imported: "Records imported", demo_initialized: "Demonstration inventory initialized", staff_directory_linked: "Staff account linked to directory",
     person_registered: "Person registered", person_updated: "Person updated", building_registered: "Building registered", building_updated: "Building updated",
     room_registered: "Room registered", room_updated: "Room updated", battery_model_registered: "Reusable battery model created", battery_model_updated: "Reusable battery model updated",
@@ -128,6 +130,9 @@ function operationSummary(action: string, detail: Row, row: Row): string {
     if (row.teaching_group_name) return `${text(row.affected_battery_count)} batteries affected in the recorded group operation. Historic member evidence is included only when requested.`;
     const placement = object(detail.returnPlacement), after = object(detail.after), before = object(detail.before);
     switch (action) {
+        case "location_observation_recorded": return `Last observation recorded from ${text(detail.source)}. Observed room: ${text(object(detail.room).name)}. This does not confirm the battery's present location or change its loan.`;
+        case "location_scan_unresolved": return `Room scan outcome: ${text(detail.outcome)}. No new location observation was saved; earlier evidence remains unchanged.`;
+        case "location_beacon_created": case "location_beacon_updated": return `Room beacon mapping: ${text(after.label)}. Room: ${text(after.roomName)}. Configuration alone does not observe or move a battery.`;
         case "checkout": return `Borrower: ${text(detail.borrower)}. A recorded checkout marks the battery In use; it is not live power sensing.`;
         case "return": return `Returned from ${text(detail.borrower)}. ${Object.keys(placement).length ? `Placement: ${observedAddress(placement, "roomName", "building")}; source: ${text(placement.source)}; observed ${dateText(reportTimestamp(placement.observedAt))} (Sydney).` : "No return location confirmation recorded."}`;
         case "battery_registered": return `${text(after.name)} registered${detail.registrationSource === "csv" ? " from a CSV import" : ""}. Registration does not establish an unknown manufacture date.`;
@@ -176,6 +181,7 @@ function filterSummary(metadata: Row): string {
         parts.push(`${label}: ${names[key] ?? values[String(value)] ?? (reference ? "Saved selection (identifier in evidence appendix)" : text(value))}`);
     }
     if (filter.modelUnknown) parts.push("Model: not recorded");
+    if (filter.mappingRoom) parts.push(`Last-observation room scope: ${text(object(metadata.fixed_mapping_scope).directoryLabel || filter.mappingRoom)} (not confirmed present location)`);
     if (filter.newArrivalsOnly) parts.push("New arrivals: first registered within the last 48 hours, active assets only");
     if (filter.chemistryUnknown) parts.push("Chemistry: not recorded");
     for (const [prefix, label, low, high, unit] of [["capacity", "Capacity", "capacityMinMah", "capacityMaxMah", "mAh"], ["voltage", "Voltage", "voltageMin", "voltageMax", "V"], ["age", "Age since manufacture", "ageMinDays", "ageMaxDays", "days"], ["checkout", "Latest checkout date", "checkoutFrom", "checkoutTo", "Sydney dates"], ["charge", "Latest charge date", "chargeFrom", "chargeTo", "Sydney dates"]]) {
@@ -252,6 +258,7 @@ export function createHumanReport(document: ExportDocument): HumanReport {
         { label: "Using this workbook", value: "Read the named report sheets for daily work. Evidence sheets preserve original database fields for tracing and technical review; they are not extra tasks to complete." },
     ];
     if (metadata.usage_as_of_utc) facts.push({ label: "Borrowing calculated as of (Sydney)", value: dateText(reportTimestamp(metadata.usage_as_of_utc)) });
+    if (metadata.fixed_mapping_scope) facts.push({ label: "Last-observation room scope", value: `${text(object(metadata.fixed_mapping_scope).directoryLabel)}. Applies to every download range, including selected and single batteries. This is recorded evidence, not a confirmed present location.` });
     if (mode === "activity") facts.push({ label: "Activity detail", value: metadata.activity_depth === "battery_details" ? "Recorded operations, original group member evidence and the selected current battery information sections" : "Recorded operation summaries; group member details and current battery sections were not requested" });
     if (mode === "activity" && metadata.activity_battery_filter_meaning) facts.push({ label: "Battery filter meaning", value: text(metadata.activity_battery_filter_meaning) });
     if (Array.isArray(metadata.selected_sections)) facts.push({ label: "Included information sections", value: metadata.selected_sections.map(value => ({ specifications: "Identity and specifications", responsibility: "Responsibility and borrowing summary", storage: "Registered storage", latest: "Latest observation and charge", loans: "Complete loan history", observations: "Complete location history", charges: "Complete charging history", inspections: "Complete inspection history", audit: "Complete operation history", directories: "Related people and locations" }[String(value)] ?? words(String(value)))).join("; ") });

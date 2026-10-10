@@ -10,6 +10,7 @@
 @import "@styles/inventory.css";
 @import "@styles/workflows.css";
 @import "@styles/motion.css";
+@import "@styles/loading.css";
 @import "@styles/materials.css";
 
 /* This light workspace does not activate dark utilities from OS preference. */

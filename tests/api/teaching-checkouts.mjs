@@ -44,4 +44,27 @@ export async function checkTeachingCheckouts({ check, json, adminCookie, staffCo
   assert.notEqual(receiverExport.metadata.operatorAccountId, saved.run.actorAccountId); assert.equal(receiverExport.metadata.actorAccountId, saved.run.actorAccountId);
   const response = await check("teaching checkout Excel includes actual mapping and historical loans", `/api/teaching-checkouts?dataset=demo&runId=${run.id}&format=xlsx`, { headers: { Cookie: staffCookie } }); const workbook = new ExcelJS.Workbook(); await workbook.xlsx.load(Buffer.from(await response.arrayBuffer())); assert.ok(workbook.worksheets.length >= 1); assert.match(JSON.stringify(workbook.model), /QA-TEACH-MANUAL/);
   await check("a missing teaching checkout download returns an explicit error", `/api/teaching-checkouts?dataset=demo&runId=${crypto.randomUUID()}&format=json`, { headers: { Cookie: staffCookie } }, 404);
+
+  await post("register another actual battery for a reviewed teaching exchange", "battery", { id: "QA-TEACH-SWAP", name: "Teaching exchange HTTP fixture", model: "PACK", chemistry: "LiPo", capacityMah: 2200, voltage: 7.4, ownerId: owner.id, homeBuildingId: "J18" });
+  const freshBinding = async id => { const battery = (await read(`review current teaching exchange binding ${id}`, `/api/inventory?dataset=demo&batteryId=${id}`)).battery; return { batteryId: id, tagId: battery.tagId, version: battery.version }; };
+  const continuation = { action: "continue", requestId: crypto.randomUUID(), runId: run.id, expectedRevision: 1, teachingGroup: { id: group.id, version: group.version }, personalScope: "all", mappings: [{ original: await freshBinding("QA-TEACH-ORIGINAL"), actual: await freshBinding("QA-TEACH-FREE"), originalLoanId: details["QA-TEACH-ORIGINAL"].loanId, method: "automatic", source: { kind: "selection" } }] };
+  const continued = (await save("continue an earlier checkout after its previous actual loan was returned", continuation)).result;
+  assert.equal(continued.change.revision, 2); assert.deepEqual(continued.run, saved.run);
+  assert.equal((await save("continue endpoint preserves the exact retry receipt", continuation)).result.replayed, true);
+  const exchange = { action: "exchange", requestId: crypto.randomUUID(), runId: run.id, expectedRevision: 2, personalScope: "all", originalBatteryId: "QA-TEACH-ORIGINAL", outgoing: { ...await freshBinding("QA-TEACH-FREE"), loanId: continued.change.mappings[0].loanId }, actual: await freshBinding("QA-TEACH-SWAP"), actualLoanId: null, returnOutgoing: false, source: { kind: "selection" } };
+  await save("another staff account cannot exchange the borrower's teaching checkout", { ...exchange, requestId: crypto.randomUUID() }, adminCookie, 409);
+  const exchanged = (await save("exchange without physical return retains both native loan responsibilities", exchange)).result;
+  assert.equal(exchanged.change.revision, 3); assert.equal(exchanged.change.outgoing.returned, false);
+  assert.equal((await save("exchange endpoint preserves exact replay without another loan", exchange)).result.replayed, true);
+  let updated = (await read("teaching checkout lists the old battery as pending return", `/api/teaching-checkouts?dataset=demo&runId=${run.id}`)).runs[0];
+  assert.equal(updated.items.find(item => item.loanId === exchange.outgoing.loanId).pendingReturn, true);
+  assert.equal(updated.currentMappings.find(mapping => mapping.original.batteryId === "QA-TEACH-ORIGINAL").actual.batteryId, "QA-TEACH-SWAP");
+  await save("receiver returns the exact pending outgoing battery", { action: "return", requestId: crypto.randomUUID(), runId: run.id, personalScope: "all", items: [exchange.outgoing] }, adminCookie);
+  await save("a stale reviewed exchange revision cannot make another change", { ...exchange, requestId: crypto.randomUUID() }, staffCookie, 409);
+  const swappedBack = (await save("one exchange atomically returns the current actual battery and checks out the reviewed replacement", { ...exchange, requestId: crypto.randomUUID(), expectedRevision: 3, outgoing: { ...await freshBinding("QA-TEACH-SWAP"), loanId: exchanged.change.mappings[0].loanId }, actual: await freshBinding("QA-TEACH-FREE"), returnOutgoing: true })).result;
+  assert.equal(swappedBack.change.revision, 4); assert.equal(swappedBack.returnedItems[0].batteryId, "QA-TEACH-SWAP");
+  updated = (await read("all changed exact loan responsibilities remain visible", `/api/teaching-checkouts?dataset=demo&runId=${run.id}`)).runs[0];
+  assert.equal(updated.changes.length, 3); assert.equal(updated.items.filter(item => item.status === "outstanding").length, 2);
+  const full = await read("changed teaching checkout exports preserve continuation exchange and exact loan history", `/api/teaching-checkouts?dataset=demo&runId=${run.id}&format=json`);
+  assert.equal(full.tables.teaching_changes.length, 3); assert.equal(full.tables.Loans.length, 5);
 }

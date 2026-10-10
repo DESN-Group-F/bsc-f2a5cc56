@@ -71,6 +71,7 @@ async function environment(run, seed = []) {
     flushSync: callback => callback(), transitionWorkspace: callback => callback(),
     useInventoryData() { current.current = snapshot(); return { user, dataset: env.dataset, data: current.current, loading: false, error: env.error, revision: env.revision, current, setError: value => { env.error = value; }, setRevision: update => { env.revision = typeof update === "function" ? update(env.revision) : update; }, load: async dataset => { loads.push(dataset); }, refresh() {}, changeDataset: dataset => { env.dataset = dataset; }, acceptReviewedInventory() {} }; },
     useWorkflowRecovery(accountId) { return { recovery: libraries.readWorkflowRecovery(sessionStorage, accountId), unavailable: false, read: () => libraries.readWorkflowRecovery(sessionStorage, accountId) }; },
+    useLocationRecovery() { return { recovery: { attempts: [], error: "" }, read: () => ({ attempts: [], error: "" }) }; },
     useMessageCount: () => ({ unreadCount: 0, acceptUnreadCount() {} }), useInventoryPolling() {},
     useNewArrivals: () => ({ arrivals: undefined, acknowledge: async () => {}, pending: false, error: "" }),
   };
@@ -89,6 +90,30 @@ test("real app scan, intake, movement and assets handlers resume a saved foreign
     await environment(async env => { const app = mount("InventoryApp", env, { initialUser: env.user }); action(app); const history = node(app, "RemovalHistory"); assert.ok(history); assert.equal(env.dataset, "live"); assert.equal(node(app, "ScanStation"), undefined); assert.equal(node(app, "IntakeStation"), undefined); assert.equal(node(app, "MovementDialog"), undefined); assert.equal(env.entries.get(key), raw); assert.equal(env.requests.length, 0); app.unmount(); }, [[key, raw]]);
   }
 });
+
+test("the app retains the Mapping instance while scan and intake stations temporarily deactivate it", async () => environment(async env => {
+  const app = mount("InventoryApp", env, { initialUser: env.user });
+  const instanceKey = node(app, "MappingWorkspace").key;
+  assert.equal(node(app, "MappingWorkspace").props.active, false);
+  node(app, "ApplicationShell").props.onNavigate("mapping");
+  assert.equal(node(app, "MappingWorkspace").props.active, true);
+  node(app, "MappingWorkspace").props.onScan("checkout");
+  assert.ok(node(app, "ScanStation"));
+  assert.equal(node(app, "MappingWorkspace").key, instanceKey);
+  assert.equal(node(app, "MappingWorkspace").props.active, false);
+  node(app, "ScanStation").props.onExit();
+  assert.equal(node(app, "MappingWorkspace").props.active, true);
+  node(app, "RecoveryNotices").props.startIntake();
+  assert.ok(node(app, "IntakeStation"));
+  assert.equal(node(app, "MappingWorkspace").key, instanceKey);
+  assert.equal(node(app, "MappingWorkspace").props.active, false);
+  node(app, "IntakeStation").props.onExit();
+  node(app, "ApplicationShell").props.onNavigate("mapping");
+  assert.equal(node(app, "MappingWorkspace").key, instanceKey);
+  assert.equal(node(app, "MappingWorkspace").props.active, true);
+  assert.equal(env.requests.length, 0);
+  app.unmount();
+}));
 
 test("fresh WebMCP staging honors preserved retired requests while its read tool remains usable", async () => environment(async env => {
   const app = mount("InventoryApp", env, { initialUser: env.user }); app.render(); const saved = attempt("live"), raw = JSON.stringify(saved), key = libraries.retiredAssetStorageKey(actor, "live"); env.entries.set(key, raw);

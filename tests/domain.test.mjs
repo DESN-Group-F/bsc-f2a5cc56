@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {readFile} from "node:fs/promises";
 import {Miniflare} from "miniflare";
 import {InventoryStore} from "../work/qa/store.mjs";
+import {PLACEHOLDER_ROOMS} from "../work/qa/location-catalog.mjs";
 import {parseCsv,importPayload,csvCell,fromSydneyInput,sydneyInput,roomLabel} from "../work/qa/client-utils.mjs";
 
 const mf=new Miniflare({modules:true,script:"export default {fetch(){return new Response('test')}}",compatibilityDate:"2026-05-15",d1Databases:{DB:"inventory-test"},d1Persist:false});
@@ -283,7 +284,7 @@ test("migration preserves existing histories and marks missing original room lab
 
 test("building-only storage can later gain a confirmed room; other scopes and buildings cannot be mixed",async()=>{
   const scope="hierarchy:live",s=store(scope,"live");
-  const initial=await s.snapshot();assert.deepEqual(initial.buildings.map(b=>b.id),["E10","G17","J18"]);assert.equal(initial.rooms.length,2);assert.ok(initial.people.some(person=>person.id===nativeOwner&&person.accountId==="test-teacher"));
+  const initial=await s.snapshot();assert.deepEqual(initial.buildings.map(b=>b.id),["E10","G17","J18"]);assert.deepEqual(initial.rooms.map(room=>room.id).sort(),PLACEHOLDER_ROOMS.map(room=>room.id).sort());assert.ok(initial.rooms.every(room=>room.buildingId==="J18"&&room.isPlaceholder&&room.selectable));assert.ok(initial.people.some(person=>person.id===nativeOwner&&person.accountId==="test-teacher"));
   await s.saveBattery({id:"BUILDING-ONLY",name:"Pending room battery",ownerId:nativeOwner,homeBuildingId:"J18"});
   let b=await battery(s,"BUILDING-ONLY");assert.equal(b.homeRoomId,null);assert.equal(b.homeRoomName,null);assert.equal(b.homeBuildingName,"Willis Annexe");
   await s.saveRoom({id:"J18-115",name:"Confirmed test room",buildingId:"J18",number:"115",isPlaceholder:false});

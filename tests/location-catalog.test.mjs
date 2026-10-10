@@ -25,12 +25,13 @@ test("placeholder and verified room choices are explicit; inactive and other-bui
         { id: "other", buildingId: "E10", number: "G19", name: "Other room", selectable: true, isPlaceholder: false },
     ];
     const choices = roomPickerOptions(rooms, "J18");
-    assert.deepEqual(choices.map(room => room.id), ["J18-DEMO-ROOM", "J18-DEMO-WORKSPACE", "verified"]);
+    assert.deepEqual(choices.map(room => room.id), ["J18-DEMO-ROOM", "J18-DEMO-WORKSPACE", "J18-DEMO-STORAGE", "verified"]);
     assert.equal(choices[0].label, "Demo room — Placeholder");
     assert.equal(choices[1].label, "Demo workspace — Placeholder");
-    assert.equal(choices[2].label, "115 - Confirmed room");
-    assert.equal(isSelectableRoom(rooms[3]), false);
+    assert.equal(choices[2].label, "Demo storage — Placeholder");
+    assert.equal(choices[3].label, "115 - Confirmed room");
     assert.equal(isSelectableRoom(rooms[4]), false);
+    assert.equal(isSelectableRoom(rooms[5]), false);
     assert.deepEqual(roomPickerOptions(rooms, "E10"), [{ id: "__unavailable", label: "Not available", disabled: true }]);
     assert.deepEqual(roomPickerOptions(rooms, null), [{ id: "__unavailable", label: "Not available", disabled: true }]);
 });

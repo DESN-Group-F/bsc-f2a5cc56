@@ -228,3 +228,23 @@ test("teaching group member rows preserve native label selection and ignore a de
         assert.match(text(view.render()), /2\/100 selected/, "The checkbox remains independently operable");
     } finally { if (prior === undefined) delete globalThis.window; else globalThis.window = prior; }
 });
+
+
+test("permanent replacement previews exactly one default-member change and preserves every unrelated field", async () => {
+    const data = fixture(), original = structuredClone(data.teachingGroups[0]), view = await panel({ data, options: { initialGroup: original, initialReplacement: { originalBatteryId: "BAT-A", replacementBatteryId: "BAT-C" } } });
+    assert.match(text(view.render()), /BAT-A → BAT-C/); assert.match(text(view.render()), /Current loans and previous checkout records remain unchanged/);
+    assert.equal(view.requests.length, 0);
+    await button(view.render(), "Confirm permanent replacement").props.onClick();
+    const payload = view.requests[0].payload;
+    assert.equal(payload.action, "update"); assert.equal(payload.expectedVersion, original.version); assert.equal(payload.name, original.name); assert.equal(payload.notes, original.notes); assert.deepEqual(payload.batteryIds, ["BAT-C", "BAT-B"]);
+    assert.deepEqual(data.teachingGroups[0], original); assert.equal(view.changed.length, 1);
+});
+
+test("permanent replacement does not silently adopt new group edits while its exact request is uncertain", async () => {
+    const data = fixture(), entries = new Map(); let available = false;
+    const transport = async (payload) => { if (!available) throw new Error("Response lost"); return { ok: true, async json() { return { result: result(data, payload) }; } }; };
+    const first = await panel({ data, entries, transport, options: { initialGroup: structuredClone(data.teachingGroups[0]), initialReplacement: { originalBatteryId: "BAT-A", replacementBatteryId: "BAT-C" } } });
+    await button(first.render(), "Confirm permanent replacement").props.onClick(); const captured = structuredClone(first.requests[0]); first.unmount();
+    const second = await panel({ data, entries, transport }); available = true; await button(second.render(), "Retry exact group request").props.onClick();
+    assert.deepEqual(second.requests[0], captured); assert.equal(second.changed.length, 1); assert.equal(entries.size, 0);
+});

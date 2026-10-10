@@ -11,7 +11,7 @@ const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "removal-ui-"));
 after(() => rm(scratch, { recursive: true, force: true }));
-for (const name of ["teaching-context", "battery-age", "domain", "location-catalog", "client-utils", "lifecycle-session", "removal-draft", "battery-lifecycle", "new-arrivals", "inventory-query", "battery-selection-query", "permissions", "retired-asset-actions"]) {
+for (const name of ["teaching-context", "battery-age", "domain", "location-catalog", "client-utils", "lifecycle-session", "removal-draft", "battery-lifecycle", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "permissions", "retired-asset-actions"]) {
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
     await writeFile(join(scratch, `${name}.mjs`), compiled);

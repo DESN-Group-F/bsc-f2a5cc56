@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { DomainError, type BatteryRecord } from "./domain";
+import { DomainError, type BatteryRecord, type Room } from "./domain";
+import { mappingBucket } from "./inventory-mapping";
 import type { TeachingGroup } from "./teaching-groups";
 import { ageInDays, currentSydneyDate, isDateOnly, serviceAgeAsOfOn } from "./battery-age";
 import { isActiveBattery } from "./battery-lifecycle";
@@ -25,6 +26,7 @@ export const inventoryFilterSchema = z.object({
     lifecycle: z.enum(["active", "all", "scrapped", "permanently_removed"]).default("active"),
     status: z.enum(["all", "in", "out"]).default("all"), building: z.string().max(64).default("all"), room: z.string().max(64).default("all"), owner: z.string().max(64).default("all"), search: z.string().max(200).default(""),
     observedRoom: z.string().max(64).default("all"),
+    mappingRoom: z.string().min(1).max(64).nullable().default(null),
     chemistry: z.string().max(40).nullable().default(null), chemistryUnknown: z.boolean().default(false),
     holder: z.string().max(128).default("all"), model: z.string().max(120).nullable().default(null), modelUnknown: z.boolean().default(false),
     capacityMode: availability, capacityMinMah: positiveBound, capacityMaxMah: positiveBound,
@@ -109,7 +111,7 @@ export function sortBatteries(batteries: BatteryRecord[], input: InventoryFilter
         return compared ? (filter.sortDirection === "desc" ? -compared : compared) : a.id.localeCompare(b.id, "en", { numeric: true }) || (a.id < b.id ? -1 : a.id > b.id ? 1 : 0);
     });
 }
-export function filterBatteries(batteries: BatteryRecord[], input: InventoryFilterInput, asOfOn: string = currentSydneyDate(), viewerAccountId: string | null = null, teachingGroups: TeachingGroup[] = [], newArrivals?: NewArrivals) {
+export function filterBatteries(batteries: BatteryRecord[], input: InventoryFilterInput, asOfOn: string = currentSydneyDate(), viewerAccountId: string | null = null, teachingGroups: TeachingGroup[] = [], newArrivals?: NewArrivals, rooms: readonly Room[] = []) {
     const filter = inventoryFilterSchema.parse(input);
     const group = filter.groupId ? teachingGroups.find(item => item.id === filter.groupId && item.ownerAccountId === viewerAccountId && item.state === "active") : null;
     if (filter.groupId && !group) throw new DomainError(409, "This teaching group is no longer available in your account and inventory. Clear the group filter or choose a current group.");
@@ -118,6 +120,7 @@ export function filterBatteries(batteries: BatteryRecord[], input: InventoryFilt
     const query = filter.search.trim().toLowerCase();
     return sortBatteries(batteries.filter(battery => (!memberIds || memberIds.has(battery.id)) && (filter.personalScope === "all" || !!viewerAccountId && (filter.personalScope === "responsible" ? battery.ownerAccountId === viewerAccountId : !!battery.loanId && battery.borrowerAccountId === viewerAccountId))
         && (!arrivalIds || isActiveBattery(battery) && arrivalIds.has(battery.id))
+        && (filter.mappingRoom === null || mappingBucket(battery, rooms) === filter.mappingRoom)
         && (filter.lifecycle === "all" || (filter.lifecycle === "active" ? isActiveBattery(battery) : battery.lifecycleStatus === filter.lifecycle))
         && (filter.status === "all" || isActiveBattery(battery) && (filter.status === "out" ? !!battery.loanId : !battery.loanId))
         && (filter.building === "all" || battery.homeBuildingId === filter.building)

@@ -12,7 +12,7 @@ export function getFilteredBatteries(data: InventorySnapshot, filters: Inventory
     const parsed = inventoryFilterSchema.safeParse(filters);
     if (!parsed.success) return { batteries: [] as BatteryRecord[], error: parsed.error.issues.map(issue => issue.message).join(" ") };
     try {
-        return { batteries: filterBatteries(candidates, parsed.data, currentSydneyDate(), data.user.id, data.teachingGroups ?? [], data.newArrivals), error: "" };
+        return { batteries: filterBatteries(candidates, parsed.data, currentSydneyDate(), data.user.id, data.teachingGroups ?? [], data.newArrivals, data.rooms), error: "" };
     } catch (error) {
         return { batteries: [] as BatteryRecord[], error: (error as Error).message || "These battery filters could not be applied. Clear filters and try again." };
     }

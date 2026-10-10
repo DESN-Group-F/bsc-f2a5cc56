@@ -53,6 +53,7 @@ import type {
 } from "@/lib/client/inventory-contracts";
 import styles from "./inventory-table.module.css";
 import { recentNewArrivals, type NewArrivals } from "@/lib/new-arrivals";
+import { mappingScopeLabel } from "@/lib/inventory-mapping";
 
 export function InventoryTable({
   data,
@@ -67,6 +68,7 @@ export function InventoryTable({
   onGroupDialogChange,
   onOpenGroups,
   group,
+  mappingRoom = null,
   onRemoval,
   onGroupMaintenance,
   onGroupCheckouts,
@@ -84,6 +86,7 @@ export function InventoryTable({
   onExport: (draft: ExportDraft) => void;
   personalScope?: InventoryFilter["personalScope"];
   group?: TeachingGroup;
+  mappingRoom?: string | null;
   onOpenGroups?: () => void;
   onRemoval?: (ids: string[]) => void;
   onGroupMaintenance?: (ids: string[]) => void;
@@ -98,17 +101,19 @@ export function InventoryTable({
   overlayOpen?: boolean;
 }) {
   const permissions = getRolePermissions(data.user.role);
-  const instancePrefix = `inventory-${data.dataset}-${personalScope}-${group ? `group-${encodeURIComponent(group.id)}` : "shared"}`;
+  const instancePrefix = `inventory-${data.dataset}-${personalScope}-${mappingRoom ? `mapping-${encodeURIComponent(mappingRoom)}` : group ? `group-${encodeURIComponent(group.id)}` : "shared"}`;
   const filterDisclosureId = `${instancePrefix}-filter-disclosure`;
   const [savedFilters, setFilters] = useState<InventoryFilter>(() => ({
       ...defaultInventoryFilter(),
       personalScope,
+      mappingRoom,
       ...(group ? { groupId: group.id, lifecycle: "all" as const } : {}),
     })),
     [filterOpen, setFilterOpen] = useState(false);
   const filters = {
     ...savedFilters,
     personalScope,
+    mappingRoom,
     ...(group ? { groupId: group.id } : {}),
   };
   const [selectedIds, setSelected] = useState<string[]>([]);
@@ -134,11 +139,14 @@ export function InventoryTable({
     {
       ...defaultInventoryFilter(),
       personalScope,
+      mappingRoom,
       ...(group ? { groupId: group.id } : {}),
     },
     currentSydneyDate(),
     data.user.id,
     data.teachingGroups ?? [],
+    newArrivals,
+    data.rooms,
   );
   const onLoan = baseBatteries.filter((b) => b.loanId).length;
   const arrivalItems = recentNewArrivals(newArrivals);
@@ -153,14 +161,17 @@ export function InventoryTable({
   const baseIds = new Set(
     filterBatteries(
       batteries,
-      { personalScope, lifecycle: "all" },
+      { personalScope, lifecycle: "all", mappingRoom },
       currentSydneyDate(),
       data.user.id,
+      data.teachingGroups ?? [],
+      newArrivals,
+      data.rooms,
     ).map((battery) => battery.id),
   );
   const outsidePersonalScope = group
     ? selected.filter((id) => !group.batteryIds.includes(id))
-    : personalScope === "all"
+    : personalScope === "all" && !mappingRoom
       ? []
       : selected.filter((id) => !baseIds.has(id));
   const selectionScopeChanged = outsidePersonalScope.length > 0;
@@ -183,6 +194,7 @@ export function InventoryTable({
           data.user.id,
           data.teachingGroups ?? [],
           newArrivals,
+          data.rooms,
         )
       : [];
   const allStatuses =
@@ -194,6 +206,7 @@ export function InventoryTable({
           data.user.id,
           data.teachingGroups ?? [],
           newArrivals,
+          data.rooms,
         )
       : [];
   const matchingOnLoan = allStatuses.filter(
@@ -249,6 +262,7 @@ export function InventoryTable({
     transitionWorkspace(() => { setFilters({
       ...defaultInventoryFilter(),
       personalScope,
+      mappingRoom,
       ...(group ? { groupId: group.id, lifecycle: "all" as const } : {}),
     });
     setPage(0); });
@@ -278,6 +292,7 @@ export function InventoryTable({
   }
   return (
     <>
+      {mappingRoom && <p className="personal-inventory-scope"><strong>Last observation scope: {mappingScopeLabel(mappingRoom, data.rooms)}</strong><span>Ordinary filters and downloads stay within this tab. These records do not confirm the batteries&apos; present locations.</span></p>}
       {personalScope !== "all" && (
         <div className="personal-inventory-scope">
           <strong>
@@ -379,6 +394,8 @@ export function InventoryTable({
               These batteries no longer belong to{" "}
               {group
                 ? "this teaching group"
+                : mappingRoom
+                  ? "this last-observation room scope"
                 : personalScope === "responsible"
                   ? "My batteries"
                   : "My batteries in use"}
@@ -416,7 +433,7 @@ export function InventoryTable({
         )}
         <MotionDisclosure open={!!selected.length}>
           <div className="teaching-group-actions">
-            {group && (
+            {(group || mappingRoom) && (
               <>
                 {onRemoval && (
                   <Button
@@ -425,6 +442,7 @@ export function InventoryTable({
                     onClick={() => onRemoval(selected)}
                     disabled={
                       !ready ||
+                      selectionScopeChanged || !selected.length || selected.length > 100 ||
                       selected.some((id) => {
                         const b = batteries.find((b) => b.id === id)!;
                         return !isActiveBattery(b) || !!b.loanId;
@@ -487,6 +505,8 @@ export function InventoryTable({
             baseBatteries.length,
             group
               ? "In this teaching group"
+              : mappingRoom
+                ? "Last observed in this room scope"
               : personalScope === "all"
                 ? "Across registered storage locations"
                 : "In this personal view",

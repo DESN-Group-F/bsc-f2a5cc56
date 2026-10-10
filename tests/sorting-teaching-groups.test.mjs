@@ -6,7 +6,7 @@ import { InventoryStore } from "../work/qa/store.mjs";
 import { TeachingGroupStore } from "../work/qa/teaching-group-store.mjs";
 import { filterBatteries, defaultInventoryFilter } from "../work/qa/inventory-query.mjs";
 import { createExport } from "../work/qa/exports.mjs";
-import { captureTeachingGroupAttempt, recoverTeachingGroupAttempt, verifyTeachingGroupReceipt, teachingGroupStorageKey } from "../work/qa/teaching-groups.mjs";
+import { buildTeachingGroupReplacement, captureTeachingGroupAttempt, recoverTeachingGroupAttempt, verifyTeachingGroupReceipt, teachingGroupStorageKey } from "../work/qa/teaching-groups.mjs";
 
 const journal = JSON.parse(await readFile("drizzle/meta/_journal.json", "utf8"));
 async function migrate(db, entries = journal.entries) { for (const entry of entries) await db.batch((await readFile(`drizzle/${entry.tag}.sql`, "utf8")).split("--> statement-breakpoint").filter(sql => sql.trim()).map(sql => db.prepare(sql))); }
@@ -129,6 +129,38 @@ test("group updates and removals are versioned preferences; retained retired mem
     assert.equal(archived.group.state, "archived"); assert.deepEqual(await context.groups().list(), []);
     assert.equal((await context.inventory().snapshot()).batteries.length, 3); assert.equal((await raw("teaching_group_events", context.scope)).length, 3);
     await assert.rejects(createExport(context.inventory(), { dataset: "demo", mode: "summary", filter: { groupId: original.group.id } }), error => error.status === 409);
+});
+
+test("permanent replacement changes only the reviewed default slot, preserving inventory loans and other group details", async () => {
+    const context = await fixture("permanent-replacement"), saved = await context.groups().save(draft());
+    await context.inventory(b).movement({ requestId: crypto.randomUUID(), kind: "checkout", batteryIds: ["BAT-10"] });
+    await context.inventory().movement({ requestId: crypto.randomUUID(), kind: "checkout", batteryIds: ["BAT-3"] });
+    const before = (await context.inventory().snapshot()).batteries, original = structuredClone(saved.group);
+    const payload = buildTeachingGroupReplacement(saved.group, "BAT-10", "BAT-3", crypto.randomUUID());
+    assert.deepEqual(payload.batteryIds, ["BAT-3", "BAT-2"]);
+    assert.deepEqual(saved.group, original);
+    assert.equal(payload.name, original.name); assert.equal(payload.notes, original.notes); assert.equal(payload.expectedVersion, original.version);
+    const updated = await context.groups().save(payload);
+    verifyTeachingGroupReceipt(updated, captureTeachingGroupAttempt(a.id, "demo", payload));
+    assert.deepEqual((await context.inventory().snapshot()).batteries, before);
+    assert.deepEqual(await context.groups().save(payload), { ...updated, replayed: true });
+    const events = await raw("teaching_group_events", context.scope);
+    assert.equal(events.length, 2);
+    assert.deepEqual(JSON.parse(events[1].before_json).batteryIds, original.batteryIds);
+    assert.deepEqual(JSON.parse(events[1].after_json).batteryIds, ["BAT-3", "BAT-2"]);
+});
+
+test("a reviewed permanent replacement rejects intervening edits rather than dropping newer members or names", async () => {
+    const context = await fixture("permanent-replacement-stale"), saved = await context.groups().save(draft());
+    const replacement = buildTeachingGroupReplacement(saved.group, "BAT-10", "BAT-3", crypto.randomUUID());
+    const newer = await context.groups().save({ ...replacement, requestId: crypto.randomUUID(), name: "Updated lesson", batteryIds: ["BAT-10", "BAT-2", "BAT-3"] });
+    await assert.rejects(context.groups().save(replacement), error => error.code === "teaching_group_rejected_final");
+    assert.deepEqual((await context.groups().list())[0], newer.group);
+    assert.equal((await raw("teaching_group_events", context.scope)).length, 2);
+    assert.throws(() => buildTeachingGroupReplacement(newer.group, "BAT-10", "BAT-3", crypto.randomUUID()), /already a default member/);
+    assert.throws(() => buildTeachingGroupReplacement(saved.group, "BAT-10", "BAT-10", crypto.randomUUID()), /different replacement/);
+    assert.throws(() => buildTeachingGroupReplacement(saved.group, "MISSING", "BAT-3", crypto.randomUUID()), /no longer a default member/);
+    assert.throws(() => buildTeachingGroupReplacement({ ...saved.group, state: "archived" }, "BAT-10", "BAT-3", crypto.randomUUID()), /archived/);
 });
 
 test("uncertain group creates replay one immutable result and reject altered drafts with the same request ID", async () => {

@@ -102,6 +102,10 @@ export function storageRoomLabel(battery: { homeRoomName: string | null; homeRoo
     return battery.homeRoomName ? roomLabel({ name: battery.homeRoomName, number: battery.homeRoomNumber, isPlaceholder: battery.homeRoomIsPlaceholder === true }) : "Room not specified";
 }
 export function durationLabel(minutes: number | null | undefined) { return minutes == null ? "Duration not recorded" : `${minutes} min`; }
+export function teachingSpecificationDifferenceLabel(difference: string) {
+    const labels: Record<string, string> = { model: "Model", chemistry: "Chemistry", capacityMah: "Capacity", voltage: "Voltage" };
+    return difference.replace(/^(model|chemistry|capacityMah|voltage):/, (_, field: string) => `${labels[field]}:`);
+}
 export function sydneyInput(value = new Date()) {
     const parts = new Intl.DateTimeFormat("en-AU", { timeZone: "Australia/Sydney", year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(value);
     const p = (type: string) => parts.find(p => p.type === type)?.value;
@@ -116,7 +120,12 @@ export function fromSydneyInput(value: string) {
         throw new Error("This Sydney time is invalid or ambiguous during a daylight-saving transition. Choose an unambiguous time.");
     return matches[0].toISOString();
 }
-export const actionNames: Record<string, string> = { battery_recovered: "Battery recovered", battery_purged: "Battery permanently deleted", battery_scrapped: "Battery scrapped", battery_permanently_removed: "Battery permanently removed", battery_model_registered: "Battery model saved", battery_model_updated: "Battery model updated", task_plan_created: "Periodic task created", task_plan_updated: "Periodic task updated", task_cycle_completed: "Periodic task completed", task_cycle_created: "Periodic task opened", task_message_read: "Message read", checkout: "Checked out", return: "Returned", charge_recorded: "Charge recorded", inspection_recorded: "Inspection recorded", inspection_voided: "Inspection marked as entered in error", demo_observation: "Demo room observation", battery_registered: "Battery registered", battery_updated: "Battery updated", person_registered: "Person registered", person_updated: "Person updated", building_registered: "Building registered", building_updated: "Building updated", room_registered: "Room registered", room_updated: "Room updated", checkout_voided: "Checkout corrected", return_reopened: "Return corrected", records_imported: "Records imported", demo_initialized: "Demonstration inventory initialized" };
+export const actionNames: Record<string, string> = {
+    teaching_loan_continued: "Existing loan continued", teaching_return_pending: "Exchanged battery awaiting return",
+    location_beacon_created: "Room beacon mapping created", location_beacon_updated: "Room beacon mapping updated",
+    location_observation_recorded: "Simulated last observation recorded", location_scan_unresolved: "Room scan unresolved",
+    battery_recovered: "Battery recovered", battery_purged: "Battery permanently deleted", battery_scrapped: "Battery scrapped", battery_permanently_removed: "Battery permanently removed", battery_model_registered: "Battery model saved", battery_model_updated: "Battery model updated", task_plan_created: "Periodic task created", task_plan_updated: "Periodic task updated", task_cycle_completed: "Periodic task completed", task_cycle_created: "Periodic task opened", task_message_read: "Message read", checkout: "Checked out", return: "Returned", charge_recorded: "Charge recorded", inspection_recorded: "Inspection recorded", inspection_voided: "Inspection marked as entered in error", demo_observation: "Demo room observation", battery_registered: "Battery registered", battery_updated: "Battery updated", person_registered: "Person registered", person_updated: "Person updated", building_registered: "Building registered", building_updated: "Building updated", room_registered: "Room registered", room_updated: "Room updated", checkout_voided: "Checkout corrected", return_reopened: "Return corrected", records_imported: "Records imported", demo_initialized: "Demonstration inventory initialized"
+};
 export function csvCell(value: unknown) {
     let s = value == null ? "" : String(value);
     if (/^[=+@\-\t\r]/.test(s))

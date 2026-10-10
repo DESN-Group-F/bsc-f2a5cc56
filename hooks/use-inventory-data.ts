@@ -16,23 +16,31 @@ export function useInventoryData(initialUser: StaffUser) {
   const [revision, setRevision] = useState(0);
   const current = useRef<InventorySnapshot | null>(null);
   const loadSequence = useRef(0);
+  const refreshSequence = useRef(0);
 
   const load = useCallback(
     async (mode: Dataset, signal?: AbortSignal, initialize = false) => {
       const sequence = ++loadSequence.current;
+      const abort = new AbortController();
+      const cancel = () => abort.abort();
+      let timedOut = false;
+      signal?.addEventListener("abort", cancel, { once: true });
+      if (signal?.aborted) abort.abort();
+      const timeout = setTimeout(() => { timedOut = true; abort.abort(); }, 30000);
+      try {
       if (initialize && mode === "demo") {
         await inventoryResponse(
           await fetch("/api/inventory", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ dataset: mode, action: "initialize_demo" }),
-            signal,
+            signal: abort.signal,
           }),
         );
       }
       const snapshot = await inventoryResponse<InventorySnapshot>(
         await fetch(`/api/inventory?dataset=${mode}`, {
-          signal,
+          signal: abort.signal,
           cache: "no-store",
         }),
       );
@@ -45,13 +53,21 @@ export function useInventoryData(initialUser: StaffUser) {
       }
       setUser(snapshot.user);
       setError("");
+      } catch (failure) {
+        if (signal?.aborted || sequence !== loadSequence.current) return;
+        if (timedOut) throw new Error("The inventory is taking too long to respond. Check your connection, then retry refresh.");
+        throw failure;
+      } finally {
+        clearTimeout(timeout);
+        signal?.removeEventListener("abort", cancel);
+      }
     },
     [],
   );
 
   useEffect(() => {
     const abort = new AbortController();
-    load(dataset, abort.signal, true)
+    Promise.resolve().then(() => load(dataset, abort.signal, true))
       .catch((error) => {
         if (!abort.signal.aborted && error.name !== "AbortError")
           setError(error.message);
@@ -63,6 +79,7 @@ export function useInventoryData(initialUser: StaffUser) {
   }, [dataset, load]);
 
   function changeDataset(mode: Dataset) {
+    refreshSequence.current++;
     loadSequence.current++;
     current.current = null;
     setData(null);
@@ -72,13 +89,14 @@ export function useInventoryData(initialUser: StaffUser) {
   }
 
   async function refresh() {
+    const sequence = ++refreshSequence.current;
     setLoading(true);
     try {
       await load(dataset, undefined, !data);
     } catch (error) {
-      setError((error as Error).message);
+      if (sequence === refreshSequence.current) setError((error as Error).message);
     } finally {
-      setLoading(false);
+      if (sequence === refreshSequence.current) setLoading(false);
     }
   }
 
@@ -127,12 +145,16 @@ export function useInventoryPolling({
   useEffect(() => {
     const abort = new AbortController();
     let active = true;
+    let syncing = false;
     async function sync() {
-      if (paused || document.visibilityState !== "visible") return;
+      if (paused || syncing || document.visibilityState !== "visible") return;
+      syncing = true;
       try {
         await load(dataset, abort.signal);
       } catch (error) {
         if (active && !abort.signal.aborted) onError((error as Error).message);
+      } finally {
+        syncing = false;
       }
     }
     const interval = setInterval(sync, 10000);

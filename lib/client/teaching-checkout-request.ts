@@ -50,21 +50,39 @@ export function verifyTeachingCheckoutReceipt(value: unknown, attempt: TeachingC
   const failure = () => { throw new Error("The teaching checkout receipt does not match the saved review. Retry the exact original request."); };
   if (!result.success) return failure();
   const receipt = result.data, payload = attempt.payload;
+  const reviewed = attempt.reviewed as { run?: Record<string, unknown> & { changes?: { mappings: TeachingCheckoutReceipt["run"]["mappings"] }[] } } | undefined;
   if (receipt.requestId !== payload.requestId || receipt.actorAccountId !== attempt.actorAccountId || receipt.dataset !== attempt.dataset || receipt.action !== payload.action || receipt.run.dataset !== attempt.dataset) return failure();
-  if (payload.action === "checkout") {
+  if (payload.action === "continue" || payload.action === "exchange") {
+    const change = receipt.change;
+    if (receipt.run.id !== payload.runId || !change || change.id !== payload.requestId || change.runId !== payload.runId || change.action !== payload.action || change.actorAccountId !== attempt.actorAccountId || change.at !== receipt.at || change.revision !== payload.expectedRevision + 1 || receipt.revision !== change.revision || Date.parse(receipt.run.createdAt) > Date.parse(receipt.at)) return failure();
+    if (payload.action === "continue") {
+      verifyGroupEvidence(change.teachingGroup, payload.teachingGroup, payload.requestId, payload.mappings.map(item => item.actual.batteryId), attempt.actorAccountId);
+      if (change.mappings.length !== payload.mappings.length || change.outgoing) return failure();
+      const loans = new Set<string>();
+      for (let index = 0; index < payload.mappings.length; index++) {
+        const expected = payload.mappings[index], actual = change.mappings[index];
+        if (actual.original.batteryId !== expected.original.batteryId || actual.actual.batteryId !== expected.actual.batteryId || "deleted" in actual.original || "deleted" in actual.actual || actual.original.tagId !== expected.original.tagId || actual.original.version !== expected.original.version || actual.actual.tagId !== expected.actual.tagId || actual.actual.version !== expected.actual.version || actual.originalLoanId !== expected.originalLoanId || actual.method !== expected.method || !equal(actual.source, expected.source) || !actual.loanId || loans.has(actual.loanId) || (expected.existingLoanId ? actual.loanId !== expected.existingLoanId || actual.loanOrigin !== "existing" : actual.loanOrigin === "existing")) return failure();
+        loans.add(actual.loanId);
+      }
+    } else {
+      const actual = change.mappings[0], outgoing = change.outgoing;
+      if (change.mappings.length !== 1 || !outgoing || "deleted" in outgoing || outgoing.batteryId !== payload.outgoing.batteryId || outgoing.loanId !== payload.outgoing.loanId || outgoing.returned !== payload.returnOutgoing || actual.original.batteryId !== payload.originalBatteryId || actual.actual.batteryId !== payload.actual.batteryId || "deleted" in actual.actual || actual.actual.tagId !== payload.actual.tagId || actual.actual.version !== payload.actual.version || !actual.loanId || !equal(actual.source, payload.source) || (payload.actualLoanId ? actual.loanId !== payload.actualLoanId || actual.loanOrigin !== "existing" : actual.loanOrigin === "existing")) return failure();
+    }
+  } else if (payload.action === "checkout") {
     verifyGroupEvidence(receipt.run.teachingGroup, payload.teachingGroup, payload.requestId, payload.mappings.map(item => item.actual.batteryId), attempt.actorAccountId);
-    if (receipt.run.id !== payload.requestId || receipt.run.createdAt !== receipt.at || receipt.run.actorAccountId !== attempt.actorAccountId || receipt.run.mappings.length !== payload.mappings.length || !equal(receipt.run.requestedBatteryIds, payload.mappings.map(item => item.original.batteryId))) return failure();
+    if (receipt.run.id !== payload.requestId || receipt.run.createdAt !== receipt.at || !!receipt.run.separateCheckout !== !!payload.separateCheckout || receipt.run.actorAccountId !== attempt.actorAccountId || receipt.run.mappings.length !== payload.mappings.length || !equal(receipt.run.requestedBatteryIds, payload.mappings.map(item => item.original.batteryId))) return failure();
     const loans = new Set<string>();
     for (let i = 0; i < payload.mappings.length; i++) {
       const expected = payload.mappings[i], actual = receipt.run.mappings[i];
-      if (actual.original.batteryId !== expected.original.batteryId || actual.actual.batteryId !== expected.actual.batteryId || "deleted" in actual.original || "deleted" in actual.actual || actual.original.tagId !== expected.original.tagId || actual.actual.tagId !== expected.actual.tagId || actual.original.version !== expected.original.version || actual.actual.version !== expected.actual.version || actual.originalLoanId !== expected.originalLoanId || actual.method !== expected.method || !equal(actual.source, expected.source) || !actual.loanId || loans.has(actual.loanId)) return failure();
+      if (actual.original.batteryId !== expected.original.batteryId || actual.actual.batteryId !== expected.actual.batteryId || "deleted" in actual.original || "deleted" in actual.actual || actual.original.tagId !== expected.original.tagId || actual.actual.tagId !== expected.actual.tagId || actual.original.version !== expected.original.version || actual.actual.version !== expected.actual.version || actual.originalLoanId !== expected.originalLoanId || actual.method !== expected.method || !equal(actual.source, expected.source) || !actual.loanId || loans.has(actual.loanId) || (expected.existingLoanId ? actual.loanId !== expected.existingLoanId || actual.loanOrigin !== "existing" : actual.loanOrigin === "existing")) return failure();
       loans.add(actual.loanId);
     }
   } else {
-    if (receipt.run.id !== payload.runId || !equal(receipt.returnedItems, payload.items) || Date.parse(receipt.run.createdAt) > Date.parse(receipt.at) || payload.items.some(item => !receipt.run.mappings.some(mapping => mapping.actual.batteryId === item.batteryId && mapping.loanId === item.loanId))) return failure();
-    const reviewed = attempt.reviewed as { run?: Record<string, unknown> } | undefined;
-    if (reviewed?.run) {
-      const capturedRun = Object.fromEntries(Object.entries(reviewed.run).filter(([key]) => key !== "items"));
+    const allMappings = [...receipt.run.mappings, ...(reviewed?.run?.changes?.flatMap(change => change.mappings) ?? [])];
+    if (receipt.run.id !== payload.runId || !equal(receipt.returnedItems, payload.items) || Date.parse(receipt.run.createdAt) > Date.parse(receipt.at) || payload.items.some(item => !allMappings.some(mapping => mapping.actual.batteryId === item.batteryId && mapping.loanId === item.loanId))) return failure();
+  }
+  if (payload.action !== "checkout" && reviewed?.run) {
+      const capturedRun = Object.fromEntries(Object.entries(reviewed.run).filter(([key]) => !["items", "revision", "currentMappings", "changes"].includes(key)));
       // A purge can lawfully redact unrelated returned assets or an original
       // member while the reviewed actual loan remains returnable. Accept only
       // the server's minimal deletion shape, never other historic edits.
@@ -81,7 +99,6 @@ export function verifyTeachingCheckoutReceipt(value: unknown, attempt: TeachingC
         });
       }
       if (!equal(receipt.run, capturedRun)) return failure();
-    }
   }
   return receipt;
 }

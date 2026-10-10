@@ -33,7 +33,7 @@ async function compile(file, name, bindings) {
   return new Function(...Object.keys(bindings), "_jsx", "_jsxs", "_Fragment", `${source}\nreturn ${name};`)(...Object.values(bindings), jsx, jsx, "Fragment");
 }
 async function mount(file, name, props, extra = {}) {
-  const state = hooks(), ui = Object.fromEntries(["Button", "DownloadAction", "Download", "Label", "Checkbox", "Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "MotionDisclosure", "MotionPresence"].map(value => [value, value]));
+  const state = hooks(), ui = Object.fromEntries(["Button", "DownloadAction", "Download", "Label", "Checkbox", "Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "MotionDisclosure", "MotionPresence", "LoadingState"].map(value => [value, value]));
   const Component = await compile(file, name, { ...ui, ...state, useDownloadFeedback: bindDownloadFeedback(state), dismissOverlay: (_surface, close) => close(), exportSections, ...extra });
   return { props, render() { state.reset(); const tree = Component(props); state.commit(); return tree; }, unmount: state.unmount, get writesAfterUnmount() { return state.writesAfterUnmount; } };
 }
@@ -148,7 +148,7 @@ test("account report preserves administrator access, suppresses duplicate saves 
   context.after(() => { if (originalDocument) Object.defineProperty(globalThis, "document", originalDocument); else delete globalThis.document; });
   const realTimeout = globalThis.setTimeout;
   context.mock.method(globalThis, "setTimeout", (callback, delay, ...args) => delay === 60000 ? 1 : realTimeout(callback, delay, ...args));
-  const extra = { getRolePermissions, readDownloadAttachment, formatTime: value => value, ...Object.fromEntries(["Input", "Plus", "Pencil", "Shield", "UserRound", "RefreshCw", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell"].map(value => [value, value])) };
+  const extra = { window: { setTimeout: (...args) => setTimeout(...args), clearTimeout: id => clearTimeout(id) }, getRolePermissions, readDownloadAttachment, formatTime: value => value, ...Object.fromEntries(["Input", "Plus", "Pencil", "Shield", "UserRound", "RefreshCw", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell"].map(value => [value, value])) };
   const staff = await mount("components/inventory/accounts-panel.tsx", "AccountManagement", { currentUser: { ...currentUser, role: "staff" }, onSaved() {} }, extra);
   assert.match(text(staff.render()), /Only administrators/); assert.equal(calls.length, 0); staff.unmount();
   const view = await mount("components/inventory/accounts-panel.tsx", "AccountManagementContent", { currentUser, onSaved() {} }, extra);

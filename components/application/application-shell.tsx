@@ -15,6 +15,7 @@ import {
   Mail,
   FlaskConical,
   ChevronLeft,
+  Map as MapIcon,
 } from "lucide-react";
 import type { StaffUser } from "@/lib/accounts";
 import type { InventorySnapshot } from "@/lib/domain";
@@ -188,6 +189,12 @@ export function ApplicationShell({
       label: "Battery inventory",
       icon: Package,
       action: () => onNavigate("inventory"),
+    },
+    {
+      view: "mapping",
+      label: "Mapping",
+      icon: MapIcon,
+      action: () => onNavigate("mapping"),
     },
     {
       view: "teaching-groups",

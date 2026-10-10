@@ -148,6 +148,20 @@
       "when": 1791424800000,
       "tag": "0020_teaching_checkouts",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "6",
+      "when": 1791428400000,
+      "tag": "0021_location_beacons",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "6",
+      "when": 1791590400000,
+      "tag": "0022_teaching_checkout_changes",
+      "breakpoints": true
     }
   ]
 }

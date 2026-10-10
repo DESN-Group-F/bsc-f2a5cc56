@@ -21,6 +21,8 @@ export function useTaskEndpoint<T>(
   useEffect(() => {
     const abort = new AbortController();
     let active = true;
+    let timedOut = false;
+    const timeout = window.setTimeout(() => { timedOut = true; abort.abort(); }, 30000);
     const context = { url, userId, source, revision };
     taskRequest<T>(url, { signal: abort.signal })
       .then((payload) => {
@@ -28,15 +30,16 @@ export function useTaskEndpoint<T>(
           setSaved({ ...context, payload, error: "" });
       })
       .catch((error) => {
-        if (active && !abort.signal.aborted)
-          setSaved({
+        if (active && (!abort.signal.aborted || timedOut))
+          setSaved(previous => ({
             ...context,
-            payload: null,
-            error: (error as Error).message,
-          });
-      });
+            payload: previous?.url === url && previous.userId === userId ? previous.payload : null,
+            error: timedOut ? "The server is taking too long to respond. Check your connection, then retry." : (error as Error).message,
+          }));
+      }).finally(() => window.clearTimeout(timeout));
     return () => {
       active = false;
+      window.clearTimeout(timeout);
       abort.abort();
     };
   }, [url, userId, source, revision]);
@@ -46,6 +49,7 @@ export function useTaskEndpoint<T>(
     saved.source === source &&
     saved.revision === revision;
   const loading = !current;
+  const sameResource = saved?.url === url && saved.userId === userId;
   useEffect(() => {
     if (paused || loading) return;
     const refresh = () => {
@@ -60,7 +64,7 @@ export function useTaskEndpoint<T>(
     };
   }, [paused, loading]);
   return {
-    payload: current ? saved.payload : null,
+    payload: sameResource ? saved.payload : null,
     error: current ? saved.error : "",
     loading,
     refresh: () => setRevision((value) => value + 1),

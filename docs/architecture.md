@@ -1,5 +1,13 @@
 # Architecture and design decisions
 
+## Mapping and room observation service
+
+Version 1.0.0 derives Mapping from the existing latest-observation projection and shared inventory query. `lib/inventory-mapping.ts` assigns stable J18 room identities or Unknown; it never substitutes registered home or loan state. `mappingRoom` is a fixed view boundary for room-tab counts, pagination, selected records and all export ranges. Directory names label navigation while saved observation labels remain immutable evidence. A later observation that moves a selected battery outside an opened room prevents operations and downloads until the selection is reviewed.
+
+`MappingWorkspace` keeps Overview and independently closable room tabs mounted. Room selection controls the animated summary; only View details opens a tab. Each tab reuses `InventoryTable`, including its existing operations and role boundaries. Mapping survives sidebar navigation and scan/intake transitions within the current account/dataset session.
+
+`LocationStore` and `/api/locations` manage versioned beacons against existing rooms. `/api/location-observations` accepts administrator-only simulated single-battery captures in the demo inventory, reusing `observations`, `audit_events` and `operations`. Migration 0021 adds only beacon configuration and its integrity guards. Exact requests are persisted in browser recovery storage, coordinated with Web Locks, and resolved against authoritative receipts. Real phone Bluetooth ingestion remains explicitly disabled. See the [mapping and observation guide](mapping-and-location-observations.md).
+
 ## Temporary teaching checkout service
 
 `TeachingCheckoutStore` and `/api/teaching-checkouts` separate private fixed definitions from actual temporary checkout runs. Shared schemas are in `lib/teaching-checkouts.ts`; migration 0020 adds `teaching_checkouts`, immutable identity/native-loan insert guards, purge-only updates and evidence revision triggers without replacing earlier constraints. The selection helper produces strict suggestions and a scope-bounded manual pool; the dialog reuses shared filters and the foreground platform NFC adapter. Browser native reading remains unavailable.
@@ -54,6 +62,7 @@ Production API checks copy the built Worker and assets into an isolated run dire
 | batteries | Asset identity, tag, specifications, owner and storage building with optional room |
 | loans | Checkout, original holder snapshot/account ID, return and correction state |
 | observations | Room, observation time, receipt time and source |
+| location_beacons | Inventory-scoped, versioned beacon configuration referencing existing J18 rooms; no battery-position copies |
 | charges | Historical completion time, duration in minutes and recorder; legacy percentage retained |
 | audit_events | Who did what, when, and relevant before/after details |
 | operations | Idempotency result and transaction guard |
@@ -273,6 +282,14 @@ The client saves a canonical request to account/dataset-bound tab storage before
 `inventoryFilterSchema` includes group ID, sort field and direction. `filterBatteries` resolves only an active group owned by the native viewer and intersects membership with existing criteria; an unavailable group fails explicitly. `sortBatteries` compares numeric parameters as numbers and timestamps as instants, retains unknown values last in either direction and resolves ties by natural Battery ID ascending plus an exact-string fallback. Both the view and export order the full matching set before page slicing. Selected downloads still use captured IDs and the fixed personal scope independently of ordinary filters, while retaining requested sort order. Export metadata records sort rules and the applied own group. Recorded history order and loan identifiers are preserved. Displayed In use means an active recorded checkout and does not imply physical sensing.
 
 `TeachingGroupsWorkspace` is a primary sidebar view with cards and an opened-group `InventoryTable`. The opened group overrides the optional group filter as a fixed boundary, defaults to all member lifecycle states and hides the redundant membership criterion. Clear filters retains that boundary and selections. Refreshed membership cannot silently process an old out-of-group selection. Ordinary inventory/personal filters retain their existing scope and group shortcuts. The manager's Filter group preserves other criteria; Select group batteries replaces the selection explicitly and clears status/lifecycle restrictions for member review. Fixed personal boundaries exclude/report unavailable members. Retired and already-used members retain history/download access and existing operation eligibility. See the [staff guide](teaching-groups-and-sorting.md).
+
+## Teaching checkout continuation and exchanges
+
+Default group membership and actual checkout evidence remain separate. `TeachingCheckoutStore` preserves the original run snapshot and appends versioned changes through `0022_teaching_checkout_changes.sql`. A continuation can add newly uncovered members or explicitly reuse the actor's existing exact loan without changing its ID or checkout time. An explicit separate session can repeat original member slots but cannot share an outstanding actual loan between runs.
+
+An exchange captures the outgoing battery version, tag and exact loan, the incoming battery version and tag, and the loaded run revision. If the actor confirms actual handback, return and exchange commit atomically. Otherwise the outgoing loan remains a visible pending-return responsibility. Current mappings identify the effective members; pending returns do not count as effective membership. Ordinary returns and corrections resolve against exact saved loans. Request recovery, exports, Activity and retired-asset purging include appended evidence.
+
+Permanent replacement uses the existing versioned private-group update: it replaces one default slot after explicit preview, preserving all other members and metadata. Existing loans, original run membership and change history remain unchanged. Current actual members already represented by a run are not offered again merely because their default membership changed. Location guidance remains labelled last observation and does not rank replacements by registered storage.
 
 ## Group operation context and activity exports
 

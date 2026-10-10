@@ -18,14 +18,14 @@ function fixture(extra = []) {
   const data = { user: { id: "teacher" }, dataset: "demo", batteries: [retained, blocked, ...extra], rooms: [{ id: "R1", buildingId: "B1", isPlaceholder: false }, { id: "R2", buildingId: "B1", isPlaceholder: false }, { id: "PLACEHOLDER", buildingId: "B1", isPlaceholder: true }], buildings: [{ id: "B1" }] };
   return { data, group, slots: initialTeachingSelection(data, group, group.batteryIds, "all") };
 }
-test("suggestions prefer the majority's verified registered room, keep fixed members and avoid unknowns", () => {
+test("suggestions keep fixed members and require known specifications without assuming a collection location", () => {
   const f = fixture([battery("BAT-1", { homeRoomId: "R1", homeBuildingId: "B1", homeRoomIsPlaceholder: false }), battery("BAT-2", { homeRoomId: "R2", homeBuildingId: "B1", homeRoomIsPlaceholder: false }), battery("BAT-0", { capacityMah: null, homeRoomId: "R2", homeBuildingId: "B1", homeRoomIsPlaceholder: false })]);
   const original = structuredClone(f.group), result = suggestTeachingReplacements(f.data, f.slots, "all");
-  assert.equal(result[1].actual.id, "BAT-2"); assert.equal(result[1].method, "automatic"); assert.deepEqual(f.group, original); assert.equal(f.slots[1].actual, null);
+  assert.equal(result[1].actual.id, "BAT-1"); assert.equal(result[1].method, "automatic"); assert.deepEqual(f.group, original); assert.equal(f.slots[1].actual, null);
 });
-test("registered placeholders and observations cannot become verified collection locations", () => {
+test("registered homes and last observations do not change automatic stock ranking", () => {
   const f = fixture([battery("BAT-1", { homeRoomId: "PLACEHOLDER", homeBuildingId: "B1", homeRoomIsPlaceholder: false, observedRoomId: "R2", observedAt: at }), battery("BAT-2", { homeRoomId: "R1", homeBuildingId: "B1", homeRoomIsPlaceholder: false })]);
-  assert.equal(suggestTeachingReplacements(f.data, f.slots, "all")[1].actual.id, "BAT-2");
+  assert.equal(suggestTeachingReplacements(f.data, f.slots, "all")[1].actual.id, "BAT-1");
 });
 test("automatic drafts never duplicate candidates and keep manual choices on repeated suggestions", () => {
   const f = fixture([battery("BAT-1")]);

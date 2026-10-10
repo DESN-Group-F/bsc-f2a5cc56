@@ -5,6 +5,8 @@ import { Miniflare } from "miniflare";
 import { InventoryStore } from "../work/qa/store.mjs";
 import { TeachingGroupStore } from "../work/qa/teaching-group-store.mjs";
 import { TeachingCheckoutStore } from "../work/qa/server/inventory/teaching-checkouts.mjs";
+import { teachingReplacementDescription, groupActivity, filterActivity } from "../work/qa/group-activity.mjs";
+import { createTeachingCheckoutExport } from "../work/qa/teaching-checkout-export.mjs";
 
 const mf = new Miniflare({ modules: true, script: "export default {fetch(){return new Response('teaching-checkout-test')}}", compatibilityDate: "2026-05-15", d1Databases: { DB: "teaching-checkout-test" }, d1Persist: false });
 const db = await mf.getD1Database("DB");
@@ -193,4 +195,184 @@ test("a response lost after atomic commit replays the original source and exact 
   const result = await f.checkouts(a, hooked).save(payload); assert.equal(result.replayed, true);
   const retry = await f.checkouts().save(payload); assert.deepEqual(retry.run, result.run); assert.equal((await f.checkouts().list()).length, 1);
   const loans = await db.prepare("SELECT id FROM loans WHERE scope=? AND battery_key=?").bind(f.scope, `${f.scope}/FREE`).all(); assert.equal(loans.results.length, 1);
+});
+
+async function exchangeDraft(f, run, actualId = "ALTERNATIVE", returnOutgoing = true, actualLoanId = null) {
+  const current = run.currentMappings[0];
+  return { action: "exchange", requestId: crypto.randomUUID(), runId: run.id, expectedRevision: run.revision, personalScope: "all", originalBatteryId: current.original.batteryId, outgoing: { ...await f.binding(current.actual.batteryId), loanId: current.loanId }, actual: await f.binding(actualId), actualLoanId, returnOutgoing, source: { kind: "selection" } };
+}
+async function listedRun(f, id) { return (await f.checkouts().list(id))[0]; }
+
+test("continuing an existing native loan links its original ID and time without another checkout", async () => {
+  const f = await fixture("existing-loan");
+  await f.inventory().movement({ kind: "checkout", requestId: crypto.randomUUID(), batteryIds: ["SECOND"] });
+  const battery = (await f.inventory().detail("SECOND")).battery, binding = await f.binding("SECOND");
+  const payload = { action: "checkout", requestId: crypto.randomUUID(), teachingGroup: { id: f.group.id, version: 1 }, personalScope: "borrowed", mappings: [{ original: binding, actual: binding, originalLoanId: battery.loanId, existingLoanId: battery.loanId, method: "original", source: { kind: "selection" } }] };
+  const later = "2026-10-09T08:00:00.000Z", store = new TeachingCheckoutStore(db, f.scope, "demo", a, () => new Date(later));
+  const saved = await store.save(payload), run = (await store.list())[0];
+  assert.equal(saved.run.createdAt, later); assert.equal(saved.run.mappings[0].loanOrigin, "existing");
+  assert.equal(saved.run.mappings[0].loanId, battery.loanId); assert.equal(run.items[0].checkedOutAt, at);
+  assert.equal((await db.prepare("SELECT COUNT(*) AS count FROM loans WHERE scope=? AND battery_key=?").bind(f.scope, `${f.scope}/SECOND`).first()).count, 1);
+  assert.equal((await store.save(payload)).replayed, true);
+  await assert.rejects(f.checkouts().save({ ...payload, requestId: crypto.randomUUID() }), rejected);
+});
+
+test("continuation appends exact loans without rewriting the original run and survives group archive", async () => {
+  const f = await fixture("continue-run"), saved = await f.checkouts().save(await f.draft()), binding = await f.binding("SECOND");
+  const payload = { action: "continue", requestId: crypto.randomUUID(), runId: saved.run.id, expectedRevision: 1, teachingGroup: { id: f.group.id, version: 1 }, personalScope: "all", mappings: [{ original: binding, actual: binding, originalLoanId: null, method: "original", source: { kind: "selection" } }] };
+  const continued = await f.checkouts().save(payload); assert.deepEqual(continued.run, saved.run); assert.equal(continued.change.revision, 2);
+  assert.equal((await f.checkouts().save(payload)).replayed, true);
+  let run = await listedRun(f, saved.run.id); assert.equal(run.currentMappings.length, 2); assert.equal(run.items.length, 2); assert.equal(run.changes.length, 1);
+  await assert.rejects(f.checkouts().save({ ...payload, requestId: crypto.randomUUID() }), rejected);
+  await f.groups().save({ action: "remove", requestId: crypto.randomUUID(), id: f.group.id, expectedVersion: 1 });
+  await f.checkouts(b).save({ action: "return", requestId: crypto.randomUUID(), runId: run.id, personalScope: "all", items: run.items.map(item => ({ batteryId: item.batteryId, tagId: item.tagId, version: item.version, loanId: item.loanId })) });
+  run = await listedRun(f, run.id); assert.ok(run.items.every(item => item.status === "returned"));
+  assert.equal((await f.checkouts().export(run.id)).loans.length, 2);
+});
+
+test("exchange atomically returns the reviewed outgoing loan and records a new exact loan", async () => {
+  const f = await fixture("exchange-return"), saved = await f.checkouts().save(await f.draft()), run = await listedRun(f, saved.run.id);
+  const payload = await exchangeDraft(f, run), result = await f.checkouts().save(payload), listed = await listedRun(f, run.id);
+  assert.deepEqual(result.run, saved.run); assert.equal(result.change.outgoing.returned, true);
+  assert.equal(listed.revision, 2); assert.equal(listed.currentMappings[0].actual.batteryId, "ALTERNATIVE");
+  assert.equal(listed.items.find(item => item.batteryId === "FREE").status, "returned");
+  assert.equal(listed.items.find(item => item.batteryId === "ALTERNATIVE").status, "outstanding");
+  assert.ok((await f.inventory().detail("ORIGINAL")).battery.loanId);
+  assert.equal((await f.checkouts().save(payload)).replayed, true);
+  const exported = await f.checkouts().export(run.id); assert.equal(exported.loans.length, 2); assert.ok(exported.events.some(event => event.action === "return"));
+  await assert.rejects(f.checkouts().save({ ...payload, actual: await f.binding("SECOND") }), error => error.code === "idempotency_conflict");
+});
+
+test("an unreturned outgoing battery stays an exact pending responsibility and can be used again without reborrowing", async () => {
+  const f = await fixture("exchange-pending"), saved = await f.checkouts().save(await f.draft());
+  let run = await listedRun(f, saved.run.id); const firstLoanId = run.items[0].loanId;
+  await f.checkouts().save(await exchangeDraft(f, run, "ALTERNATIVE", false));
+  run = await listedRun(f, run.id); assert.equal(run.items.filter(item => item.status === "outstanding").length, 2);
+  assert.equal(run.items.find(item => item.batteryId === "FREE").pendingReturn, true);
+  await f.checkouts().save(await exchangeDraft(f, run, "FREE", true, firstLoanId));
+  run = await listedRun(f, run.id); assert.equal(run.currentMappings[0].loanId, firstLoanId); assert.equal(run.items.length, 2);
+  assert.equal(run.items.find(item => item.batteryId === "FREE").pendingReturn, false);
+  assert.equal(run.items.find(item => item.batteryId === "ALTERNATIVE").status, "returned");
+  assert.equal((await f.checkouts().export(run.id)).loans.length, 2);
+});
+
+test("ordinary returns clear pending exchange obligations without changing another exact loan", async () => {
+  const f = await fixture("pending-normal-return"), saved = await f.checkouts().save(await f.draft());
+  let run = await listedRun(f, saved.run.id); const oldLoanId = run.items[0].loanId;
+  await f.checkouts().save(await exchangeDraft(f, run, "ALTERNATIVE", false));
+  await f.inventory(b).movement({ kind: "return", requestId: crypto.randomUUID(), batteryIds: ["FREE"], expectedLoans: [{ batteryId: "FREE", loanId: oldLoanId }] });
+  run = await listedRun(f, run.id); assert.equal(run.items.find(item => item.batteryId === "FREE").pendingReturn, false);
+  assert.equal(run.items.find(item => item.batteryId === "ALTERNATIVE").status, "outstanding");
+  await f.inventory(b).movement({ kind: "checkout", requestId: crypto.randomUUID(), batteryIds: ["FREE"] });
+  await assert.rejects(f.checkouts().save({ action: "return", requestId: crypto.randomUUID(), runId: run.id, personalScope: "all", items: [{ ...await f.binding("FREE"), loanId: oldLoanId }] }), rejected);
+});
+
+test("covered members default to the existing run but an explicit separate checkout may use different actual stock", async () => {
+  const f = await fixture("separate-run"), first = await f.checkouts().save(await f.draft());
+  const draft = await f.draft("manual", "ALTERNATIVE");
+  await assert.rejects(f.checkouts().save(draft), rejected);
+  const separate = await f.checkouts().save({ ...draft, requestId: crypto.randomUUID(), separateCheckout: true });
+  assert.equal(separate.run.separateCheckout, true); assert.notEqual(separate.run.id, first.run.id);
+  const reused = await f.draft(); reused.mappings[0].existingLoanId = first.run.mappings[0].loanId;
+  await assert.rejects(f.checkouts().save({ ...reused, separateCheckout: true }), rejected);
+  const continuation = { ...await f.draft("manual", "SECOND"), action: "continue", runId: first.run.id, expectedRevision: 1 };
+  await assert.rejects(f.checkouts().save(continuation), rejected);
+  assert.equal((await f.checkouts().list()).length, 2);
+});
+
+test("exchange races reject both writes together for stale outgoing loans, replacement tags, revisions and authority", async () => {
+  for (const race of ["outgoing", "replacement", "revision", "account"]) {
+    const f = await fixture(`exchange-race-${race}`), saved = await f.checkouts().save(await f.draft()), run = await listedRun(f, saved.run.id), payload = await exchangeDraft(f, run);
+    const hook = intercept(async () => {
+      if (race === "outgoing") {
+        await f.inventory(b).movement({ kind: "return", requestId: crypto.randomUUID(), batteryIds: ["FREE"], expectedLoans: [{ batteryId: "FREE", loanId: run.items[0].loanId }] });
+        await f.inventory(b).movement({ kind: "checkout", requestId: crypto.randomUUID(), batteryIds: ["FREE"] });
+      } else if (race === "replacement") {
+        const battery = (await f.inventory().detail("ALTERNATIVE")).battery;
+        await f.inventory(admin).saveBattery({ id: battery.id, name: battery.name, model: battery.model, chemistry: battery.chemistry, capacityMah: battery.capacityMah, voltage: battery.voltage, ownerId: battery.ownerId, homeBuildingId: "J18", tagId: "changed-exchange-tag", expectedVersion: battery.version }, true);
+      } else if (race === "revision") await f.checkouts().save(await exchangeDraft(f, run, "SECOND", false));
+      else await db.prepare("UPDATE staff_accounts SET auth_version=auth_version+1,version=version+1 WHERE id=?").bind(a.id).run();
+    });
+    await assert.rejects(f.checkouts(a, hook).save(payload), error => rejected(error) || error.status === 409);
+    if (race === "account") a.authVersion += 1;
+    assert.equal((await f.inventory().detail("ALTERNATIVE")).battery.loanId, null);
+    if (race !== "outgoing") assert.equal((await f.inventory().detail("FREE")).battery.loanId, run.items[0].loanId);
+    assert.equal((await db.prepare("SELECT COUNT(*) AS count FROM audit_events WHERE scope=? AND json_extract(details_json,'$.requestId')=?").bind(f.scope, payload.requestId).first()).count, 0);
+  }
+});
+
+test("exchange ownership and dataset boundaries preserve loans while shared staff may still receive returns", async () => {
+  const f = await fixture("exchange-boundaries"), saved = await f.checkouts().save(await f.draft()), run = await listedRun(f, saved.run.id), payload = await exchangeDraft(f, run);
+  await assert.rejects(f.checkouts(b).save(payload), rejected);
+  const other = new TeachingCheckoutStore(db, `${f.scope}-other`, "live", a, () => new Date(at));
+  await assert.rejects(other.save({ ...payload, requestId: crypto.randomUUID() }), rejected);
+  assert.equal((await f.inventory().detail("FREE")).battery.loanId, run.items[0].loanId);
+  await f.groups().save({ action: "remove", requestId: crypto.randomUUID(), id: f.group.id, expectedVersion: 1 });
+  await f.checkouts().save({ ...payload, requestId: crypto.randomUUID() });
+  assert.equal((await listedRun(f, run.id)).revision, 2);
+});
+
+test("purge redacts continuation and exchange evidence without losing surviving pending loans", async () => {
+  for (const target of ["FREE", "ALTERNATIVE", "ORIGINAL"]) {
+    const f = await fixture(`exchange-purge-${target}`, { ALTERNATIVE: { tagId: "exchange-purge-tag" } }), saved = await f.checkouts().save(await f.draft());
+    let run = await listedRun(f, saved.run.id); const payload = await exchangeDraft(f, run, "ALTERNATIVE", false);
+    await f.checkouts().save(payload);
+    const battery = (await f.inventory().detail(target)).battery;
+    await f.inventory().movement({ kind: "return", requestId: crypto.randomUUID(), batteryIds: [target], expectedLoans: [{ batteryId: target, loanId: battery.loanId }] });
+    await f.inventory().lifecycle({ requestId: crypto.randomUUID(), kind: "scrapped", reason: "", destination: null, source: "manual_selection", items: [await f.binding(target)] });
+    await f.inventory(admin).retiredAsset({ requestId: crypto.randomUUID(), kind: "purge", items: [await f.binding(target)] });
+    run = await listedRun(f, run.id); assert.equal(run.changes.length, 1);
+    if (target === "FREE") assert.deepEqual(run.changes[0].outgoing, { batteryId: target, deleted: true });
+    if (target === "ALTERNATIVE") { assert.deepEqual(run.changes[0].mappings[0].actual, { batteryId: target, deleted: true }); assert.doesNotMatch(JSON.stringify(await f.checkouts().export(run.id)), /exchange-purge-tag/); }
+    if (target === "ORIGINAL") assert.deepEqual(run.changes[0].mappings[0].original, { batteryId: target, deleted: true });
+    assert.ok(run.items.some(item => item.status === "outstanding"));
+    await assert.rejects(f.checkouts().save(payload), rejected);
+  }
+});
+
+test("parallel exchanges commit one reviewed revision and reserve the losing request without partial returns", async () => {
+  const f = await fixture("parallel-exchange"), saved = await f.checkouts().save(await f.draft()), run = await listedRun(f, saved.run.id);
+  const payloads = [await exchangeDraft(f, run, "ALTERNATIVE", true), await exchangeDraft(f, run, "SECOND", true)];
+  const results = await Promise.allSettled(payloads.map(payload => f.checkouts().save(payload)));
+  assert.equal(results.filter(result => result.status === "fulfilled").length, 1);
+  const failed = results.findIndex(result => result.status === "rejected"); assert.ok(rejected(results[failed].reason));
+  await assert.rejects(f.checkouts().save(payloads[failed]), rejected);
+  const current = await listedRun(f, run.id); assert.equal(current.revision, 2); assert.equal(current.changes.length, 1);
+  assert.equal(current.items.filter(item => item.status === "outstanding").length, 1);
+  assert.equal((await f.inventory().detail(payloads[failed].actual.batteryId)).battery.loanId, null);
+});
+
+test("a lost exchange response resolves its original receipt without repeating either movement", async () => {
+  const f = await fixture("lost-exchange"), saved = await f.checkouts().save(await f.draft()), payload = await exchangeDraft(f, await listedRun(f, saved.run.id));
+  const commands = new WeakMap(); let lost = false;
+  const hooked = { prepare(sql) { const statement = db.prepare(sql); return { bind(...values) { const bound = statement.bind(...values); commands.set(bound, sql); return bound; } }; }, async batch(statements) { const result = await db.batch(statements); if (!lost && statements.some(statement => commands.get(statement)?.startsWith("INSERT INTO operations"))) { lost = true; throw new Error("Test-only exchange response lost after commit"); } return result; } };
+  const receipt = await f.checkouts(a, hooked).save(payload); assert.equal(receipt.replayed, true);
+  const repeated = await f.checkouts().save(payload); assert.deepEqual(repeated.change, receipt.change);
+  assert.equal((await listedRun(f, saved.run.id)).changes.length, 1);
+  assert.equal((await f.checkouts().export(saved.run.id)).loans.length, 2);
+});
+
+test("new teaching activity keeps readable continuation and exchange evidence in search and full exports", async () => {
+  const f = await fixture("exchange-activity"), saved = await f.checkouts().save(await f.draft());
+  await f.checkouts().save(await exchangeDraft(f, await listedRun(f, saved.run.id), "ALTERNATIVE", false));
+  const exported = await f.checkouts().export(saved.run.id), events = exported.events.map(row => ({ id: row.id, action: row.action, batteryId: row.battery_id, actorName: row.actor_name, at: row.at, details: JSON.parse(row.details_json) }));
+  const pending = events.find(event => event.action === "teaching_return_pending"), actual = events.find(event => event.batteryId === "ALTERNATIVE");
+  assert.match(teachingReplacementDescription(pending), /FREE → ALTERNATIVE.*not returned at exchange/);
+  assert.match(teachingReplacementDescription(actual), /Exchange for ORIGINAL/);
+  assert.equal(filterActivity(groupActivity(events), "Exchanged battery awaiting return").length, 1);
+  const document = createTeachingCheckoutExport(exported.run, exported);
+  assert.equal(document.tables.teaching_changes.length, 1); assert.equal(document.tables.teaching_loan_responsibilities.filter(item => item.pending_return).length, 1);
+  assert.equal(document.tables.Activity.find(event => event.action === "teaching_return_pending").action_label, "Exchanged battery awaiting return");
+});
+
+test("returning an original member never automatically replaces the actual loan or silently starts another checkout", async () => {
+  const f = await fixture("original-returns"), payload = await f.draft(), saved = await f.checkouts().save(payload);
+  await f.inventory(b).movement({ kind: "return", requestId: crypto.randomUUID(), batteryIds: ["ORIGINAL"], expectedLoans: [{ batteryId: "ORIGINAL", loanId: payload.mappings[0].originalLoanId }] });
+  const run = await listedRun(f, saved.run.id); assert.equal(run.currentMappings[0].actual.batteryId, "FREE"); assert.equal(run.items[0].status, "outstanding");
+  const original = await f.binding("ORIGINAL"), another = { action: "checkout", requestId: crypto.randomUUID(), teachingGroup: { id: f.group.id, version: 1 }, personalScope: "all", mappings: [{ original, actual: original, originalLoanId: null, method: "original", source: { kind: "selection" } }] };
+  await assert.rejects(f.checkouts().save(another), rejected);
+  assert.equal((await f.inventory().detail("ORIGINAL")).battery.loanId, null);
+  const separate = await f.checkouts().save({ ...another, requestId: crypto.randomUUID(), separateCheckout: true });
+  assert.equal(separate.run.mappings[0].actual.batteryId, "ORIGINAL");
+  assert.equal((await listedRun(f, saved.run.id)).items[0].loanId, saved.run.mappings[0].loanId);
 });

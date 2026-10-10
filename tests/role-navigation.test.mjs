@@ -8,7 +8,7 @@ import { isActiveBattery } from "../work/qa/battery-lifecycle.mjs";
 // Render the actual role-aware components and local navigation handlers with
 // inert UI primitives. Browser layout and native disabled behavior are separate checks.
 const primitiveNames = [
-  "Battery", "Package", "ScanLine", "RotateCcw", "ClipboardList", "Settings2",
+  "Battery", "Package", "ScanLine", "MapIcon", "RotateCcw", "ClipboardList", "Settings2",
   "UserRound", "Users", "LogOut", "CalendarDays", "Mail", "FlaskConical", "ChevronLeft", "Button",
   "SidebarProvider", "Sidebar", "SidebarHeader", "SidebarContent", "SidebarGroup",
   "SidebarGroupLabel", "SidebarMenu", "SidebarMenuItem", "SidebarMenuButton",
@@ -81,7 +81,7 @@ function heading(role, view, extra = {}) {
 test("staff navigation keeps shared and personal work without exposing administration destinations", () => {
   const tree = shell().render();
   assert.deepEqual(groupLabels(tree), ["WORKSPACE", "MY WORK"]);
-  for (const label of ["Battery inventory", "Teaching groups", "Intake & removal", "Scan checkout", "Scan return", "Activity history", "Recurring tasks", "Directories"]) {
+  for (const label of ["Battery inventory", "Mapping", "Teaching groups", "Intake & removal", "Scan checkout", "Scan return", "Activity history", "Recurring tasks", "Directories"]) {
     assert.ok(nav(group(tree, "WORKSPACE"), label), `${label} remains available to staff`);
   }
   for (const label of ["My batteries", "My batteries in use", "My activity", "Messages", "My account"]) {
@@ -117,6 +117,7 @@ test("a refreshed staff role removes administrator navigation on the next render
 test("mobile navigation dismisses the drawer before dispatching the original view or workflow action", () => {
   const view = shell("staff", {}, true);
   for (const [label, expected] of [
+    ["Mapping", ["navigate", "mapping"]],
     ["Directories", ["navigate", "manage"]],
     ["My account", ["navigate", "account"]],
     ["Teaching groups", ["teaching-groups"]],

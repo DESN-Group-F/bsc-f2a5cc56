@@ -21,7 +21,7 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
+import { LoadingState, RefreshStatus } from "@/components/ui/loading-state";
 import type { InventorySnapshot, AuditEvent } from "@/lib/domain";
 import {
   actionNames,
@@ -92,6 +92,8 @@ export function ActivityHistory({
   useEffect(() => {
     const abort = new AbortController();
     let active = true;
+    let timedOut = false;
+    const timeout = setTimeout(() => { timedOut = true; abort.abort(); }, 30000);
     const result = { context, sourceEvents: data.events, revision, retry };
     fetch(
       `/api/inventory?${new URLSearchParams({ dataset: data.dataset, activity: "all", activityScope: scope })}`,
@@ -115,17 +117,18 @@ export function ActivityHistory({
           setHistory({ ...result, events: body.events, error: "" });
       })
       .catch((error) => {
-        if (active && !abort.signal.aborted)
+        if (active && (!abort.signal.aborted || timedOut))
           setHistory({
             ...result,
             events: [],
             error:
-              (error as Error).message ||
+              (timedOut ? "The history request timed out. Check your connection, then retry." : (error as Error).message) ||
               "The activity history could not be loaded.",
           });
-      });
+      }).finally(() => clearTimeout(timeout));
     return () => {
       active = false;
+      clearTimeout(timeout);
       abort.abort();
     };
   }, [context, data.dataset, data.events, revision, retry, scope]);
@@ -136,7 +139,7 @@ export function ActivityHistory({
     history.retry === retry;
   const loading = !current,
     error = current ? history.error : "",
-    events = current && !error ? history.events : [];
+    events = history?.context === context && !error ? history.events : [];
   const entries = groupActivity(events),
     matching = batteryResult.error ? [] : filterActivity(entries, query, groupId, batteryCriteriaActive ? new Set(batteryResult.batteries.map(battery => battery.id)) : null),
     maxPage = Math.max(0, Math.ceil(matching.length / 25) - 1),
@@ -307,18 +310,9 @@ export function ActivityHistory({
           </Button>
         </div>
       </MotionDisclosure>
-      {loading ? (
-        <div className="loading-panel" role="status">
-          <p>
-            Loading the complete{" "}
-            {scope === "mine"
-              ? "history of your inventory operations"
-              : "inventory activity history"}
-            …
-          </p>
-          <Skeleton className="h-10 w-full" />
-          <Skeleton className="h-24 w-full" />
-        </div>
+      <RefreshStatus active={loading && history?.context === context} label="Refreshing activity history" detail="Keeping the recorded history visible while it updates." />
+      {loading && history?.context !== context ? (
+        <LoadingState label={scope === "mine" ? "Loading your activity" : "Loading activity history"} detail="Retrieving the complete recorded history." />
       ) : error ? (
         <div className="load-error" role="alert">
           <span>{error}</span>

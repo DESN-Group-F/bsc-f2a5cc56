@@ -4,6 +4,10 @@ import type { StaffRole } from "@/lib/accounts";
 import { getRolePermissions } from "@/lib/permissions";
 
 const pages = {
+  mapping: [
+    "Mapping",
+    "Explore last recorded observations. These records do not confirm where batteries are now.",
+  ],
   inventory: [
     "Battery inventory",
     "View shared batteries, check out to yourself and record returns.",

@@ -12,6 +12,14 @@ export const teachingGroupRequestSchema = z.discriminatedUnion("action", [
 export type TeachingGroupRequest = z.infer<typeof teachingGroupRequestSchema>;
 export const teachingGroupSchema = z.object({ ...fields, version: z.number().int().positive(), ownerAccountId: z.string().min(1), state: z.enum(["active", "archived"]), createdAt: z.string().datetime({ offset: true }), updatedAt: z.string().datetime({ offset: true }) }).strict();
 export type TeachingGroup = z.infer<typeof teachingGroupSchema>;
+/** Replace one reviewed default member without adopting an entire checkout's selection. */
+export function buildTeachingGroupReplacement(group: TeachingGroup, originalBatteryId: string, replacementBatteryId: string, requestId: string): Extract<TeachingGroupRequest, { action: "update" }> {
+    if (group.state !== "active") throw new Error("This group is archived. Open an active group before changing its default members.");
+    if (!group.batteryIds.includes(originalBatteryId)) throw new Error("The original battery is no longer a default member. Refresh the group and review its latest members.");
+    if (originalBatteryId === replacementBatteryId) throw new Error("Choose a different replacement battery.");
+    if (group.batteryIds.includes(replacementBatteryId)) throw new Error("The replacement is already a default member. Review the group to avoid duplicate members.");
+    return teachingGroupRequestSchema.parse({ action: "update", requestId, id: group.id, expectedVersion: group.version, name: group.name, notes: group.notes, batteryIds: group.batteryIds.map(id => id === originalBatteryId ? replacementBatteryId : id) }) as Extract<TeachingGroupRequest, { action: "update" }>;
+}
 export type TeachingGroupAttempt = { actorAccountId: string; dataset: Dataset; payload: TeachingGroupRequest };
 export const teachingGroupReceiptSchema = z.object({ requestId: z.string().uuid(), actorAccountId: z.string().min(1), dataset: datasetSchema, action: z.enum(["create", "update", "remove"]), group: teachingGroupSchema, replayed: z.boolean() }).strict();
 export type TeachingGroupReceipt = z.infer<typeof teachingGroupReceiptSchema>;
