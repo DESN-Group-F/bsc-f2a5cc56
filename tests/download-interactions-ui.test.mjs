@@ -34,7 +34,7 @@ async function compile(file, name, bindings) {
 }
 async function mount(file, name, props, extra = {}) {
   const state = hooks(), ui = Object.fromEntries(["Button", "DownloadAction", "Download", "Label", "Checkbox", "Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "MotionDisclosure", "MotionPresence"].map(value => [value, value]));
-  const Component = await compile(file, name, { ...ui, ...state, useDownloadFeedback: bindDownloadFeedback(state), exportSections, ...extra });
+  const Component = await compile(file, name, { ...ui, ...state, useDownloadFeedback: bindDownloadFeedback(state), dismissOverlay: (_surface, close) => close(), exportSections, ...extra });
   return { props, render() { state.reset(); const tree = Component(props); state.commit(); return tree; }, unmount: state.unmount, get writesAfterUnmount() { return state.writesAfterUnmount; } };
 }
 const draft = () => ({ selectedIds: ["BAT-1", "BAT-2"], filter: defaultInventoryFilter(), teachingGroup: { id: "group-owned", version: 3 }, page: 1, pageSize: "25", matching: 42, pageCount: 25 });

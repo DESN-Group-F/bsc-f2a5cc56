@@ -127,6 +127,7 @@ function NavigationSurface({ selection, children }: { selection: string; childre
 
 type ShellProps = {
   children: ReactNode;
+  scopeControls?: ReactNode;
   user: StaffUser;
   data: InventorySnapshot | null;
   view: ApplicationView | null;
@@ -146,6 +147,7 @@ type ShellProps = {
 
 export function ApplicationShell({
   children,
+  scopeControls,
   user,
   data,
   view,
@@ -263,7 +265,7 @@ export function ApplicationShell({
   return (
     <SidebarProvider
       className="application-workbench"
-      style={{ "--sidebar-width": "15rem", "--sidebar-width-icon": "4rem" } as React.CSSProperties}
+      style={{ "--sidebar-width": "13rem", "--sidebar-width-icon": "4.5rem" } as React.CSSProperties}
     >
       <a className="skip-link" href="#workspace-content">
         Skip to workspace
@@ -442,18 +444,17 @@ export function ApplicationShell({
       </Sidebar>
       <SidebarInset className="app-main">
         <header className="topbar">
-          <div className="workspace-breadcrumb">
+          <div className="workspace-navigation-toggle">
             <MobileNavigationToggle />
-            <span>
-              Faculty of Engineering <span className="breadcrumb-slash">/</span>{" "}
-              Battery management
-            </span>
           </div>
+          <div className="workspace-global-scope">{scopeControls}</div>
           <div className="topbar-account">
+            <div className="topbar-identity">
             <span>{user.displayName}</span>
             <span className="role-badge">
               {user.role === "admin" ? "Administrator" : "Staff"}
             </span>
+            </div>
             <Button
               variant="ghost"
               size="sm"

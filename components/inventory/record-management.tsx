@@ -128,7 +128,7 @@ export function RecordManagement({
     }
   }
   return (
-    <section className="inventory-panel">
+    <section className="inventory-panel record-management">
       <div className="panel-top">
         <Tabs value={kind} onValueChange={(v) => setKind(v as ImportKind)}>
           <TabsList variant="line">

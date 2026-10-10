@@ -1,4 +1,4 @@
-import { RotateCcw, ScanLine } from "lucide-react";
+import { Plus, RotateCcw, ScanLine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { StaffRole } from "@/lib/accounts";
 import { getRolePermissions } from "@/lib/permissions";
@@ -56,6 +56,8 @@ export function WorkspaceHeading({
   intake,
   ready,
   onScan,
+  compact = false,
+  onRegister,
 }: {
   role: StaffRole;
   view: ApplicationView;
@@ -63,6 +65,8 @@ export function WorkspaceHeading({
   intake: boolean;
   ready: boolean;
   onScan: (kind: "checkout" | "return") => void;
+  compact?: boolean;
+  onRegister?: () => void;
 }) {
   const permissions = getRolePermissions(role);
   const page =
@@ -103,7 +107,7 @@ export function WorkspaceHeading({
     !intake &&
     ["account", "messages", "my-batteries", "my-loans", "my-activity"].includes(view);
   return (
-    <div className="page-heading">
+    <div className={`page-heading${compact ? " page-heading-compact" : ""}`}>
       <div>
         <p className="eyebrow">
           {administrationView
@@ -115,7 +119,8 @@ export function WorkspaceHeading({
         <h1>{title}</h1>
         <p className="page-description">{description}</p>
       </div>
-      {showActions && (
+      {compact && onRegister && <Button onClick={onRegister} disabled={!ready} aria-label="Register battery"><Plus /><span className="register-label-full">Register battery</span><span className="register-label-short">Register</span></Button>}
+      {showActions && !compact && (
         <div className="heading-actions">
           <Button
             variant="outline"

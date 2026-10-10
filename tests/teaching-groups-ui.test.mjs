@@ -15,7 +15,7 @@ import * as locations from "../work/qa/location-catalog.mjs";
 // Actual component handlers with inert UI boundaries; no browser or hardware claims.
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 const ui = Object.fromEntries(["Battery", "Package", "Plus", "Download", "Upload", "Pencil", "Settings2", "ClipboardList", "Copy", "Search", "X", "Button", "Input", "Textarea", "Label", "Checkbox", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Select", "SelectTrigger", "SelectValue", "SelectContent", "SelectItem", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Tabs", "TabsList", "TabsTrigger", "Skeleton", "AppliedFilters", "InventoryFilterPanel", "BatteryFilterControls", "TeachingGroupsPanel"].map(name => [name, name]));
-Object.assign(ui, { MotionDisclosure: "MotionDisclosure", transitionWorkspace: update => update(), ChevronDown: "ChevronDown", AlertTriangle: "AlertTriangle", styles: new Proxy({}, { get: (_, name) => String(name) }) });
+Object.assign(ui, { MotionDisclosure: "MotionDisclosure", ReviewQueueSurface: "ReviewQueueSurface", transitionWorkspace: update => update(), ChevronDown: "ChevronDown", AlertTriangle: "AlertTriangle", styles: new Proxy({}, { get: (_, name) => String(name) }) });
 function hooks() {
     const state = [], effects = []; let pointer = 0, ep = 0, scheduled = [];
     return {
@@ -28,7 +28,7 @@ function hooks() {
 }
 async function component(file, exports, state, extra = {}) {
     const source = ts.transpileModule(await readFile(file, "utf8"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
-    const bindings = { hasRowTextSelection, ...batterySelection, getRolePermissions, ...ui, ...query, ...arrivals, ...groups, ...lifecycle, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03", ...extra }, names = Object.keys(bindings);
+    const bindings = { hasRowTextSelection, ...batterySelection, getRolePermissions, ...ui, ...query, ...arrivals, ...groups, ...lifecycle, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03", ...extra, window: { addEventListener() {}, removeEventListener() {}, ...(extra.window ?? {}) } }, names = Object.keys(bindings);
     return new Function(...names, "_jsx", "_jsxs", "_Fragment", `${source}\nreturn {${exports.join(",")}};`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
 }
 function nodes(node, result = []) { if (Array.isArray(node)) node.forEach(child => nodes(child, result)); else if (node && typeof node === "object") { result.push(node); nodes(node.props?.children, result); } return result; }

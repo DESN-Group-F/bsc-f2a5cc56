@@ -2,23 +2,31 @@
 :root {
   color-scheme: light;
 
-  --brand-yellow: #ffdc00;
-  --brand-yellow-hover: #efd000;
-  --foreground: #191b20;
-  --ink-hover: #34373e;
-  --muted-foreground: #555c67;
-  --canvas: #f3f4f6;
-  --canvas-gradient: radial-gradient(ellipse at 10% 0%, #fff9e866, transparent 48%), linear-gradient(135deg, #f6f6f7 0%, #f1f3f6 100%);
+  --foreground: #1c2433;
+  --ink-hover: #343e4d;
+  --muted-foreground: #586477;
+  --canvas: #f5f6f8;
+  --canvas-gradient: none;
   --surface: #ffffff;
-  --surface-subtle: #f5f6f8;
+  --surface-subtle: #f2f3f5;
   --surface-hover: #f7f8fa;
   --surface-edge: #ffffff;
-  --border: #dfe3e9;
-  --border-strong: #bac1cb;
+  --border: #dce0e5;
+  --border-strong: #7d899a;
+  --glass-surface: rgb(255 255 255 / 88%);
+  --glass-surface-active: rgb(255 255 255 / 98%);
+  --glass-surface-touch: rgb(255 255 255 / 96%);
+  --glass-border: rgb(195 202 212 / 88%);
+  --glass-blur: 16px;
+  --control-height: 44px;
+  --control-icon-size: 16px;
 
-  --selection-surface: #fff9d8;
-  --selection-hover: #fff3b4;
-  --selection-border: #e5d98c;
+  --selection-surface: #eaf2ff;
+  --selection-hover: #dceaff;
+  --selection-border: #abc8ef;
+  --info-foreground: #315b85;
+  --info-surface: #edf3f9;
+  --info-border: #c4d5e7;
   --success-foreground: #286345;
   --success-surface: #edf7f0;
   --success-border: #c4dccb;
@@ -34,8 +42,9 @@
   --card-foreground: var(--foreground);
   --popover: var(--surface);
   --popover-foreground: var(--foreground);
-  --primary: var(--brand-yellow);
-  --primary-foreground: var(--foreground);
+  --primary: #075dcc;
+  --primary-hover: #064da9;
+  --primary-foreground: #ffffff;
   --secondary: var(--surface-subtle);
   --secondary-foreground: var(--foreground);
   --muted: var(--surface-subtle);
@@ -43,13 +52,13 @@
   --accent-foreground: var(--foreground);
   --destructive: var(--danger-foreground);
   --input: var(--border-strong);
-  --ring: var(--foreground);
-  --focus-halo: #ffdc0052;
+  --ring: #075dcc;
+  --focus-halo: #075dcc26;
 
   --sidebar: var(--surface);
   --sidebar-foreground: #3c424d;
-  --sidebar-primary: var(--brand-yellow);
-  --sidebar-primary-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
   --sidebar-accent: var(--selection-surface);
   --sidebar-accent-foreground: var(--foreground);
   --sidebar-border: var(--border);
@@ -57,7 +66,7 @@
 
   --radius: 0.75rem;
   --radius-control: 0.625rem;
-  --radius-panel: 1.125rem;
+  --radius-panel: 1.25rem;
   --radius-popover: 0.875rem;
   --shadow-color: #2026310f;
   --shadow-control: inset 0 1px 0 #ffffff66, 0 1px 2px #20263112;
@@ -65,12 +74,12 @@
   --shadow-panel: inset 0 1px 0 var(--surface-edge), 0 2px 4px #20263104, 0 9px 24px #20263106;
   --shadow-popover: inset 0 1px 0 var(--surface-edge), 0 10px 32px #20263114, 0 2px 6px #2026310a;
   --shadow-dialog: inset 0 1px 0 var(--surface-edge), 0 28px 80px #20263124, 0 5px 16px #2026310d;
-  --overlay: #20201f66;
+  --overlay: #14233c42;
 
   --motion-fast: 140ms;
-  --motion-normal: 300ms;
+  --motion-normal: 240ms;
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --font-body: "Inter", "Segoe UI", "Aptos", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter", "Aptos", Arial, sans-serif;
   --font-code: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 

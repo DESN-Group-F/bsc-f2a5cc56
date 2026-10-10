@@ -1,13 +1,13 @@
 .sheet[data-slot="sheet-content"] {
-  width: min(840px, 100vw) !important;
-  max-width: 840px !important;
+  width: min(780px, 100vw) !important;
+  max-width: 780px !important;
   gap: 0;
   overflow: hidden;
   background: var(--surface-subtle);
 }
 
 .sheet .header[data-slot="sheet-header"] {
-  padding: 26px 56px 20px 28px;
+  padding: 24px 66px 18px 28px;
   gap: 8px;
   background: var(--surface);
 }
@@ -33,7 +33,7 @@
 .panel[hidden] { display: none; }
 .panel[aria-hidden="true"] { position: absolute; top: 22px; left: 28px; right: 28px; pointer-events: none; }
 .overviewGrid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
-.card { min-width: 0; padding: 20px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-panel); }
+.card { min-width: 0; padding: 20px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; box-shadow: none; }
 .card h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 16px; font-size: 14px; font-weight: 650; }
 .card > strong { display: block; font-size: 14px; font-weight: 600; line-height: 1.6; overflow-wrap: anywhere; }
 .card > p { margin: 7px 0; font-size: 13px; line-height: 1.65; overflow-wrap: anywhere; }
@@ -43,7 +43,7 @@
 .values dt { font-size: 12px; color: var(--muted-foreground); }
 .values dd { font-size: 14px; line-height: 1.5; font-weight: 550; margin: 0; overflow-wrap: anywhere; }
 .note { color: var(--muted-foreground); font-size: 12px; line-height: 1.65; }
-.specifications { border: 1px solid var(--border); background: var(--card); border-radius: 14px; overflow: hidden; box-shadow: var(--shadow-panel); }
+.specifications { border: 1px solid var(--border); background: var(--card); border-radius: 14px; overflow: hidden; box-shadow: none; }
 .disclosureButton[data-slot="button"] { width: 100%; min-height: 56px; justify-content: space-between; padding: 16px 20px; font-size: 14px; border-radius: 0; }
 .specGrid { padding: 6px 20px 20px; margin: 0; gap: 20px 24px; }
 .chevron, .chevronOpen { transition: transform 320ms var(--motion-ease, cubic-bezier(.22, 1, .36, 1)); }
@@ -60,11 +60,11 @@
 .card :global(.battery-movement-summary) { margin-bottom: 0; }
 
 @media (max-width: 600px) {
-  .sheet .header[data-slot="sheet-header"] { padding: 22px 46px 18px 18px; }
+  .sheet .header[data-slot="sheet-header"] { padding: 18px 66px 14px 18px; }
   .sheet .header [data-slot="sheet-title"] { font-size: 21px; }
   .commands { padding: 12px 18px; }
   .commandButtons { width: 100%; }
-  .commandButtons [data-slot="button"] { flex: 1; padding-inline: 9px; font-size: 12px; }
+  .commandButtons [data-slot="button"] { flex: 1; padding-inline: 9px; font-size: 13px; }
   .tabList[data-slot="tabs-list"] { width: calc(100% - 36px); margin: 16px 18px 0; }
   .tabList [data-slot="tabs-trigger"] { padding-inline: 5px; font-size: 12px; }
   .body { padding: 18px; }

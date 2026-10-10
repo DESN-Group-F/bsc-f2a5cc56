@@ -61,7 +61,7 @@ html {
 }
 
 ::selection {
-  background: var(--brand-yellow);
+  background: var(--selection-hover);
   color: var(--foreground);
 }
 
@@ -75,7 +75,6 @@ html {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .signin-card,
   .page-heading {
     animation: surface-enter var(--motion-normal) var(--ease-out) both;
   }

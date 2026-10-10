@@ -20,6 +20,7 @@ import { BatteryMovementSummary } from "./battery-movement-summary";
 import { BatteryAgeAndUsage, BatteryInspectionSummary, BatteryInspections, type InspectionRecoveryStatus } from "./battery-history";
 import type { WriteAction } from "@/lib/client/inventory-contracts";
 import styles from "./battery-detail.module.css";
+import { dismissOverlay } from "@/lib/client/overlay-exit";
 type DetailDraft = { kind: "charge" } | { kind: "observation" } | {
     kind: "correction";
     loanId: string;
@@ -36,6 +37,7 @@ export function BatteryDetails({ battery: initialBattery, data, revision, onClos
     onInspectionChanged?: () => void;
     write: WriteAction;
 }) {
+    const surface = useRef<HTMLDivElement>(null);
     const permissions = getRolePermissions(data.user.role);
     const [result, setResult] = useState<{ key: string; detail: BatteryDetail | null; error: string } | null>(null);
     const [retry, setRetry] = useState(0), [form, setForm] = useState<DetailDraft | null>(null);
@@ -51,8 +53,8 @@ export function BatteryDetails({ battery: initialBattery, data, revision, onClos
         throw new Error(body.error || "Battery details could not be loaded."); if (abort.signal.aborted) return; if (body.battery?.id !== initialBattery.id || !body.movementSummary || !body.usageSummary || !body.inspectionSummary || !Array.isArray(body.inspections)) throw new Error("The battery details response was incomplete. Refresh before using this record."); setResult({ key: requestKey, detail: body, error: "" }); }).catch(e => { if (e.name !== "AbortError" && !abort.signal.aborted)
         setResult({ key: requestKey, detail: null, error: e.message }); }); return () => abort.abort(); }, [initialBattery.id, data.dataset, requestKey]);
     return <>
-        <Sheet open onOpenChange={open => !open && onClose()}>
-            <SheetContent className={`battery-detail-sheet ${styles.sheet}`}>
+        <Sheet open onOpenChange={open => { if (!open) { if (form || inspectionRecovery.pending || inspectionRecovery.error) onClose(); else dismissOverlay(surface.current, onClose, "sheet"); } }}>
+            <SheetContent ref={surface} className={`battery-detail-sheet ${styles.sheet}`}>
                 <SheetHeader className={styles.header}>
                     <span className={styles.eyebrow}>Battery record · {data.dataset === "demo" ? "Demonstration inventory" : "Working inventory"}</span>
                     <SheetTitle><span className="detail-title-icon"><Battery size={20} aria-hidden="true" /></span>{battery.id}</SheetTitle>

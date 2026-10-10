@@ -1,5 +1,5 @@
-.footprint { display: inline-flex; align-items: center; justify-content: flex-start; position: relative; max-width: 100%; min-width: 48px; min-height: 48px; vertical-align: middle; flex-shrink: 1; }
-.action { position: relative; height: 48px; min-width: 48px; padding: 0 18px; overflow: clip; border-radius: 10px; flex-shrink: 0; }
+.footprint { display: inline-flex; align-items: center; justify-content: flex-start; position: relative; max-width: 100%; min-width: var(--receipt-size, 48px); min-height: var(--receipt-size, 48px); vertical-align: middle; flex-shrink: 1; }
+.action { position: relative; height: var(--receipt-size, 48px); min-width: var(--receipt-size, 48px); padding: 0 18px; overflow: clip; border-radius: 10px; flex-shrink: 0; }
 .footprint[data-receipt-phase="pending"] .action:disabled, .footprint[data-receipt-phase="check"] .action:disabled, .footprint[data-receipt-phase="confirmed"] .action:disabled { opacity: 1; }
 .visual { display: inline-flex; justify-content: center; align-items: center; gap: 7px; white-space: nowrap; animation: label-enter 160ms cubic-bezier(.22,1,.36,1); }
 .visual > span { white-space: normal; text-align: center; }

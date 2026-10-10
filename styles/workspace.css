@@ -6,7 +6,7 @@
 [data-slot="sidebar-menu"] { gap: 3px; }
 [data-slot="sidebar-menu-button"] { height: 38px; padding-inline: 12px; font-size: 13px; }
 [data-slot="sidebar-menu-button"][data-active="true"] { box-shadow: none; background: var(--selection-surface); }
-[data-slot="sidebar-menu-button"]::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 3px; background: var(--brand-yellow); opacity: 0; transform: scaleY(.3); transition: opacity 140ms, transform 300ms var(--ease-out); }
+[data-slot="sidebar-menu-button"]::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 3px; background: var(--primary); opacity: 0; transform: scaleY(.3); transition: opacity 140ms, transform 300ms var(--ease-out); }
 [data-slot="sidebar-menu-button"][data-active="true"]::before { opacity: 1; transform: scaleY(1); }
 [data-slot="sidebar-menu-button"].h-auto { min-height: 53px; padding-block: 8px; }
 [data-slot="sidebar-menu-button"] .opacity-70 { font-size: 12px; }

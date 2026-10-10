@@ -46,12 +46,12 @@ function text(node) {
     return node && typeof node === "object" ? text(node.props?.children) : "";
 }
 const ui = Object.fromEntries(["Search", "X", "CalendarDays", "CheckCircle2", "Battery", "Package", "Plus", "Download", "Upload", "Pencil", "Settings2", "ClipboardList", "Copy", "Button", "Input", "Textarea", "Label", "Checkbox", "RecordPicker", "BatteryModelPicker", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter", "Select", "SelectTrigger", "SelectContent", "SelectValue", "SelectItem", "Tabs", "TabsList", "TabsTrigger", "Table", "TableHeader", "TableBody", "TableRow", "TableHead", "TableCell", "Skeleton", "InventoryFilterPanel", "BatteryFilterControls", "AppliedFilters"].map(name => [name, name]));
-Object.assign(ui, { DownloadAction: "Button", MotionPresence: "MotionPresence", MotionDisclosure: "MotionDisclosure", transitionWorkspace: update => update(), ChevronDown: "ChevronDown", AlertTriangle: "AlertTriangle", styles: new Proxy({}, { get: (_, name) => String(name) }) });
+Object.assign(ui, { DownloadAction: "Button", MotionPresence: "MotionPresence", MotionDisclosure: "MotionDisclosure", ReviewQueueSurface: "ReviewQueueSurface", transitionWorkspace: update => update(), ChevronDown: "ChevronDown", AlertTriangle: "AlertTriangle", styles: new Proxy({}, { get: (_, name) => String(name) }) });
 async function component(path, exports, state = hooks(), additional = {}) {
     const paths = Array.isArray(path) ? path : [path];
     const input = (await Promise.all(paths.map(file => readFile(file, "utf8")))).join("\n");
     const output = ts.transpileModule(input, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export \{[^\n]*\} from [^;]+;\r?\n/gm, "").replace(/^export /gm, "");
-    const bindings = { hasRowTextSelection, ...batterySelection, getRolePermissions, ...ui, ...client, ...locations, ...lifecycle, ...schedule, ...inventoryQuery, ...arrivals, ...state, useDownloadFeedback: bindDownloadFeedback(state), ...additional, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
+    const bindings = { hasRowTextSelection, ...batterySelection, getRolePermissions, ...ui, ...client, ...locations, ...lifecycle, ...schedule, ...inventoryQuery, ...arrivals, ...state, useDownloadFeedback: bindDownloadFeedback(state), dismissOverlay: (_surface, close) => close(), ...additional, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
     return new Function(...names, "_jsx", "_jsxs", "_Fragment", `${output}\nreturn { ${exports.join(", ")} };`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
 }
 function fixture() {

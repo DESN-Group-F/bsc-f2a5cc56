@@ -2,6 +2,7 @@
 
 import { useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { observeWorkspaceMotion, spring } from "@/lib/client/workspace-motion";
+import { observeStationFocus } from "@/lib/client/station-focus";
 
 /** Retain drafts and request state while removing closed content from interaction. */
 export function MotionDisclosure({ open, children, className, id }: { open: boolean; children: ReactNode; className?: string; id?: string }) {
@@ -56,5 +57,6 @@ export function MotionPresence({ children }: { children: ReactNode }) {
 /** Animate new evidence, results and rows, including portals, without copying controls. */
 export function WorkspaceMotion() {
   useLayoutEffect(observeWorkspaceMotion, []);
+  useLayoutEffect(observeStationFocus, []);
   return null;
 }

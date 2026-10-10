@@ -5,7 +5,7 @@ import { observeWorkspaceMotion, transitionWorkspace } from "../work/qa/client/w
 test("frequent view updates settle in the input event so typing and Clear filters cannot reorder deferred changes", () => {
   const originalWindow = globalThis.window, originalDocument = globalThis.document;
   let nativeSnapshots = 0, criteria = "", calls = 0;
-  globalThis.window = { matchMedia: () => ({ matches: false }) };
+  globalThis.window = { matchMedia: () => ({ matches: false, addEventListener() {}, removeEventListener() {} }) };
   globalThis.document = { querySelectorAll: () => [], startViewTransition() { nativeSnapshots++; throw new Error("A controlled input must not defer its state update."); } };
   try {
     transitionWorkspace(() => { calls++; criteria = "BAT-002"; });
@@ -145,7 +145,7 @@ test("record transitions animate the current identities after the update without
     cloneNode() { cloneCalls++; throw new Error("An old battery identity must not cover the updated row."); },
     animate() { animatedId = displayedId; return { finished: Promise.resolve(), cancel() {} }; },
   };
-  globalThis.window = { matchMedia: () => ({ matches: false }) };
+  globalThis.window = { matchMedia: () => ({ matches: false, addEventListener() {}, removeEventListener() {} }) };
   globalThis.document = { querySelectorAll: () => [table] };
   try {
     transitionWorkspace(() => { displayedId = "BAT-002"; });

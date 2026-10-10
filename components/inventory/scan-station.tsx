@@ -58,7 +58,7 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
     const [session, setSession] = useState<ScanSession>(initial.session);
     const current = useRef(session), running = useRef(false), tagInput = useRef<HTMLInputElement>(null);
     const unreadableStorage = useRef(!!initial.error);
-    const [busy, setBusy] = useState(false), [tag, setTag] = useState(""), [notice, setNotice] = useState(""), [storageError, setStorageError] = useState(initial.error);
+    const [busy, setBusy] = useState(false), [tag, setTag] = useState(""), [notice, setNoticeText] = useState(""), [storageError, setStorageError] = useState(initial.error);
     const [selectedIds, setSelectedIds] = useState<string[]>([]), [selectionFilters, setSelectionFilters] = useState<InventoryFilter>(() => defaultInventoryFilter());
     const [completedFilters, setCompletedFilters] = useState<InventoryFilter>(() => ({ ...defaultInventoryFilter(), lifecycle: "all" }));
     const [groupEditor, setGroupEditor] = useState<string[] | null>(null), [completedGroupIds, setCompletedGroupIds] = useState<string[]>([]);
@@ -66,6 +66,8 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
     const [confirmedSelectionSnapshots, setConfirmedSelectionSnapshots] = useState<Map<string, BatteryRecord>>(() => new Map());
     const [confirmation, setConfirmation] = useState<Confirmation>(null), [latest, setLatest] = useState<LatestReview | null>(null), [toast, setToast] = useState("");
     const [reviewedRooms, setReviewedRooms] = useState<InventorySnapshot["rooms"] | null>(null);
+    const [noticeTone, setNoticeTone] = useState<"info" | "warning">("info");
+    function setNotice(message: string, tone: "info" | "warning" = "info") { setNoticeText(message); setNoticeTone(tone); }
     const checkout = kind === "checkout", roomLocked = busy || paused || !!session.attempt || !!storageError;
     const roomConfirmationRequired = !checkout && !!session.roomConfirmationRequired;
     const locked = roomLocked || roomConfirmationRequired || !!groupEditor || !!storageError;
@@ -143,14 +145,14 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
         }
     }
     async function processQueue() {
-        if (current.current.roomConfirmationRequired) { setNotice("Confirm the return room or explicitly choose Room unspecified before processing more batteries."); return; }
+        if (current.current.roomConfirmationRequired) { setNotice("Confirm the return room or explicitly choose Room unspecified before processing more batteries.", "warning"); return; }
         const state = current.current;
         if (!state.queue.length || state.attempt) return;
         const reads = [...state.queue];
         const attempt: ScanAttempt = { reads, payload: scanMovementPayload(kind, reads, state.sessionId, state.room, crypto.randomUUID(), state.teachingGroup), status: "rejected", message: "" };
         if (await runAttempt(attempt)) {
             try { await onChanged?.(); }
-            catch { setNotice("The server confirmed the movement. Shared inventory refresh is unavailable; the completed list retains the receipt."); }
+            catch { setNotice("The server confirmed the movement. Shared inventory refresh is unavailable; the completed list retains the receipt.", "warning"); }
         }
     }
     async function readTags(tags: string[], source: ScanSource) {
@@ -158,7 +160,7 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
         try {
             const normalized = tags.map(value => value.trim()).filter(Boolean), unique = [...new Set(normalized)];
             if (!unique.length) { setNotice("Enter or select a tag to read."); return; }
-            if (unique.length > 100 || unique.some(value => value.length > 128)) { setNotice("Read up to 100 unique tags at a time; each tag must be at most 128 characters."); return; }
+            if (unique.length > 100 || unique.some(value => value.length > 128)) { setNotice("Read up to 100 unique tags at a time; each tag must be at most 128 characters.", "warning"); return; }
             if (current.current.queue.length && current.current.queue[0].source !== source) {
                 addIssue("source", normalized.join(", "), "Different input methods need separate batches. Confirm or clear the current queue before using another input method."); return;
             }
@@ -187,7 +189,7 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
     async function confirmQueue() {
         if (!current.current.queue.length || current.current.attempt || current.current.roomConfirmationRequired || !startWork()) return;
         try { await processQueue(); }
-        catch (error) { setNotice(errorMessage(error)); }
+        catch (error) { setNotice(errorMessage(error), "warning"); }
         finally { finishWork(); }
     }
     async function retry() {
@@ -197,7 +199,7 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
             if (await runAttempt(attempt)) {
                 let refreshWarning = "";
                 try { await onChanged?.(); } catch { refreshWarning = " Refresh shared inventory when available."; }
-                setNotice(`The original movement is confirmed.${refreshWarning}${current.current.queue.length ? ` Review the remaining queue and choose Confirm ${checkout ? "checkout" : "return"} to save it.` : ""}`);
+                setNotice(`The original movement is confirmed.${refreshWarning}${current.current.queue.length ? ` Review the remaining queue and choose Confirm ${checkout ? "checkout" : "return"} to save it.` : ""}`, refreshWarning ? "warning" : "info");
             }
         } finally { finishWork(); }
     }
@@ -226,7 +228,7 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
             if (!response.ok) throw new Error(inventory.error || "Current records could not be loaded.");
             if (inventory.dataset !== data.dataset || inventory.user.id !== data.user.id || !Array.isArray(inventory.rooms)) throw new Error("The latest records do not match this scan session.");
             setLatest({ requestId: attempt.payload.requestId, inventory });
-        } catch (error) { setNotice(`Your captured request is preserved. ${errorMessage(error)}`); }
+        } catch (error) { setNotice(`Your captured request is preserved. ${errorMessage(error)}`, "warning"); }
         finally { finishWork(); }
     }
     async function reloadReturnRooms() {
@@ -238,7 +240,7 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
             if (inventory.dataset !== data.dataset || inventory.user.id !== data.user.id || !Array.isArray(inventory.rooms)) throw new Error("The latest rooms do not match this scan session.");
             setReviewedRooms(inventory.rooms);
             setNotice("Current return rooms loaded. Choose a reviewed room or explicitly choose Room unspecified before reading again.");
-        } catch (error) { setNotice(`Return-room confirmation is still required. ${errorMessage(error)}`); }
+        } catch (error) { setNotice(`Return-room confirmation is still required. ${errorMessage(error)}`, "warning"); }
         finally { finishWork(); }
     }
     function confirmLocalAction() {
@@ -293,18 +295,19 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
         try {
             if (!selectedBatteries.length) { setNotice("Select at least one battery."); return; }
             if (current.current.queue.length && current.current.queue[0].source !== "selection") {
-                setNotice("Confirm or clear the current tag-input queue before using manual selection."); return;
+                setNotice("Confirm or clear the current tag-input queue before using manual selection.", "warning"); return;
             }
+            let capacityReached = false;
             for (const battery of selectedBatteries) {
                 const state = current.current;
                 if (state.queue.some(read => read.battery.id === battery.id) || scanCompletedReadMatches(kind, battery, state.completed)) continue;
                 const problem = scanReadProblem(kind, battery, battery.tagId);
                 if (problem) { addIssue("state", battery.id, `${battery.id}: ${problem}`); continue; }
-                if (state.queue.length >= 100) { setNotice("The queue already contains 100 batteries. Confirm or clear it before adding more."); break; }
+                if (state.queue.length >= 100) { capacityReached = true; setNotice("The queue already contains 100 batteries. Confirm or clear it before adding more.", "warning"); break; }
                 change(previous => ({ ...previous, queue: [...previous.queue, { battery, tagId: battery.tagId, source: "selection", readAt: new Date().toISOString() }] }));
             }
-            setNotice(`Selected batteries were added to the review queue. Choose Confirm ${checkout ? "checkout" : "return"} to save the movement.`);
-        } catch (error) { setNotice(errorMessage(error)); }
+            if (!capacityReached) setNotice(`Selected batteries were added to the review queue. Choose Confirm ${checkout ? "checkout" : "return"} to save the movement.`);
+        } catch (error) { setNotice(errorMessage(error), "warning"); }
         finally { finishWork(); }
     }
     const latestMatchesAttempt = latest && latest.requestId === session.attempt?.payload.requestId;
@@ -346,7 +349,7 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
                 </div>
             </section>
         </div>
-        {notice && <p className="scan-station-status form-message" role="status">{notice}</p>}
+        {notice && <p className="scan-station-status form-message" data-tone={noticeTone} role="status">{notice}</p>}
         {session.attempt && <section className="scan-station-conflict detail-card" role="alert"><h2>{busy ? "Submitting captured request…" : session.attempt.status === "uncertain" ? "Movement result uncertain" : "Movement rejected"}</h2><p>{session.attempt.message}</p><p className="field-hint">Captured request: {session.attempt.payload.requestId}. The review list, input method and room remain locked.</p>{!busy && <div className="flex flex-wrap gap-2"><Button onClick={retry} disabled={paused}><RefreshCw size={16}/>Retry same request</Button>{session.attempt.status === "rejected" && <Button variant="outline" onClick={reviewLatest} disabled={paused}>Review current records</Button>}</div>}
             {latestMatchesAttempt && <div className="mt-4"><h3>Review before discarding the rejected request</h3>{session.attempt.reads.map(read => { const now = latest.inventory.batteries.find(item => item.id === read.battery.id); return <article className="history-entry" key={read.battery.id}><strong>{read.battery.id}</strong><p>Captured: version {read.battery.version}, tag {read.tagId || "not recorded"}{read.battery.loanId ? `; holder ${read.battery.borrowerName} · checked out ${formatTime(read.battery.checkedOutAt)}` : "; in store"}.</p><p>Current: {now ? `version ${now.version}, tag ${now.tagId || "not recorded"}${now.loanId ? `; holder ${now.borrowerName} · ${now.loanId === read.battery.loanId ? "same loan" : "different loan"}` : "; no active loan"}` : "battery unavailable"}.</p></article>; })}{session.room && <p>Captured room version {session.room.version}; current version {latest.inventory.rooms.find(room => room.id === session.room?.id)?.version ?? "unavailable"}. The captured room has not been replaced.</p>}<Button variant="outline" onClick={() => setConfirmation("discard")} disabled={busy || paused}>Discard rejected request after review</Button><p className="field-hint">Discard does not process the latest loan. A new explicit read is required.</p></div>}
         </section>}

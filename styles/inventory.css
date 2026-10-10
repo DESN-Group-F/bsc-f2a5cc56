@@ -50,12 +50,12 @@
   justify-content: space-between;
   gap: 16px;
   align-items: center;
-  padding: 12px 20px 0;
+  padding: 12px 20px;
   border-bottom: 1px solid var(--border);
 }
 
 .panel-top > [data-slot="button"] {
-  margin-bottom: 12px;
+  margin-bottom: 0;
 }
 
 .inventory-category-navigation {
@@ -209,25 +209,6 @@
   margin-bottom: 12px;
 }
 
-.battery-detail-sheet {
-  width: min(620px,100vw) !important;
-  max-width: 620px !important;
-}
-
-.battery-detail-sheet [data-slot="sheet-header"] {
-  padding: 28px 24px 22px;
-  border-bottom: 1px solid var(--border);
-}
-
-.battery-detail-sheet [data-slot="sheet-title"] {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 20px;
-  font-weight: 650;
-  letter-spacing: -.025em;
-}
-
 .detail-title-icon {
   display: grid;
   place-items: center;
@@ -273,7 +254,7 @@
 .movement-current {
   padding: 20px;
   border: 1px solid var(--selection-border);
-  border-left: 4px solid var(--brand-yellow);
+  border-left: 4px solid var(--primary);
   border-radius: var(--radius-panel);
   background: var(--selection-surface);
 }
@@ -364,7 +345,7 @@
 }
 
 .movement-event:first-child::before {
-  background: var(--brand-yellow);
+  background: var(--primary);
   border: 1px solid var(--foreground);
 }
 
@@ -744,7 +725,7 @@
   border: 1px solid var(--border);
   background: var(--surface);
   color: var(--foreground);
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   text-align: left;
   border-color: var(--border-strong);
@@ -778,7 +759,7 @@
   margin-bottom: 18px;
   padding: 12px 15px;
   background: var(--surface);
-  border-left: 3px solid var(--brand-yellow);
+  border-left: 3px solid var(--primary);
   color: var(--muted-foreground);
   font-size: 14px;
   border-radius: 0 var(--radius-control) var(--radius-control) 0;
@@ -1011,4 +992,60 @@
     gap: 12px;
     flex-direction: column;
   }
+}
+
+/* Inventory browsing layout owns its toolbars and evidence presentation. */
+.inventory-filter-toolbar > .applied-filters { flex: 1; padding: 0; border: 0; min-width: 160px; background: transparent; }
+.inventory-filter-toolbar > .applied-filters[data-empty="true"] > :not(button) { display: none; }
+@media (min-width: 641px) {
+  .inventory-filter-toolbar > .applied-filters[data-empty="false"] { order: 4; flex-basis: 100%; }
+}
+.panel-footer, .pagination-bar { background: var(--surface); }
+.personal-inventory-scope { box-shadow: var(--shadow-control); }
+.movement-layout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); align-items: start; gap: 24px; }
+.movement-records { min-width: 0; padding-top: 2px; }
+.movement-records .movement-timeline-title { margin-top: 0; }
+.movement-records .movement-event-heading { display: grid; gap: 3px; }
+.activity-filter-controls { padding: 0 20px 16px; }
+.activity-filter-controls .applied-filters { padding: 10px 0 0; border-bottom: 0; background: transparent; }
+.activity-panel > .field-hint { padding-inline: 20px; }
+.inventory-panel .panel-top { flex-wrap: wrap; padding-block: 8px; }
+.inventory-filter-toolbar { padding-block: 10px; }
+.inventory-category-navigation { flex: 1; }
+.inventory-panel .panel-top [data-slot="tabs-list"] { background: var(--surface-subtle); padding: 4px; height: 44px; border-radius: 11px; }
+.inventory-panel .panel-top [data-slot="tabs-trigger"] { min-height: 36px; padding-inline: 12px; border-radius: 8px; }
+.inventory-panel .panel-top [data-slot="tabs-list"] .tabs-motion-indicator { top: 4px; bottom: 4px; height: auto; border-radius: 8px; background: var(--surface); box-shadow: var(--shadow-control); }
+.inventory-panel .panel-top [data-slot="tabs-trigger"]::after { display: none; }
+.inventory-panel .panel-top [data-slot="tabs-trigger"][data-state="active"] { color: var(--primary); }
+.inventory-panel .panel-top [data-slot="tabs-list"]:not([data-motion-ready="true"]) [data-slot="tabs-trigger"][data-state="active"] { background: var(--surface); box-shadow: var(--shadow-control); }
+@media (max-width: 767px) {
+  .inventory-panel .panel-top { padding: 12px; gap: 10px; }
+  .inventory-category-navigation { display: contents; }
+  .inventory-category-navigation > [data-slot="tabs"] { flex-basis: 100%; min-width: 0; }
+  .inventory-panel .panel-top [data-slot="tabs-list"] { width: 100%; height: auto; }
+  .inventory-category-navigation [data-slot="tabs-list"] { display: grid; grid-template-columns: minmax(0, 1.35fr) repeat(2, minmax(0, 1fr)); }
+  .inventory-panel .panel-top [data-slot="tabs-trigger"] { display: block; min-width: 0; height: auto; padding: 6px 4px; min-height: 44px; white-space: normal; line-height: 1.3; }
+  .inventory-category-navigation .tab-count { display: inline-block; margin-left: 3px; padding-inline: 4px; }
+  .record-management .panel-top > [data-slot="tabs"] { width: 100%; min-width: 0; }
+  .record-management .panel-top [data-slot="tabs-list"] { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* This grid has two rows; its active surface is local to each tab. */
+  .record-management .panel-top [data-slot="tabs-list"] .tabs-motion-indicator { display: none; }
+  .record-management .panel-top [data-slot="tabs-list"] [data-slot="tabs-trigger"][data-state="active"] { background: var(--surface); box-shadow: var(--shadow-control); }
+  .inventory-panel .panel-top > [data-slot="button"] { margin: 0 0 0 auto; }
+  .inventory-teaching-groups-link { display: none; }
+  .inventory-filter-toolbar { padding: 10px 12px; gap: 8px; }
+  .inventory-filter-toolbar > .applied-filters { order: 3; flex-basis: 100%; min-width: 0; }
+  .inventory-filter-toolbar > .toolbar-meta { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .inventory-filter-toolbar > .applied-filters[data-empty="true"] { order: 0; flex: 0 1 auto; }
+  .inventory-filter-toolbar > .applied-filters[data-empty="true"] { display: none; }
+  .inventory-filter-toolbar > [aria-label="Download inventory"] { width: 44px; padding-inline: 0; }
+  .inventory-filter-toolbar > [aria-label="Download inventory"] > span { display: none; }
+  .inventory-filter-toolbar > [data-slot="button"]:last-child { margin-left: auto; }
+  .movement-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .activity-filter-controls, .activity-panel > .field-hint { padding-inline: 14px; }
+}
+@media (max-width: 360px) {
+  .inventory-filter-toolbar { gap: 4px; }
+  .inventory-filter-toolbar > [data-slot="button"] { font-size: 13px; }
+  .inventory-filter-toolbar > [aria-pressed] { font-size: 12px; padding-inline: 2px; }
 }

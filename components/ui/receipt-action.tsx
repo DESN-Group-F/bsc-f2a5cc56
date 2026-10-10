@@ -30,13 +30,28 @@ export function ReceiptAction({ pending, confirmation, reviewKey, actionLabel, p
   useLayoutEffect(() => {
     const received = !!confirmationIdentity && confirmationIdentity !== seen.current;
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let removePreference = () => {};
     if (pending && armed.current) setPhase("pending");
     else if (received && confirmationIdentity && armed.current && confirmationCount > 0) {
       seen.current = confirmationIdentity;
       armed.current = false;
       setAcknowledgement({ identity: confirmationIdentity, count: confirmationCount, text: confirmationText });
       if (reducedMotion()) setPhase("confirmed");
-      else { setPhase("check"); timer = setTimeout(() => setPhase("confirmed"), 190); }
+      else {
+        setPhase("check");
+        const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+        const complete = () => {
+          if (timer === undefined) return;
+          clearTimeout(timer);
+          timer = undefined;
+          removePreference();
+          setPhase("confirmed");
+        };
+        const preferenceChanged = () => { if (preference.matches) complete(); };
+        removePreference = () => preference.removeEventListener("change", preferenceChanged);
+        preference.addEventListener("change", preferenceChanged);
+        timer = setTimeout(complete, 190);
+      }
     } else if (wasPending.current || reviewKey !== previousReview.current) {
       setPhase("idle");
       setAcknowledgement(null);
@@ -45,7 +60,7 @@ export function ReceiptAction({ pending, confirmation, reviewKey, actionLabel, p
     if (received && !pending && !armed.current) seen.current = confirmationIdentity;
     wasPending.current = pending;
     previousReview.current = reviewKey;
-    return () => { if (timer) clearTimeout(timer); };
+    return () => { if (timer !== undefined) clearTimeout(timer); removePreference(); };
   }, [pending, confirmationIdentity, confirmationCount, confirmationText, reviewKey]);
 
   useLayoutEffect(() => {
@@ -58,11 +73,12 @@ export function ReceiptAction({ pending, confirmation, reviewKey, actionLabel, p
       }
       const idleWidth = Math.max(128, (idleMeasure.current?.scrollWidth ?? 128) + 40);
       const resultWidth = Math.max(128, (resultMeasure.current?.scrollWidth ?? 128) + 72);
+      const controlHeight = Number.parseFloat(typography.height) || button.offsetHeight || 48;
       const available = frame.parentElement?.clientWidth || Math.max(idleWidth, resultWidth);
-      const reserve = Math.min(available, Math.max(idleWidth, resultWidth, 48));
+      const reserve = Math.min(available, Math.max(idleWidth, resultWidth, controlHeight));
       const circle = phase === "pending" || phase === "check";
-      const targetWidth = circle ? 48 : Math.min(reserve, phase === "confirmed" ? resultWidth : idleWidth);
-      const targetRadius = circle || phase === "confirmed" ? 24 : 10;
+      const targetWidth = circle ? controlHeight : Math.min(reserve, phase === "confirmed" ? resultWidth : idleWidth);
+      const targetRadius = circle || phase === "confirmed" ? controlHeight / 2 : 10;
       if (targets.current?.width === targetWidth && targets.current.radius === targetRadius && targets.current.reserve === reserve) return;
       targets.current = { width: targetWidth, radius: targetRadius, reserve };
       cancels.current.forEach(cancel => cancel());
@@ -73,7 +89,7 @@ export function ReceiptAction({ pending, confirmation, reviewKey, actionLabel, p
         radiusMotion.current.value = Number.parseFloat(getComputedStyle(button).borderRadius) || 10;
       }
       cancels.current = [
-        spring(widthMotion.current.value, targetWidth, value => { button.style.width = `${Math.max(48, value)}px`; }, undefined, 28, widthMotion.current),
+        spring(widthMotion.current.value, targetWidth, value => { button.style.width = `${Math.max(controlHeight, value)}px`; }, undefined, 28, widthMotion.current),
         spring(radiusMotion.current.value, targetRadius, value => { button.style.borderRadius = `${Math.max(0, value)}px`; }, undefined, 28, radiusMotion.current),
       ];
     };

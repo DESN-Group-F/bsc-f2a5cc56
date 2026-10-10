@@ -4,7 +4,7 @@ export function reducedMotion() {
   return typeof window === "undefined" || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-const contentTransitions = new WeakMap<HTMLElement, Animation>();
+const contentTransitions = new WeakMap<HTMLElement, { animation: Animation; cancel: () => void }>();
 
 const entrySelector = '[role="alert"], [role="status"], [data-slot="tabs-content"], .empty-state, .history-entry, .filter-chip, .task-plan-card, .message-inbox-card, [data-slot="table-row"], .detail-card, .selection-toolbar';
 const layoutSelector = '.history-entry, .filter-chip, .task-plan-card, .message-inbox-card, [data-slot="table-row"]';
@@ -139,8 +139,16 @@ export function transitionWorkspace(update: () => void, cadence: "frequent" | "n
     cadence === "frequent" ? [{ opacity }, { opacity: 1 }] : [{ opacity, translate: "0 7px" }, { opacity: 1, translate: "0 0" }],
     { duration: cadence === "frequent" ? 140 : 260, easing: "cubic-bezier(.22,1,.36,1)" },
   );
-  contentTransitions.set(content, entry);
-  void entry.finished.catch(() => undefined).finally(() => { if (contentTransitions.get(content) === entry) contentTransitions.delete(content); });
+  const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const cleanup = () => {
+    preference.removeEventListener("change", preferenceChanged);
+    if (contentTransitions.get(content)?.animation === entry) contentTransitions.delete(content);
+  };
+  const cancel = () => { entry.cancel(); cleanup(); };
+  const preferenceChanged = () => { if (preference.matches) cancel(); };
+  contentTransitions.set(content, { animation: entry, cancel });
+  preference.addEventListener("change", preferenceChanged);
+  void entry.finished.catch(() => undefined).finally(cleanup);
 }
 
 export function spring(
@@ -152,8 +160,25 @@ export function spring(
   state?: { value: number; velocity: number },
 ) {
   if (reducedMotion() || Math.abs(from - to) < .2 && Math.abs(state?.velocity ?? 0) < .5) { if (state) { state.value = to; state.velocity = 0; } render(to); finish?.(); return () => undefined; }
-  let value = from, velocity = state?.velocity ?? 0, previous = performance.now(), frame = 0;
+  let value = from, velocity = state?.velocity ?? 0, previous = performance.now(), frame = 0, active = true;
+  const preference = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const detach = () => {
+    cancelAnimationFrame(frame);
+    preference.removeEventListener("change", preferenceChanged);
+  };
+  const cancel = () => { active = false; detach(); };
+  const settle = () => {
+    if (!active) return;
+    detach();
+    if (state) { state.value = to; state.velocity = 0; }
+    render(to);
+    if (!active) return;
+    active = false;
+    finish?.();
+  };
+  const preferenceChanged = () => { if (preference.matches) settle(); };
   const tick = (time: number) => {
+    if (!active) return;
     let remaining = Math.min((time - previous) / 1000, .064);
     previous = time;
     while (remaining > 0) {
@@ -164,9 +189,11 @@ export function spring(
     }
     if (state) { state.value = value; state.velocity = velocity; }
     render(value);
-    if (Math.abs(value - to) < .2 && Math.abs(velocity) < .5) { if (state) { state.value = to; state.velocity = 0; } render(to); finish?.(); }
+    if (!active) return;
+    if (Math.abs(value - to) < .2 && Math.abs(velocity) < .5) settle();
     else frame = requestAnimationFrame(tick);
   };
+  preference.addEventListener("change", preferenceChanged);
   frame = requestAnimationFrame(tick);
-  return () => cancelAnimationFrame(frame);
+  return cancel;
 }

@@ -563,8 +563,7 @@ export default function InventoryApp({
       onAssets={openAssets}
       onScan={startScan}
       onError={setError}
-    >
-      <section className="workspace" id="workspace-content" tabIndex={-1} aria-label="Current workspace">
+      scopeControls={<>
         <div className="workspace-controls">
           <div className="dataset-control">
             <label htmlFor="dataset-select">Inventory</label>
@@ -574,7 +573,7 @@ export default function InventoryApp({
               disabled={modalOpen || loading || teachingPending}
             >
               <SelectTrigger id="dataset-select">
-                <SelectValue />
+                <SelectValue>{dataset === "demo" ? "Demo inventory" : "Working inventory"}</SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="demo">Demonstration inventory</SelectItem>
@@ -597,6 +596,17 @@ export default function InventoryApp({
             </Button>
           </div>
         </div>
+        <details className="inventory-context" data-dataset={dataset}>
+          <summary>
+            {dataset === "demo" ? <FlaskConical size={16} aria-hidden="true" /> : <Package size={16} aria-hidden="true" />}
+            <span>{dataset === "demo" ? "Fictional demo data" : "Shared working data"}</span>
+            <span className="context-disclosure">About this data</span>
+          </summary>
+          <p>{dataset === "demo" ? "Battery specifications and sample activity are fictional. J18 rooms are placeholders awaiting confirmation." : "All staff share this inventory. Real battery records are awaiting input. J18 rooms are placeholders awaiting confirmation."}</p>
+        </details>
+      </>}
+    >
+      <section className={`workspace${inventoryView && !scan && !intake ? " workspace-inventory" : ""}`} id="workspace-content" tabIndex={-1} aria-label="Current workspace">
         <WorkspaceHeading
           role={user.role}
           view={view}
@@ -604,26 +614,9 @@ export default function InventoryApp({
           intake={!!intake}
           ready={ready}
           onScan={startScan}
+          compact={inventoryView && !scan && !intake}
+          onRegister={() => { setEditorGroup(undefined); setEditor({ kind: "battery" }); }}
         />
-        {dataset === "demo" ? (
-          <div className="demo-notice">
-            <FlaskConical size={17} />
-            <span>
-              <strong>Demonstration inventory.</strong> Battery specifications
-              and sample activity are fictional. J18 rooms are placeholders
-              awaiting confirmation.
-            </span>
-          </div>
-        ) : (
-          <div className="working-notice">
-            <Package size={17} />
-            <span>
-              <strong>Working inventory.</strong> Real battery records are
-              awaiting input. J18 rooms are placeholders awaiting confirmation.
-              All staff share this inventory.
-            </span>
-          </div>
-        )}
         {teachingRecovery.error && <div className="load-error" role="alert">The preserved teaching workflow cannot be recovered safely: {teachingRecovery.error}</div>}
         {!teachingCheckout && (teachingRecovery.attempts.length > 0 || teachingRecovery.drafts.length > 0) && <div className="load-error" role="alert"><span>{teachingRecovery.attempts.length ? "An unfinished teaching checkout or return must be resolved with its original request." : "A reviewed teaching checkout draft is saved in this tab. Resume it before preparing another operation."}</span><Button variant="outline" disabled={!data || loading || !!error || modalOpen} onClick={() => resumeTeachingCheckout(teachingRecovery.attempts[0] ?? teachingRecovery.drafts[0])}>Resume teaching checkout</Button></div>}
         <RecoveryNotices
@@ -813,6 +806,8 @@ export default function InventoryApp({
               {!scan && !intake && retainInventory && (
                 <div hidden={!inventoryView}>
                   <InventoryTable
+                    active={inventoryView}
+                    overlayOpen={modalOpen}
                     key={`${dataset}-${inventoryPersonalScope}`}
                     personalScope={inventoryPersonalScope}
                     newArrivals={newArrivals.arrivals}
@@ -822,6 +817,7 @@ export default function InventoryApp({
                     data={data}
                     ready={ready}
                     onMovement={startMovement}
+                    onScan={startScan}
                     onEdit={(draft) => {
                       setEditorGroup(undefined);
                       setEditor(draft);
@@ -840,6 +836,7 @@ export default function InventoryApp({
               )}
               {!scan && !intake && view === "teaching-groups" && (
                 <TeachingGroupsWorkspace
+                  overlayOpen={modalOpen}
                   key={`${dataset}-${user.id}`}
                   data={data}
                   ready={ready}

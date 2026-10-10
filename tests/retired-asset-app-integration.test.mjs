@@ -103,7 +103,7 @@ test("a preserved teaching request locks sign-out and dataset navigation and res
   await environment(async env => {
     const app = mount("InventoryApp", env, { initialUser: env.user }); app.render();
     assert.equal(node(app, "ApplicationShell").props.locked, true);
-    const datasetSelect = nodes(app.render()).find(item => item.type === "Select" && item.props.value === "demo"); assert.equal(datasetSelect.props.disabled, true);
+    const datasetSelect = nodes(node(app, "ApplicationShell").props.scopeControls).find(item => item.type === "Select" && item.props.value === "demo"); assert.ok(datasetSelect, "The global scope slot includes the current inventory selector"); assert.equal(datasetSelect.props.disabled, true);
     button(app, "Resume teaching checkout").props.onClick();
     const dialog = node(app, "TeachingCheckoutDialog"); assert.ok(dialog); assert.equal(env.dataset, "live"); assert.deepEqual(dialog.props.draft.attempt.payload, captured.payload); assert.equal(env.entries.get(key), raw);
     assert.throws(() => env.tools.get("stage_battery_movement").execute({ kind: "checkout", batteryIds: ["BAT-ACTIVE"] }), /current workflow/);
