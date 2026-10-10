@@ -2,7 +2,7 @@
 
 1 October 2026 · Windows portable development preview.
 
-Current frozen source: [release 0.8.0](releases/0.8.0.md). The current OpenBayes service uses the separately authorized `2026-10-08-teaching-groups` build, package version 0.7.0, with the same reviewed business implementation and twenty-one migrations. See the [deployment handover](deployment-openbayes-2026-10-08.md). Deployment and the subsequent 0.8.0 Git source freeze are separate operations; this source freeze does not restart the server. The development entries below retain their original dates and outcomes; historical statements about publication and deployment describe their dated checks rather than current operating status.
+Current frozen source: [release 0.9.0](releases/0.9.0.md). The OpenBayes service retains the separately authorized `2026-10-08-teaching-groups` build, package version 0.7.0, with its reviewed business implementation and twenty-one migrations. The 0.9.0 frontend redesign is not deployed there. See the [deployment handover](deployment-openbayes-2026-10-08.md). Deployment and the later Git source freezes are separate operations; this source freeze does not restart the server. The development entries below retain their original dates and outcomes; historical statements about publication and deployment describe their dated checks rather than current operating status.
 
 The release includes [personal operation history](#personal-operation-history), periodic tasks, Messages, scan workflows and subsequent repairs. Their original dated checks below describe the state at each check; historical statements about publication or deployment are not current release status.
 
@@ -797,3 +797,11 @@ The final complete suite passed **450 tests, zero failures or skipped tests**, i
 A separate production Worker with all 16 migrations passed **100 HTTP checks**, including summary attribution assertions. Browser checks on another isolated Worker inspected a borrowed battery, a returned battery and one without return history. The return card correctly identified the administrator who received a staff member's loan; the no-return card did not start a storage timer from registration. Desktop and 390 x 844 layouts were inspected, and no browser warnings or errors were observed. Normal local and hosted business data were not used for test writes. These checks do not establish full accessibility compliance or measured staff-efficiency gains.
 
 Evidence is retained under ignored `work/`: `movement-tests.log`, `qa/api-3iVz68/results.json`, `movement-mobile.png` and `movement-desktop.png`. Hosted upgrade verification is separate from these local acceptance results.
+
+## Source freeze 0.9.0
+
+10 October 2026 · The user requested publication of the completed frontend as a new version while preserving older releases. Release 0.9.0 builds on the reviewed frontend snapshot faddbc68b99096b3ea664ffa551e34aaba440c46. Its independent source branch and annotated tag are recorded in [the release note](releases/0.9.0.md). The package version and two root lockfile version fields advance from 0.8.0 to 0.9.0; dependency declarations and the resolved lock graph are unchanged. No backend or migration changes follow the frontend snapshot.
+
+The exact frontend publication snapshot passed 79 relevant tests, TypeScript checking, full ESLint and a production build. Independent browser and controlled focus/motion results remain scoped in the frontend implementation, functional and visual audit documents. The versioned follow-up changes only package metadata and release documentation and receives a fresh production build; it does not claim another complete domain/HTTP regression run. Existing chunk-size build warnings remain.
+
+Existing remote references, local preview data and the hosted service are preserved. The new release uses a neutral admin publishing identity and adds separate release references without force-pushing or retagging older versions. Source publication does not deploy, migrate or reset any service. Private packaging checks remain under ignored work/release-0.9.0-20261010/.

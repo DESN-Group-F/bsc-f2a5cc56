@@ -2,7 +2,9 @@
 
 A staff work platform for the DESN2000 battery-management design project. Its primary aim is to reduce routine staff work while keeping responsibility, lending and dated location evidence traceable.
 
-Release **0.8.0** freezes temporary Teaching group checkout alternatives, exact actual-loan returns, inspection and usage evidence, recoverable retirement actions, registration reminders and the latest visual and list-motion repairs. Source branch: `battery-staff-platform-v0.8.0`. Annotated tag: `battery-inventory-v0.8.0-freeze-20261008`. It contains migrations 0000 through 0020. See the [release record](docs/releases/0.8.0.md) and [validation record](docs/validation.md).
+Release **0.9.0** freezes the redesigned sign-in and inventory workspace, blue-and-white visual system, responsive Review queue and verified overlay-focus repairs. Source branch: `battery-staff-platform-v0.9.0`. Annotated tag: `battery-inventory-v0.9.0-freeze-20261010`. Existing workflows and migrations 0000 through 0020 are retained. This is a Git source release; the hosted application and its data are unchanged. See the [release record](docs/releases/0.9.0.md) and [validation record](docs/validation.md).
+
+The previous **0.8.0** freeze contains temporary Teaching group checkout alternatives, exact actual-loan returns, inspection and usage evidence, recoverable retirement actions, registration reminders and its dated visual and list-motion repairs. Its source branch `battery-staff-platform-v0.8.0` and annotated tag `battery-inventory-v0.8.0-freeze-20261008` remain unchanged. See the [previous release record](docs/releases/0.8.0.md).
 
 The earlier **0.7.0** freeze contains the role-specific Staff and Administrator interfaces, My activity battery actions, optional task templates with fully custom plans, readable Excel reports, shared battery filters and row selection, and one reviewed scan checkout/return workflow. See the [previous release record](docs/releases/0.7.0.md).
 
@@ -18,7 +20,7 @@ Release **0.6.1** introduced the battery **Check-in / check-out** summary, which
 
 Local mobile preparation now supplies an independent `mobile/` App with the existing staff/administrator business frontend, secure native service transport, recoverable demonstration registration and an NFC evidence adapter. See Test 0.2.0 scope, actual checks and remaining acceptance (local-only prototype documentation, excluded from this freeze). Native SDK compilation, signing, installation and App NFC acceptance remain pending. Earlier Shortcuts/Safari sticker trials are separate evidence. These changes do not enable working-inventory hardware ingestion or publish a release.
 
-The mobile prototype is approved for **functional testing only**. Its current independent **Test 0.2.0** designation is excluded from the formal release sequence; the official application release is **0.8.0**.
+The mobile prototype is approved for **functional testing only**. Its current independent **Test 0.2.0** designation is excluded from the formal release sequence; the official application release is **0.9.0**.
 
 The frozen **0.6.0** release reorganizes the existing staff workflows into explicit application, client, inventory-service and visual-system modules. The yellow-and-ink interface uses a shared theme across the inventory, workstations, tasks, dialogs and sign-in. Operational text and table cells use 14px text, supporting hints use 13px and compact labels use at least 12px; darker secondary text improves contrast while preserving the existing theme. See the [architecture map](docs/architecture.md), [design system](docs/design-system.md) and [release record](docs/releases/0.6.0.md).
 
