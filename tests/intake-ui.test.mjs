@@ -185,6 +185,29 @@ test("queue selections and confirmed receipts recover after explicit exit withou
     });
 });
 
+test("explicit intake exit retains an uncertain request and reopening retries only that original confirmation", async () => {
+    await environment(async ({ entries }) => {
+        const view = mount({ async write() { throw new Error("Response lost"); } });
+        start(view); queue(view, "DEMO-INTAKE-UNKNOWN"); queue(view, "DEMO-INTAKE-LATER");
+        await confirmButton(view, "all").props.onClick();
+        const preserved = saved(entries);
+        assert.ok(preserved.attempt);
+        assert.equal(button(view.render(), "Exit intake").props.disabled, false);
+        button(view.render(), "Exit intake").props.onClick();
+        assert.equal(view.exits.length, 1);
+        assert.deepEqual(saved(entries), preserved);
+        view.unmount();
+        const reopened = mount();
+        assert.ok(button(reopened.render(), "Retry exact confirmation"));
+        assert.equal(reopened.writes.length, 0);
+        await button(reopened.render(), "Retry exact confirmation").props.onClick();
+        assert.deepEqual(reopened.writes.map(write => write.payload), [preserved.attempt.payload]);
+        assert.deepEqual(saved(entries).entries.map(entry => entry.tagId), ["DEMO-INTAKE-LATER"]);
+        assert.equal(saved(entries).attempt, null);
+        reopened.unmount();
+    });
+});
+
 test("partial success removes verified drafts, retains an unknown item and its exact payload, and does not submit later drafts on retry", async () => {
     const writes = [], attempts = new Map();
     await environment(async ({ entries }) => {

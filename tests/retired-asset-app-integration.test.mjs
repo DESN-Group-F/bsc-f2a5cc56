@@ -60,7 +60,7 @@ async function environment(run, seed = []) {
   const descriptors = Object.fromEntries(["sessionStorage", "window", "document", "fetch"].map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
   const entries = new Map(seed), tools = new Map(), requests = [], loads = [], events = [];
   const user = { id: actor, role: "admin", username: "audit-user", defaultDataset: "demo" };
-  const env = { user, dataset: "demo", error: "", revision: 0, failReads: false, entries, tools, requests, loads, events, respond: input => receipt(input.payload, input.dataset) };
+  const env = { user, dataset: "demo", error: "", revision: 0, failReads: false, hasData: true, loading: false, entries, tools, requests, loads, events, respond: input => receipt(input.payload, input.dataset) };
   const snapshot = () => ({ dataset: env.dataset, user, actor: "Audit fixture", batteries: [battery("BAT-SCRAPPED"), battery("BAT-ACTIVE", "active")], people: [], rooms: [], buildings: [], staffDirectory: [], teachingGroups: [], events: [] });
   const current = { current: snapshot() };
   Object.defineProperty(globalThis, "sessionStorage", { configurable: true, value: { getItem(key) { if (env.failReads) throw new Error("Browser recovery read unavailable"); return entries.get(key) ?? null; }, setItem(key, value) { entries.set(key, value); }, removeItem(key) { entries.delete(key); } } });
@@ -69,7 +69,7 @@ async function environment(run, seed = []) {
   Object.defineProperty(globalThis, "fetch", { configurable: true, value: async (url, options) => { const input = JSON.parse(options.body); requests.push({ url, input: structuredClone(input) }); return new Response(JSON.stringify({ result: env.respond(input) }), { status: 200, headers: { "Content-Type": "application/json" } }); } });
   env.bindings = {
     flushSync: callback => callback(), transitionWorkspace: callback => callback(),
-    useInventoryData() { current.current = snapshot(); return { user, dataset: env.dataset, data: current.current, loading: false, error: env.error, revision: env.revision, current, setError: value => { env.error = value; }, setRevision: update => { env.revision = typeof update === "function" ? update(env.revision) : update; }, load: async dataset => { loads.push(dataset); }, refresh() {}, changeDataset: dataset => { env.dataset = dataset; }, acceptReviewedInventory() {} }; },
+    useInventoryData() { current.current = env.hasData ? snapshot() : null; return { user, dataset: env.dataset, data: current.current, loading: env.loading, error: env.error, revision: env.revision, current, setError: value => { env.error = value; }, setRevision: update => { env.revision = typeof update === "function" ? update(env.revision) : update; }, load: async dataset => { loads.push(dataset); }, refresh() {}, changeDataset: dataset => { env.dataset = dataset; }, acceptReviewedInventory() {} }; },
     useWorkflowRecovery(accountId) { return { recovery: libraries.readWorkflowRecovery(sessionStorage, accountId), unavailable: false, read: () => libraries.readWorkflowRecovery(sessionStorage, accountId) }; },
     useLocationRecovery() { return { recovery: { attempts: [], error: "" }, read: () => ({ attempts: [], error: "" }) }; },
     useMessageCount: () => ({ unreadCount: 0, acceptUnreadCount() {} }), useInventoryPolling() {},
@@ -114,6 +114,136 @@ test("the app retains the Mapping instance while scan and intake stations tempor
   assert.equal(env.requests.length, 0);
   app.unmount();
 }));
+
+test("the whole assets workspace requires explicit exit for both roles and inventories while its sections remain usable", async () => {
+  for (const role of ["staff", "admin"]) for (const dataset of ["demo", "live"]) await environment(async env => {
+    env.user.role = role; env.dataset = dataset;
+    const app = mount("InventoryApp", env, { initialUser: env.user });
+    node(app, "ApplicationShell").props.onAssets();
+    assert.equal(node(app, "ApplicationShell").props.view, "assets");
+    assert.equal(node(app, "ApplicationShell").props.locked, true);
+    const selector = nodes(node(app, "ApplicationShell").props.scopeControls).find(item => item.type === "Select" && item.props.value === dataset);
+    assert.equal(selector.props.disabled, true);
+    selector.props.onValueChange(dataset === "demo" ? "live" : "demo");
+    assert.equal(env.dataset, dataset, "The dataset callback itself honors the workspace lock");
+    node(app, "ApplicationShell").props.onNavigate("mapping");
+    node(app, "ApplicationShell").props.onTeachingGroups();
+    node(app, "ApplicationShell").props.onScan("checkout");
+    node(app, "ApplicationShell").props.onScan("return");
+    assert.equal(node(app, "ApplicationShell").props.view, "assets");
+    assert.equal(node(app, "ScanStation"), undefined);
+    assert.equal(node(app, "TeachingGroupsWorkspace"), undefined);
+    assert.equal(node(app, "MappingWorkspace").props.active, false);
+    assert.throws(() => env.tools.get("stage_battery_movement").execute({ kind: "checkout", batteryIds: ["BAT-ACTIVE"] }), /current workflow/);
+    assert.equal(env.tools.get("read_battery_inventory").execute({}).batteries.length, 1);
+    node(app, "Tabs").props.onValueChange("history");
+    assert.equal(node(app, "Tabs").props.value, "history");
+    assert.ok(node(app, "RemovalHistory"));
+    node(app, "Tabs").props.onValueChange("removal");
+    assert.equal(node(app, "Tabs").props.value, "removal");
+    node(app, "RemovalStation").props.onExit();
+    assert.equal(node(app, "ApplicationShell").props.view, "inventory");
+    assert.equal(node(app, "ApplicationShell").props.locked, false);
+    node(app, "ApplicationShell").props.onNavigate("mapping");
+    assert.equal(node(app, "MappingWorkspace").props.active, true);
+    assert.equal(env.requests.length, 0);
+    app.unmount();
+  });
+});
+
+test("starting intake within locked working assets switches to demo and its guarded exit restores navigation", async () => environment(async env => {
+  env.dataset = "live";
+  const app = mount("InventoryApp", env, { initialUser: env.user });
+  node(app, "ApplicationShell").props.onAssets();
+  assert.equal(node(app, "ApplicationShell").props.locked, true);
+  const start = button(app, "Start demo intake");
+  assert.ok(start); assert.equal(start.props.disabled, false);
+  start.props.onClick();
+  assert.equal(env.dataset, "demo");
+  assert.equal(node(app, "IntakeStation").props.data.dataset, "demo");
+  assert.equal(node(app, "ApplicationShell").props.locked, true);
+  node(app, "ApplicationShell").props.onNavigate("messages");
+  assert.ok(node(app, "IntakeStation"));
+  node(app, "IntakeStation").props.onExit();
+  assert.equal(node(app, "IntakeStation"), undefined);
+  assert.equal(node(app, "ApplicationShell").props.view, "inventory");
+  assert.equal(node(app, "ApplicationShell").props.locked, false);
+  assert.equal(env.requests.length, 0);
+  app.unmount();
+}));
+
+test("explicit assets exits preserve teaching-group selection and the originating Mapping workspace", async () => environment(async env => {
+  const app = mount("InventoryApp", env, { initialUser: env.user });
+  const reference = { id: crypto.randomUUID(), version: 4 };
+  node(app, "ApplicationShell").props.onTeachingGroups();
+  node(app, "TeachingGroupsWorkspace").props.onActiveChange(reference.id);
+  node(app, "TeachingGroupsWorkspace").props.onRemoval(["BAT-ACTIVE"], reference);
+  assert.deepEqual(node(app, "RemovalStation").props.initialIds, ["BAT-ACTIVE"]);
+  assert.deepEqual(node(app, "RemovalStation").props.teachingGroup, reference);
+  node(app, "Tabs").props.onValueChange("history");
+  button(app, "Exit workspace").props.onClick();
+  assert.equal(node(app, "ApplicationShell").props.view, "teaching-groups");
+  assert.equal(node(app, "TeachingGroupsWorkspace").props.activeId, reference.id);
+  assert.equal(node(app, "ApplicationShell").props.locked, false);
+  node(app, "ApplicationShell").props.onNavigate("mapping");
+  const mappingKey = node(app, "MappingWorkspace").key;
+  node(app, "MappingWorkspace").props.onRemoval(["BAT-ACTIVE"]);
+  assert.equal(node(app, "ApplicationShell").props.view, "assets");
+  node(app, "RemovalStation").props.onExit();
+  assert.equal(node(app, "MappingWorkspace").props.active, true);
+  assert.equal(node(app, "MappingWorkspace").key, mappingKey);
+  node(app, "ApplicationShell").props.onAssets();
+  assert.equal(node(app, "RemovalStation").props.teachingGroup, undefined);
+  node(app, "RemovalStation").props.onExit();
+  assert.equal(node(app, "ApplicationShell").props.view, "inventory");
+  assert.equal(env.requests.length, 0);
+  app.unmount();
+}));
+
+test("a pending retired confirmation cannot escape through workspace exit, section changes or navigation callbacks", async () => {
+  const saved = attempt("live"), key = libraries.retiredAssetStorageKey(actor, "live"), raw = JSON.stringify(saved);
+  await environment(async env => {
+    const app = mount("InventoryApp", env, { initialUser: env.user });
+    node(app, "RecoveryNotices").props.resumeRetiredAction({ dataset: "live" });
+    node(app, "RemovalHistory").props.onBusyChange(true);
+    const exit = button(app, "Exit workspace");
+    assert.ok(exit); assert.equal(exit.props.disabled, true);
+    exit.props.onClick();
+    node(app, "Tabs").props.onValueChange("intake");
+    node(app, "ApplicationShell").props.onNavigate("inventory");
+    node(app, "ApplicationShell").props.onScan("return");
+    assert.equal(node(app, "ApplicationShell").props.view, "assets");
+    assert.equal(node(app, "Tabs").props.value, "history");
+    assert.equal(node(app, "ApplicationShell").props.locked, true);
+    assert.equal(node(app, "ScanStation"), undefined);
+    assert.equal(env.dataset, "live");
+    assert.equal(env.entries.get(key), raw);
+    assert.equal(env.requests.length, 0);
+    app.unmount();
+  }, [[key, raw]]);
+});
+
+test("the assets workspace and an opened intake remain escapable after load failure without losing saved evidence", async () => {
+  for (const openIntake of [false, true]) await environment(async env => {
+    const app = mount("InventoryApp", env, { initialUser: env.user });
+    node(app, "ApplicationShell").props.onAssets();
+    if (openIntake) button(app, "Start demo intake").props.onClick();
+    const key = openIntake ? `battery-intake:${actor}:demo` : libraries.removalDraftStorageKey(actor, "demo");
+    const raw = "retained draft while inventory is unavailable";
+    env.entries.set(key, raw);
+    env.hasData = false; env.error = "Inventory could not load";
+    assert.equal(node(app, "ApplicationShell").props.locked, true);
+    const exit = button(app, "Exit workspace");
+    assert.ok(exit); assert.equal(exit.props.disabled, false);
+    exit.props.onClick();
+    assert.equal(node(app, "ApplicationShell").props.view, "inventory");
+    assert.equal(node(app, "ApplicationShell").props.intake, false);
+    assert.equal(node(app, "ApplicationShell").props.locked, false);
+    assert.equal(env.entries.get(key), raw);
+    assert.equal(env.requests.length, 0);
+    app.unmount();
+  });
+});
 
 test("fresh WebMCP staging honors preserved retired requests while its read tool remains usable", async () => environment(async env => {
   const app = mount("InventoryApp", env, { initialUser: env.user }); app.render(); const saved = attempt("live"), raw = JSON.stringify(saved), key = libraries.retiredAssetStorageKey(actor, "live"); env.entries.set(key, raw);

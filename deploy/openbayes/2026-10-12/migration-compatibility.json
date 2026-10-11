@@ -1,0 +1,168 @@
+{
+  "deploymentName": "2026-10-12-workspace-1.0.0",
+  "previousSourceCommit": "14e18151e52184b24d4b941f1057c78c34a88b09",
+  "entries": [
+    {
+      "name": "0000_military_warstar",
+      "sha256": "5fa784577f919fd9f778596922b354d5cb36ef0c1037fe3a1a324a428f2bce32",
+      "sourceSha256": "7a8a1966d2c817c7bb625106154b68db8fe6c7b33ef85c6b20241caee17a1b39",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": true
+    },
+    {
+      "name": "0001_inventory_integrity",
+      "sha256": "7fedfaa51ad703fbece7278edc651b5ac4045060952b17d8836850d74d794f13",
+      "sourceSha256": "7fedfaa51ad703fbece7278edc651b5ac4045060952b17d8836850d74d794f13",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0002_prevent_record_replacement",
+      "sha256": "25149124e32e491b802f4fd9b7a1af238d6fd43ff030f284e787a07537f2f92d",
+      "sourceSha256": "25149124e32e491b802f4fd9b7a1af238d6fd43ff030f284e787a07537f2f92d",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0003_building_rooms_charge_duration",
+      "sha256": "a14c75bb688758b3e6b6e6609b7040dd699e62a60c657ac7ce03696040460c6a",
+      "sourceSha256": "a14c75bb688758b3e6b6e6609b7040dd699e62a60c657ac7ce03696040460c6a",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0004_staff_accounts_shared_inventory",
+      "sha256": "7d8e9d6910f6489f0c64f7a5c2336120bb65b099764ee79ab010849848681878",
+      "sourceSha256": "7d8e9d6910f6489f0c64f7a5c2336120bb65b099764ee79ab010849848681878",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0005_battery_age_dates",
+      "sha256": "50749c5c06ab78596f7de1377659a46856b4c6e225b9502c7e3822b57df949a2",
+      "sourceSha256": "50749c5c06ab78596f7de1377659a46856b4c6e225b9502c7e3822b57df949a2",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0006_staff_self_checkout",
+      "sha256": "08e1afe3fc42e71009d2e628bcde0706e74baa4a256bdf1bb625ffba06e311e5",
+      "sourceSha256": "08e1afe3fc42e71009d2e628bcde0706e74baa4a256bdf1bb625ffba06e311e5",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0007_room_availability",
+      "sha256": "0830214341ca030775e44e95f6757762d7c41a4a8f725efea9d33cebbd55a86b",
+      "sourceSha256": "0830214341ca030775e44e95f6757762d7c41a4a8f725efea9d33cebbd55a86b",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0008_periodic_tasks_messages",
+      "sha256": "e5b7190814f4269da4b77ffc6562d38d380fd92e7172696953bcc6a6defc472b",
+      "sourceSha256": "e5b7190814f4269da4b77ffc6562d38d380fd92e7172696953bcc6a6defc472b",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0009_optional_task_completion_notes",
+      "sha256": "14c66ea823c6885b41fe4941c86eb9e06c196ff3863f39aed8beafea74a93e88",
+      "sourceSha256": "14c66ea823c6885b41fe4941c86eb9e06c196ff3863f39aed8beafea74a93e88",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0010_battery_models",
+      "sha256": "df8a9cb06cc944dc86f9747ad957fe107a98eaacf706681208486e1073f1e8d4",
+      "sourceSha256": "df8a9cb06cc944dc86f9747ad957fe107a98eaacf706681208486e1073f1e8d4",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0011_batch_intake",
+      "sha256": "38c32e678ce01545429547875b9a3dee5f8b655345edfded0572f8fef9468f8e",
+      "sourceSha256": "38c32e678ce01545429547875b9a3dee5f8b655345edfded0572f8fef9468f8e",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0012_battery_lifecycle",
+      "sha256": "a12620f5435588d25632eab25ce861ab5c3a32e2cbfc7a597d5c1593ec72cc1a",
+      "sourceSha256": "a12620f5435588d25632eab25ce861ab5c3a32e2cbfc7a597d5c1593ec72cc1a",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0013_optional_removal_reason",
+      "sha256": "936a2a7c8cb5af5caece8210fd3e1e31869c563abbe4b7319201b3f70b762b99",
+      "sourceSha256": "936a2a7c8cb5af5caece8210fd3e1e31869c563abbe4b7319201b3f70b762b99",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0014_personal_teaching_groups",
+      "sha256": "63d4a806ef0bb6ca7ea39cceb4bafb3b2b3fcd61a380ff114029b417568bd644",
+      "sourceSha256": "63d4a806ef0bb6ca7ea39cceb4bafb3b2b3fcd61a380ff114029b417568bd644",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0015_recoverable_task_removal",
+      "sha256": "bc8e60a6df013fe280ed27ab64fefdb097948d3a8cb50d589cd2e940c3c34518",
+      "sourceSha256": "bc8e60a6df013fe280ed27ab64fefdb097948d3a8cb50d589cd2e940c3c34518",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0016_custom_task_plans",
+      "sha256": "792dbca6b99836598b65e7f75e02979983c852baebcd4c2282cbdfb6a7edb862",
+      "sourceSha256": "792dbca6b99836598b65e7f75e02979983c852baebcd4c2282cbdfb6a7edb862",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0017_battery_inspections",
+      "sha256": "1478662a279d3d464587a4e080ae0afcdcc0afb5712c08ca96014e75955ba28d",
+      "sourceSha256": "1478662a279d3d464587a4e080ae0afcdcc0afb5712c08ca96014e75955ba28d",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0018_retired_asset_actions",
+      "sha256": "c894f07d3605dc1b100b81a7c7ee4a48557554e2af990699b36f040672ff421f",
+      "sourceSha256": "c894f07d3605dc1b100b81a7c7ee4a48557554e2af990699b36f040672ff421f",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0019_new_arrivals",
+      "sha256": "29c94d85973e77c88ebe5b3858f6db3c15436fd1e29d9f75e11a64ef199bbb58",
+      "sourceSha256": "29c94d85973e77c88ebe5b3858f6db3c15436fd1e29d9f75e11a64ef199bbb58",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0020_teaching_checkouts",
+      "sha256": "72f2024de0ace05522cc261bfcb1e30c8383806666abe0e9749d8bdbd098413c",
+      "sourceSha256": "72f2024de0ace05522cc261bfcb1e30c8383806666abe0e9749d8bdbd098413c",
+      "previouslyApplied": true,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0021_location_beacons",
+      "sha256": "a072f66ddddcbb0d7638ea4c007652930e44d0216cdd16cbffde425a8d4ad464",
+      "sourceSha256": "a072f66ddddcbb0d7638ea4c007652930e44d0216cdd16cbffde425a8d4ad464",
+      "previouslyApplied": false,
+      "lineEndingOnlyDifference": false
+    },
+    {
+      "name": "0022_teaching_checkout_changes",
+      "sha256": "27bf36f907e63269a70d828e8f01a190ac4c53dd6852350c387161b32d04ebba",
+      "sourceSha256": "27bf36f907e63269a70d828e8f01a190ac4c53dd6852350c387161b32d04ebba",
+      "previouslyApplied": false,
+      "lineEndingOnlyDifference": false
+    }
+  ],
+  "previousDeploymentName": "2026-10-08-teaching-groups"
+}

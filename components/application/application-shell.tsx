@@ -101,7 +101,7 @@ function NavigationSurface({ selection, children }: { selection: string; childre
     let stopPosition = () => {}, stopHeight = () => {};
     const measure = () => {
       const current = element.querySelector<HTMLElement>('[data-slot="sidebar-menu-button"][aria-current="page"]');
-      if (!current) { element.style.setProperty("--sidebar-current-opacity", "0"); positioned.current = false; return; }
+      if (!current || current.closest(".sidebar-quick-actions")) { element.style.setProperty("--sidebar-current-opacity", "0"); positioned.current = false; return; }
       const bounds = element.getBoundingClientRect(), selected = current.getBoundingClientRect();
       const top = selected.top - bounds.top + element.scrollTop;
       stopPosition(); stopHeight();
@@ -183,6 +183,11 @@ export function ApplicationShell({
         battery.loanId &&
         battery.borrowerAccountId === user.id,
     ) ?? [];
+  const quickActions = [
+    { view: "checkout", label: "Scan checkout", icon: ScanLine, action: () => onScan("checkout") },
+    { view: "return", label: "Scan return", icon: RotateCcw, action: () => onScan("return") },
+    { view: "assets", label: "Intake & removal", icon: Package, action: onAssets },
+  ];
   const workspace = [
     {
       view: "inventory",
@@ -201,27 +206,6 @@ export function ApplicationShell({
       label: "Teaching groups",
       icon: Users,
       action: onTeachingGroups,
-    },
-    {
-      view: "assets",
-      label: "Intake & removal",
-      icon: Package,
-      action: onAssets,
-      needsData: true,
-    },
-    {
-      view: "checkout",
-      label: "Scan checkout",
-      icon: ScanLine,
-      action: () => onScan("checkout"),
-      needsData: true,
-    },
-    {
-      view: "return",
-      label: "Scan return",
-      icon: RotateCcw,
-      action: () => onScan("return"),
-      needsData: true,
     },
     {
       view: "activity",
@@ -292,13 +276,35 @@ export function ApplicationShell({
           <DesktopNavigationToggle />
         </SidebarHeader>
         <NavigationSurface selection={`${user.role}:${active ?? "none"}`}>
+          <SidebarGroup className="sidebar-quick-actions">
+            <SidebarGroupLabel>QUICK ACTIONS</SidebarGroupLabel>
+            <SidebarMenu className="sidebar-quick-actions-menu">
+              {quickActions.map((item) => (
+                <SidebarMenuItem key={item.view}>
+                  <NavigationButton
+                    className="sidebar-operation"
+                    disabled={locked || !ready}
+                    isActive={active === item.view}
+                    aria-label={item.label}
+                    tooltip={item.label}
+                    data-navigation-view={item.view}
+                    data-operation={item.view}
+                    onClick={item.action}
+                  >
+                    <span className="sidebar-operation-icon" aria-hidden="true"><item.icon /></span>
+                    <span className="sidebar-nav-label">{item.label}</span>
+                  </NavigationButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroup>
           <SidebarGroup>
             <SidebarGroupLabel>WORKSPACE</SidebarGroupLabel>
             <SidebarMenu>
               {workspace.map((item) => (
                 <SidebarMenuItem key={item.view}>
                   <NavigationButton
-                    disabled={locked || (!!item.needsData && !ready)}
+                    disabled={locked}
                     isActive={active === item.view}
                     aria-label={item.view === "inventory" && hasInventoryNotice ? `${item.label} · ${inventoryNoticeDescription}` : item.label}
                     tooltip={item.view === "inventory" && hasInventoryNotice ? `${item.label} · ${inventoryNoticeDescription}` : item.label}

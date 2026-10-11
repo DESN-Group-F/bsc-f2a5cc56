@@ -78,18 +78,18 @@ function setTag(view, value) { control(view.render(), "removal-tag").props.onCha
 test("returning to inventory preserves the removal draft and blocks exit during unknown confirmation or storage recovery", async () => {
     await environment(async ({ entries }) => {
         let exits = 0; const view = mount({ onExit: () => exits++ }); queue(view, "BAT-A"); reason(view, "Optional reviewed note");
-        const before = savedDraft(entries); assert.equal(button(view.render(), "Back to inventory").props.disabled, false); button(view.render(), "Back to inventory").props.onClick();
+        const before = savedDraft(entries); assert.equal(button(view.render(), "Exit removal").props.disabled, false); button(view.render(), "Exit removal").props.onClick();
         assert.equal(exits, 1); assert.deepEqual(savedDraft(entries), before); assert.equal(view.writes.length, 0); view.unmount();
     });
     await environment(async ({ entries }) => {
         let exits = 0; const view = mount({ onExit: () => exits++, async write() { throw new Error("Response lost"); } }); queue(view, "BAT-A");
         await button(view.render(), "Confirm all queued").props.onClick(); const before = pendingValues(entries);
-        assert.equal(button(view.render(), "Back to inventory").props.disabled, true); button(view.render(), "Back to inventory").props.onClick();
+        assert.equal(button(view.render(), "Exit removal").props.disabled, true); button(view.render(), "Exit removal").props.onClick();
         assert.equal(exits, 0); assert.deepEqual(pendingValues(entries), before); view.unmount();
     });
     await environment(async ({ storage }) => {
         let exits = 0; const view = mount({ onExit: () => exits++ }); storage.failWrites = true; queue(view, "BAT-A");
-        assert.equal(button(view.render(), "Back to inventory").props.disabled, true); button(view.render(), "Back to inventory").props.onClick(); assert.equal(exits, 0); view.unmount();
+        assert.equal(button(view.render(), "Exit removal").props.disabled, true); button(view.render(), "Exit removal").props.onClick(); assert.equal(exits, 0); view.unmount();
     });
 });
 

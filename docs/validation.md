@@ -1,5 +1,29 @@
 # Validation record
 
+## Persistent intake and removal workspace — 11 October 2026
+
+Intake and removal now share the scan-station header, sticky exit control, connection notice and workflow guide. Entering their workspace locks ordinary outer navigation, sign-out and manual inventory selection. Explicit exits preserve original station guards and saved drafts; internal tabs and original recovery routes remain usable. An initial data-loading failure also leaves an available exit.
+
+- **116/116 targeted tests passed**: 61 intake/removal/app integration cases and 55 navigation/scan/workflow recovery and reliability cases, with no failures or skipped tests. Added coverage includes both roles and datasets, internal live-to-demo intake, Teaching group and Mapping return paths, no-data exit, and intact uncertain-intake payloads across exit/reopen/exact retry. Existing removal tests retain their unresolved-write exit restrictions.
+- Targeted ESLint, TypeScript with `--noEmit --incremental false` and the production build passed. The final narrow-tab layout and history-header wording were rebuilt after the behavioral checks.
+- Production-preview browser checks verified locked outer controls, internal tabs, intake/removal/history exits and restored navigation. A removal queue item and a simulated intake draft each survived exit and reopening. These temporary drafts were removed through their own controls; no registration, retirement, removal or loan was committed in the browser.
+- Desktop and 390 x 844 layouts were checked. Narrow views retained visible sticky exit controls without document horizontal overflow; the mobile drawer showed disabled outer destinations during intake and restored them after exit. Console inspection found no warnings or errors, and the viewport override was reset.
+
+Evidence is under ignored `work/qa/`: `asset-exit-integration-tests.log`, `asset-workspace-related-tests.log`, `asset-workspace-lint.log`, `asset-workspace-types.log`, `asset-workspace-build.log`, and the `asset-workspace-{intake,removal}-{desktop,mobile}.jpg` screenshots. Hook-based failure/recovery tests do not establish every real browser/network combination, and this scoped run is not a full-project or hardware acceptance. Existing isolated preview data and hosted services were preserved; no Git publication or deployment was performed.
+
+## Sidebar quick actions — 11 October 2026
+
+Local navigation now places Scan checkout, Scan return and Intake & removal in a dedicated top group, with blue, teal and purple themes. Existing destinations, data-readiness checks, operation locks and staff/administrator permissions are preserved.
+
+- Existing role-navigation regression suite: **10/10 passed**. Targeted ESLint, TypeScript with `--noEmit --incremental false`, and production build passed.
+- Production-preview browser checks covered desktop expansion/collapse, entering and exiting an empty checkout station, Intake & removal navigation, and keyboard progression with a visible 2 px focus outline. The active checkout remains visually selected while navigation is locked. Compact icons fit their cards.
+- At 390 x 844, all three labels were visible and selecting Scan return closed the drawer and opened the station. No battery movements were submitted. The viewport override was reset and the existing isolated synthetic database was retained.
+- Reduced-motion and forced-colors fallbacks are present in CSS. OS preference toggles, measured frame rates and exhaustive accessibility acceptance were not tested. No Git publication or hosted deployment is included.
+
+Evidence is retained under ignored `work/qa/`: `quick-actions-navigation.log`, `quick-actions-lint.log`, `quick-actions-types.log`, `quick-actions-build.log`, `quick-actions-desktop.jpg`, `quick-actions-compact.jpg` and `quick-actions-mobile.jpg`.
+
+Follow-up visual correction: the shared blue selection marker is hidden for all three Quick actions, preserving their own active themes. Browser checks confirmed marker opacity targets of 0 for checkout, return and intake/removal, and 1 again for Battery inventory; the compact intake/removal view was visually checked. Existing navigation tests passed 10/10, targeted ESLint and the production build passed. No business records were changed. Evidence: `quick-actions-marker-navigation.log`, `quick-actions-marker-lint.log`, `quick-actions-marker-build.log` and `quick-actions-marker-fixed.jpg` under `work/qa/`.
+
 ## Source freeze 1.0.0 — 10 October 2026
 
 The user authorized publishing the accepted 1.0.0 development work to Git. The formal web snapshot uses branch `battery-staff-platform-v1.0.0`, annotated tag `battery-inventory-v1.0.0-freeze-20261010`, and the 0.9.0 commit `895ef49e60f23abf0c3892f7571ff1a9f0792409` as its sole parent. Author, committer and tagger are `admin <admin@inventory.local>`. Publication adds the version references without replacing team main, the mobile test branch or previous releases; it does not deploy, restart a service, migrate a remote database or upload local business data.

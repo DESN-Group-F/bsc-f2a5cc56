@@ -25,6 +25,10 @@ The after-4 checkpoint is a stable engineering foundation, not final product-exp
 
 Responsive layout rules belong with their component. `materials.css` is the explicit last import for shared surface and control consistency; feature layout must not migrate into this layer. The mobile application copies shared frontend sources through its explicit synchronization script; changing web files does not itself publish or rebuild a native application.
 
+## Persistent operation workspaces
+
+Intake and removal reuse the scan station's sticky exit header, connection notice, workflow guide and panel spacing. The landing and history sections also expose an explicit exit. Narrow layouts keep the three lifecycle tabs aligned in equal-width columns; their text may wrap within a tab. Confirmations, drafts and original-request recovery remain separate from these presentation rules.
+
 ## Sign-in and asynchronous feedback
 
 Sign-in uses the application's battery motif with layered entrance and status transitions. Decorative motion uses transforms and opacity, respects reduced motion and does not obstruct the form. The form performs explicit English validation with field errors and focus on the first invalid input; browser-localized required-field bubbles are suppressed. It reads current form values so password-manager autofill remains supported.
@@ -34,6 +38,10 @@ Sign-in uses the application's battery motif with layered entrance and status tr
 Refreshes retain data only within the same account and request context. Stale data cannot authorize account, task or beacon changes. Inventory polling is single-flight and pauses during manual refresh, initial loading and blocking workflows. Offline indicators describe browser connectivity only; server confirmation remains necessary for success.
 
 ## Color and material
+
+The shared blue navigation marker is reserved for ordinary destinations. Quick actions use their own filled theme as the selected state in both expanded and compact navigation.
+
+The web sidebar places Scan checkout, Scan return and Intake & removal in a leading Quick actions group. Blue, teal and violet icon surfaces distinguish the three workflows; their subtle card backgrounds remain separate from the solid selected state. These accents identify destinations, not inventory or safety statuses. Each entry remains available as a distinct icon with its accessible label and tooltip when the sidebar collapses. The mobile drawer retains the full group. Hover, focus and selected transitions respect reduced motion and forced colors; original navigation locks and reviewed workflow entry points remain in place.
 
 | Purpose | Token | Value |
 | --- | --- | --- |

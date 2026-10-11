@@ -1,7 +1,7 @@
 "use client";
 import { useCallback, useEffect, useState } from "react";
 import { flushSync } from "react-dom";
-import { Package, Radio, FlaskConical, RefreshCw, X } from "lucide-react";
+import { Package, Radio, FlaskConical, RefreshCw, LogOut, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -138,6 +138,7 @@ export default function InventoryApp({
     nonce: string;
   } | null>(null);
   const [intake, setIntake] = useState<{ nonce: string } | null>(null);
+  const assetWorkspaceOpen = view === "assets" && !scan;
   const [assetTab, setAssetTab] = useState<"intake" | "removal" | "history">(
     "intake",
   );
@@ -213,6 +214,10 @@ export default function InventoryApp({
     return () => window.removeEventListener("battery-teaching-checkout-recovery", read);
   }, [readTeachingRecovery]);
   function changeDataset(mode: Dataset) {
+    if (assetWorkspaceOpen) return;
+    changeWorkflowDataset(mode);
+  }
+  function changeWorkflowDataset(mode: Dataset) {
     if (modalOpen || interceptPendingTeachingCheckout()) return;
     setNotice("");
     setActiveGroupId(null);
@@ -271,20 +276,19 @@ export default function InventoryApp({
     }
     return body.result;
   };
-  const modalOpen = !!(
-      intake ||
-      scan ||
+  const dialogOpen = !!(
       movement ||
       editor ||
       detailId ||
       importKind ||
       exportDraft ||
-      assetLocked ||
       groupsOpen ||
       groupMaintenance ||
       locationToolsOpen ||
       teachingCheckout
-    ),
+    );
+  const modalOpen = !!(intake || scan || assetLocked || dialogOpen),
+    navigationLocked = modalOpen || assetWorkspaceOpen,
     ready = !!data && !loading && !error && !teachingRecovery.error && !teachingRecovery.attempts.length && !teachingRecovery.drafts.length;
   function showWorkspace(update: () => void) {
     transitionWorkspace(update, "navigation");
@@ -292,7 +296,10 @@ export default function InventoryApp({
     if (typeof document !== "undefined") document.getElementById?.("workspace-content")?.focus?.({ preventScroll: true });
   }
   function openTeachingGroups() {
-    if (modalOpen || interceptPendingTeachingCheckout()) return;
+    if (navigationLocked || interceptPendingTeachingCheckout()) return;
+    showTeachingGroups();
+  }
+  function showTeachingGroups() {
     if (view !== "teaching-groups") {
       setGroupsReturnView(view);
       setActiveGroupId(null);
@@ -310,7 +317,7 @@ export default function InventoryApp({
   function resumeGroupChange(pending: { dataset: Dataset }) {
     if (modalOpen || interceptPendingTeachingCheckout() || interceptPendingRetiredAction()) return;
     if (pending.dataset !== dataset) { setNotice(""); setActiveGroupId(null); setActivityGroupId(null); selectDataset(pending.dataset); }
-    openTeachingGroups();
+    showTeachingGroups();
     setGroupMaintenance({ ids: [] });
   }
   function interceptPendingGroupChange() {
@@ -403,20 +410,26 @@ export default function InventoryApp({
   }
   const navigationView = scan || intake ? null : view;
   function openAssets() {
-    if (modalOpen || interceptPendingWorkflow()) return;
+    if (navigationLocked || interceptPendingWorkflow()) return;
     setGroupRemoval(null);
     if (view !== "assets") showWorkspace(() => setView("assets"));
     setNotice("");
   }
+  function exitAssets() {
+    if (dialogOpen || assetLocked || scan || intake && data) return;
+    setIntake(null);
+    setNotice("");
+    showWorkspace(() => setView(groupRemoval?.returnView ?? (groupRemoval ? "teaching-groups" : "inventory")));
+  }
   function resumeRemoval(pending: { dataset: Dataset }) {
     if (modalOpen || interceptPendingTeachingCheckout() || interceptPendingRetiredAction()) return;
-    if (dataset !== pending.dataset) changeDataset(pending.dataset);
+    if (dataset !== pending.dataset) changeWorkflowDataset(pending.dataset);
     setView("assets");
     setAssetTab("removal");
   }
   function resumeRetiredAction(pending: { dataset: Dataset }) {
     if (modalOpen || interceptPendingTeachingCheckout()) return;
-    if (dataset !== pending.dataset) changeDataset(pending.dataset);
+    if (dataset !== pending.dataset) changeWorkflowDataset(pending.dataset);
     setView("assets");
     setAssetTab("history");
   }
@@ -435,7 +448,7 @@ export default function InventoryApp({
   }
   function startIntake() {
     if (modalOpen || interceptPendingWorkflow("intake")) return;
-    if (dataset !== "demo") changeDataset("demo");
+    if (dataset !== "demo") changeWorkflowDataset("demo");
     setView("assets");
     setAssetTab("intake");
     setNotice("");
@@ -446,7 +459,7 @@ export default function InventoryApp({
     kind: "checkout" | "return";
   }) {
     if (modalOpen || interceptPendingTeachingCheckout() || interceptPendingRetiredAction()) return;
-    if (pending.dataset !== dataset) changeDataset(pending.dataset);
+    if (pending.dataset !== dataset) changeWorkflowDataset(pending.dataset);
     setNotice("");
     setMovement({ kind: pending.kind, ids: [], nonce: crypto.randomUUID() });
   }
@@ -455,7 +468,7 @@ export default function InventoryApp({
     kind: "checkout" | "return";
   }) {
     if (modalOpen || interceptPendingTeachingCheckout() || interceptPendingRetiredAction()) return;
-    if (pending.dataset !== dataset) changeDataset(pending.dataset);
+    if (pending.dataset !== dataset) changeWorkflowDataset(pending.dataset);
     setNotice("");
     setScan({ kind: pending.kind, nonce: crypto.randomUUID() });
   }
@@ -465,7 +478,7 @@ export default function InventoryApp({
     teachingGroup?: TeachingGroupReference,
     separateCheckout = false,
   ) {
-    if (modalOpen || interceptPendingWorkflow()) return;
+    if (navigationLocked || interceptPendingWorkflow()) return;
     if (kind === "checkout" && teachingGroup) {
       const group = data?.teachingGroups.find(item => item.id === teachingGroup.id && item.version === teachingGroup.version);
       if (!group) { setError("The reviewed teaching group changed. Refresh and reopen it before checkout."); return; }
@@ -497,7 +510,7 @@ export default function InventoryApp({
     ids: string[],
     teachingGroup: TeachingGroupReference,
   ) {
-    if (modalOpen || !ready || interceptPendingGroupChange()) return;
+    if (navigationLocked || !ready || interceptPendingGroupChange()) return;
     if (nextPendingWorkflow(readRecovery())) {
       setNotice(
         "Resume the unfinished workflow before starting a group removal.",
@@ -513,7 +526,7 @@ export default function InventoryApp({
     setAssetTab("removal");
   }
   function startScan(kind: "checkout" | "return") {
-    if (modalOpen || interceptPendingWorkflow()) return;
+    if (navigationLocked || interceptPendingWorkflow()) return;
     showWorkspace(() => {
       setNotice("");
       setScan({ kind, nonce: crypto.randomUUID() });
@@ -524,7 +537,7 @@ export default function InventoryApp({
       registerInventoryTools(
         () => current.current,
         (draft) => {
-          if (modalOpen)
+          if (navigationLocked)
             throw new Error(
               "Finish or close the current workflow before preparing another movement.",
             );
@@ -537,9 +550,9 @@ export default function InventoryApp({
           flushSync(() => setMovement(draft));
         },
       ),
-    [modalOpen, readRecovery, readTeachingRecovery, current],
+    [navigationLocked, readRecovery, readTeachingRecovery, current],
   );
-  useInventoryPolling({ paused: modalOpen || loading || !data, dataset, load, onError: setError });
+  useInventoryPolling({ paused: navigationLocked || loading || !data, dataset, load, onError: setError });
   const taskChanged = useCallback(async () => {
     setRevision((value) => value + 1);
     await load(dataset);
@@ -566,6 +579,18 @@ export default function InventoryApp({
         ? "borrowed"
         : "all";
   const activityScope = view === "my-activity" ? "mine" : "all";
+  const assetExitHeader = (
+    <div className="scan-station-header station-exit-bar">
+      <div>
+        <h2>{!data ? "Intake & removal" : activeAssetTab === "history" ? "Review removal records" : "First-time battery intake"}</h2>
+        <p>{activeAssetTab === "history" ? "Review recorded retirements and removals, download evidence or review eligible recovery actions." : "Prepare new battery records for review. Existing batteries use Scan return."}</p>
+        <p className="station-exit-hint">{assetLocked ? "Resolve the current confirmation or storage issue before leaving this workspace." : dialogOpen ? "Finish or close the current review before leaving this workspace." : !data ? "You can exit while inventory data is unavailable. Saved drafts and original requests stay in this tab." : "Choose Exit workspace to finish and restore sidebar navigation. Saved drafts stay in this tab."}</p>
+      </div>
+      <Button type="button" size="lg" className="station-exit-button" disabled={dialogOpen || assetLocked || !!scan || !!(intake && data)} onClick={exitAssets}>
+        <LogOut size={20}/>Exit workspace
+      </Button>
+    </div>
+  );
   return (
     <ApplicationShell
       user={user}
@@ -573,11 +598,11 @@ export default function InventoryApp({
       view={navigationView}
       scan={scan?.kind ?? null}
       intake={!!intake}
-      locked={!!(scan || intake || assetLocked || teachingCheckout || teachingPending || locationToolsOpen)}
+      locked={!!(scan || intake || assetWorkspaceOpen || assetLocked || teachingCheckout || teachingPending || locationToolsOpen)}
       ready={ready}
       unreadCount={unreadCount}
       inventoryNoticeCount={newArrivals.arrivals?.unreadCount ?? 0}
-      onNavigate={(next) => { if (!modalOpen && !interceptPendingTeachingCheckout() && view !== next) showWorkspace(() => setView(next)); }}
+      onNavigate={(next) => { if (!navigationLocked && !interceptPendingTeachingCheckout() && view !== next) showWorkspace(() => setView(next)); }}
       onTeachingGroups={openTeachingGroups}
       onAssets={openAssets}
       onScan={startScan}
@@ -589,7 +614,7 @@ export default function InventoryApp({
             <Select
               value={dataset}
               onValueChange={(v) => changeDataset(v as Dataset)}
-              disabled={modalOpen || loading || teachingPending}
+              disabled={navigationLocked || loading || teachingPending}
             >
               <SelectTrigger id="dataset-select">
                 <SelectValue>{dataset === "demo" ? "Demo inventory" : "Working inventory"}</SelectValue>
@@ -606,7 +631,7 @@ export default function InventoryApp({
               variant="ghost"
               size="sm"
               onClick={refresh}
-              disabled={loading || modalOpen}
+              disabled={loading || navigationLocked}
               aria-label="Refresh inventory"
               aria-busy={loading}
             >
@@ -636,6 +661,7 @@ export default function InventoryApp({
           compact={inventoryView && !scan && !intake}
           onRegister={() => { setEditorGroup(undefined); setEditor({ kind: "battery" }); }}
         />
+        {assetWorkspaceOpen && !data && assetExitHeader}
         {teachingRecovery.error && <div className="load-error" role="alert">The preserved teaching workflow cannot be recovered safely: {teachingRecovery.error}</div>}
         {locationRecovery.error && <div className="load-error" role="alert">Saved location work needs review: {locationRecovery.error}</div>}
         {!locationToolsOpen && locationRecovery.attempts.length > 0 && <div className="load-error" role="alert"><span>A location request is retained. Resolve its original result before starting another operation.</span><Button variant="outline" disabled={modalOpen || loading || !data} onClick={() => resumeLocationWork(locationRecovery.attempts[0])}>Resume location request</Button></div>}
@@ -690,7 +716,7 @@ export default function InventoryApp({
           data && (
             <>
               {view === "assets" && !scan && (
-                <section aria-label="Intake and removal workspace">
+                <section className="asset-workspace" aria-label="Intake and removal workspace">
                   <Tabs
                     value={activeAssetTab}
                     onValueChange={(value) => {
@@ -724,6 +750,7 @@ export default function InventoryApp({
                       </TabsTrigger>
                     </TabsList>
                   </Tabs>
+                  {!intake && activeAssetTab !== "removal" && assetExitHeader}
                   {activeAssetTab === "intake" &&
                     (intake ? (
                       <IntakeStation
@@ -734,12 +761,13 @@ export default function InventoryApp({
                         onExit={() => {
                           setIntake(null);
                           setNotice("");
+                          showWorkspace(() => setView("inventory"));
                           void refresh();
                         }}
                       />
                     ) : (
                       <div className="intake-panel">
-                        <h2>First-time battery intake</h2>
+                        <h3>Prepare new batteries</h3>
                         <p className="field-hint">
                           Set common details once, scan into an editable pending
                           list, then confirm all or selected batteries.
@@ -766,11 +794,7 @@ export default function InventoryApp({
                           setDetailId(id);
                         }}
                         onBusyChange={setRemovalLocked}
-                        onExit={() =>
-                          setView(
-                            groupRemoval?.returnView ?? (groupRemoval ? "teaching-groups" : "inventory"),
-                          )
-                        }
+                        onExit={exitAssets}
                         onChanged={() => load(dataset)}
                       />
                     </div>

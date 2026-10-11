@@ -193,7 +193,7 @@ test("the teaching workspace browses groups with mixed states, clears search and
 test("teaching group navigation returns to the entry view, retains its battery-list scope and respects modal locks", async () => {
     const file = ts.createSourceFile("inventory-app.tsx", await readFile("app/inventory-app.tsx", "utf8"), ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
     const app = file.statements.find(node => ts.isFunctionDeclaration(node) && node.name?.text === "InventoryApp");
-    const functionNames = ["showWorkspace", "openTeachingGroups", "returnFromTeachingGroups"];
+    const functionNames = ["showWorkspace", "openTeachingGroups", "showTeachingGroups", "returnFromTeachingGroups"];
     const valueNames = ["personalScope", "inventoryView", "inventorySourceView", "retainInventory", "inventoryPersonalScope"];
     const statements = app.body.statements.filter(node => ts.isFunctionDeclaration(node) ? functionNames.includes(node.name?.text) : ts.isVariableStatement(node) && node.declarationList.declarations.some(value => valueNames.includes(value.name.getText(file))));
     const code = ts.transpileModule(statements.map(node => node.getText(file)).join("\n"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
@@ -205,6 +205,7 @@ test("teaching group navigation returns to the entry view, retains its battery-l
             window: { scrollTo: options => effects.push(["scroll", options]) },
             document: { getElementById: id => ({ focus: options => effects.push(["focus", id, options]) }) },
             permissions: getRolePermissions(state.user.role), view: state.view, modalOpen: state.modalOpen,
+            navigationLocked: !!(state.modalOpen || state.view === "assets"),
             groupsReturnView: state.groupsReturnView, user: state.user, setView: value => state.view = value,
             setGroupsReturnView: value => state.groupsReturnView = value, setActiveGroupId: value => state.activeGroupId = value,
         };
@@ -226,6 +227,8 @@ test("teaching group navigation returns to the entry view, retains its battery-l
     }
     const locked = { view: "inventory", groupsReturnView: "my-batteries", modalOpen: true, user: { role: "staff" }, activeGroupId: "Current group" };
     render(locked).openTeachingGroups(); assert.equal(locked.view, "inventory"); assert.equal(locked.activeGroupId, "Current group"); assert.deepEqual(locked.navigationEffects, []);
+    const assets = { ...locked, view: "assets", modalOpen: false, navigationEffects: [] };
+    render(assets).openTeachingGroups(); assert.equal(assets.view, "assets"); assert.equal(assets.activeGroupId, "Current group"); assert.deepEqual(assets.navigationEffects, []);
     const pending = { view: "inventory", groupsReturnView: "my-batteries", modalOpen: false, pendingTeaching: true, user: { role: "staff" }, activeGroupId: "Current group" };
     render(pending).openTeachingGroups(); assert.equal(pending.view, "inventory"); assert.equal(pending.activeGroupId, "Current group"); assert.deepEqual(pending.navigationEffects, []);
     const demoted = { view: "teaching-groups", groupsReturnView: "accounts", modalOpen: false, user: { role: "staff" } };
@@ -255,6 +258,7 @@ test("explicit workspace navigation restores heading focus once and preserves mo
         const effects = state.effects ??= [];
         const bindings = {
             view: state.view, modalOpen: state.modalOpen,
+            navigationLocked: !!(state.modalOpen || state.view === "assets"),
             interceptPendingTeachingCheckout: () => !!state.pendingTeaching,
             interceptPendingWorkflow: () => !!state.pendingWorkflow,
             transitionWorkspace: (update, cadence) => { effects.push(["transition", cadence]); update(); },
@@ -282,6 +286,8 @@ test("explicit workspace navigation restores heading focus once and preserves mo
     render(state).openAssets();
     assert.equal(state.view, "assets"); assert.equal(state.groupRemoval, null); assert.equal(state.effects.length, 6);
     render(state).openAssets(); assert.equal(state.effects.length, 6);
+    render(state).navigate("inventory"); render(state).startScan("checkout");
+    assert.equal(state.view, "assets"); assert.equal(state.scan, undefined); assert.equal(state.effects.length, 6);
     state.view = "teaching-groups";
     render(state).groupActivity({ id: "historic-group", version: 7 });
     assert.equal(state.view, "activity"); assert.equal(state.activityGroupId, "historic-group"); assert.equal(state.effects.length, 9);

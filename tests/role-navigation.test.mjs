@@ -80,8 +80,12 @@ function heading(role, view, extra = {}) {
 
 test("staff navigation keeps shared and personal work without exposing administration destinations", () => {
   const tree = shell().render();
-  assert.deepEqual(groupLabels(tree), ["WORKSPACE", "MY WORK"]);
-  for (const label of ["Battery inventory", "Mapping", "Teaching groups", "Intake & removal", "Scan checkout", "Scan return", "Activity history", "Recurring tasks", "Directories"]) {
+  assert.deepEqual(groupLabels(tree), ["QUICK ACTIONS", "WORKSPACE", "MY WORK"]);
+  assert.deepEqual(navigation(group(tree, "QUICK ACTIONS")).map(text), ["Scan checkout", "Scan return", "Intake & removal"]);
+  for (const label of ["Scan checkout", "Scan return", "Intake & removal"]) {
+    assert.equal(nav(group(tree, "WORKSPACE"), label), undefined, `${label} has one dedicated quick action`);
+  }
+  for (const label of ["Battery inventory", "Mapping", "Teaching groups", "Activity history", "Recurring tasks", "Directories"]) {
     assert.ok(nav(group(tree, "WORKSPACE"), label), `${label} remains available to staff`);
   }
   for (const label of ["My batteries", "My batteries in use", "My activity", "Messages", "My account"]) {
@@ -95,7 +99,11 @@ test("staff navigation keeps shared and personal work without exposing administr
 
 test("administrator record and account controls form a separate section while My account remains personal", () => {
   const tree = shell("admin").render();
-  assert.deepEqual(groupLabels(tree), ["WORKSPACE", "MY WORK", "ADMINISTRATION"]);
+  assert.deepEqual(groupLabels(tree), ["QUICK ACTIONS", "WORKSPACE", "MY WORK", "ADMINISTRATION"]);
+  assert.deepEqual(navigation(group(tree, "QUICK ACTIONS")).map(text), ["Scan checkout", "Scan return", "Intake & removal"]);
+  for (const label of ["Scan checkout", "Scan return", "Intake & removal"]) {
+    assert.equal(nav(group(tree, "WORKSPACE"), label), undefined, `${label} has one dedicated quick action`);
+  }
   assert.deepEqual(navigation(group(tree, "ADMINISTRATION")).map(text), ["Manage records", "Staff accounts"]);
   assert.equal(nav(group(tree, "WORKSPACE"), "Manage records"), undefined);
   assert.equal(nav(tree, "Directories"), undefined);
