@@ -10,7 +10,7 @@ import { createInventoryHttpServer } from "./http-gateway.mjs";
 import { acquireRuntimeOwner } from "./runtime-owner.mjs";
 import { maintenanceRollbackDispatch } from "./rollback-gateway.mjs";
 
-const deploymentName = "2026-10-13-web-server-integration-1.0.0-r2";
+const deploymentName = "2026-10-13-web-server-integration-1.0.0-r3";
 const previousDeploymentName = "2026-10-12-workspace-1.0.0";
 const previousSourceCommit = "d0e1640a0c516ba6c68aeae4695b12a8afb12525";
 const migrationCount = 23, applicationVersion = "1.0.0";
@@ -115,7 +115,12 @@ const serverRoot = path.join(applicationRoot, "dist/server");
 const files = (await readdir(serverRoot, { recursive: true })).filter(file => /\.m?js$/.test(file));
 files.sort((a, b) => a === "index.js" ? -1 : b === "index.js" ? 1 : a < b ? -1 : a > b ? 1 : 0);
 const persistencePath = path.join(dataRoot, "d1");
+const signalHandlersBeforeMiniflare = new Map(["SIGTERM", "SIGINT"].map(name => [name, process.listeners(name)]));
 runtime = new Miniflare({ host: "127.0.0.1", port: 0, cf: false, modules: files.map(file => ({ type: "ESModule", path: path.join(serverRoot, file) })), modulesRoot: serverRoot, compatibilityDate: "2026-05-15", compatibilityFlags: ["nodejs_compat"], assets: { directory: path.join(applicationRoot, "dist/client"), routerConfig: { has_user_worker: true } }, d1Databases: { DB: "battery-inventory-portable" }, d1Persist: persistencePath, cachePersist: false, liveReload: false });
+const miniflareSignalHandlers = new Map(["SIGTERM", "SIGINT"].map(name => [name, process.listeners(name).filter(handler => !signalHandlersBeforeMiniflare.get(name).includes(handler))]));
+for (const [name, handlers] of miniflareSignalHandlers) {
+  if (handlers.length !== 1 || handlers[0].name !== (name === "SIGTERM" ? "onSignalTerm" : "onSignalInt")) throw new Error("The retained Miniflare signal handlers differ from the reviewed runtime.");
+}
   const db = await runtime.getD1Database("DB");
   if (JSON.stringify((await db.prepare("SELECT name,sha256 FROM portable_migrations ORDER BY name").all()).results) !== JSON.stringify(expectedReceipts)) throw new Error("The Worker opened a different or empty database; no HTTP service was started.");
   const schema = async database => (await database.prepare("SELECT type,name,tbl_name,sql FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' AND name NOT GLOB '_cf_*' AND name<>'portable_migrations' ORDER BY type,name").all()).results.map(row => ({ ...row, sql: row.sql?.replaceAll("\r\n", "\n") ?? null }));
@@ -141,14 +146,17 @@ runtime = new Miniflare({ host: "127.0.0.1", port: 0, cf: false, modules: files.
   const dispatch = rollback ? maintenanceRollbackDispatch((url, init) => runtime.dispatchFetch(url, init)) : (url, init) => runtime.dispatchFetch(url, init);
   server = createInventoryHttpServer({ publicOrigin, dispatchFetch: (url, init) => new URL(url).pathname === "/healthz" ? Promise.resolve(Response.json(identity)) : dispatch(url, init) });
   await new Promise((resolve, reject) => { server.once("error", reject); server.listen(port, localMode ? "127.0.0.1" : "0.0.0.0", resolve); });
-  console.log(JSON.stringify({ event: "inventory_ready", ...identity, runtimePid: process.pid, port, copiedCurrentDatabase: true, originalBackupRetained: true, completedDatabaseRetained: !!completed }));
   let closing = false;
   async function shutdown() {
     if (closing) return; closing = true;
     await new Promise(resolve => { server.close(resolve); server.closeAllConnections(); });
     await runtime.dispose(); await releaseOwner(); process.exit(0);
   }
+  // Miniflare exits synchronously on signals before asynchronous application cleanup.
+  // Remove only its captured additions; retain unrelated listeners and its exit hook.
+  for (const [name, handlers] of miniflareSignalHandlers) for (const handler of handlers) process.removeListener(name, handler);
   process.on("SIGTERM", shutdown); process.on("SIGINT", shutdown);
+  console.log(JSON.stringify({ event: "inventory_ready", ...identity, runtimePid: process.pid, port, copiedCurrentDatabase: true, originalBackupRetained: true, completedDatabaseRetained: !!completed }));
   if (process.env.INVENTORY_MANUAL_STOP !== "1") {
     const maximumSeconds = Number(process.env.INVENTORY_MAX_SECONDS || 7200);
     if (!Number.isFinite(maximumSeconds) || maximumSeconds < 1 || maximumSeconds > 7200) throw new Error("A bounded runtime duration must be between one second and two hours.");

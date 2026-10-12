@@ -10,7 +10,7 @@ import time
 import uuid
 from urllib.parse import quote as uri_quote
 
-NAME = "2026-10-13-web-server-integration-1.0.0-r2"
+NAME = "2026-10-13-web-server-integration-1.0.0-r3"
 PREVIOUS = "2026-10-12-workspace-1.0.0"
 PREVIOUS_COMMIT = "d0e1640a0c516ba6c68aeae4695b12a8afb12525"
 MIGRATIONS = 23

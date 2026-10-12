@@ -109,7 +109,7 @@ def run():
             else: os.environ[name] = value
     report = {"passed": True, "checks": len(checks), "results": checks, "syntheticDataOnly": True, "remoteAccess": False, "workDirectory": str(work)}
     (SOURCE / "work/deployment-20261013").mkdir(exist_ok=True)
-    (SOURCE / "work/deployment-20261013/adapter-structural-verification-r2.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+    (SOURCE / "work/deployment-20261013/adapter-structural-verification-r3.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 
 
