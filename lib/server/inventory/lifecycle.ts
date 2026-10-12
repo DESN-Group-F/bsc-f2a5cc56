@@ -73,6 +73,8 @@ export class InventoryLifecycle {
         dataset: this.session.dataset,
         payload,
       });
+    if (payload.source === "native_nfc" && this.session.dataset !== "demo")
+      throw new DomainError(501, "Native NFC removal is available only in Demonstration inventory for functional testing.");
     const previous = await this.transactions.replay(
       payload.requestId,
       "battery_lifecycle",
@@ -123,23 +125,25 @@ export class InventoryLifecycle {
         );
       const at = this.session.clock().toISOString(),
         savedReason = payload.reason || null;
-      const result: LifecycleReceipt = {
+      const receiptFields = {
         requestId: payload.requestId,
         dataset: this.session.dataset,
         actorAccountId: this.session.actor.id,
         kind: payload.kind,
         reason: payload.reason,
         destination: payload.destination,
-        source: payload.source,
         at,
-        items: payload.items.map((item) => ({
-          batteryId: item.batteryId,
-          tagId: item.tagId,
-          version: item.version + 1,
-          status: payload.kind,
-        })),
         replayed: false,
         ...(group ? { teachingGroup: group.evidence } : {}),
+      };
+      const result: LifecycleReceipt = payload.source === "native_nfc" ? {
+        ...receiptFields,
+        source: "native_nfc",
+        items: payload.items.map(item => ({ batteryId: item.batteryId, tagId: item.tagId, version: item.version + 1, status: payload.kind, nfcEvidence: item.nfcEvidence })),
+      } : {
+        ...receiptFields,
+        source: payload.source,
+        items: payload.items.map(item => ({ batteryId: item.batteryId, tagId: item.tagId, version: item.version + 1, status: payload.kind })),
       };
       const writes: D1PreparedStatement[] = [];
       for (const item of payload.items) {
@@ -177,6 +181,7 @@ export class InventoryLifecycle {
               reason: payload.reason,
               destination: payload.destination,
               source: payload.source,
+              ...("nfcEvidence" in item && item.nfcEvidence ? { nfcEvidence: item.nfcEvidence } : {}),
               reviewedBinding: item,
               before,
               after,

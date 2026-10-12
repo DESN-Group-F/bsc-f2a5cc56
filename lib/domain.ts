@@ -2,6 +2,7 @@ import { z } from "zod";
 import type { StaffUser } from "./accounts";
 import { currentSydneyDate, isDateOnly } from "./battery-age";
 import { teachingGroupReferenceSchema } from "./teaching-context";
+import { teachingNfcEvidenceSchema } from "./teaching-nfc";
 export const datasetSchema = z.enum(["demo", "live"]);
 export type Dataset = z.infer<typeof datasetSchema>;
 export const lifecycleStatusSchema = z.enum(["active", "scrapped", "permanently_removed"]);
@@ -20,10 +21,21 @@ export const batterySchema = z.object({
 });
 const recordVersion = z.number().int().positive().max(Number.MAX_SAFE_INTEGER);
 const tagIdentifier = z.string().trim().min(1).max(128);
-export const scanSourceSchema = z.enum(["simulated", "manual", "selection"]);
-export const scanLookupSchema = z.object({ tagIds: z.array(tagIdentifier).min(1).max(100), source: z.enum(["simulated", "manual"]) }).strict();
-export const scanContextSchema = z.object({ sessionId: z.string().uuid(), source: scanSourceSchema, bindings: z.array(z.object({ batteryId: identifier, tagId: tagIdentifier.nullable(), version: recordVersion }).strict()).min(1).max(100) }).strict()
-    .refine(value => value.source === "selection" || value.bindings.every(binding => binding.tagId !== null), "Tag reads require registered tags; only manual battery selection can include an untagged battery.");
+export const scanSourceSchema = z.enum(["simulated", "manual", "selection", "native_nfc"]);
+export const scanLookupSchema = z.object({ tagIds: z.array(tagIdentifier).min(1).max(100), source: z.enum(["simulated", "manual", "native_nfc"]) }).strict();
+const scanBindingSchema = z.object({ batteryId: identifier, tagId: tagIdentifier.nullable(), version: recordVersion }).strict();
+const nativeScanBindingSchema = scanBindingSchema.extend({ tagId: tagIdentifier, nfcEvidence: teachingNfcEvidenceSchema }).strict();
+export const scanContextSchema = z.discriminatedUnion("source", [
+    z.object({ sessionId: z.string().uuid(), source: z.literal("simulated"), bindings: z.array(scanBindingSchema).min(1).max(100) }).strict(),
+    z.object({ sessionId: z.string().uuid(), source: z.literal("manual"), bindings: z.array(scanBindingSchema).min(1).max(100) }).strict(),
+    z.object({ sessionId: z.string().uuid(), source: z.literal("selection"), bindings: z.array(scanBindingSchema).min(1).max(100) }).strict(),
+    z.object({ sessionId: z.string().uuid(), source: z.literal("native_nfc"), bindings: z.array(nativeScanBindingSchema).min(1).max(100) }).strict(),
+]).superRefine((value, context) => {
+    if (value.source !== "selection" && value.bindings.some(binding => binding.tagId === null)) context.addIssue({ code: z.ZodIssueCode.custom, message: "Tag reads require registered tags; only manual battery selection can include an untagged battery." });
+    if (value.source === "native_nfc") value.bindings.forEach((binding, index) => {
+        if (binding.tagId !== binding.nfcEvidence.tagId) context.addIssue({ code: z.ZodIssueCode.custom, path: ["bindings", index, "nfcEvidence"], message: "The complete native NFC evidence must match the reviewed registered tag." });
+    });
+});
 export type ScanSource = z.infer<typeof scanSourceSchema>;
 export type ScanContext = z.infer<typeof scanContextSchema>;
 export type ScanBinding = ScanContext["bindings"][number];

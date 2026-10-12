@@ -12,7 +12,7 @@ const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "intake-ui-"));
 after(() => rm(scratch, { recursive: true, force: true }));
-for (const name of ["teaching-context", "battery-models", "battery-age", "domain", "location-catalog", "client-utils", "intake-session", "intake-draft", "battery-lifecycle", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query"]) {
+for (const name of ["teaching-nfc", "teaching-context", "battery-models", "battery-age", "domain", "location-catalog", "client-utils", "intake-session", "intake-draft", "battery-lifecycle", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query"]) {
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
     await writeFile(join(scratch, `${name}.mjs`), compiled);
@@ -79,6 +79,27 @@ function confirmButton(view, kind) { return nodes(view.render()).find(node => no
 function editFields(view, fields) { for (const [key, value] of Object.entries(fields)) input(view.render(), "edit-" + key).props.onChange({ target: { value } }); }
 function saveEdit(view) { nodes(view.render()).find(node => node.type === "form").props.onSubmit({ preventDefault() {} }); }
 function bareAttempt(tag = "DEMO-INTAKE-LEGACY") { return intake.captureIntakeAttempt("intake-native-actor", "demo", { requestId: crypto.randomUUID(), sessionId: crypto.randomUUID(), tagId: tag, firstUseMode: "at_registration", common: { name: "Legacy pending", model: "LEGACY", chemistry: "", capacityMah: null, voltage: null, ownerId: "staff-intake-actor", homeBuildingId: "J18", homeRoomId: null, manufacturedOn: null, firstUsedOn: null } }); }
+
+test("recovered native intake keeps adopted tags and evidence through editing, explicit confirmation and exact retry", async () => environment(async ({ entries }) => {
+    const evidence = { attemptId: crypto.randomUUID(), source: "native-nfc-reader", platform: "android", startedAt: "2026-10-03T00:00:00.000Z", endedAt: "2026-10-03T00:00:01.000Z", adoptedAt: "2026-10-03T00:00:02.000Z", tagId: "nfc:uid:01020304", result: { uidHex: "01020304", technology: "NfcA", ndefStatus: "unknown", capacityBytes: null, records: [], observedAt: "2026-10-03T00:00:01.000Z" } };
+    const original = bareAttempt().payload, entry = { id: crypto.randomUUID(), tagId: evidence.tagId, scannedAt: evidence.result.observedAt, sessionId: original.sessionId, common: original.common, firstUseMode: "at_registration", source: "native_nfc", nfcEvidence: evidence, selected: true, error: "" };
+    const legacy = receipt(original, { batteryId: "BAT-00000002" });
+    entries.set(intake.intakeStorageKey("intake-native-actor", "demo"), JSON.stringify(drafts.captureIntakeDraft({ actorAccountId: "intake-native-actor", dataset: "demo", batch: { sessionId: entry.sessionId, common: entry.common, firstUseMode: entry.firstUseMode, source: "native_nfc" }, entries: [entry], completed: [legacy], attempt: null, attemptEntryId: null })));
+    const sent = []; let complete = false;
+    const write = async (action, payload) => { sent.push(structuredClone(payload)); if (!complete) throw new Error("Controlled missing native receipt"); return receipt(payload, { source: "native_nfc", nfcEvidence: evidence }); };
+    const view = mount({ write });
+    assert.match(text(view.render()), /Native NFC acquisition is unavailable in this browser/); assert.equal(button(view.render(), "Simulate next new battery"), undefined); assert.equal(input(view.render(), "demo-tag"), undefined);
+    assert.equal(view.writes.length, 0); rowButton(view, evidence.tagId, "Edit").props.onClick(); assert.equal(input(view.render(), "edit-tagId").props.disabled, true);
+    editFields(view, { name: "Reviewed native draft" }); saveEdit(view);
+    assert.equal(saved(entries).entries[0].common.name, "Reviewed native draft"); assert.deepEqual(saved(entries).entries[0].nfcEvidence, evidence);
+    await confirmButton(view, "all").props.onClick(); const captured = structuredClone(sent[0]);
+    assert.equal(captured.source, "native_nfc"); assert.equal(captured.tagId, evidence.tagId); assert.deepEqual(captured.nfcEvidence, evidence); assert.ok(saved(entries).attempt); view.unmount();
+    complete = true; const resumed = mount({ write }); await button(resumed.render(), "Retry exact confirmation").props.onClick();
+    assert.deepEqual(sent[1], captured); assert.equal(saved(entries).entries.length, 0); assert.equal(saved(entries).attempt, null); assert.deepEqual(saved(entries).completed[0], legacy);
+    const resultRows = nodes(resumed.render()).filter(node => node.type === "TableRow" && node.props.onClick && !node.props["data-testid"]);
+    assert.match(text(resultRows.find(row => text(row).includes("BAT-00000001"))), /Native NFC/); assert.doesNotMatch(text(resultRows.find(row => text(row).includes("BAT-00000001"))), /Simulated intake/);
+    assert.match(text(resultRows.find(row => text(row).includes("BAT-00000002"))), /Simulated intake \(demo\)/); resumed.unmount();
+}));
 
 test("intake rows toggle once from plain content, preserve interactive controls and text selection, and lock uncertain confirmations", async () => {
     await environment(async ({ entries, control }) => {

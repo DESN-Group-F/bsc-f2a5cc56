@@ -1,4 +1,4 @@
-import type { BatteryRecord, Dataset } from "./domain";
+import { scanContextSchema, type BatteryRecord, type Dataset } from "./domain";
 import { teachingGroupReferenceSchema, verifyGroupEvidence, type TeachingGroupReference, type TeachingGroupEvidence } from "./teaching-context";
 
 export type MovementKind = "checkout" | "return";
@@ -34,7 +34,7 @@ export function movementFailureStatus(error: unknown, alreadyUncertain = false):
 }
 
 /** Only a matching saved receipt establishes success; current loan state does not. */
-export function verifyMovementReceipt(value: unknown, payload: Pick<MovementPayload, "requestId" | "kind" | "batteryIds" | "teachingGroup">, accountId: string): MovementReceipt {
+export function verifyMovementReceipt(value: unknown, payload: Pick<MovementPayload, "requestId" | "kind" | "batteryIds" | "teachingGroup"> & { scan?: unknown }, accountId: string): MovementReceipt {
     const receipt = value as Partial<MovementReceipt> | null;
     if (!receipt || receipt.requestId !== payload.requestId || receipt.kind !== payload.kind || !Array.isArray(receipt.batteryIds)
         || receipt.count !== payload.batteryIds.length || receipt.batteryIds.length !== payload.batteryIds.length || new Set(receipt.batteryIds).size !== receipt.batteryIds.length
@@ -43,6 +43,11 @@ export function verifyMovementReceipt(value: unknown, payload: Pick<MovementPayl
         throw new Error("The saved movement receipt could not be verified. The result is uncertain; retry the same captured request.");
     }
     verifyGroupEvidence(receipt.teachingGroup, payload.teachingGroup, payload.requestId, payload.batteryIds, accountId);
+    if (payload.scan !== undefined) {
+        const expected = scanContextSchema.parse(payload.scan), actual = scanContextSchema.safeParse((value as { scan?: unknown }).scan);
+        const normalized = (scan: typeof expected) => ({ ...scan, bindings: [...scan.bindings].sort((a,b) => a.batteryId.localeCompare(b.batteryId)) });
+        if (!actual.success || JSON.stringify(normalized(actual.data)) !== JSON.stringify(normalized(expected))) throw new Error("The saved scan receipt does not retain the reviewed source and exact evidence. Retry the same captured request.");
+    }
     return receipt as MovementReceipt;
 }
 

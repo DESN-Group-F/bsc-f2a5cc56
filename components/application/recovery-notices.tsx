@@ -1,10 +1,21 @@
 import { Button } from "@/components/ui/button";
+import { DownloadAction } from "@/components/ui/download-action";
+import { useDownloadFeedback } from "@/hooks/use-download-feedback";
 import type { Dataset } from "@/lib/domain";
 import type {
   RecoveryState,
   PendingDataset,
   PendingMovement,
 } from "@/lib/client/workflow-recovery";
+
+export function RecoveryStorageNotice({ message, onExport }: { message: string; onExport: () => void }) {
+  const feedback = useDownloadFeedback(message);
+  return <div className="load-error" role="alert">
+    <div><strong>Retained workflow data could not be read</strong><p>{message}</p><p>New workflows are blocked until recovery is readable. Export keeps the original data unchanged.</p></div>
+    <DownloadAction pending={feedback.busy} completion={feedback.completion} reviewKey={message} actionLabel="Export retained workflow data" onClick={() => feedback.run(async () => { onExport(); })}>Export retained workflow data</DownloadAction>
+    {feedback.error && <p className="form-error">{feedback.error}</p>}
+  </div>;
+}
 
 type Props = {
   recovery: RecoveryState;

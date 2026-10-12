@@ -22,6 +22,7 @@ import {
 } from "./intake-session";
 import { isSupportedBuilding } from "./location-catalog";
 import { mobileRegistrationPayloadSchema, MOBILE_REGISTRATION_SOURCE, type MobileRegistrationPayload, type MobileRegistrationReceipt } from "./mobile-registration-session";
+import { operatorRegistrationPayloadSchema, OPERATOR_REGISTRATION_SOURCE, type OperatorRegistrationPayload, type OperatorRegistrationReceipt } from "./operator-registration-session";
 import { InventoryDatabase } from "./server/inventory/database";
 import { ensureInventoryReferenceData } from "./server/inventory/provisioning";
 
@@ -56,10 +57,10 @@ type IntakeContext = {
 };
 type Guard = { sql: string; values: unknown[] };
 const automaticIdPattern = "BAT-[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]";
-type RegistrationMode = "simulated_intake" | "manual_registration";
-type RegistrationPayload = IntakePayload | MobileRegistrationPayload;
-type RegistrationReceipt = IntakeReceipt | MobileRegistrationReceipt;
-type ReceiptFor<Mode extends RegistrationMode> = Mode extends "manual_registration" ? MobileRegistrationReceipt : IntakeReceipt;
+type RegistrationMode = "simulated_intake" | "manual_registration" | "operator_registration";
+type RegistrationPayload = IntakePayload | MobileRegistrationPayload | OperatorRegistrationPayload;
+type RegistrationReceipt = IntakeReceipt | MobileRegistrationReceipt | OperatorRegistrationReceipt;
+type ReceiptFor<Mode extends RegistrationMode> = Mode extends "operator_registration" ? OperatorRegistrationReceipt : Mode extends "manual_registration" ? MobileRegistrationReceipt : IntakeReceipt;
 
 /** Deliberate demo scans create individual assets with atomic shared numbering. */
 export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
@@ -71,8 +72,8 @@ export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
     private clock: () => Date = () => new Date(),
     private readonly mode: Mode = "simulated_intake" as Mode,
   ) {}
-  private get source() { return this.mode === "manual_registration" ? MOBILE_REGISTRATION_SOURCE : "simulated_intake" as const; }
-  private get rejectionCode() { return this.mode === "manual_registration" ? "registration_rejected_final" : "intake_rejected_final"; }
+  private get source() { return this.mode === "operator_registration" ? OPERATOR_REGISTRATION_SOURCE : this.mode === "manual_registration" ? MOBILE_REGISTRATION_SOURCE : "simulated_intake" as const; }
+  private get rejectionCode() { return this.mode === "simulated_intake" ? "intake_rejected_final" : "registration_rejected_final"; }
   private key(id: string) {
     return recordKey(this.scope, id);
   }
@@ -374,12 +375,12 @@ export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
   }
   private async registerInput(input: unknown): Promise<RegistrationReceipt> {
     await this.requireActor();
-    if (this.dataset !== "demo")
+    if (this.dataset !== "demo" && this.mode !== "operator_registration")
       throw new DomainError(
         501,
-        this.mode === "manual_registration" ? "Operator-entered mobile registration is available only in Demonstration inventory until native hardware validation is complete." : "Simulated first-time intake is available only in Demonstration inventory. Real RFID intake requires validated hardware.",
+        this.mode === "manual_registration" ? "Operator-entered mobile registration is available only in Demonstration inventory until native hardware validation is complete." : input && typeof input === "object" && "source" in input && input.source === "native_nfc" ? "Native NFC intake is available only in Demonstration inventory for functional testing." : "Simulated first-time intake is available only in Demonstration inventory. Real RFID intake requires validated hardware.",
       );
-    const payload = this.mode === "manual_registration" ? mobileRegistrationPayloadSchema.parse(input) : intakePayloadSchema.parse(input),
+    const payload = this.mode === "operator_registration" ? operatorRegistrationPayloadSchema.parse(input) : this.mode === "manual_registration" ? mobileRegistrationPayloadSchema.parse(input) : intakePayloadSchema.parse(input),
       fingerprint = canonicalModelJson({
         actorAccountId: this.actor.id,
         payload,
@@ -402,6 +403,8 @@ export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
     payload: RegistrationPayload,
     fingerprint: string,
   ): Promise<RegistrationReceipt> {
+    const nfcEvidence = "source" in payload && payload.source === "native_nfc" ? payload.nfcEvidence : undefined;
+    const source = nfcEvidence ? "native_nfc" as const : this.source;
     const previous = await this.replay(payload.requestId, fingerprint);
     if (previous) return previous;
     const tagHash = payload.tagId === null ? null : await registeredTagHash(this.scope, payload.tagId);
@@ -423,7 +426,9 @@ export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
       actorAccountId: this.actor.id,
       common: payload.common,
       firstUseMode: payload.firstUseMode,
-      ...(this.mode === "manual_registration" ? { source: this.source } : {}),
+      ...(this.mode !== "simulated_intake" || nfcEvidence ? { source, ...(this.mode === "operator_registration" ? { mode: this.mode } : {}) } : {}),
+      // A concurrent session cannot replace the operator's reviewed directory versions.
+      ...("directoryBindings" in payload ? { directoryBindings: payload.directoryBindings } : {}),
     });
     let session = await this.savedSession(payload.sessionId, configuration);
     let prepared = session
@@ -432,6 +437,12 @@ export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
           modelGuard: await this.frozenModelGuard(payload, session.context),
         }
       : await this.prepareContext(payload.common);
+    if ('directoryBindings' in payload) {
+      const reviewed = payload.directoryBindings, current = prepared.context;
+      if (reviewed.ownerVersion !== current.owner.version || reviewed.ownerAccountId !== current.owner.accountId || reviewed.buildingVersion !== current.building.version || reviewed.roomVersion !== (current.room?.version ?? null)) {
+        throw new DomainError(409, "The reviewed responsible owner or storage directory changed. No battery was registered. Refresh and review the current directory records.", "registration_context_conflict");
+      }
+    }
     for (let attempt = 0; attempt < 16; attempt++) {
       const counter = await this.first(
         "SELECT last_number FROM intake_counters WHERE scope=?",
@@ -489,7 +500,8 @@ export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
         tagId: payload.tagId,
         registeredAt,
         ...("scannedAt" in payload && payload.scannedAt ? { scannedAt: payload.scannedAt } : {}),
-        source: this.source,
+        source,
+        ...(nfcEvidence ? { nfcEvidence } : {}),
         replayed: false,
         name: common.name,
         model: common.model,
@@ -590,11 +602,12 @@ export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
           JSON.stringify({
             before: null,
             after,
-            source: this.source,
+            source,
+            ...(nfcEvidence ? { nfcEvidence } : {}),
             ...("scannedAt" in payload && payload.scannedAt
               ? {
                   scannedAt: payload.scannedAt,
-                  scanTimeSource: "client_demo_draft",
+                  scanTimeSource: nfcEvidence ? "native_nfc_device" : "client_demo_draft",
                 }
               : {}),
             sessionId: payload.sessionId,

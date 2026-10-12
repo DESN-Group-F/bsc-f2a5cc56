@@ -12,7 +12,7 @@ const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "scan-workflows-ui-"));
 after(() => rm(scratch, { recursive: true, force: true }));
-for (const name of ["teaching-context", "scan-session", "client-utils", "battery-age", "location-catalog", "battery-lifecycle", "domain", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "movement-session"]) {
+for (const name of ["teaching-nfc", "teaching-context", "scan-session", "client-utils", "battery-age", "location-catalog", "battery-lifecycle", "domain", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "movement-session"]) {
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
     const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
         .replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
@@ -210,6 +210,23 @@ function receipt(payload, inventory) {
         ...(payload.returnRoom ? { returnPlacement: { roomId: payload.returnRoom.roomId, roomName: "Demo room", isPlaceholder: true, source: "manual", observedAt: "2026-10-03T01:00:00.000Z" } } : {}),
     };
 }
+
+test("browser review preserves recovered native evidence and labels historical sources without a native acquisition control", async () => withStorage(async store => {
+    const evidence = { attemptId: crypto.randomUUID(), source: "native-nfc-reader", platform: "android", startedAt: "2026-10-03T00:00:00.000Z", endedAt: "2026-10-03T00:00:01.000Z", adoptedAt: "2026-10-03T00:00:02.000Z", tagId: "nfc:uid:01020304", result: { uidHex: "01020304", technology: "NfcA", ndefStatus: "unknown", capacityBytes: null, records: [], observedAt: "2026-10-03T00:00:01.000Z" } };
+    const native = battery("NATIVE-QUEUE", evidence.tagId), history = ["manual", "selection", "simulated"].map((source, index) => ({ battery: battery(`HISTORY-${index}`, `HISTORY-TAG-${index}`), tagId: `HISTORY-TAG-${index}`, source, readAt: "2026-10-03T00:00:00.000Z", receipt: { kind: "checkout", requestId: crypto.randomUUID(), batteryIds: [`HISTORY-${index}`], count: 1, at: "2026-10-03T00:00:00.000Z" } }));
+    const inventory = data([native, ...history.map(read => read.battery)]), saved = { sessionId: crypto.randomUUID(), mode: "batch", room: null, queue: [{ battery: native, tagId: native.tagId, source: "native_nfc", readAt: evidence.result.observedAt, nfcEvidence: evidence }], completed: history, issues: [], attempt: null };
+    store.storage.setItem("battery-scan:review-account:demo:checkout", JSON.stringify(saved));
+    const writes = [], station = mount({ data: inventory, kind: "checkout", onExit() {}, onRegister() {}, async write(action, payload) { writes.push(structuredClone(payload)); return receipt(payload, inventory); } });
+    const tree = station.render(), queuePanel = nodes(tree).find(node => node.props.className === "scan-station-queue inventory-panel"), historyPanel = nodes(tree).find(node => node.props.className === "scan-station-completed inventory-panel");
+    assert.match(text(tree), /Hardware tag reading is unavailable in this browser/);
+    assert.match(text(queuePanel), /Native NFC/); assert.doesNotMatch(text(queuePanel), /Typed tag input|Simulated reader/);
+    assert.match(text(historyPanel), /Typed tag input/); assert.match(text(historyPanel), /Manual selection/); assert.match(text(historyPanel), /Simulated reader \(demo\)/);
+    assert.equal(button(tree, "Read NFC tag"), undefined); assert.equal(writes.length, 0);
+    await confirmQueue(station, "checkout", 1);
+    assert.equal(writes[0].scan.source, "native_nfc"); assert.deepEqual(writes[0].scan.bindings[0].nfcEvidence, evidence);
+    assert.match(text(nodes(station.render()).find(node => node.props.className === "scan-station-completed inventory-panel")), /Native NFC/);
+    assert.deepEqual(store.read().completed.slice(0, 3), history);
+}));
 
 test("fresh stations always stage successive tags for review and only confirm the remaining reviewed batteries", async () => {
     for (const dataset of ["demo", "live"]) for (const kind of ["checkout", "return"]) await withStorage(async store => {

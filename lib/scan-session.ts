@@ -1,10 +1,12 @@
 import type { BatteryRecord, Room } from "./domain";
 import { isActiveBattery } from "./battery-lifecycle";
 import { teachingGroupReferenceSchema, type TeachingGroupReference, type TeachingGroupEvidence } from "./teaching-context";
+import { validateTeachingNfcTag, type TeachingNfcEvidence } from "./teaching-nfc";
+import { scanContextSchema } from "./domain";
 
-export type ScanSource = "manual" | "simulated" | "selection";
+export type ScanSource = "manual" | "simulated" | "selection" | "native_nfc";
 export type ScanMode = "batch";
-export type ScanRead = { battery: BatteryRecord; tagId: string | null; source: ScanSource; readAt: string };
+export type ScanRead = { battery: BatteryRecord; tagId: string | null; source: ScanSource; readAt: string; nfcEvidence?: TeachingNfcEvidence };
 export type ScanRoom = Pick<Room, "id" | "version" | "name" | "isPlaceholder" | "buildingId">;
 export type ScanMovement = {
     requestId: string;
@@ -12,7 +14,7 @@ export type ScanMovement = {
     kind: "checkout" | "return";
     batteryIds: string[];
     expectedLoans?: { batteryId: string; loanId: string }[];
-    scan: { sessionId: string; source: ScanSource; bindings: { batteryId: string; tagId: string | null; version: number }[] };
+    scan: { sessionId: string; source: ScanSource; bindings: { batteryId: string; tagId: string | null; version: number; nfcEvidence?: TeachingNfcEvidence }[] };
     returnRoom?: { roomId: string; version: number };
 };
 export type ScanReceipt = { kind: "checkout" | "return"; batteryIds: string[]; count: number; at: string; requestId: string; borrower?: string; borrowerAccountId?: string; replayed?: boolean; teachingGroup?: TeachingGroupEvidence; returnPlacement?: { roomId: string; roomName: string; isPlaceholder: boolean; source: string; observedAt: string } };
@@ -54,7 +56,7 @@ export function scanMovementPayload(kind: ScanMovement["kind"], reads: readonly 
     return {
         requestId, kind, batteryIds: ids,
         ...(kind === "return" ? { expectedLoans: reads.map(read => ({ batteryId: read.battery.id, loanId: read.battery.loanId! })) } : {}),
-        scan: { sessionId, source: reads[0].source, bindings: reads.map(read => ({ batteryId: read.battery.id, tagId: read.tagId, version: read.battery.version })) },
+        scan: scanContextSchema.parse({ sessionId, source: reads[0].source, bindings: reads.map(read => ({ batteryId: read.battery.id, tagId: read.tagId, version: read.battery.version, ...(read.source === "native_nfc" ? { nfcEvidence: validateTeachingNfcTag(read.nfcEvidence, read.tagId) } : read.nfcEvidence !== undefined ? { nfcEvidence: read.nfcEvidence } : {}) })) }),
         ...(kind === "return" && room ? { returnRoom: { roomId: room.id, version: room.version } } : {}),
         ...(teachingGroup ? { teachingGroup: teachingGroupReferenceSchema.parse(teachingGroup) } : {}),
     };
@@ -70,7 +72,9 @@ export function scanFailureStatus(error: unknown, alreadyUncertain = false): Sca
 function isRead(value: unknown): value is ScanRead {
     if (!value || typeof value !== "object") return false;
     const read = value as Partial<ScanRead>, battery = read.battery;
-    return (read.source === "manual" || read.source === "simulated" || read.source === "selection") && (typeof read.tagId === "string" || read.source === "selection" && read.tagId === null) && typeof read.readAt === "string" && !!battery
+    if (read.source === "native_nfc") { try { validateTeachingNfcTag(read.nfcEvidence, read.tagId ?? null); } catch { return false; } }
+    else if (read.nfcEvidence !== undefined) return false;
+    return (read.source === "manual" || read.source === "simulated" || read.source === "selection" || read.source === "native_nfc") && (typeof read.tagId === "string" || read.source === "selection" && read.tagId === null) && typeof read.readAt === "string" && !!battery
         && typeof battery.id === "string" && !!battery.id && typeof battery.name === "string" && typeof battery.ownerName === "string" && Number.isInteger(battery.version) && battery.version > 0
         && (typeof battery.loanId === "string" || battery.loanId === null) && battery.tagId === read.tagId;
 }

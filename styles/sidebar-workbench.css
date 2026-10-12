@@ -139,10 +139,13 @@
   --operation-hover: #e2edfc;
 }
 .app-sidebar .sidebar-operation[data-operation="return"] {
-  --operation-ink: #146d68;
-  --operation-tint: #edf8f6;
-  --operation-border: #c6e2dc;
-  --operation-hover: #dcf0eb;
+  --operation-ink: #efbd3b;
+  --operation-foreground: #4b3a12;
+  --operation-active-icon: #4b3a12;
+  --operation-focus: #806019;
+  --operation-tint: #fff8e6;
+  --operation-border: #e8ce84;
+  --operation-hover: #fff0c7;
 }
 .app-sidebar .sidebar-operation[data-operation="assets"] {
   --operation-ink: #6550aa;
@@ -173,25 +176,25 @@
   height: 30px;
   border-radius: 9px;
   background: var(--operation-ink);
-  color: #fff;
+  color: var(--operation-foreground, #fff);
   box-shadow: inset 0 1px 0 rgb(255 255 255 / .14);
   transition: background-color 180ms ease, color 180ms ease, transform 220ms var(--ease-out);
 }
 .app-sidebar .sidebar-operation-icon > svg { width: 18px; height: 18px; }
 .app-sidebar .sidebar-quick-actions .sidebar-operation:focus-visible {
-  outline: 2px solid var(--operation-ink);
+  outline: 2px solid var(--operation-focus, var(--operation-ink));
   outline-offset: 2px;
 }
 .app-sidebar .sidebar-quick-actions .sidebar-operation[data-active="true"],
 .app-sidebar .sidebar-quick-actions .sidebar-operation[data-active="true"]:hover:not(:disabled) {
   background: var(--operation-ink);
   border-color: var(--operation-ink);
-  color: #fff;
+  color: var(--operation-foreground, #fff);
   box-shadow: 0 2px 5px rgb(24 39 65 / .12);
 }
 .app-sidebar .sidebar-operation[data-active="true"] .sidebar-operation-icon {
   background: #fff;
-  color: var(--operation-ink);
+  color: var(--operation-active-icon, var(--operation-ink));
   box-shadow: none;
 }
 .app-sidebar .sidebar-quick-actions .sidebar-operation[data-active="true"]:disabled { opacity: 1; }
@@ -224,7 +227,7 @@
 }
 @media (forced-colors: active) {
   .app-sidebar .sidebar-quick-actions-menu { border-color: CanvasText; background: Canvas; }
-  .app-sidebar .sidebar-operation[data-operation] { --operation-ink: Highlight; --operation-tint: Canvas; --operation-border: ButtonText; --operation-hover: Canvas; }
+  .app-sidebar .sidebar-operation[data-operation] { --operation-ink: Highlight; --operation-focus: Highlight; --operation-tint: Canvas; --operation-border: ButtonText; --operation-hover: Canvas; }
   .app-sidebar .sidebar-operation-icon { background: ButtonFace; color: ButtonText; border: 1px solid ButtonText; }
   .app-sidebar .sidebar-quick-actions .sidebar-operation[data-active="true"],
   .app-sidebar .sidebar-quick-actions .sidebar-operation[data-active="true"]:hover:not(:disabled) { background: Highlight; color: HighlightText; }

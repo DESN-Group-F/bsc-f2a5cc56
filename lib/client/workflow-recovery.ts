@@ -51,31 +51,32 @@ export function readWorkflowRecovery(
     if (removalAttempt || (removalRaw && (!removal || removal.items.length)))
       result.removals.push({ dataset });
     for (const kind of ["checkout", "return"] as const) {
-      if (
-        recoverMovementAttempt(
-          storage.getItem(movementStorageKey(accountId, dataset, kind)),
+      const movementRaw = storage.getItem(movementStorageKey(accountId, dataset, kind));
+      const movement = recoverMovementAttempt(
+          movementRaw,
           accountId,
           dataset,
           kind,
-        )
-      ) {
+        );
+      if (movementRaw !== null && !movement) throw new Error(`The retained ${dataset} ${kind} request is unreadable or has a different account context. Export recovery data before starting new work.`);
+      if (movement) {
         result.movements.push({ dataset, kind });
       }
-      if (
-        recoverScanSession(
-          storage.getItem(`battery-scan:${accountId}:${dataset}:${kind}`),
-          kind,
-        )
-      ) {
+      const scanRaw = storage.getItem(`battery-scan:${accountId}:${dataset}:${kind}`);
+      if (scanRaw !== null && !recoverScanSession(scanRaw, kind, true)) throw new Error(`The retained ${dataset} ${kind} scan session is unreadable. The original data is preserved; new scanning is blocked.`);
+      if (recoverScanSession(scanRaw, kind)) {
         result.scans.push({ dataset, kind });
       }
     }
   }
+  const intakeRaw = storage.getItem(intakeStorageKey(accountId, "demo"));
   const intake = recoverIntakeDraft(
-    storage.getItem(intakeStorageKey(accountId, "demo")),
+    intakeRaw,
     accountId,
     "demo",
   );
+  if (intakeRaw !== null && !intake) throw new Error("The retained intake draft is unreadable or has a different account context. It has not been replaced.");
+  if (storage.getItem(intakeStorageKey(accountId, "live")) !== null) throw new Error("An unsupported working-inventory intake recovery key is retained. Export its evidence before starting new work.");
   if (intake && (intake.entries.length || intake.attempt))
     result.intakes.push({ dataset: "demo" });
   return result;

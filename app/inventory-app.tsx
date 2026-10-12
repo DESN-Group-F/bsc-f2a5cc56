@@ -74,7 +74,7 @@ import type {
   ExportDraft,
   ImportKind,
 } from "@/lib/client/inventory-contracts";
-import { RecoveryNotices } from "@/components/application/recovery-notices";
+import { RecoveryNotices, RecoveryStorageNotice } from "@/components/application/recovery-notices";
 import { useMessageCount } from "@/hooks/use-message-count";
 import { useNewArrivals } from "@/hooks/use-new-arrivals";
 import { ApplicationShell } from "@/components/application/application-shell";
@@ -148,7 +148,9 @@ export default function InventoryApp({
   const {
     recovery,
     unavailable: recoveryUnavailable,
+    error: recoveryError,
     read: readRecovery,
+    exportRetained: exportRecovery,
   } = useWorkflowRecovery(user.id);
   const {
     removals: pendingRemovals,
@@ -696,10 +698,7 @@ export default function InventoryApp({
           </div>
         )}</MotionPresence>
         <MotionPresence>{recoveryUnavailable && (
-          <div className="load-error" role="alert">
-            Browser recovery storage is unavailable. Restore access before
-            starting another workflow.
-          </div>
+          <RecoveryStorageNotice message={recoveryError} onExport={exportRecovery}/>
         )}</MotionPresence>
         <MotionPresence>{error && (
           <div className="load-error" role="alert">

@@ -101,8 +101,12 @@ test("explicit source switching clears only manual alternatives; exact tag and n
     const entries = new Map(), data = fixture(), page = await view({ entries, data }); chooseOriginal(page.render()); button(page.render(), "Choose").props.onClick();
     button(page.render(), "Entered tag").props.onClick(); assert.match(content(page.render()), /Switching source clears/); assert.match(content(page.render()), /2 actual batteries selected/);
     button(page.render(), "Switch source and clear manual choices").props.onClick(); assert.match(content(page.render()), /1 actual batteries selected/);
+    assert.equal(nativeInput(page.render()).props.source, "tag");
+    assert.equal(nativeInput(page.render()).key, "tag");
     await nativeInput(page.render()).props.onChooseTag("nfc:uid:01020304", { kind: "tag" }); assert.match(content(page.render()), /Entered registered tag/);
     button(page.render(), "Native NFC").props.onClick(); button(page.render(), "Switch source and clear manual choices").props.onClick();
+    assert.equal(nativeInput(page.render()).props.source, "native_nfc");
+    assert.equal(nativeInput(page.render()).key, "native_nfc");
     const evidence = { attemptId: crypto.randomUUID(), source: "native-nfc-reader", platform: "android", startedAt: at, endedAt: at, adoptedAt: at, tagId: "nfc:uid:01020304", result: { uidHex: "01020304", technology: "NfcA", ndefStatus: "unknown", capacityBytes: null, records: [], observedAt: at } };
     await nativeInput(page.render()).props.onChooseTag(evidence.tagId, { kind: "native_nfc", evidence }); page.render(); page.unmount();
     const restored = await view({ entries, data }); assert.match(content(restored.render()), /Adopted native NFC reading/);

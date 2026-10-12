@@ -342,6 +342,8 @@ export class InventoryQueries {
 
   async scanLookup(input: unknown): Promise<ScanLookupResult> {
     const value = scanLookupSchema.parse(input);
+    if (value.source === "native_nfc" && this.session.dataset !== "demo")
+      throw new DomainError(400, "Native NFC business lookup is demonstration-only until physical workflow acceptance is approved.", "native_nfc_demo_only");
     if (value.source === "simulated" && this.session.dataset !== "demo")
       throw new DomainError(
         400,

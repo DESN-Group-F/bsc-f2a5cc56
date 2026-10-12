@@ -85,6 +85,8 @@ export class InventoryMovements {
         }
       : null;
     const returnRoom = v.kind === "return" ? v.returnRoom : undefined;
+    if (scan?.source === "native_nfc" && this.session.dataset !== "demo")
+      throw new DomainError(400, "Native NFC business scans are demonstration-only until physical workflow acceptance is approved.", "native_nfc_demo_only");
     if (scan?.source === "simulated" && this.session.dataset !== "demo")
       throw new DomainError(
         400,

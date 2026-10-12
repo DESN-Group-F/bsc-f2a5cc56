@@ -23,9 +23,9 @@ async function compileLibrary(name) {
   return destination;
 }
 const libraries = {};
-for (const name of ["client/workflow-recovery", "browser-tools", "permissions", "inventory-query", "client/inventory-request", "retired-asset-actions", "client-utils", "battery-selection-query", "client/row-selection", "removal-draft", "movement-session", "group-maintenance", "client/teaching-checkout-request", "client/teaching-checkout-draft", "client/teaching-checkout-download"]) Object.assign(libraries, await import(pathToFileURL(await compileLibrary(name))));
+for (const name of ["client/workflow-recovery", "browser-tools", "permissions", "inventory-query", "client/inventory-request", "retired-asset-actions", "intake-session", "lifecycle-session", "client-utils", "battery-selection-query", "client/row-selection", "removal-draft", "movement-session", "group-maintenance", "client/teaching-checkout-request", "client/teaching-checkout-draft", "client/teaching-checkout-download"]) Object.assign(libraries, await import(pathToFileURL(await compileLibrary(name))));
 const ui = {}, sources = {};
-for (const [name, file] of [["InventoryApp", "app/inventory-app.tsx"], ["RemovalHistory", "components/inventory/removal-station.tsx"], ["RetiredAssetActionDialog", "components/inventory/retired-asset-action-dialog.tsx"], ["RecoveryNotices", "components/application/recovery-notices.tsx"]]) {
+for (const [name, file] of [["InventoryApp", "app/inventory-app.tsx"], ["RemovalHistory", "components/inventory/removal-station.tsx"], ["RetiredAssetActionDialog", "components/inventory/retired-asset-action-dialog.tsx"], ["RecoveryNotices", "components/application/recovery-notices.tsx"], ["useWorkflowRecovery", "hooks/use-workflow-recovery.ts"]]) {
   const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
   const parsed = ts.createSourceFile(file, source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
   for (const statement of parsed.statements.filter(ts.isImportDeclaration)) {
@@ -58,19 +58,21 @@ function attempt(dataset = "live") { return libraries.captureRetiredAssetAttempt
 function receipt(payload, dataset, overrides = {}) { return { requestId: payload.requestId, actorAccountId: actor, dataset, kind: payload.kind, at, replayed: false, items: payload.items.map(item => ({ batteryId: item.batteryId, version: item.version + 1, status: payload.kind === "recover" ? "active" : "deleted" })), ...overrides }; }
 async function environment(run, seed = []) {
   const descriptors = Object.fromEntries(["sessionStorage", "window", "document", "fetch"].map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
-  const entries = new Map(seed), tools = new Map(), requests = [], loads = [], events = [];
+  const entries = new Map(seed), tools = new Map(), requests = [], loads = [], events = [], downloads = [];
   const user = { id: actor, role: "admin", username: "audit-user", defaultDataset: "demo" };
-  const env = { user, dataset: "demo", error: "", revision: 0, failReads: false, hasData: true, loading: false, entries, tools, requests, loads, events, respond: input => receipt(input.payload, input.dataset) };
+  const env = { user, dataset: "demo", error: "", revision: 0, failReads: false, hasData: true, loading: false, entries, tools, requests, loads, events, downloads, respond: input => receipt(input.payload, input.dataset) };
   const snapshot = () => ({ dataset: env.dataset, user, actor: "Audit fixture", batteries: [battery("BAT-SCRAPPED"), battery("BAT-ACTIVE", "active")], people: [], rooms: [], buildings: [], staffDirectory: [], teachingGroups: [], events: [] });
   const current = { current: snapshot() };
   Object.defineProperty(globalThis, "sessionStorage", { configurable: true, value: { getItem(key) { if (env.failReads) throw new Error("Browser recovery read unavailable"); return entries.get(key) ?? null; }, setItem(key, value) { entries.set(key, value); }, removeItem(key) { entries.delete(key); } } });
   Object.defineProperty(globalThis, "window", { configurable: true, value: Object.assign(new EventTarget(), { dispatchEvent(event) { events.push(event.type); return EventTarget.prototype.dispatchEvent.call(this, event); } }) });
   Object.defineProperty(globalThis, "document", { configurable: true, value: { modelContext: { registerTool(tool) { tools.set(tool.name, tool); } } } });
   Object.defineProperty(globalThis, "fetch", { configurable: true, value: async (url, options) => { const input = JSON.parse(options.body); requests.push({ url, input: structuredClone(input) }); return new Response(JSON.stringify({ result: env.respond(input) }), { status: 200, headers: { "Content-Type": "application/json" } }); } });
+  const recoveryBindings = { ...libraries, useCallback: callback => callback, useSyncExternalStore: (_subscribe, snapshot) => snapshot(), saveDownloadAttachment: attachment => downloads.push(attachment) };
+  const useWorkflowRecovery = new Function(...Object.keys(recoveryBindings), `${sources.useWorkflowRecovery}\nreturn useWorkflowRecovery;`)(...Object.values(recoveryBindings));
   env.bindings = {
     flushSync: callback => callback(), transitionWorkspace: callback => callback(),
     useInventoryData() { current.current = env.hasData ? snapshot() : null; return { user, dataset: env.dataset, data: current.current, loading: env.loading, error: env.error, revision: env.revision, current, setError: value => { env.error = value; }, setRevision: update => { env.revision = typeof update === "function" ? update(env.revision) : update; }, load: async dataset => { loads.push(dataset); }, refresh() {}, changeDataset: dataset => { env.dataset = dataset; }, acceptReviewedInventory() {} }; },
-    useWorkflowRecovery(accountId) { return { recovery: libraries.readWorkflowRecovery(sessionStorage, accountId), unavailable: false, read: () => libraries.readWorkflowRecovery(sessionStorage, accountId) }; },
+    useWorkflowRecovery,
     useLocationRecovery() { return { recovery: { attempts: [], error: "" }, read: () => ({ attempts: [], error: "" }) }; },
     useMessageCount: () => ({ unreadCount: 0, acceptUnreadCount() {} }), useInventoryPolling() {},
     useNewArrivals: () => ({ arrivals: undefined, acknowledge: async () => {}, pending: false, error: "" }),
@@ -232,6 +234,10 @@ test("the assets workspace and an opened intake remain escapable after load fail
     const raw = "retained draft while inventory is unavailable";
     env.entries.set(key, raw);
     env.hasData = false; env.error = "Inventory could not load";
+    if (openIntake) {
+      const notice = node(app, "RecoveryStorageNotice"); assert.ok(notice); assert.match(notice.props.message, /retained intake draft is unreadable/);
+      notice.props.onExport(); assert.deepEqual(JSON.parse(await env.downloads[0].blob.text()).records, [{ key, raw }]);
+    }
     assert.equal(node(app, "ApplicationShell").props.locked, true);
     const exit = button(app, "Exit workspace");
     assert.ok(exit); assert.equal(exit.props.disabled, false);
@@ -243,6 +249,17 @@ test("the assets workspace and an opened intake remain escapable after load fail
     assert.equal(env.requests.length, 0);
     app.unmount();
   });
+});
+
+test("damaged scan evidence remains exportable through the application banner and blocks fresh browser movement", async () => {
+  const key = `battery-scan:${actor}:demo:checkout`, raw = "Unreadable original native NFC evidence";
+  await environment(async env => {
+    const app = mount("InventoryApp", env, { initialUser: env.user });
+    const notice = node(app, "RecoveryStorageNotice"); assert.ok(notice); assert.match(notice.props.message, /retained demo checkout scan session is unreadable/);
+    notice.props.onExport(); assert.deepEqual(JSON.parse(await env.downloads[0].blob.text()).records, [{ key, raw }]);
+    node(app, "ApplicationShell").props.onScan("checkout"); assert.equal(node(app, "ScanStation"), undefined); assert.equal(node(app, "MovementDialog"), undefined);
+    assert.equal(env.entries.get(key), raw); assert.equal(env.requests.length, 0); app.unmount();
+  }, [[key, raw]]);
 });
 
 test("fresh WebMCP staging honors preserved retired requests while its read tool remains usable", async () => environment(async env => {

@@ -11,7 +11,7 @@ const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "removal-ui-"));
 after(() => rm(scratch, { recursive: true, force: true }));
-for (const name of ["teaching-context", "battery-age", "domain", "location-catalog", "client-utils", "lifecycle-session", "removal-draft", "battery-lifecycle", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "permissions", "retired-asset-actions"]) {
+for (const name of ["teaching-nfc", "teaching-context", "battery-age", "domain", "location-catalog", "client-utils", "lifecycle-session", "removal-draft", "battery-lifecycle", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "permissions", "retired-asset-actions"]) {
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
     await writeFile(join(scratch, `${name}.mjs`), compiled);
@@ -74,6 +74,21 @@ function savedDraft(entries, dataset = "live") { return JSON.parse(entries.get(r
 function queue(view, id) { nodes(view.render()).find(node => node.type === "Button" && node.props["aria-label"] === `Queue ${id}`).props.onClick(); }
 function reason(view, value = "Retired after staff review") { control(view.render(), "removal-reason").props.onChange({ target: { value } }); }
 function setTag(view, value) { control(view.render(), "removal-tag").props.onChange({ target: { value } }); }
+
+test("recovered native removal keeps its source and evidence for reviewed confirmation and exact retry without typed acquisition", async () => environment(async ({ entries }) => {
+    const evidence = { attemptId: crypto.randomUUID(), source: "native-nfc-reader", platform: "android", startedAt: "2026-10-03T00:00:00.000Z", endedAt: "2026-10-03T00:00:01.000Z", adoptedAt: "2026-10-03T00:00:02.000Z", tagId: "nfc:uid:01020304", result: { uidHex: "01020304", technology: "NfcA", ndefStatus: "unknown", capacityBytes: null, records: [], observedAt: "2026-10-03T00:00:01.000Z" } };
+    const data = fixture("demo"), native = { ...data.batteries[0], tagId: evidence.tagId }; data.batteries[0] = native;
+    entries.set(removalDraft.removalDraftStorageKey("removal-native-actor", "demo"), JSON.stringify(removalDraft.captureRemovalDraft({ actorAccountId: "removal-native-actor", dataset: "demo", source: "native_nfc", kind: "scrapped", reason: "", destination: "", items: [{ batteryId: native.id, tagId: native.tagId, version: native.version, name: native.name, nfcEvidence: evidence }], selectedIds: [native.id] })));
+    const sent = []; let complete = false;
+    const write = async (action, payload) => { sent.push(structuredClone(payload)); if (!complete) throw new Error("Controlled missing native receipt"); return receipt(payload, { dataset: "demo" }); };
+    const view = mount({ data, write });
+    assert.match(text(view.render()), /Native NFC input is unavailable in this browser/); assert.equal(control(view.render(), "removal-tag"), undefined); assert.equal(button(view.render(), "Read NFC tag"), undefined); assert.equal(sent.length, 0);
+    assert.equal(button(view.render(), "Manual selection").props.disabled, true); reason(view, "Reviewed native evidence");
+    await button(view.render(), "Confirm selected").props.onClick(); const captured = structuredClone(sent[0]); assert.equal(captured.source, "native_nfc"); assert.deepEqual(captured.items[0].nfcEvidence, evidence); view.unmount();
+    complete = true; const resumed = mount({ data, write }); await button(resumed.render(), "Retry exact removal").props.onClick(); assert.deepEqual(sent[1], captured);
+    const history = nodes(resumed.render()).find(node => node.props.className === "removal-results"); assert.match(text(history), /Native NFC/); assert.doesNotMatch(text(history), /Typed tag input|Manual selection/);
+    assert.equal(savedDraft(entries, "demo").items.length, 0); button(resumed.render(), "Manual selection").props.onClick(); assert.equal(savedDraft(entries, "demo").source, "manual_selection"); resumed.unmount();
+}));
 
 test("returning to inventory preserves the removal draft and blocks exit during unknown confirmation or storage recovery", async () => {
     await environment(async ({ entries }) => {

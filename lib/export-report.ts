@@ -156,13 +156,18 @@ function operationSummary(action: string, detail: Row, row: Row): string {
         default: return "Full recorded details are retained in the evidence appendix; no additional interpretation has been inferred.";
     }
 }
+function nativeIdentificationNote(detail: Row): string {
+    if (detail.source !== "native_nfc" && object(detail.scan).source !== "native_nfc") return "";
+    const evidence = object(detail.nfcEvidence ?? object(detail.reviewedBinding).nfcEvidence);
+    return ` Identification source: native NFC (device-reported).${evidence.tagId ? ` Adopted tag: ${text(evidence.tagId)}.` : ""} Complete UID, raw NDEF and device timestamps remain in the original evidence; they do not attest security, chip model or location.`;
+}
 function activityRow(row: Row): Row {
     const detail = details(row), group = object(detail.teachingGroup), action = String(row.action ?? "");
     return {
         "Recorded at (Sydney)": reportTimestamp(row.at), "Operation": actionNames[action] ?? "Other recorded operation",
         "Battery ID": text(row.battery_id), "Teaching group (name at operation)": text(row.teaching_group_name ?? group.name),
         "Affected batteries": own(row, "affected_battery_count") ? number(row.affected_battery_count) : row.battery_id ? 1 : "Not applicable",
-        "Recorded by (name at operation)": text(row.actor_name), "What happened": operationSummary(action, detail, row),
+        "Recorded by (name at operation)": text(row.actor_name), "What happened": operationSummary(action, detail, row) + nativeIdentificationNote(detail),
     };
 }
 function filterSummary(metadata: Row): string {

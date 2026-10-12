@@ -1,15 +1,20 @@
 import { z } from "zod";
 import { datasetSchema, identifier, type Dataset } from "./domain";
 import { teachingGroupReferenceSchema, teachingGroupEvidenceSchema, verifyGroupEvidence } from "./teaching-context";
+import { teachingNfcEvidenceSchema } from "./teaching-nfc";
 
-export const lifecyclePayloadSchema = z.object({
+const lifecyclePayloadFields = {
     requestId: z.string().uuid(), kind: z.enum(["scrapped", "permanently_removed"]),
     teachingGroup: teachingGroupReferenceSchema.optional(),
     reason: z.string().trim().max(1000).default(""),
     destination: z.string().trim().max(200).nullable().optional().transform(value => value || null),
-    source: z.enum(["tag_entry", "manual_selection"]),
-    items: z.array(z.object({ batteryId: identifier, version: z.number().int().positive().max(Number.MAX_SAFE_INTEGER - 1), tagId: z.string().trim().min(1).max(128).nullable() }).strict()).min(1).max(100),
-}).strict().superRefine((value, context) => {
+};
+const lifecycleItemFields = { batteryId: identifier, version: z.number().int().positive().max(Number.MAX_SAFE_INTEGER - 1), tagId: z.string().trim().min(1).max(128).nullable() };
+export const lifecyclePayloadSchema = z.discriminatedUnion("source", [
+    z.object({ ...lifecyclePayloadFields, source: z.enum(["tag_entry", "manual_selection"]), items: z.array(z.object({ ...lifecycleItemFields, nfcEvidence: z.never().optional() }).strict()).min(1).max(100) }).strict(),
+    z.object({ ...lifecyclePayloadFields, source: z.literal("native_nfc"), items: z.array(z.object({ ...lifecycleItemFields, tagId: z.string().regex(/^nfc:uid:(?:[0-9A-F]{8}|[0-9A-F]{14}|[0-9A-F]{20})$/), nfcEvidence: teachingNfcEvidenceSchema }).strict()).min(1).max(100) }).strict(),
+]).superRefine((value, context) => {
+    if (value.source === "native_nfc" && value.items.some(item => item.tagId !== item.nfcEvidence.tagId)) context.addIssue({ code: z.ZodIssueCode.custom, path: ["items"], message: "Every removal binding must retain the adopted native NFC tag and full evidence." });
     if (new Set(value.items.map(item => item.batteryId)).size !== value.items.length) context.addIssue({ code: z.ZodIssueCode.custom, path: ["items"], message: "Review each selected battery once." });
     const tags = value.items.flatMap(item => item.tagId === null ? [] : [item.tagId]);
     if (new Set(tags).size !== tags.length) context.addIssue({ code: z.ZodIssueCode.custom, path: ["items"], message: "Selected batteries cannot share a registered tag." });
@@ -19,16 +24,23 @@ export const lifecyclePayloadSchema = z.object({
 export type LifecyclePayload = z.infer<typeof lifecyclePayloadSchema>;
 export type LifecycleKind = LifecyclePayload["kind"];
 export type LifecycleAttempt = { actorAccountId: string; dataset: Dataset; payload: LifecyclePayload };
-export const lifecycleReceiptSchema = z.object({
+const lifecycleReceiptFields = {
     requestId: z.string().uuid(), dataset: datasetSchema, actorAccountId: z.string().min(1),
-    kind: z.enum(["scrapped", "permanently_removed"]), reason: z.string().max(1000), destination: z.string().max(200).nullable(), source: z.enum(["tag_entry", "manual_selection"]),
+    kind: z.enum(["scrapped", "permanently_removed"]), reason: z.string().max(1000), destination: z.string().max(200).nullable(),
     at: z.string().datetime({ offset: true }), replayed: z.boolean(),
     teachingGroup: teachingGroupEvidenceSchema.optional(),
-    items: z.array(z.object({ batteryId: identifier, version: z.number().int().positive().max(Number.MAX_SAFE_INTEGER), status: z.enum(["scrapped", "permanently_removed"]), tagId: z.string().min(1).max(128).nullable() }).strict()).min(1).max(100),
-}).strict();
+};
+const lifecycleReceiptItemFields = { batteryId: identifier, version: z.number().int().positive().max(Number.MAX_SAFE_INTEGER), status: z.enum(["scrapped", "permanently_removed"]), tagId: z.string().min(1).max(128).nullable() };
+export const lifecycleReceiptSchema = z.discriminatedUnion("source", [
+    z.object({ ...lifecycleReceiptFields, source: z.enum(["tag_entry", "manual_selection"]), items: z.array(z.object({ ...lifecycleReceiptItemFields, nfcEvidence: z.never().optional() }).strict()).min(1).max(100) }).strict(),
+    z.object({ ...lifecycleReceiptFields, source: z.literal("native_nfc"), items: z.array(z.object({ ...lifecycleReceiptItemFields, tagId: z.string().regex(/^nfc:uid:(?:[0-9A-F]{8}|[0-9A-F]{14}|[0-9A-F]{20})$/), nfcEvidence: teachingNfcEvidenceSchema }).strict()).min(1).max(100) }).strict(),
+]).superRefine((value, context) => {
+    if (value.source === "native_nfc" && value.items.some(item => item.tagId !== item.nfcEvidence.tagId)) context.addIssue({ code: z.ZodIssueCode.custom, path: ["items"], message: "Every removed tag must retain its original native NFC evidence." });
+});
 export type LifecycleReceipt = z.infer<typeof lifecycleReceiptSchema>;
 export function lifecycleStorageKey(actorAccountId: string, dataset: Dataset) { return `battery-lifecycle:${actorAccountId}:${dataset}`; }
 export function captureLifecycleAttempt(actorAccountId: string, dataset: Dataset, payload: LifecyclePayload): LifecycleAttempt {
+    if (payload.source === "native_nfc" && dataset !== "demo") throw new Error("Native NFC removal is available only in Demonstration inventory.");
     return { actorAccountId, dataset: datasetSchema.parse(dataset), payload: lifecyclePayloadSchema.parse(structuredClone(payload)) };
 }
 export function recoverLifecycleSession(raw: string | null, actorAccountId: string, dataset: Dataset): LifecycleAttempt | null {
@@ -46,7 +58,7 @@ export function verifyLifecycleReceipt(value: unknown, attempt: LifecycleAttempt
     verifyGroupEvidence(receipt.teachingGroup, payload.teachingGroup, payload.requestId, payload.items.map(item => item.batteryId), attempt.actorAccountId);
     if (receipt.requestId !== payload.requestId || receipt.dataset !== attempt.dataset || receipt.actorAccountId !== attempt.actorAccountId || receipt.kind !== payload.kind || receipt.reason !== payload.reason || receipt.destination !== payload.destination || receipt.source !== payload.source || receipt.items.length !== payload.items.length)
         throw new Error("The removal receipt does not match this reviewed request. Retry the preserved request.");
-    if (receipt.items.some((item, index) => item.batteryId !== payload.items[index].batteryId || item.tagId !== payload.items[index].tagId || item.version !== payload.items[index].version + 1 || item.status !== payload.kind))
+    if (receipt.items.some((item, index) => item.batteryId !== payload.items[index].batteryId || item.tagId !== payload.items[index].tagId || item.version !== payload.items[index].version + 1 || item.status !== payload.kind || JSON.stringify(item.nfcEvidence) !== JSON.stringify(payload.items[index].nfcEvidence)))
         throw new Error("The removal receipt changed a reviewed battery, tag or version. Retry the preserved request.");
     return receipt;
 }

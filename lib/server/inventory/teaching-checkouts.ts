@@ -78,6 +78,7 @@ export class TeachingCheckoutStore {
     if (source.kind === "native_nfc") {
       try { validateTeachingNfcTag(source.evidence, tagId); }
       catch { throw new DomainError(400, "The registered tag must match the complete adopted native NFC evidence."); }
+      if (this.session.dataset !== "demo") throw new DomainError(400, "Native NFC teaching scans are demonstration-only until physical workflow acceptance is approved.", "native_nfc_demo_only");
     }
   }
   private checkQueue(sources: TeachingSelectionSource[]) {

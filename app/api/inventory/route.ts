@@ -4,6 +4,8 @@ import { getD1Database } from "@/db";
 import { InventoryStore } from "@/lib/store";
 import { IntakeStore } from "@/lib/intake-store";
 import { MobileRegistrationStore } from "@/lib/server/inventory/mobile-registration";
+import { OperatorRegistrationStore } from "@/lib/server/inventory/operator-registration";
+import { nativeNfcCapability } from "@/lib/native-nfc-capability";
 import { datasetSchema, identifier, DomainError } from "@/lib/domain";
 import { z } from "zod";
 export const dynamic = "force-dynamic";
@@ -22,6 +24,7 @@ async function context(request: Request, dataset: unknown) {
     }),
     intake: new IntakeStore(db, scope, mode, actor),
     mobileRegistration: new MobileRegistrationStore(db, scope, mode, actor),
+    operatorRegistration: new OperatorRegistrationStore(db, scope, mode, actor),
   };
 }
 function fail(error: unknown) {
@@ -50,7 +53,7 @@ export async function GET(request: Request) {
     return json(
       id
         ? await store.detail(identifier.parse(id))
-        : { ...(await store.snapshot()), user: actor },
+        : { ...(await store.snapshot()), user: actor, capabilities: { operatorRegistration: 1, nativeNfc: nativeNfcCapability(store.dataset) } },
     );
   } catch (e) {
     return fail(e);
@@ -73,7 +76,7 @@ export async function POST(request: Request) {
         records: z.array(z.unknown()).optional(),
       })
       .parse(raw);
-    const { store, intake, mobileRegistration } = await context(request, body.dataset),
+    const { store, intake, mobileRegistration, operatorRegistration } = await context(request, body.dataset),
       payload = body.payload;
     let result;
     switch (body.action) {
@@ -91,6 +94,9 @@ export async function POST(request: Request) {
         break;
       case "mobile_register":
         result = await mobileRegistration.register(payload);
+        break;
+      case "operator_register":
+        result = await operatorRegistration.register(payload);
         break;
       case "lifecycle":
         result = await store.lifecycle(payload);
