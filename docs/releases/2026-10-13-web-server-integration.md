@@ -1,8 +1,10 @@
 # Web and server integration release — 13 October 2026
 
-This release prepares the shared web and server application for a later Android integration trial. The application version remains `1.0.0`; deployment `2026-10-13-web-server-integration-1.0.0` and its immutable source/build manifest distinguish it from the previous deployment. Android binaries and source are outside this release.
+This release prepares the shared web and server application for a later Android integration trial. The application version remains `1.0.0`; deployment `2026-10-13-web-server-integration-1.0.0-r2` and its immutable source/build manifest distinguish it from the previous deployment. Android binaries and source are outside this release.
 
-The intended publication reference is `battery-inventory-v1.0.0-integration-20261013` in `DESN-Group-F/bsc-f2a5cc56`. Source publication and package availability alone do not establish successful OpenBayes startup or acceptance. Record actual deployment evidence separately after the published package has been verified on the host.
+The intended publication reference is `battery-inventory-v1.0.0-integration-20261013-r2` in `DESN-Group-F/bsc-f2a5cc56`. Source publication and package availability alone do not establish successful OpenBayes startup or acceptance. Record actual deployment evidence separately after the published package has been verified on the host.
+
+The first 13 October package, source `ed53d66558c8f18fe9a8249d1c6056e61454fa44`, was published and staged but never activated against production data. Its isolated Linux trial started the application and confirmed native sign-in and registration, then failed clean shutdown: the Python launcher waited for its child from a signal handler while the main control flow already held the child-wait lock. This revision records signals as a stop request and performs bounded child shutdown in ordinary control flow. The first package remains available as historical evidence and must not be used for production activation. The legacy predecessor must be stopped through its independently verified Node runtime so its Python launcher can finish its ordinary wait without entering the defective signal handler.
 
 ## Application changes
 

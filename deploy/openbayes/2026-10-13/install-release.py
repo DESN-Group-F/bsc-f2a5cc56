@@ -17,16 +17,16 @@ import urllib.request
 import uuid
 import zipfile
 
-DEPLOYMENT = "2026-10-13-web-server-integration-1.0.0"
+DEPLOYMENT = "2026-10-13-web-server-integration-1.0.0-r2"
 VERSION = "1.0.0"
 PREVIOUS_DEPLOYMENT = "2026-10-12-workspace-1.0.0"
 PREVIOUS_COMMIT = "d0e1640a0c516ba6c68aeae4695b12a8afb12525"
 PUBLIC_ORIGIN = "https://zztv-battery.gear-c1.openbayes.net"
-RELEASE_URL = "https://github.com/DESN-Group-F/bsc-f2a5cc56/releases/download/battery-inventory-v1.0.0-integration-20261013/release.zip"
+RELEASE_URL = "https://github.com/DESN-Group-F/bsc-f2a5cc56/releases/download/battery-inventory-v1.0.0-integration-20261013-r2/release.zip"
 DOWNLOAD_HOSTS = {"github.com", "release-assets.githubusercontent.com", "objects.githubusercontent.com"}
 MAX_DOWNLOAD = 60_000_000
 MAX_EXPANDED = 100_000_000
-ADAPTERS = {"runtime.mjs", "runtime-owner.mjs", "upgrade-and-run.py", "rollback-and-run.py", "rollback-gateway.mjs", "preservation.py", "http-gateway.mjs", "install-release.py", "qualify-linux.py", "qualification-fixture.mjs", "README.md", "migration-compatibility.json"}
+ADAPTERS = {"runtime.mjs", "runtime-owner.mjs", "upgrade-and-run.py", "rollback-and-run.py", "rollback-gateway.mjs", "preservation.py", "http-gateway.mjs", "install-release.py", "qualify-linux.py", "qualification-fixture.mjs", "test-launcher.py", "README.md", "migration-compatibility.json"}
 REQUIRED = ADAPTERS | {"dist/server/index.js", "drizzle/meta/_journal.json"}
 BUILD_METADATA = {"dist/client/.assetsignore", "dist/client/.vite/manifest.json", "dist/server/.vite/manifest.json"}
 

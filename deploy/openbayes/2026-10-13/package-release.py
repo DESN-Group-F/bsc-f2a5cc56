@@ -11,7 +11,7 @@ import importlib.util
 from preservation import NAME, PREVIOUS, PREVIOUS_COMMIT, PUBLIC_ORIGIN, MIGRATIONS, canonical, digest, safe_file
 
 ROOT = Path(__file__).resolve().parent
-ADAPTERS = ("runtime.mjs", "runtime-owner.mjs", "upgrade-and-run.py", "rollback-and-run.py", "rollback-gateway.mjs", "preservation.py", "install-release.py", "qualify-linux.py", "qualification-fixture.mjs", "README.md")
+ADAPTERS = ("runtime.mjs", "runtime-owner.mjs", "upgrade-and-run.py", "rollback-and-run.py", "rollback-gateway.mjs", "preservation.py", "install-release.py", "qualify-linux.py", "qualification-fixture.mjs", "test-launcher.py", "README.md")
 BUILD_METADATA = {"dist/client/.assetsignore", "dist/client/.vite/manifest.json", "dist/server/.vite/manifest.json"}
 
 

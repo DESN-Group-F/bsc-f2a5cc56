@@ -10,7 +10,7 @@ import { createInventoryHttpServer } from "./http-gateway.mjs";
 import { acquireRuntimeOwner } from "./runtime-owner.mjs";
 import { maintenanceRollbackDispatch } from "./rollback-gateway.mjs";
 
-const deploymentName = "2026-10-13-web-server-integration-1.0.0";
+const deploymentName = "2026-10-13-web-server-integration-1.0.0-r2";
 const previousDeploymentName = "2026-10-12-workspace-1.0.0";
 const previousSourceCommit = "d0e1640a0c516ba6c68aeae4695b12a8afb12525";
 const migrationCount = 23, applicationVersion = "1.0.0";

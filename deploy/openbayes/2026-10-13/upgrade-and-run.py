@@ -9,6 +9,39 @@ import subprocess
 from preservation import NAME, RUNTIME_VERSIONS, acquire_lock, expected_migrations, prepare_database, prepare_rollback, reviewed_execution, verify_bundle
 
 
+def wait_for_runtime(child, shutdown_timeout=15):
+    stop_requested = False
+
+    def request_stop(_signum, _frame):
+        nonlocal stop_requested
+        # A signal can interrupt wait() while its non-reentrant subprocess lock is held.
+        # Keep child-process operations in the ordinary control flow.
+        stop_requested = True
+
+    def shutdown():
+        if child.poll() is None:
+            child.terminate()
+            try: child.wait(timeout=shutdown_timeout)
+            except subprocess.TimeoutExpired:
+                if os.name != "nt": os.killpg(child.pid, signal.SIGKILL)
+                else: child.kill()
+                child.wait()
+
+    prior_handlers = {number: signal.getsignal(number) for number in (signal.SIGTERM, signal.SIGINT)}
+    for number in prior_handlers: signal.signal(number, request_stop)
+    try:
+        while True:
+            if stop_requested:
+                shutdown()
+                return child.returncode
+            try: return child.wait(timeout=0.25)
+            except subprocess.TimeoutExpired: pass
+    finally:
+        try: shutdown()
+        finally:
+            for number, handler in prior_handlers.items(): signal.signal(number, handler)
+
+
 def launch(rollback=False):
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-commit", default=os.environ.get("INVENTORY_RELEASE_SOURCE_COMMIT"), required=os.environ.get("INVENTORY_RELEASE_SOURCE_COMMIT") is None)
@@ -49,17 +82,7 @@ def launch(rollback=False):
         environment = {**os.environ, "INVENTORY_PROJECT_ROOT": str(project), "INVENTORY_BUNDLE_ROOT": str(release), "INVENTORY_APPLICATION_ROOT": str(application), "INVENTORY_ROLLBACK_READ_ONLY": "1" if rollback else "0", "INVENTORY_DATA_ROOT": str(data), "INVENTORY_LAUNCHER_LOCK_HELD": "1", "INVENTORY_LAUNCHER_PID": str(os.getpid()), "INVENTORY_PORT": os.environ.get("INVENTORY_PORT", "0" if local else "8081")}
         if os.name != "nt": environment["INVENTORY_LAUNCHER_LOCK_FD"] = str(lease.fileno())
         child = subprocess.Popen([str(node), str(release / "runtime.mjs")], cwd=release, env=environment, start_new_session=os.name != "nt", pass_fds=(lease.fileno(),) if os.name != "nt" else ())
-        def shutdown(_signum=None, _frame=None):
-            if child.poll() is None:
-                child.terminate()
-                try: child.wait(timeout=15)
-                except subprocess.TimeoutExpired:
-                    if os.name != "nt": os.killpg(child.pid, signal.SIGKILL)
-                    else: child.kill()
-                    child.wait()
-        signal.signal(signal.SIGTERM, shutdown); signal.signal(signal.SIGINT, shutdown)
-        try: code = child.wait()
-        finally: shutdown()
+        code = wait_for_runtime(child)
         if code: raise RuntimeError("The inventory runtime failed; no retained database was reset.")
 
 
