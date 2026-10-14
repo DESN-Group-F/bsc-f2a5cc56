@@ -1,5 +1,21 @@
 # Mobile NFC validation
 
+## iOS TestFlight preparation — 14 October 2026
+
+The current React/Capacitor client **0.5.2 (5)** has been signed and uploaded to App Store Connect. Apple processed it and shows **Testing** in the **Owner Internal Testing** group. The user subsequently reported opening the installed app, then supplied an iPhone screenshot showing **Saved work needs attention**. Installation and rendering are user-reported/visible evidence; successful initialization, sign-in and physical NFC have not passed. The exact installed build has not been independently read back from the phone.
+
+- Published source: `codex/ios-functional-test-052`, commit `d31bedbdfa12f5913dc43542140a61a2736260ec`; 486 manifest entries plus the manifest verified against Git blobs.
+- External isolated Windows validation: **742 mobile tests and 9 plugin checks passed, zero failures/skips**; clean installation and frontend build passed. Dependency/exporter regression checks: **32/32**.
+- [Signed Codemagic build](https://codemagic.io/app/6ac2188a6a40dee54624182a/build/6acecdb3546ce6236cee5805): **688 passed, zero failures, 43 optional browser/CSS skips**, plus **9/9 plugin checks**. The skipped checks passed in the local isolated run. Archive, signed IPA export and Apple upload succeeded.
+- Downloaded IPA: SHA-256 `985d942300045d3f0a3d2fca128cae8c3d3d7689012af66f4b9d2a61f049b3fe`. Version/build, bundled frontend, disabled iOS bridge logging and the embedded signed NFC profile were checked. IPA, logs, dSYMs, hashes and inspection evidence are retained under ignored `work/ios-testflight-052-build5/`.
+- Earlier failures are retained: the initial cloud run lacked `esbuild` and did not stop on test failure; local isolation exposed Windows junction behavior and inherited JSX test settings. The final source declares its dependencies, configures JSX explicitly and stops all cloud script blocks on failed commands. See [the full setup and evidence record](mobile-codemagic-setup.md).
+
+The expanded error supplied by the user is **Business recovery data could not be read. Existing files were preserved; do not replace pending work.** This maps to the native iOS `BusinessDataStore.load()` failure before the sign-in screen. The published implementation recognizes only one Foundation missing-file error when opening a new scope; the precise native failure remains to be reproduced. Earlier JavaScript and compilation checks did not execute this native first-install path.
+
+The user now prioritizes service-independent NFC testing before software design. Repair the startup blocker, then use **Device diagnostics → NFC field test** without signing in or configuring a service. Validate read/cancel/repeat, background return and report export first. Sign-in and inventory qualification are deferred. Reviewed business operations require an explicitly authorized test inventory. Working native NFC remains disabled. This preparation did not mutate hosted inventory data, submit for external beta review or publish to the public App Store.
+
+## Historical diagnostic prototype — 4 October 2026
+
 For the subsequent full business App Test `0.2.0` results, see [the separate 5 October 2026 record](mobile-app-test-0.2.md). Historical Test `0.1.0` results below remain unchanged and do not establish native acceptance of the new App.
 
 This record concerns the local diagnostic prototype prepared on 4 October 2026. It is separate from the hosted release and from physical measurements. The reported target hardware is iPhone 13, iOS 26.6 and NTAG213 stickers. Apple identity review is pending.

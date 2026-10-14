@@ -1,4 +1,5 @@
 import CryptoKit
+import Darwin
 import Foundation
 
 /** Fixed origin-scoped file; no JavaScript path, deletion or credential access. */
@@ -17,18 +18,25 @@ final class BusinessDataStore {
         } catch { throw ServiceFailure(message: "Private business recovery storage is unavailable. Existing files were preserved.", code: "BUSINESS_STORAGE") }
     }
     func load() throws -> String? {
+        let input: FileHandle
+        do { input = try FileHandle(forReadingFrom: file) }
+        catch let error as NSError {
+            // Foundation may report a missing file as Cocoa 4/260 or POSIX ENOENT.
+            // Only an open failure can mean there is no saved envelope yet.
+            if error.domain == NSCocoaErrorDomain && (error.code == NSFileNoSuchFileError || error.code == NSFileReadNoSuchFileError)
+                || error.domain == NSPOSIXErrorDomain && error.code == Int(ENOENT) { return nil }
+            throw ServiceFailure(message: "Business recovery data could not be read. Existing files were preserved; do not replace pending work.", code: "BUSINESS_STORAGE")
+        }
+        defer { try? input.close() }
         var bytes = Data()
         do {
-            let input = try FileHandle(forReadingFrom: file)
-            defer { try? input.close() }
             while let chunk = try input.read(upToCount: 16384), !chunk.isEmpty {
                 guard chunk.count <= Self.maxBytes - bytes.count else { throw ServiceFailure(message: "The saved business envelope exceeds 16 MiB. Its file was preserved; no partial data was loaded.", code: "BUSINESS_DATA_TOO_LARGE") }
                 bytes.append(chunk)
             }
         }
         catch let failure as ServiceFailure { throw failure }
-        catch let error as NSError {
-            if error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoSuchFileError { return nil }
+        catch {
             throw ServiceFailure(message: "Business recovery data could not be read. Existing files were preserved; do not replace pending work.", code: "BUSINESS_STORAGE")
         }
         guard bytes.count <= Self.maxBytes else { throw ServiceFailure(message: "The saved business envelope exceeds 16 MiB. Its file was preserved; no partial data was loaded.", code: "BUSINESS_DATA_TOO_LARGE") }

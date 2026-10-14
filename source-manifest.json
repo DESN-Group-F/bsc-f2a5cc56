@@ -3,7 +3,7 @@
   "purpose": "functional-test-source",
   "formalRelease": false,
   "testVersion": "0.5.2",
-  "createdAt": "2026-10-14T00:31:01.575Z",
+  "createdAt": "2026-10-14T00:50:02.781Z",
   "files": [
     {
       "path": ".gitattributes",
@@ -73,8 +73,8 @@
     },
     {
       "path": "docs/mobile-codemagic-setup.md",
-      "bytes": 27819,
-      "sha256": "21441c491329e8f2213ac56e640c033f260822fd881bd70086ccb05e155f68ed",
+      "bytes": 31734,
+      "sha256": "461f17de0fefc250a738cd898750037a7e441613425f1dbf8adcb06c160f53ae",
       "mode": "0644"
     },
     {
@@ -91,8 +91,8 @@
     },
     {
       "path": "docs/mobile-nfc-validation.md",
-      "bytes": 14708,
-      "sha256": "abc986e2d15d56179948b819514e31402943f7db315bd32111ba1da930cc3ba8",
+      "bytes": 17779,
+      "sha256": "6b07e68450f1eb7c59c92db1eb300463e34d78059627d38b8baa2c5dd98f585c",
       "mode": "0644"
     },
     {
@@ -763,8 +763,8 @@
     },
     {
       "path": "mobile/plugins/battery-service/ios/Sources/BatteryServicePlugin/BusinessDataStore.swift",
-      "bytes": 3437,
-      "sha256": "3d4a495548cdfb99e63c7b00aeee82778cc2f329f3ee1f146e11a8c365298d96",
+      "bytes": 3960,
+      "sha256": "aa4a9111c30bfa3692b62a80126da2f4428aa54a51c0d7bd8458022eba00a511",
       "mode": "0644"
     },
     {
@@ -819,6 +819,12 @@
       "path": "mobile/plugins/battery-service/tests/android-bridge.test.mjs",
       "bytes": 37776,
       "sha256": "e0cf83a9b67d27c7541fa4fe4f262887ef7635f36fb694c45e27a7ecd47c3103",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/plugins/battery-service/tests/ios-business-storage.test.mjs",
+      "bytes": 8263,
+      "sha256": "a6ea45bc905987d541286506a5768a651334dd7c839502943c8e5dd532b895f6",
       "mode": "0644"
     },
     {
@@ -877,8 +883,8 @@
     },
     {
       "path": "mobile/README.md",
-      "bytes": 9233,
-      "sha256": "34df6f0948eac81bfd45d646f40fdc87675c8443b7dac20b0dc1aa928b1e08e2",
+      "bytes": 9289,
+      "sha256": "1b87e1f0653ac2d03f91281e2ef3030c69efbc58453c24b592e462f7d929d3d2",
       "mode": "0644"
     },
     {
@@ -2923,5 +2929,7 @@
     }
   ],
   "basedOnSnapshot": "ios-test-052-20261014-e",
-  "distribution": "owner-internal-testflight"
+  "distribution": "owner-internal-testflight",
+  "basedOnCommit": "d31bedbdfa12f5913dc43542140a61a2736260ec",
+  "repair": "iOS first-install recovery-file open; service-independent NFC test preparation"
 }
