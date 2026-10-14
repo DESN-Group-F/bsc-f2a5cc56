@@ -1,4 +1,4 @@
-# Functional-test source only. Workflows are manual; neither uploads nor publishes.
+# Functional-test source. Manual builds only; the signed iOS workflow uploads for owner internal testing.
 workflows:
   mobile-ios-verify:
     name: Mobile iOS compile check
@@ -10,10 +10,12 @@ workflows:
     scripts:
       - name: Install the independent mobile package
         script: |
+          set -euo pipefail
           cd mobile
           npm ci --no-fund --no-audit
       - name: Check mobile logic and build the interface
         script: |
+          set -euo pipefail
           cd mobile
           npm test
           npm run test:plugin
@@ -21,6 +23,7 @@ workflows:
           node ../scripts/prepare-mobile-native.mjs --ios
       - name: Compile for a physical iPhone without signing
         script: |
+          set -euo pipefail
           cd mobile
           xcodebuild -resolvePackageDependencies -project ios/App/App.xcodeproj -scheme App
           xcodebuild -project ios/App/App.xcodeproj -scheme App \
@@ -39,6 +42,7 @@ workflows:
     scripts:
       - name: Install and verify the mobile package
         script: |
+          set -euo pipefail
           cd mobile
           npm ci --no-fund --no-audit
           npm test
@@ -47,6 +51,7 @@ workflows:
           node ../scripts/prepare-mobile-native.mjs --android
       - name: Build an Android test package
         script: |
+          set -euo pipefail
           cd mobile/android
           : "${ANDROID_SDK_ROOT:?The Android SDK path is required}"
           printf 'sdk.dir=%s\n' "$ANDROID_SDK_ROOT" > local.properties
@@ -54,3 +59,48 @@ workflows:
           ./gradlew assembleDebug
     artifacts:
       - mobile/android/app/build/outputs/apk/debug/*.apk
+  mobile-ios-testflight:
+    name: Mobile iOS functional test beta
+    instance_type: mac_mini_m2
+    max_build_duration: 45
+    integrations:
+      app_store_connect: battery-inventory
+    environment:
+      node: 22
+      xcode: 26.6
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.batteryinventory.mobile
+    scripts:
+      - name: Install and verify the mobile package
+        script: |
+          set -euo pipefail
+          cd mobile
+          npm ci --no-fund --no-audit
+          npm test
+          npm run test:plugin
+          npm run build
+          node ../scripts/prepare-mobile-native.mjs --ios
+      - name: Apply provisioned NFC signing profiles
+        script: |
+          set -euo pipefail
+          cd mobile
+          xcode-project use-profiles
+      - name: Set the build number and produce the signed package
+        script: |
+          set -euo pipefail
+          cd mobile
+          : "${PROJECT_BUILD_NUMBER:?A Codemagic project build number is required}"
+          MOBILE_BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 1))
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $MOBILE_BUILD_NUMBER" ios/App/App/Info.plist
+          xcode-project build-ipa --project ios/App/App.xcodeproj --scheme App \
+            --archive-directory build/ios/xcarchive --ipa-directory build/ios/ipa
+    artifacts:
+      - mobile/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - mobile/build/ios/xcarchive/**/*.dSYM
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false
+        submit_to_app_store: false

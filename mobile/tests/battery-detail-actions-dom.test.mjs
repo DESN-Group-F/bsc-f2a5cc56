@@ -24,7 +24,7 @@ f.render=patch=>{Object.assign(props,patch);root.render(<PhoneUIProvider namespa
 `;
 
 test('record actions retain hierarchy and readable bounds on narrow, wide and enlarged-text layouts', options, async t => {
-  const compiled = await build({ stdin: { contents: fixture, resolveDir: root, sourcefile: 'battery-detail-layout.jsx', loader: 'jsx' }, bundle: true, write: false, format: 'esm', platform: 'browser', plugins: [{ name: 'inline-css', setup(api) { api.onLoad({ filter: /\.css$/ }, () => ({ contents: '', loader: 'js' })); } }] });
+  const compiled = await build({ stdin: { contents: fixture, resolveDir: root, sourcefile: 'battery-detail-layout.jsx', loader: 'jsx' }, bundle: true, write: false, jsx: 'automatic', format: 'esm', platform: 'browser', plugins: [{ name: 'inline-css', setup(api) { api.onLoad({ filter: /\.css$/ }, () => ({ contents: '', loader: 'js' })); } }] });
   const styles = await Promise.all(['shared/vendor/shadcn-tailwind-4.13.0.css', 'shared/styles/theme.css', 'shared/styles/base.css', 'shared/styles/components.css', 'app.css', 'app/phone.css', 'app/battery-page.css'].map(file => readFile(new URL('../src/' + file, import.meta.url), 'utf8')));
   const browser = await runtime.chromium.launch({ headless: true, ...(process.env.MOBILE_BROWSER_TEST_CHANNEL ? { channel: process.env.MOBILE_BROWSER_TEST_CHANNEL } : {}) });
   t.after(() => browser.close());

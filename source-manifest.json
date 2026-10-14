@@ -3,7 +3,7 @@
   "purpose": "functional-test-source",
   "formalRelease": false,
   "testVersion": "0.5.2",
-  "createdAt": "2026-10-14T00:01:41.206Z",
+  "createdAt": "2026-10-14T00:31:01.575Z",
   "files": [
     {
       "path": ".gitattributes",
@@ -19,8 +19,8 @@
     },
     {
       "path": "codemagic.yaml",
-      "bytes": 1916,
-      "sha256": "9715f97009e191802ae944394f7b16e7914414be3579163d55d306f6c2e22b86",
+      "bytes": 3692,
+      "sha256": "881944c00418e57ee5d16ffc4f6e9aaac42cc0ab762bb60f32eeb9959643a608",
       "mode": "0644"
     },
     {
@@ -73,8 +73,8 @@
     },
     {
       "path": "docs/mobile-codemagic-setup.md",
-      "bytes": 19692,
-      "sha256": "c296aa62553ddddb7042e22719fe01110d129e646d16f9ec23df0062c04c4833",
+      "bytes": 27819,
+      "sha256": "21441c491329e8f2213ac56e640c033f260822fd881bd70086ccb05e155f68ed",
       "mode": "0644"
     },
     {
@@ -595,14 +595,14 @@
     },
     {
       "path": "mobile/package-lock.json",
-      "bytes": 171536,
-      "sha256": "fc7471867ffe25eb4e227c2e2c72017041ed9a920db9035d54abecef0e755d51",
+      "bytes": 185815,
+      "sha256": "7a02d43c3c2a7a5275a3390ce1fd4eb9a64a23098a6227c7694162d83445e950",
       "mode": "0644"
     },
     {
       "path": "mobile/package.json",
-      "bytes": 1400,
-      "sha256": "0cb05e7184286fb5b652354542b47fd11939248b3cbe49bc5f4aded413ad87ad",
+      "bytes": 1453,
+      "sha256": "d7ec8e5c1f719ca64c78ba9e1b0cb58234bc1fbfedb50d426986cae8419c5e57",
       "mode": "0644"
     },
     {
@@ -2449,8 +2449,8 @@
     },
     {
       "path": "mobile/tests/battery-detail-actions-dom.test.mjs",
-      "bytes": 6871,
-      "sha256": "12ee153034728f033e3bc7963887e7abd7978b74ddce0dcb965a23a380783578",
+      "bytes": 6889,
+      "sha256": "ed5d92516eaf78fc156a43e1b30ee4851cd176315cdd51f9a4aa977ef6a5863b",
       "mode": "0644"
     },
     {
@@ -2473,14 +2473,14 @@
     },
     {
       "path": "mobile/tests/intake-feedback-timing-dom.test.mjs",
-      "bytes": 17260,
-      "sha256": "59acd6c3d1637df2c95f194df018719c0afe4822cd992e75160f5692c23da9e1",
+      "bytes": 17276,
+      "sha256": "4fa9b6591f29dc281686bef18a439c199ddad38c6b47371780f24542c74ce40e",
       "mode": "0644"
     },
     {
       "path": "mobile/tests/intake-resume-dom.test.mjs",
-      "bytes": 23727,
-      "sha256": "0083a7d12f15ae4c3e2e8b93fd0656b0e2c47da2ac611427b4b08ba2f18265cb",
+      "bytes": 23743,
+      "sha256": "283ec13c6fbff05990339f6fc5d13c00f1804a2eab9ab230cd989c3dc818e796",
       "mode": "0644"
     },
     {
@@ -2670,6 +2670,12 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/tests/mobile-test-dependencies.test.mjs",
+      "bytes": 1450,
+      "sha256": "c63d7b26fe8f8af1e94205c6dc25c11f4bbf8a5a0edd762a29eca1c1427d8057",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/tests/mobile-transport-recovery.test.mjs",
       "bytes": 12416,
       "sha256": "22c0f186ce9212499c820267670572bd9ff8a5ebfa49dc63dd52c2a7ceb0e7d8",
@@ -2779,8 +2785,8 @@
     },
     {
       "path": "mobile/tests/reader-state-dom.test.mjs",
-      "bytes": 17094,
-      "sha256": "72d67b972f3aafec1ee3f4b90aeb75247017bef6d46f8088ade2546aaa06fde6",
+      "bytes": 17110,
+      "sha256": "76a68c28dc2fa5bfed0ce0918e7663e35ceb803cb797a82a9da73f12c023bfa9",
       "mode": "0644"
     },
     {
@@ -2809,14 +2815,14 @@
     },
     {
       "path": "mobile/tests/shell-status-visibility-dom.test.mjs",
-      "bytes": 16752,
-      "sha256": "0fa1de57597c9effe4fb0069d880f2e2c260983f7694cbb1475438573767fab6",
+      "bytes": 16768,
+      "sha256": "156450c9698cf10a1669832d0087b2a9c16718a539cf8870b6246343480f56c8",
       "mode": "0644"
     },
     {
       "path": "mobile/tests/state-admission-dom.test.mjs",
-      "bytes": 13498,
-      "sha256": "8b582a4c01a85c25fa7056dfbca0ca0b54946dce7be88b497a44da9eada892f6",
+      "bytes": 13514,
+      "sha256": "f418ec63b649584a5a0bf56c56c6147d4b8d9aae532f13ffbf1c2e3c96604335",
       "mode": "0644"
     },
     {
@@ -2893,8 +2899,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 4297,
-      "sha256": "457cd5fe807624cf2f7ecd84d1fa5750210d65dc5c5ea2f0c24585d62e22b027",
+      "bytes": 4507,
+      "sha256": "a344a37649c501d44b0892dab3482b7c57ecd69e60c39f4be50483e799c27370",
       "mode": "0644"
     },
     {
@@ -2911,9 +2917,11 @@
     },
     {
       "path": "templates/testflight-workflow.yaml",
-      "bytes": 1691,
-      "sha256": "be36dfc055b58f68bd3a5355b1c9de965bb3bf0997eca36ed66db39948d559c1",
+      "bytes": 1775,
+      "sha256": "1fb84889563f9fbce0654a211abc5a2da2c90fa14509fc408a98184b4a122d66",
       "mode": "0644"
     }
-  ]
+  ],
+  "basedOnSnapshot": "ios-test-052-20261014-e",
+  "distribution": "owner-internal-testflight"
 }

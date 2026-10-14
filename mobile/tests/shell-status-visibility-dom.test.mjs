@@ -50,7 +50,7 @@ export function ScanWorkflow(props){useWorkflowLock();useEffect(()=>{const f=win
 `;
 let bundle;
 async function mount(t,{viewport={width:412,height:828},large=false}={}){
- if(!bundle){const result=await build({stdin:{contents:fixture,resolveDir:root,sourcefile:'state-dom.jsx',loader:'jsx'},bundle:true,write:false,format:'esm',platform:'browser',plugins:[{name:'controlled-boundaries',setup(api){api.onLoad({filter:/\.(?:jsx|js|mjs|css)$/},async args=>{
+ if(!bundle){const result=await build({stdin:{contents:fixture,resolveDir:root,sourcefile:'state-dom.jsx',loader:'jsx'},bundle:true,write:false,jsx:'automatic',format:'esm',platform:'browser',plugins:[{name:'controlled-boundaries',setup(api){api.onLoad({filter:/\.(?:jsx|js|mjs|css)$/},async args=>{
   if(args.path.endsWith('.css'))return{contents:'',loader:'js'};
   if(args.path.endsWith('/src/main.jsx')||args.path.endsWith('\\src\\main.jsx'))return{contents:(await readFile(args.path,'utf8')).replace(/createRoot\(document\.getElementById\('root'\)\)\.render\([\s\S]*$/,''),loader:'jsx'};
   if(args.path===fileURLToPath(scanUrl))return{contents:controlledScan,loader:'jsx'};

@@ -15,6 +15,7 @@ workflows:
     scripts:
       - name: Install and verify the mobile package
         script: |
+          set -euo pipefail
           cd mobile
           npm ci --no-fund --no-audit
           npm test
@@ -23,10 +24,12 @@ workflows:
           node ../scripts/prepare-mobile-native.mjs --ios
       - name: Apply provisioned NFC signing profiles
         script: |
+          set -euo pipefail
           cd mobile
           xcode-project use-profiles
       - name: Set the build number and produce the signed package
         script: |
+          set -euo pipefail
           cd mobile
           : "${PROJECT_BUILD_NUMBER:?A Codemagic project build number is required}"
           MOBILE_BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 1))

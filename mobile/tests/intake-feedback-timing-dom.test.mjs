@@ -59,7 +59,7 @@ async function bundle() {
     '@capacitor/core':"export const Capacitor={getPlatform:()=> 'android'};",
     '@battery-inventory/nfc':'export const BatteryNfc=window.fixture.adapter;',
   };
-  const result=await build({stdin:{contents:fixture,resolveDir:root,loader:'jsx'},bundle:true,write:false,format:'esm',platform:'browser',target:'es2022',plugins:[{name:'controlled-boundaries',setup(plugin){
+  const result=await build({stdin:{contents:fixture,resolveDir:root,loader:'jsx'},bundle:true,write:false,jsx:'automatic',format:'esm',platform:'browser',target:'es2022',plugins:[{name:'controlled-boundaries',setup(plugin){
     plugin.onResolve({filter:/\.css$/},args=>({path:args.path,namespace:'empty-css'}));plugin.onLoad({filter:/.*/,namespace:'empty-css'},()=>({contents:'',loader:'js'}));
     plugin.onResolve({filter:/.*/},args=>{const key=Object.keys(replacements).find(key=>args.path===key||args.path.endsWith('/'+key));return key?{path:key,namespace:'controlled'}:undefined;});
     plugin.onLoad({filter:/.*/,namespace:'controlled'},args=>({contents:replacements[args.path],loader:'jsx',resolveDir:root}));
