@@ -19,8 +19,8 @@
     },
     {
       "path": "codemagic.yaml",
-      "bytes": 2056,
-      "sha256": "4b1563632c65bea9b3faf5e33cc424e71bcaa0db1bc9a012ec1149bb4fa9aa31",
+      "bytes": 4535,
+      "sha256": "f6eb5a144dff25b5de091b841df3df85592b9bb9ba20036cfd1436b0fdac5a34",
       "mode": "0644"
     },
     {
@@ -2994,10 +2994,26 @@
       "mode": "0644"
     },
     {
+      "path": "scripts/verify-ios-signed-artifact.py",
+      "bytes": 8160,
+      "sha256": "f934c3b336a79f5f5ab9d0bd3c20dd8c2058d85202bbe354c18d4924c0d55140",
+      "mode": "0644"
+    },
+    {
       "path": "templates/testflight-workflow.yaml",
       "bytes": 1775,
       "sha256": "1fb84889563f9fbce0654a211abc5a2da2c90fa14509fc408a98184b4a122d66",
       "mode": "0644"
     }
-  ]
+  ],
+  "workflowDelta": {
+    "baseSnapshot": "ios-batch-design-20261014-local-2",
+    "baseArchiveSha256": "856d4099ee9088129d37a9aedf8b75f0d321be98e8c6cb590c26798f8688272a",
+    "verifiedSourceCommit": "bf54e9a8dce3067bc2f5e689485d68e467cacb1d",
+    "purpose": "Enable approved internal-beta workflow with bounded build number and signed-artifact evidence",
+    "changedPaths": [
+      "codemagic.yaml",
+      "scripts/verify-ios-signed-artifact.py"
+    ]
+  }
 }
