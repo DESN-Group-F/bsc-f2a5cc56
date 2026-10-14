@@ -3,7 +3,7 @@
   "purpose": "functional-test-source",
   "formalRelease": false,
   "testVersion": "0.5.2",
-  "createdAt": "2026-10-14T00:53:53.996Z",
+  "createdAt": "2026-10-14T00:58:18.385Z",
   "files": [
     {
       "path": ".gitattributes",
@@ -73,8 +73,8 @@
     },
     {
       "path": "docs/mobile-codemagic-setup.md",
-      "bytes": 32565,
-      "sha256": "6b17be56684d81c4ed490016e05c0f71945dff63dc45a0d57ee28d1cd1f2e107",
+      "bytes": 32935,
+      "sha256": "32c174f4bf36b40e1024edf9074ae061ef55630a19f9ec56ed471239c7d321c5",
       "mode": "0644"
     },
     {
@@ -91,8 +91,8 @@
     },
     {
       "path": "docs/mobile-nfc-validation.md",
-      "bytes": 18152,
-      "sha256": "2a4f1e707fa8d058d3c993e9e2fb589fa41dfa0ccca68e039cb5b928b09aa01f",
+      "bytes": 18178,
+      "sha256": "08822480d89365cb4ab1118706ffc6de5d963eb575880a5a7424140ab1e95b87",
       "mode": "0644"
     },
     {
@@ -763,8 +763,8 @@
     },
     {
       "path": "mobile/plugins/battery-service/ios/Sources/BatteryServicePlugin/BusinessDataStore.swift",
-      "bytes": 4464,
-      "sha256": "819464337870e9d046f62a96c351a130280772775d06b41721b8baf2035784f3",
+      "bytes": 4524,
+      "sha256": "609b94a368b9f05d385d6c18eb8bcdb8caf988c18c19fda26acee317221c85b4",
       "mode": "0644"
     },
     {
@@ -823,8 +823,8 @@
     },
     {
       "path": "mobile/plugins/battery-service/tests/ios-business-storage.test.mjs",
-      "bytes": 10088,
-      "sha256": "7452f7a6bca938b47a8ed80d33caca10fa4dd6ba1213331d3e4c0bc8641edecc",
+      "bytes": 10015,
+      "sha256": "7dabd8683348ded383f58788050d2b7dbf0c0982b860422b45e6425b1c9e7da1",
       "mode": "0644"
     },
     {
@@ -2930,6 +2930,6 @@
   ],
   "basedOnSnapshot": "ios-test-052-20261014-e",
   "distribution": "owner-internal-testflight",
-  "basedOnCommit": "e7d322ebd1ed316747a3c0c681e56c2226ac0e51",
+  "basedOnCommit": "30480dbc3d46d5e2038fad97d253cdc7d02379f2",
   "repair": "iOS first-install recovery-file open; service-independent NFC test preparation"
 }

@@ -18,18 +18,20 @@ final class BusinessDataStore {
         } catch { throw ServiceFailure(message: "Private business recovery storage is unavailable. Existing files were preserved.", code: "BUSINESS_STORAGE") }
     }
     func load() throws -> String? {
-        let input: FileHandle
-        do { input = try FileHandle(forReadingFrom: file) }
-        catch let error as NSError {
-            // Foundation may report a missing file as Cocoa 4/260 or POSIX ENOENT.
-            // Only an open failure can mean there is no saved envelope yet.
-            if error.domain == NSCocoaErrorDomain && (error.code == NSFileNoSuchFileError || error.code == NSFileReadNoSuchFileError)
-                || error.domain == NSPOSIXErrorDomain && error.code == Int(ENOENT) { return nil }
+        // FileHandle's Cocoa error can conflate an absent file and a directory.
+        // Capture the actual open result; only ENOENT means a fresh scope.
+        let opened: (descriptor: Int32, error: Int32) = file.withUnsafeFileSystemRepresentation { path in
+            guard let path = path else { return (-1, EINVAL) }
+            let descriptor = Darwin.open(path, O_RDONLY | O_CLOEXEC | O_NONBLOCK)
+            return (descriptor, descriptor < 0 ? errno : 0)
+        }
+        guard opened.descriptor >= 0 else {
+            if opened.error == ENOENT { return nil }
             throw ServiceFailure(message: "Business recovery data could not be read. Existing files were preserved; do not replace pending work.", code: "BUSINESS_STORAGE")
         }
+        let input = FileHandle(fileDescriptor: opened.descriptor, closeOnDealloc: true)
         defer { try? input.close() }
-        // Some Foundation versions expose a directory as an empty FileHandle.
-        // Inspect the opened object, never a separate path existence check.
+        // Reject directories and special files using the opened object.
         var metadata = stat()
         guard fstat(input.fileDescriptor, &metadata) == 0,
               (metadata.st_mode & mode_t(S_IFMT)) == mode_t(S_IFREG) else {

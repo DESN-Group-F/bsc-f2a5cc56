@@ -124,16 +124,17 @@ struct BusinessStorageHarness {
         try check(geteuid() != 0, "Run as an ordinary user so the permission failure is meaningful")
         try expectedBytes.write(to: deniedFile)
         try manager.setAttributes([.posixPermissions: 0], ofItemAtPath: deniedFile.path)
+        let deniedAttributes = try manager.attributesOfItem(atPath: deniedFile.path)
+        try check((deniedAttributes[.posixPermissions] as? NSNumber)?.intValue == 0, "Permission fixture has mode 000")
+        var deniedOpen = false
         do {
             let unexpected = try FileHandle(forReadingFrom: deniedFile)
             try unexpected.close()
-            throw HarnessFailure("Permission fixture remained readable after chmod 000")
         } catch let error as NSError {
-            try check(error.domain == NSCocoaErrorDomain && error.code == NSFileReadNoPermissionError
-                || error.domain == NSPOSIXErrorDomain && (error.code == Int(EACCES) || error.code == Int(EPERM)),
-                "Permission fixture must produce a real access-denied error; observed " + error.domain + "/" + String(error.code))
+            deniedOpen = true
             print("Permission FileHandle open: domain=\(error.domain), code=\(error.code)")
         }
+        try check(deniedOpen, "Permission fixture must actually reject opening after chmod 000")
         try fails("BUSINESS_STORAGE", "permission-denied saved file") { _ = try denied.load() }
         try manager.setAttributes([.posixPermissions: 0o600], ofItemAtPath: deniedFile.path)
         try check(try Data(contentsOf: deniedFile) == expectedBytes, "An unreadable file remains byte-identical")
