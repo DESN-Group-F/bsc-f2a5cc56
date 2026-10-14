@@ -18,9 +18,9 @@ workflows:
           set -euo pipefail
           cd mobile
           npm ci --no-fund --no-audit
+          npm run build
           npm test
           npm run test:plugin
-          npm run build
           node ../scripts/prepare-mobile-native.mjs --ios
       - name: Apply provisioned NFC signing profiles
         script: |

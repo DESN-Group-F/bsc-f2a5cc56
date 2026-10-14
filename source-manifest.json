@@ -3,7 +3,7 @@
   "purpose": "functional-test-source",
   "formalRelease": false,
   "testVersion": "0.5.2",
-  "createdAt": "2026-10-14T10:19:48.432Z",
+  "createdAt": "2026-10-14T10:24:15.673Z",
   "files": [
     {
       "path": ".gitattributes",
@@ -20,7 +20,7 @@
     {
       "path": "codemagic.yaml",
       "bytes": 4851,
-      "sha256": "66c83877150839cceebdd515ba14056126957cffdd61767daeaace1baf01609b",
+      "sha256": "ffcc30de188e65713b1f54b64659a2e6c1ff92b27511884ee1fa99d895dc3196",
       "mode": "0644"
     },
     {
@@ -3140,7 +3140,7 @@
     {
       "path": "templates/testflight-workflow.yaml",
       "bytes": 2975,
-      "sha256": "d9b7608a898307272a1a70bf2410bb71906cddd4a54bda1c4ea9b9b99aaaaf2a",
+      "sha256": "12825ff147d4eb42ee1be3759c8cb7b79169b10c08bd7d8579f248e362facb72",
       "mode": "0644"
     }
   ]

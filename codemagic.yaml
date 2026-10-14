@@ -13,13 +13,13 @@ workflows:
           set -euo pipefail
           cd mobile
           npm ci --no-fund --no-audit
-      - name: Check mobile logic and build the interface
+      - name: Build the interface and check mobile logic
         script: |
           set -euo pipefail
           cd mobile
+          npm run build
           npm test
           npm run test:plugin
-          npm run build
           node ../scripts/prepare-mobile-native.mjs --ios
       - name: Compile for a physical iPhone without signing
         script: |
@@ -45,9 +45,9 @@ workflows:
           set -euo pipefail
           cd mobile
           npm ci --no-fund --no-audit
+          npm run build
           npm test
           npm run test:plugin
-          npm run build
           node ../scripts/prepare-mobile-native.mjs --android
       - name: Build an Android test package
         script: |
@@ -77,9 +77,9 @@ workflows:
           set -euo pipefail
           cd mobile
           npm ci --no-fund --no-audit
+          npm run build
           npm test
           npm run test:plugin
-          npm run build
           node ../scripts/prepare-mobile-native.mjs --ios
       - name: Apply provisioned NFC signing profiles
         script: |
