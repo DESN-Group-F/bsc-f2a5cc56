@@ -110,7 +110,13 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
             guard NFCTagReaderSession.readingAvailable else {
                 call.reject("Core NFC tag reading is unavailable on this device.", "UNAVAILABLE"); return
             }
-            guard UIApplication.shared.applicationState == .active else {
+            // A system sheet may take focus while the app remains foreground
+            // inactive. Only a validated, already-owned NFC session may continue
+            // there; a fresh session still requires an active app. Actual
+            // backgrounding and Core NFC invalidation remain terminal.
+            let applicationState = UIApplication.shared.applicationState
+            let continuingForegroundSession = continuationID != nil && applicationState == .inactive
+            guard applicationState == .active || continuingForegroundSession else {
                 self.cancelPending(message: "NFC reading stopped because the app entered the background.", code: "BACKGROUND")
                 call.reject("Keep the app in the foreground to read a tag.", "BACKGROUND"); return
             }

@@ -107,6 +107,7 @@ test('actual iOS intake prepares once, reuses a reader session, and requires del
   await page.getByRole('button', { name: 'Continue', exact: true }).click();
   await page.getByRole('heading', { name: 'Ready to scan', exact: true }).waitFor();
   assert.equal(await page.evaluate(() => fixture.reads.length), 0);
+  await page.getByRole('button', { name: 'Open scanner', exact: true }).click(); await stableReads(page, 0);
   await page.getByRole('button', { name: 'Start scanning', exact: true }).click(); await waitReads(page, 1);
   const acquisitionTheme = await page.evaluate(() => {
     const orb = document.querySelector('.mi-focused-orb .ink-orb');
@@ -143,7 +144,7 @@ test('actual iOS intake prepares once, reuses a reader session, and requires del
   await page.getByRole('button', { name: 'Continue scanning', exact: true }).waitFor(); await stableReads(page, 3);
   await page.waitForFunction(() => {
     const orb = document.querySelector('.mi-focused-orb .ink-orb');
-    return orb.dataset.active === 'false' && getComputedStyle(orb.querySelector('[data-ink-body]')).fill === 'rgb(67, 140, 236)';
+    return getComputedStyle(orb.querySelector('[data-ink-body]')).fill === 'rgb(67, 140, 236)';
   });
   await page.getByRole('button', { name: 'Continue scanning', exact: true }).click(); await waitReads(page, 4);
   assert.equal(await page.evaluate(() => fixture.reads[3].options.sessionId), undefined);
@@ -162,7 +163,8 @@ test('actual iOS intake prepares once, reuses a reader session, and requires del
 test('actual iOS restored intake keeps 200 drafts, rejects a 201st tag, and retains Review and removal controls', options, async t => {
   const page = await mount(t, 'limit');
   assert.equal(await page.evaluate(() => fixture.reads.length), 0);
-  await page.getByRole('button', { name: 'Continue with these details', exact: true }).click(); await waitReads(page, 1);
+  await page.getByRole('button', { name: 'Continue with these details', exact: true }).click(); await stableReads(page, 0);
+  await page.getByRole('button', { name: 'Start scanning', exact: true }).click(); await waitReads(page, 1);
   await page.evaluate(() => fixture.deliver('0004FF00')); await waitEntries(page, 200); await waitReads(page, 2);
   await page.evaluate(() => fixture.deliver('0004FF01'));
   await page.getByText('Review at most 200 intake drafts. Confirm or remove entries before adding another.', { exact: true }).waitFor();

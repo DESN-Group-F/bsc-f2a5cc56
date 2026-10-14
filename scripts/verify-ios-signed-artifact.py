@@ -61,11 +61,11 @@ def main():
     try:
         require(os.uname().sysname == "Darwin", "Apple signature verification requires macOS")
         assigned = json.loads((evidence / "build-number.json").read_text())
-        require(type(assigned.get("assignedBuildNumber")) is int and assigned["assignedBuildNumber"] > 12,
-                "Build number must exceed the last confirmed upload, 12")
+        require(type(assigned.get("assignedBuildNumber")) is int and assigned["assignedBuildNumber"] > 13,
+                "Build number must exceed the last confirmed upload, 13")
         require(type(assigned.get("projectBuildNumber")) is int
                 and assigned["assignedBuildNumber"] == assigned["projectBuildNumber"] + 1
-                and assigned.get("minimumExclusive") == 12, "Build-number evidence is inconsistent")
+                and assigned.get("minimumExclusive") == 13, "Build-number evidence is inconsistent")
         ipa = one((mobile / "build/ios/ipa").glob("*.ipa"), "IPA")
         archives_root = mobile / "build/ios/xcarchive"
         archives = list(archives_root.rglob("*.xcarchive"))

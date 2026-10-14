@@ -46,13 +46,13 @@ export function useScanWorkflow({ kind, data, user, dataset, teachingGroup, scop
   }
   const queueSource = state.session.queue[0] ? acquisitionOf(state.session.queue[0]) : null;
   const readingAllowed = native && surfaceActive && foreground && !reviewOpen && input === 'native' && (!state.blocked || state.busy) && !state.storageError && !state.session.attempt && !state.session.roomConfirmationRequired && (!queueSource || queueSource === 'native-nfc-reader');
-  const {reader,resumeReader,cancelReader}=useOwnedNfcReader({storage,enabled:readingAllowed,storageError:state.storageError,contextKey:`${user.id}:${dataset}:${kind}`,
+  const {reader,resumeReader,cancelReader}=useOwnedNfcReader({storage,continuous:true,enabled:readingAllowed,storageError:state.storageError,contextKey:`${user.id}:${dataset}:${kind}`,onStart:()=>beginAcquisition(),
     onRetryStorage:()=>controller.getSnapshot().storageError?controller.retryStorage():storage.retryPersistence(),
     onRead:async({proposal,bridge,current})=>{
       beginAcquisition(proposal.tagId,proposal.attemptId);setDeviceEvidence(proposal);
       if(dataset!=='demo'){present({type:'notice',message:'Device evidence saved. Use Select for Working transactions.'});return;}
       const evidence=await bridge.adopt(proposal);if(!current())return;
-      const result=await controller.addTag(proposal.tagId,'native-nfc-reader',evidence);if(current())present({...result,acquisitionId:proposal.attemptId});
+      const result=await controller.addTag(proposal.tagId,'native-nfc-reader',evidence);if(current())present({...result,acquisitionId:proposal.attemptId});return result;
     },onFailure:present,onIdle:resetEncounter,
   });
   useEffect(() => {

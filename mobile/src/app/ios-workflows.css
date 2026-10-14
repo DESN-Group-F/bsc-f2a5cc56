@@ -23,8 +23,8 @@ body[data-ios-presentation=true] :is(.scan-focused-orb,.mi-focused-orb,.removal-
 /* Operation identity is expressed by text. The shared neutral character stays
    blue; changing only its base preserves the original success/failure colors. */
 body[data-ios-presentation=true] :is(.mobile-scan-station,.mobile-intake,.mobile-removal,.lookup-workflow) .ios-ink .ink-orb { --ink-orb-base-color:var(--ios-orb-color); }
-body[data-ios-presentation=true] :is(.scan-focused-orb,.mi-focused-orb,.removal-orb-stage,.lookup-reader,.lookup-orb-frame)>.ios-ink { --ios-ink-size:144px; height:144px; overflow:visible; }
-body[data-ios-presentation=true] .lookup-native-stage[data-phase=result] .lookup-orb-frame>.ios-ink { --ios-ink-size:88px; height:88px; }
+body[data-ios-presentation=true] :is(.scan-focused-orb,.mi-focused-orb,.removal-orb-stage,.lookup-reader,.lookup-orb-frame) .ios-ink { --ios-ink-size:144px; height:144px; overflow:visible; }
+body[data-ios-presentation=true] .lookup-native-stage[data-phase=result] .lookup-orb-frame .ios-ink { --ios-ink-size:88px; height:88px; }
 body[data-ios-presentation=true] .lookup-found>.ios-ink { --ios-ink-size:40px; height:40px; flex:0 0 40px; }
 body[data-ios-presentation=true] :is(.scan-review-entry,.mi-review-entry) { min-height:70px; padding:16px 18px; background:var(--ios-panel); color:var(--ios-ink); border:1px solid var(--ios-line); border-radius:16px; box-shadow:none; }
 body[data-ios-presentation=true] :is(.scan-review-entry,.mi-review-entry) strong { font-size:16px; font-weight:550; }
@@ -110,4 +110,4 @@ body[data-ios-presentation=true] :is(.scan-stage-panel,.mi-stage-panel,.scan-por
 body[data-ios-presentation=true] :is(.mobile-scan-station,.mobile-intake,.mobile-removal,.lookup-workflow,.manual-registration,.phone-model-portal) button { transition:background-color 140ms ease,border-color 140ms ease,transform 140ms ease; }
 body[data-ios-presentation=true] :is(.mobile-scan-station,.mobile-intake,.mobile-removal,.lookup-workflow,.manual-registration,.phone-model-portal) button:enabled:is(:active,[data-pressed=true]) { filter:brightness(1.12); }
 @media(max-width:360px) { body[data-ios-presentation=true] :is(.mobile-scan-surface,.mi-focused-surface,.lookup-workflow) { padding-inline:12px; } }
-@media(min-width:600px) and (max-height:540px) { body[data-ios-presentation=true] :is(.scan-focused-header,.mi-focused-header,.removal-top,.lookup-header) { min-height:48px; } body[data-ios-presentation=true] :is(.scan-focused-orb,.mi-focused-orb,.removal-orb-stage,.lookup-reader,.lookup-orb-frame)>.ios-ink { --ios-ink-size:112px; height:112px; } }
+@media(min-width:600px) and (max-height:540px) { body[data-ios-presentation=true] :is(.scan-focused-header,.mi-focused-header,.removal-top,.lookup-header) { min-height:48px; } body[data-ios-presentation=true] :is(.scan-focused-orb,.mi-focused-orb,.removal-orb-stage,.lookup-reader,.lookup-orb-frame) .ios-ink { --ios-ink-size:112px; height:112px; } }

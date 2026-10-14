@@ -7,7 +7,13 @@ import { BUSINESS_DATA_CODEC, createNativeBusinessDataDriver, createServiceScope
 const gate = () => { let resolve, reject; const promise = new Promise((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; };
 const rawOf = packet => packet.codec ? gunzipSync(Buffer.from(packet.data, 'base64')).toString('utf8') : packet.data;
 const raw = JSON.stringify({ schemaVersion: 1, entries: { captured: 'Exact request é 中文 😀 \\"\n'.repeat(200) } }, null, 2);
-const waitFor = async condition => { for (let index = 0; index < 100 && !condition(); index++) await new Promise(setImmediate); assert.ok(condition(), 'Controlled async work reached its checkpoint.'); };
+const waitFor = async condition => {
+  // Compression completion can outlast many immediate callbacks under load.
+  // Bound elapsed time while still requiring the exact observable checkpoint.
+  const deadline = performance.now() + 5_000;
+  while (!condition() && performance.now() < deadline) await new Promise(resolve => setTimeout(resolve, 5));
+  assert.ok(condition(), 'Controlled async work reached its checkpoint.');
+};
 function fixture({ Encoder = CompressionStream, platform = 'android', configuration = { origin: 'https://old.example', businessDataCodecs: [BUSINESS_DATA_CODEC] } } = {}) {
   const calls = [], files = new Map(); let saveWork = async () => {}, configureWork = async () => {}, scope = configuration.origin;
   const service = {

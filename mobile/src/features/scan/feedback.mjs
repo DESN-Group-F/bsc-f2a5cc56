@@ -12,6 +12,9 @@ export function scanFeedbackOutcome(previous, result, at) {
   if (result.type === 'duplicate') return { ...previous, sequence, event: 'duplicate', outcomeType: 'duplicate', expression: 'duplicate', expressionUntil: at + 950, capsule: result.message, message: result.message };
   if (result.type === 'accepted') return { sequence, successSequence: sequence, event: 'accepted', outcomeType: 'accepted', tone: 'success', until: at + SUCCESS_INTERVAL_MS, expression: '', expressionUntil: 0, capsule: '', latest: result.battery, message: result.message };
   if (result.type === 'failure') return { sequence, successSequence: previous.successSequence, event: 'failure', outcomeType: 'failure', tone: 'failure', until: at + 950, expression: 'failure', expressionUntil: at + 950, capsule: '', latest: null, message: result.message, code: result.code || '' };
+  // Lifecycle and ordinary save notices must not replace the explanation of a
+  // rejected/duplicate acquisition while the operator is still reading it.
+  if (['duplicate', 'failure'].includes(previous.outcomeType) || previous.failureKind === 'infrastructure') return { ...previous, noticeMessage: result.message };
   return { ...previous, message: result.message };
 }
 export function expireScanFeedback(value, at) {

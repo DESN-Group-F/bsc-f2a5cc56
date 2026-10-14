@@ -3,7 +3,7 @@
   "purpose": "functional-test-source",
   "formalRelease": false,
   "testVersion": "0.5.2",
-  "createdAt": "2026-10-14T11:08:10.271Z",
+  "createdAt": "2026-10-14T11:48:14.659Z",
   "files": [
     {
       "path": ".gitattributes",
@@ -20,7 +20,7 @@
     {
       "path": "codemagic.yaml",
       "bytes": 4851,
-      "sha256": "f4171e8ec96953455e145076d5a60679acc7e9664fa48a644b0cce49ac7ff4ba",
+      "sha256": "a19300945d2d1f63017e37a431107118f61b99eec2b323d0e99b1c7f51c2f420",
       "mode": "0644"
     },
     {
@@ -661,8 +661,8 @@
     },
     {
       "path": "mobile/plugins/battery-nfc/ios/Sources/BatteryNfcPlugin/BatteryNfcPlugin.swift",
-      "bytes": 19937,
-      "sha256": "98badeba40113fcb7b44f5d2d2ab052892f37f84bccaef0cc4f7e78f05f16e01",
+      "bytes": 20428,
+      "sha256": "9e1c6295c1548013719f396bc549c1fcd5c599303162e14d577fb1e9927d6a65",
       "mode": "0644"
     },
     {
@@ -709,8 +709,8 @@
     },
     {
       "path": "mobile/plugins/battery-nfc/tests/ios-reader-fixtures.mjs",
-      "bytes": 21321,
-      "sha256": "75cea48f35d9ef6bd30afc2c6588de66158655bb0874263d731da5ccfda2c7f8",
+      "bytes": 23624,
+      "sha256": "20430788ac0a6129cfdaca863d5774100793541691bdb88c7acd48134edf27f0",
       "mode": "0644"
     },
     {
@@ -919,8 +919,8 @@
     },
     {
       "path": "mobile/README.md",
-      "bytes": 11563,
-      "sha256": "b5745ef5d9fa8b045a6c78e1706104e60106d558358143d21dfd220432980bba",
+      "bytes": 12364,
+      "sha256": "acc4d53a184682c38eaf3ee1b300b68096b0f54dd2c78f348931ec1cced4903a",
       "mode": "0644"
     },
     {
@@ -943,14 +943,20 @@
     },
     {
       "path": "mobile/src/app/battery-page.css",
-      "bytes": 5237,
-      "sha256": "500146d112c84638590af1476b9aea5155102ef7fd67411196543b24a5d937f7",
+      "bytes": 9745,
+      "sha256": "9b76e136808b26c4b82b8ae4449f3681e011b6ce153639d0bc038680f3b9d41a",
       "mode": "0644"
     },
     {
       "path": "mobile/src/app/battery-page.jsx",
-      "bytes": 9929,
-      "sha256": "9a7c6a8974d8a08f3ce3fe017b819dd2f693af11737465111cd20cdda5d2f316",
+      "bytes": 10143,
+      "sha256": "3dd929d8efb039361899494127d53c4f6a09903afe13c5669a2145b39d564a4d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/battery-usage.jsx",
+      "bytes": 6322,
+      "sha256": "e8aa73c0a8d7318f28596c6cb09c978ae743d9e7e7feb31a73f232f62af18852",
       "mode": "0644"
     },
     {
@@ -1070,7 +1076,7 @@
     {
       "path": "mobile/src/app/ios-workflows.css",
       "bytes": 20275,
-      "sha256": "b88300db4ed9ae547ec068e449baac1e9aa1aed6aa5fdf52b68363fc7ec5dbb6",
+      "sha256": "8bb84bbc47cccb884c0fe2d00775ca43ed7caef700a2ff931ade9c2acfbffe6a",
       "mode": "0644"
     },
     {
@@ -1326,6 +1332,12 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/src/features/inventory/selection-focus.mjs",
+      "bytes": 548,
+      "sha256": "a2e3644f2a64b0af5a76fd30c7012bd9dc31cfd23ae636d1d4089e152a276aa3",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/src/features/lifecycle/IMPLEMENTATION.md",
       "bytes": 4342,
       "sha256": "3833dd62012736b59f1a053424a297ae17e99e9ac763e5f65bcc97f45ba5494d",
@@ -1339,8 +1351,8 @@
     },
     {
       "path": "mobile/src/features/lifecycle/intake-preparation.jsx",
-      "bytes": 12909,
-      "sha256": "fcd17f646e1078f623dcaa67bc454551fc6f4bc5417c76406056151d8aa62dec",
+      "bytes": 12973,
+      "sha256": "ea4fa185de633b5315d0ffc8aaa89b5d7552448b9283f0d8c35de37428662761",
       "mode": "0644"
     },
     {
@@ -1363,8 +1375,8 @@
     },
     {
       "path": "mobile/src/features/lifecycle/intake.jsx",
-      "bytes": 41556,
-      "sha256": "aa3a2c17e998510f06a380a9129f3738f70e3c01635ac089c20b6b1d0ead7302",
+      "bytes": 41412,
+      "sha256": "c0c89fbfab545528233d0761d79f657cabc060bf7ca05a85346a5ad439c7250f",
       "mode": "0644"
     },
     {
@@ -1417,14 +1429,14 @@
     },
     {
       "path": "mobile/src/features/lifecycle/removal.jsx",
-      "bytes": 29508,
-      "sha256": "d81e68a74b9784046f7373de265d469258e475ef9b8f7b690df65ceb80667da7",
+      "bytes": 29610,
+      "sha256": "ca8559887bce1190583d8d0d3d246ca9d5b3152a7b7194147da8bc6291bcb342",
       "mode": "0644"
     },
     {
       "path": "mobile/src/features/scan/feedback.mjs",
-      "bytes": 3123,
-      "sha256": "db4a567ba271f520d2710836393fa7bbbb4b9296bbdd054561ebcbdbd8beb582",
+      "bytes": 3441,
+      "sha256": "68d136e50756480c783dd68cc35c20cd3bfd80bbe6696d921d3ac0804de5fdc5",
       "mode": "0644"
     },
     {
@@ -1471,26 +1483,38 @@
     },
     {
       "path": "mobile/src/features/scan/lookup.jsx",
-      "bytes": 13510,
-      "sha256": "c8ce8146f3a977e72c644f880b8ed63c6ceffa96dae50782621d060b00ace905",
+      "bytes": 13554,
+      "sha256": "a7b5674bff7d4d4479cf72f444c14a3bcf9cde31cdedaf9adda4219e528bcd79",
       "mode": "0644"
     },
     {
       "path": "mobile/src/features/scan/native-reader-session.mjs",
-      "bytes": 9809,
-      "sha256": "aca9cc2d14c74bb75371b9bd2d4cfd74920dbddb1f56936619dfdadf833d977c",
+      "bytes": 10017,
+      "sha256": "723fb507e67dd70754f22bab21fd6ef41c4b8636c1cf8e0d8914ceccfcffd217",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/features/scan/nfc-scan-control.css",
+      "bytes": 879,
+      "sha256": "56515d9f1496e9ed3139db467db11f7b0205eec9b32871c88b22c3d3b3347cde",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/features/scan/nfc-scan-control.jsx",
+      "bytes": 1871,
+      "sha256": "7de61ac6104f28a5e40e0dc3c809b9682e47ff4aa39cb6ebafff59612d42051c",
       "mode": "0644"
     },
     {
       "path": "mobile/src/features/scan/outcome-status.css",
-      "bytes": 2526,
-      "sha256": "dc4d71ef8608587a541e7887c9e0a86ff7adc6b0613e493d7378db028936a148",
+      "bytes": 2900,
+      "sha256": "3132c0409713263af9abf693a26f14dd756613a8b210fcca502ff46f164780f4",
       "mode": "0644"
     },
     {
       "path": "mobile/src/features/scan/outcome-status.jsx",
-      "bytes": 7620,
-      "sha256": "a0073363fe507155a18b90c747c11438ffc8560d29b331215caf69c86fc3e2c1",
+      "bytes": 10426,
+      "sha256": "07022722f24a55fa9df4935f5ccb32e3b304f327883bcf0d34de429174d1da1d",
       "mode": "0644"
     },
     {
@@ -1519,20 +1543,20 @@
     },
     {
       "path": "mobile/src/features/scan/scan.jsx",
-      "bytes": 35275,
-      "sha256": "fb8ef37ad2826194386c4c7965127be412717b162b7ecda99d3e634b99d08565",
+      "bytes": 35377,
+      "sha256": "113ed7976fd9dc702eec4573360db7699c261073c8252f082ff635d60c40321e",
       "mode": "0644"
     },
     {
       "path": "mobile/src/features/scan/use-owned-nfc-reader.js",
-      "bytes": 5617,
-      "sha256": "560379ddbbbcc16e79f97bd67cab11ee208b72324fa477362770b1189a432fd6",
+      "bytes": 5929,
+      "sha256": "e13b1e371db3d4de68a54f9a9482f1c7bd90358edab1a0a1b7e1d2d9099db8cb",
       "mode": "0644"
     },
     {
       "path": "mobile/src/features/scan/use-scan-feedback.js",
-      "bytes": 3722,
-      "sha256": "28fbd84bb801e37aee5de6f89d7e405d3874aa587449317b17e31d0a5431d250",
+      "bytes": 3931,
+      "sha256": "8a7911ef1e6749f2054495b04eeceb3a208a2b3fab5e0a53f4445a09dd16f024",
       "mode": "0644"
     },
     {
@@ -1543,8 +1567,8 @@
     },
     {
       "path": "mobile/src/features/scan/use-scan-workflow.js",
-      "bytes": 5502,
-      "sha256": "a784c91c4d55b6d8131b7f357aa8eb69d6ba09b03c3863101bef354e9155b8b5",
+      "bytes": 5563,
+      "sha256": "8f2d68f96e8228cbbeec4b6d8b110c6b515121097a377e1afcf41e03606485c3",
       "mode": "0644"
     },
     {
@@ -2616,6 +2640,12 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/tests/battery-usage-dom.test.mjs",
+      "bytes": 5838,
+      "sha256": "1342b5a268924d28df3c31044bf5f59e341085df3d06919ae9fcd887e86bc198",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/tests/business-adapters.test.mjs",
       "bytes": 19238,
       "sha256": "33be7ad42d31bc2cd44b24499d12f5e6276a4d50adcfed46af0fa330c53b7cee",
@@ -2646,6 +2676,12 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/tests/inventory-selection-focus.test.mjs",
+      "bytes": 1355,
+      "sha256": "01602d745e759f6077d6c208bed1e45071dffeb92e6d7ef0d90903a69c9b356f",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/tests/ios-batch-reader.test.mjs",
       "bytes": 17840,
       "sha256": "a16dd05e79e1be3119b2fd5493772f89a33de8677899415a1e0b44981ad6f01d",
@@ -2658,9 +2694,15 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/tests/ios-explicit-reader-dom.test.mjs",
+      "bytes": 14701,
+      "sha256": "2e4e59ea9bf9b44bab6cbee30949d42356f65250d5834c03dcc2ff51cb05da3d",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/tests/ios-intake-journey-dom.test.mjs",
-      "bytes": 19211,
-      "sha256": "4fa52300bc5e001a1379af8063b91e8591d45e053fa7419aedaa8cb499ba995f",
+      "bytes": 19397,
+      "sha256": "4b833bc8cfa8b8a7c9f993d657c5c63aad5151d6b9e26c9e3ec69acf9967bf47",
       "mode": "0644"
     },
     {
@@ -2724,6 +2766,12 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/tests/mobile-battery-usage.test.mjs",
+      "bytes": 5975,
+      "sha256": "3a5d76d458fc86eb9c8e81091e26ae3ebf0bf85ec6a7d2eabbbf2ecb92cb7e1c",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/tests/mobile-build-evidence.test.mjs",
       "bytes": 3286,
       "sha256": "8976c4d4a11f3911f6f337ab0b1d981ec94d42f7dfbb7478f6f0a7c228df1dbb",
@@ -2767,8 +2815,8 @@
     },
     {
       "path": "mobile/tests/mobile-intake-interface.test.mjs",
-      "bytes": 2178,
-      "sha256": "ff92701503a6eac73fb79156f2de177e2f5dd603a73ef2e8b78e1b91a9b3ee51",
+      "bytes": 2190,
+      "sha256": "f0c78494be083a653d75d702abe25e6521850ae4405e6bb1f272aeb77134b9f8",
       "mode": "0644"
     },
     {
@@ -2821,8 +2869,8 @@
     },
     {
       "path": "mobile/tests/mobile-reader-idle.test.mjs",
-      "bytes": 28113,
-      "sha256": "56b01f2385c9f5850e43b6399624013e6b0f185597ef25463cc621c0f669b386",
+      "bytes": 28259,
+      "sha256": "a5a50c3ecae8f94f9a32218e883806f1f58d461814adf943666db883fb63409b",
       "mode": "0644"
     },
     {
@@ -2851,14 +2899,14 @@
     },
     {
       "path": "mobile/tests/mobile-scan-feedback.test.mjs",
-      "bytes": 4695,
-      "sha256": "7d1adc14cb5e5e9d0c5a574c1ab87c95d99d095ff35541303456c1e3c4773cf5",
+      "bytes": 5354,
+      "sha256": "fb559dee8cbeb479e48f69cb4f511559491f965d6b5e37e1d3d14089b6b58e31",
       "mode": "0644"
     },
     {
       "path": "mobile/tests/mobile-scan-stage-ui.test.mjs",
-      "bytes": 72046,
-      "sha256": "659f826b1a0755dffcc32c7a7a83577dfabab934bb159ec62003fe77fb687292",
+      "bytes": 72548,
+      "sha256": "d68f47a379564198813dcb4f383f8c2b85bc5ba6601c0c9d9e85ee18b69fc211",
       "mode": "0644"
     },
     {
@@ -2905,8 +2953,8 @@
     },
     {
       "path": "mobile/tests/mobile-workflow-overlay.test.mjs",
-      "bytes": 39486,
-      "sha256": "a8fb8ba580a67066e025d8748578f89480e9a8733f7202d7abcb4b1309ecbf62",
+      "bytes": 39639,
+      "sha256": "199415b5e75e99c7d53bdc53c644d8dceebe1a004910636c737285a0bf616242",
       "mode": "0644"
     },
     {
@@ -2953,8 +3001,8 @@
     },
     {
       "path": "mobile/tests/native-business-data.test.mjs",
-      "bytes": 12413,
-      "sha256": "e9b4cd6653f09b9b7ccb3cc1c8b84168413b8796ae2f42219dac63e025e12016",
+      "bytes": 12635,
+      "sha256": "db528d6a3d1ba3b690cfb0afdfc718847bc83614b0a9cff2473e0bf4e23a6a78",
       "mode": "0644"
     },
     {
@@ -3007,8 +3055,8 @@
     },
     {
       "path": "mobile/tests/reader-state-dom.test.mjs",
-      "bytes": 17110,
-      "sha256": "76a68c28dc2fa5bfed0ce0918e7663e35ceb803cb797a82a9da73f12c023bfa9",
+      "bytes": 19104,
+      "sha256": "2f00d198a79d4cc6784285602ae2139f60be881699207fa41284b471a04266ee",
       "mode": "0644"
     },
     {
@@ -3031,8 +3079,14 @@
     },
     {
       "path": "mobile/tests/refinement-outcome-presentation.test.mjs",
-      "bytes": 12231,
-      "sha256": "6315fb0f460a0322b77b9155dc2bb5869e1a9dd112991e70909a943d0c0a03ed",
+      "bytes": 16538,
+      "sha256": "3e0334a62b31e85f2d8c042d596cf15e6bdf67f193ca53d69d98d66706b05a65",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/tests/scan-feedback-retention.test.mjs",
+      "bytes": 5624,
+      "sha256": "c1cdca27842d13283f22028bf9de60db3132ed3b3d1a491ea14d473811747ef0",
       "mode": "0644"
     },
     {
@@ -3073,8 +3127,8 @@
     },
     {
       "path": "mobile/tests/upgrade-lookup-reader.test.mjs",
-      "bytes": 15192,
-      "sha256": "d0b33c882c87378f408f2374077aba7bf20f2afb888775fa2845c531b295d596",
+      "bytes": 15290,
+      "sha256": "31084fad71cf7a22c2345c2ed0756f832ce1ff52619237c8ca77d903a9a81f26",
       "mode": "0644"
     },
     {
@@ -3146,13 +3200,13 @@
     {
       "path": "scripts/verify-ios-signed-artifact.py",
       "bytes": 8486,
-      "sha256": "f8c0c594ab13203abde52fe480cc0ade0698dcacaf0f66197a59c0fb2aa0b627",
+      "sha256": "ebbb8a3eb223157ef2286fc02df93a83ea8851cda053bceaed2c16ab4c6aa169",
       "mode": "0644"
     },
     {
       "path": "templates/testflight-workflow.yaml",
       "bytes": 2975,
-      "sha256": "321b95d29f169199735263fcfaf4c33e38cf2c4a400a763f013d32416a332c24",
+      "sha256": "0e6b30d1455a1e2c5d649d25f995610f544a4087e29afbe5f638511d93f2837c",
       "mode": "0644"
     }
   ]

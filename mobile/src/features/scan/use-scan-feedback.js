@@ -27,7 +27,9 @@ export function useScanFeedback({ preferences, native = false }) {
     if(result.failureKind==='infrastructure') {
       update({...current.current,sequence:(current.current.sequence||0)+1,event:'notice',outcomeType:'notice',tone:'',expression:'',until:0,expressionUntil:0,capsule:'',latest:null,message:result.message,code:result.code,stage:result.stage,operation:result.operation,failureKind:result.failureKind,acquisitionId:result.acquisitionId||null,eventId:result.eventId});
     } else {
-      update({...scanFeedbackOutcome(current.current,result,Date.now()),...(result.type==='failure'?{stage:result.stage,operation:result.operation,failureKind:result.failureKind,acquisitionId:result.acquisitionId||null,eventId:result.eventId}: {})});
+      const acquired=['accepted','duplicate','failure'].includes(result.type);
+      const acquisitionId=result.acquisitionId||(result.type!=='failure'?acquisition.current?.attemptId:null)||null;
+      update({...scanFeedbackOutcome(current.current,result,Date.now()),...(acquired?{stage:result.stage,operation:result.operation,failureKind:result.failureKind,code:result.code||'',acquisitionId,eventId:result.eventId,noticeMessage:''}: {})});
       playScanFeedback(result,settings.current.preferences,settings.current.native);
     }
   }
@@ -35,7 +37,7 @@ export function useScanFeedback({ preferences, native = false }) {
     if(attemptId&&acquisition.current?.attemptId===attemptId)return;
     acquisition.current=attemptId?{tagId,attemptId}:null;
     if(!attemptId)lastEvent.current='';
-    update({...current.current,...(observed?{sequence:(current.current.sequence||0)+1,event:'acquired'}:{}),lastOutcome:{type:current.current.outcomeType,message:current.current.message,battery:current.current.latest},capsule:'',message:'',outcomeType:'',tone:'',expression:'',until:0,expressionUntil:0,code:'',stage:undefined,operation:undefined,failureKind:undefined,acquisitionId:attemptId||null,eventId:undefined});
+    update({...current.current,...(observed?{sequence:(current.current.sequence||0)+1,event:'acquired'}:{}),lastOutcome:{type:current.current.outcomeType,message:current.current.message,battery:current.current.latest},capsule:'',message:'',noticeMessage:'',outcomeType:'',tone:'',expression:'',until:0,expressionUntil:0,code:'',stage:undefined,operation:undefined,failureKind:undefined,acquisitionId:attemptId||null,eventId:undefined});
   }
   function clearOutcome() {
     acquisition.current=null;lastEvent.current='';

@@ -26,8 +26,9 @@ public class FixtureBundle {
     public func object(forInfoDictionaryKey key: String) -> Any? { "Read battery NFC tags." }
 }
 public class UIApplication {
-    public enum State { case active, background }
+    public enum State { case active, inactive, background }
     public static let shared = UIApplication()
+    public static let willResignActiveNotification = Notification.Name("FixtureInactive")
     public static let didEnterBackgroundNotification = Notification.Name("FixtureBackground")
     public var applicationState: State = .active
 }
@@ -158,7 +159,10 @@ struct HarnessFailure: Error { let message: String }
         try check(read(plugin, ["sessionId": id]).errors.first?.1 == "INVALID_ARGUMENT", "Continuation requires opt-in")
         try check(read(plugin, ["keepSessionAlive": 1]).errors.first?.1 == "INVALID_ARGUMENT", "Numeric keep-alive option rejected")
 
+        UIApplication.shared.applicationState = .inactive
+        NotificationCenter.default.post(name: UIApplication.willResignActiveNotification, object: nil)
         let second = read(plugin, ["keepSessionAlive": true, "sessionId": id])
+        try check(second.errors.isEmpty && session.invalidateCount == 0, "Foreground inactive continues only the already-owned reader session")
         pump(0.23)
         session.emit(tag1)
         try check(session.restartCount == 0 && second.results.isEmpty && second.errors.isEmpty, "Held tag does not complete the next read")
@@ -178,10 +182,14 @@ struct HarnessFailure: Error { let message: String }
         try check(try token(second) == id, "Continuation returns the same token")
         try check(second.results[0]["uidHex"] as? String == "04111213141516", "Next tag evidence remains distinct")
         try check((second.results[0]["records"] as? [[String: Any]])?.first?["payloadHex"] as? String == "0041", "Raw NDEF payload retained")
+        try check(session.beginCount == 1 && NFCTagReaderSession.instances.count == count, "Foreground inactive continuation never opens another system sheet")
 
         session.end(.readerSessionInvalidationErrorUserCanceled)
         try check(read(plugin, ["keepSessionAlive": true, "sessionId": id]).errors.first?.1 == "CANCELLED", "System cancellation between reads is retained")
         try check(NFCTagReaderSession.instances.count == count, "Cancelled continuation never creates a sheet")
+        let inactiveFresh = read(plugin, ["keepSessionAlive": true])
+        try check(inactiveFresh.errors.first?.1 == "BACKGROUND" && NFCTagReaderSession.instances.count == count, "Inactive foreground cannot create a fresh reader session")
+        UIApplication.shared.applicationState = .active
 
         let defaultCall = read(plugin)
         let defaultSession = NFCTagReaderSession.instances.last!
@@ -309,6 +317,20 @@ struct HarnessFailure: Error { let message: String }
         NotificationCenter.default.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
         UIApplication.shared.applicationState = .active
         try check(read(plugin, ["keepSessionAlive": true, "sessionId": foregroundID]).errors.first?.1 == "BACKGROUND", "Backgrounding an idle session is terminal")
+
+        let backgroundSeed = read(plugin, ["keepSessionAlive": true])
+        let backgroundSession = NFCTagReaderSession.instances.last!
+        finishTag(backgroundSession, FixtureMiFareTag([0x01, 0x02, 0x03, 0x07]))
+        let backgroundID = try token(backgroundSeed)
+        let backgroundCount = NFCTagReaderSession.instances.count
+        UIApplication.shared.applicationState = .background
+        let backgroundContinuation = read(plugin, ["keepSessionAlive": true, "sessionId": backgroundID])
+        try check(backgroundContinuation.results.isEmpty && backgroundContinuation.errors.first?.1 == "BACKGROUND", "Background continuation fails closed even before its notification arrives")
+        try check(backgroundSession.invalidateCount == 1 && NFCTagReaderSession.instances.count == backgroundCount, "Background continuation cancels the existing reader without a replacement sheet")
+        UIApplication.shared.applicationState = .inactive
+        try check(read(plugin, ["keepSessionAlive": true, "sessionId": backgroundID]).errors.first?.1 == "BACKGROUND", "Returning inactive cannot revive a background-terminated session")
+        UIApplication.shared.applicationState = .active
+        try check(read(plugin, ["keepSessionAlive": true, "sessionId": backgroundID]).errors.first?.1 == "BACKGROUND" && NFCTagReaderSession.instances.count == backgroundCount, "Returning active cannot revive a background-terminated session")
 
         var oldestID = ""
         for index in 0..<17 {

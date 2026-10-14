@@ -1,0 +1,8 @@
+.nfc-scan-control{display:flex;flex-direction:column;align-items:center;gap:16px;max-width:100%;text-align:center}
+.phone-app .nfc-scan-ball,.nfc-scan-ball{display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;box-shadow:none;color:inherit;touch-action:manipulation;cursor:pointer;transition:transform 130ms ease}
+.phone-app .nfc-scan-ball:disabled,.nfc-scan-ball:disabled{opacity:1;cursor:default}
+.nfc-scan-ball:enabled:active,.nfc-scan-ball[data-pressed=true]{transform:scale(.91)}
+.nfc-scan-ball:focus-visible{outline:2px solid var(--phone-primary,#a7cfff);outline-offset:12px}
+.nfc-scan-label{font-size:16px;font-weight:600;color:var(--phone-primary,#a7cfff)}
+.nfc-scan-hint{max-width:280px;margin:0;font-size:12px;line-height:1.5;color:var(--phone-muted,#9ba9bc)}
+@media(prefers-reduced-motion:reduce){.nfc-scan-ball{transition:none}}

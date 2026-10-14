@@ -28,7 +28,15 @@ test('saved results and routine state messages retain the duplicate capsule and 
     assert.equal(next.until, duplicate.until);
     assert.equal(next.successSequence, duplicate.successSequence);
     assert.equal(next.sequence, duplicate.sequence);
+    assert.equal(next.message, duplicate.message);
+    assert.equal(next.noticeMessage, 'Routine update');
   }
+});
+
+test('routine reader or save updates retain the exact rejected acquisition explanation',()=>{
+  const failure=scanFeedbackOutcome({}, {type:'failure',message:'The selected battery is retired.',code:'RETIRED'},1000);
+  const next=scanFeedbackOutcome(expireScanFeedback(failure,9000),{type:'notice',message:'Reading paused'},9000);
+  assert.equal(next.outcomeType,'failure');assert.equal(next.message,'The selected battery is retired.');assert.equal(next.code,'RETIRED');assert.equal(next.noticeMessage,'Reading paused');assert.equal(next.tone,'');
 });
 
 test('failure is surprised red feedback, duplicates retain ordinary operation color and no queue mutation', () => {

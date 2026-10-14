@@ -94,7 +94,11 @@ export function createNativeReaderSession({storage,prepare=prepareLookupReader,i
       if(!current(token,key))return;
       attemptId=proposal.attemptId;stage='processing';operation='review';
       publish({state:'lookup',message:'Checking recorded identity'});
-      await onRead({proposal,bridge:owned,current:()=>current(token,key)});
+      const result=await onRead({proposal,bridge:owned,current:()=>current(token,key)});
+      if(continuous&&platform==='ios'&&result?.type==='failure'){
+        if(current(token,key))await pause('Reading paused · Review the scan result before continuing');
+        return;
+      }
       later(token,key,250);
     }catch(error){
       if(!current(token,key))return;

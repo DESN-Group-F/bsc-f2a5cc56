@@ -10,6 +10,7 @@ import { createIntakeController, intakeDefaultValues, intakeEntrySource, intakeE
 import { intakePreparationFromBatch, normalizedIntakePreparation, changedIntakePreparation, applyIntakePreparationModel } from '../src/features/lifecycle/intake-preparation.mjs';
 import { FEEDBACK_KEY, readFeedbackPreferences, scanFeedbackOutcome, expireScanFeedback } from '../src/features/scan/feedback.mjs';
 import { scanInputMode, removalEntrySource } from '../src/features/scan/input-mode.mjs';
+import { prioritizeInventoryHandoff } from '../src/features/inventory/selection-focus.mjs';
 import { acquisitionOf } from '../src/features/scan/scan-controller.mjs';
 import { emptyScanCandidates, filterScanCandidates, projectScanCandidates } from '../src/features/scan/scan-candidates.mjs';
 import { acquireRemovalNative, createGuardedRemovalBridge, createRemovalController, removalEligible, removalScopeMatches } from '../src/features/lifecycle/removal-controller.mjs';
@@ -29,7 +30,7 @@ async function stageHarness(file, componentName, bindings, props, { stageScroll,
   const document = { visibilityState: 'visible', activeElement: null, body: {}, querySelector: () => layer, addEventListener: window.addEventListener, removeEventListener: window.removeEventListener };
   const supplied = {
     Capacitor:{getPlatform:()=> 'android'},
-    ...icons, intakePreparationFromBatch, withNfcFailureContext, savePhoneFormDraft, phoneEntryMessage, phoneEntryTitle, emptyScanCandidates, filterScanCandidates, projectScanCandidates, normalizedIntakePreparation, changedIntakePreparation, applyIntakePreparationModel, reviewedIntakeCommon, ...bindings, usePhoneContext:()=>({active:true}), Pressable:'button', PhoneChoice:'PhoneChoice', IntakePreparation:'IntakePreparation', IntakeBatchSummary:'IntakeBatchSummary', ScanOutcomeStatus:'ScanOutcomeStatus', useScanModeMotion:bindings.useScanModeMotion||(()=>{}), useOwnedNfcReader:bindings.useOwnedNfcReader||(()=>({reader:{state:'unavailable',message:'Native NFC unavailable in browser'},resumeReader(){},cancelReader(){return Promise.resolve(true);}})), usePhonePress:()=>({}), usePhoneViewState(key,initial){const [value,set]=supplied.useState(()=>{if(!retainedViews.has(key))retainedViews.set(key,typeof initial==='function'?initial():initial);return retainedViews.get(key);});return [value,next=>{const updated=typeof next==='function'?next(retainedViews.get(key)):next;retainedViews.set(key,updated);set(updated);}];}, usePhoneBack(handler){effect(()=>{window.addEventListener('battery-mobile-back',handler);return()=>window.removeEventListener('battery-mobile-back',handler);},[handler]);}, window, document, native: bindings.native ?? false, InkOrb: 'InkOrb', _Fragment: 'fragment', createPhoneWorkflowPortal:element=>element,usePhoneOverlayDismiss(){},
+    ...icons, prioritizeInventoryHandoff, NfcScanControl:'NfcScanControl', intakePreparationFromBatch, withNfcFailureContext, savePhoneFormDraft, phoneEntryMessage, phoneEntryTitle, emptyScanCandidates, filterScanCandidates, projectScanCandidates, normalizedIntakePreparation, changedIntakePreparation, applyIntakePreparationModel, reviewedIntakeCommon, ...bindings, usePhoneContext:()=>({active:true}), Pressable:'button', PhoneChoice:'PhoneChoice', IntakePreparation:'IntakePreparation', IntakeBatchSummary:'IntakeBatchSummary', ScanOutcomeStatus:'ScanOutcomeStatus', useScanModeMotion:bindings.useScanModeMotion||(()=>{}), useOwnedNfcReader:bindings.useOwnedNfcReader||(()=>({reader:{state:'unavailable',message:'Native NFC unavailable in browser'},resumeReader(){},cancelReader(){return Promise.resolve(true);}})), usePhonePress:()=>({}), usePhoneViewState(key,initial){const [value,set]=supplied.useState(()=>{if(!retainedViews.has(key))retainedViews.set(key,typeof initial==='function'?initial():initial);return retainedViews.get(key);});return [value,next=>{const updated=typeof next==='function'?next(retainedViews.get(key)):next;retainedViews.set(key,updated);set(updated);}];}, usePhoneBack(handler){effect(()=>{window.addEventListener('battery-mobile-back',handler);return()=>window.removeEventListener('battery-mobile-back',handler);},[handler]);}, window, document, native: bindings.native ?? false, InkOrb: 'InkOrb', _Fragment: 'fragment', createPhoneWorkflowPortal:element=>element,usePhoneOverlayDismiss(){},
     useState(initial) { const index = cursor++; if (!hooks[index]) hooks[index] = { value: typeof initial === 'function' ? initial() : initial }; return [hooks[index].value, next => { const value = typeof next === 'function' ? next(hooks[index].value) : next; if (!Object.is(value, hooks[index].value)) { hooks[index].value = value; dirty = true; } }]; },
     useRef(value) { return hooks[cursor++] ??= { current: value }; },
     useMemo(calculate,dependencies) { const index=cursor++, old=hooks[index];if(!old||dependencies.length!==old.dependencies.length||dependencies.some((value,i)=>!Object.is(value,old.dependencies[i])))hooks[index]={dependencies,value:calculate()};return hooks[index].value; },
@@ -68,7 +69,7 @@ test('actual Scan home gives read-only lookup and four business operations disti
   const composition = phone.nodes().find(node => node.props.className === 'scan-home-composition');
   assert.ok(composition);
   assert.deepEqual([composition.props.children].flat().map(node => node.props.className), ['scan-lookup-entry', 'scan-operation-group']);
-  assert.equal(nodes(composition).filter(node => node.type === 'InkOrb').length, 1);
+  assert.equal(nodes(composition).filter(node => ['InkOrb','NfcScanControl'].includes(node.type)).length, 1);
   const actions = nodes(composition).filter(node => node.type === 'button');
   assert.equal(actions.length, 5);
   assert.equal(text(actions[0]), 'Start scan'); assert.equal(actions[0].props.disabled, false);
@@ -94,7 +95,7 @@ test('Scan home entry preparation names the requested task and offers independen
   for(const [kind,title] of [['lookup','Scan to view'],['checkout','Check out'],['return','Return'],['intake','Intake'],['removal','Removal']])for(const phase of ['waiting','opening','failed']){
     const calls=[],phone=await stageHarness('../src/features/scan/scan.jsx','ScanHome',{}, {entryPending:{kind,phase},onOperation(){},onLookup(){},onCancelOpening:()=>calls.push('cancel'),onRetryOpening:()=>calls.push('retry')});
     const hero=phone.nodes().find(node=>node.props.className==='scan-lookup-entry'),copy=nodes(hero).find(node=>node.props.className==='scan-lookup-copy');assert.equal(text(nodes(copy).find(node=>node.type==='strong')),title);
-    assert.equal(nodes(hero).find(node=>node.type==='InkOrb').props.active,phase==='failed');assert.equal(hero.props['aria-busy'],phase!=='failed');assert.match(text(nodes(copy).find(node=>node.type==='small')),phase==='failed'?/^Could not prepare/:/^Preparing/);
+    assert.equal(nodes(hero).find(node=>['InkOrb','NfcScanControl'].includes(node.type)).props.active,phase==='failed');assert.equal(hero.props['aria-busy'],phase!=='failed');assert.match(text(nodes(copy).find(node=>node.type==='small')),phase==='failed'?/^Could not prepare/:/^Preparing/);
     const buttons=phone.nodes().filter(node=>node.type==='button'),cancel=buttons.find(node=>node.props['aria-label']==='Cancel opening'),retry=buttons.find(node=>text(node)==='Retry');assert.ok(cancel);assert.equal(!!retry,phase==='failed');assert.ok(buttons.filter(node=>['scan-lookup-target','scan-action-tile'].includes(node.props.className)).every(node=>node.props.disabled));
     assert.equal(buttons.find(node=>node.props.className==='scan-lookup-target').props.hidden,true,'The original focus-return target stays mounted while pending controls replace it visually');
     for(const button of buttons)assert.equal(nodes(button.props.children).some(node=>node.type==='button'),false,'Actions must never nest inside the hero lookup target');cancel.props.onClick();retry?.props.onClick();assert.deepEqual(calls,phase==='failed'?['cancel','retry']:['cancel']);phone.unmount();
@@ -103,17 +104,17 @@ test('Scan home entry preparation names the requested task and offers independen
 
 test('actual Scan JSX keeps mutually exclusive sources, restores source scroll, and pauses NFC for controls', async () => {
   const env = scanFixture(), phone = await stageHarness('../src/features/scan/scan.jsx', 'ScanWorkflow', env.bindings, { kind: 'checkout', data: env.data });
-  assert.equal(phone.nodes().some(node => node.type === 'InkOrb'), true);
+  assert.equal(phone.nodes().some(node => ['InkOrb','NfcScanControl'].includes(node.type)), true);
   assert.equal(phone.button('NFC').props['aria-pressed'], true);
   phone.button('Select').props.onClick(); phone.render();
   const scroller = phone.nodes().find(node => node.props.className?.startsWith('scan-stage-content')).props.ref.current;
   scroller.scrollTop = 137;
-  phone.button('NFC').props.onClick(); phone.render(); assert.equal(phone.nodes().filter(node => node.type === 'InkOrb').length, 1);
+  phone.button('NFC').props.onClick(); phone.render(); assert.equal(phone.nodes().filter(node => ['InkOrb','NfcScanControl'].includes(node.type)).length, 1);
   assert.equal(phone.nodes().some(node => node.props.className?.includes('scan-manual-panel')), false);
-  phone.button('Scan feedback preferences').props.onClick(); phone.render(); assert.equal(env.options.at(-1).reviewOpen, true); assert.equal(phone.nodes().some(node => node.type === 'InkOrb'), false);
+  phone.button('Scan feedback preferences').props.onClick(); phone.render(); assert.equal(env.options.at(-1).reviewOpen, true); assert.equal(phone.nodes().some(node => ['InkOrb','NfcScanControl'].includes(node.type)), false);
   phone.event('battery-mobile-back'); assert.equal(env.options.at(-1).reviewOpen, false); assert.equal(env.calls.length, 0);
   phone.button('More input').props.onClick(); phone.render(); assert.equal(env.options.at(-1).reviewOpen, true);
-  phone.button('Demo previewLocal simulated tag input').props.onClick(); phone.render(); assert.match(phone.text(), /Local demonstration tag simulation/); assert.equal(phone.nodes().some(node => node.type === 'InkOrb'), false);
+  phone.button('Demo previewLocal simulated tag input').props.onClick(); phone.render(); assert.match(phone.text(), /Local demonstration tag simulation/); assert.equal(phone.nodes().some(node => ['InkOrb','NfcScanControl'].includes(node.type)), false);
   phone.button('Select').props.onClick(); phone.render(); assert.equal(scroller.scrollTop, 137);
   phone.unmount();
 });
@@ -170,7 +171,7 @@ test('actual Scan staging never confirms outside Review and source lock guards e
   phone.button('Select').props.onClick(); phone.render();
   phone.nodes().find(node => node.type === 'input' && node.props.type === 'checkbox').props.onChange({ target: { checked: true } }); phone.render();
   await phone.button('Add to review (1)').props.onClick(); phone.render(); assert.deepEqual(env.calls, [['stage', ['BAT-001']]]);
-  assert.equal(phone.button('NFC').props.disabled, true); phone.button('NFC').props.onClick(); phone.render(); assert.equal(phone.nodes().some(node => node.type === 'InkOrb'), false);
+  assert.equal(phone.button('NFC').props.disabled, true); phone.button('NFC').props.onClick(); phone.render(); assert.equal(phone.nodes().some(node => ['InkOrb','NfcScanControl'].includes(node.type)), false);
   phone.button('Review queue, 1 battery').props.onClick(); phone.render(); assert.equal(phone.layer.inert, true);
   const confirmation = phone.button('Check out (1)'); assert.ok(phone.nodes().find(node => node.props.className?.startsWith('scan-review-sheet')));
   await confirmation.props.onClick(); assert.equal(env.calls.at(-1), 'confirm');
@@ -367,10 +368,10 @@ test('actual Intake JSX hides common fields during scanning, keeps demo in More 
   await continueIntake(phone);
   assert.equal(phone.nodes().some(node => node.type === 'IntakeBatchSummary'), false); assert.equal(phone.nodes().some(node => node.props.className === 'mi-setup'), false);
   assert.equal(phone.nodes().some(node => node.props.role === 'menu'), false);
-  phone.button('NFC').props.onClick(); phone.render(); assert.equal(phone.nodes().filter(node => node.type === 'InkOrb').length, 1); assert.match(outcomeText(phone), /Native NFC unavailable in browser/); assert.equal(phone.nodes().some(node => node.props.className?.includes('mi-simulation')), false);
-  phone.button('Intake feedback preferences').props.onClick();phone.render();phone.button('Session details').props.onClick(); phone.render(); assert.ok(phone.nodes().some(node => node.type === 'IntakeBatchSummary')); assert.equal(phone.nodes().some(node => node.type === 'InkOrb'), false);
-  phone.event('battery-mobile-back'); assert.equal(phone.nodes().filter(node => node.type === 'InkOrb').length, 1);
-  phone.button('Intake feedback preferences').props.onClick(); phone.render(); phone.event('battery-mobile-back'); assert.equal(phone.nodes().filter(node => node.type === 'InkOrb').length, 1);
+  phone.button('NFC').props.onClick(); phone.render(); assert.equal(phone.nodes().filter(node => ['InkOrb','NfcScanControl'].includes(node.type)).length, 1); assert.match(outcomeText(phone), /Native NFC unavailable in browser/); assert.equal(phone.nodes().some(node => node.props.className?.includes('mi-simulation')), false);
+  phone.button('Intake feedback preferences').props.onClick();phone.render();phone.button('Session details').props.onClick(); phone.render(); assert.ok(phone.nodes().some(node => node.type === 'IntakeBatchSummary')); assert.equal(phone.nodes().some(node => ['InkOrb','NfcScanControl'].includes(node.type)), false);
+  phone.event('battery-mobile-back'); assert.equal(phone.nodes().filter(node => ['InkOrb','NfcScanControl'].includes(node.type)).length, 1);
+  phone.button('Intake feedback preferences').props.onClick(); phone.render(); phone.event('battery-mobile-back'); assert.equal(phone.nodes().filter(node => ['InkOrb','NfcScanControl'].includes(node.type)).length, 1);
   phone.button('More input').props.onClick(); phone.render(); phone.button('Demo simulationExplicit simulated intake tags').props.onClick(); phone.render();
   assert.match(phone.text(), /Explicit demonstration inputs/); assert.deepEqual(env.calls, []); assert.equal(phone.nodes().some(node => node.props.className === 'mi-register-button'), false);
   phone.button('Review queue, 0 intake drafts').props.onClick(); phone.render(); assert.equal(phone.layer.inert, true); assert.equal(phone.button('Register selected (0)').props.disabled, true);
@@ -382,7 +383,7 @@ test('fresh browser and native Scan entries select NFC without acquiring or subm
   for (const native of [false, true]) {
     const env = scanFixture(), phone = await stageHarness('../src/features/scan/scan.jsx', 'ScanWorkflow', { ...env.bindings, native }, { kind: 'checkout', data: env.data });
     assert.equal(phone.button('NFC').props['aria-pressed'], true);
-    assert.equal(phone.nodes().filter(node => node.type === 'InkOrb').length, 1);
+    assert.equal(phone.nodes().filter(node => ['InkOrb','NfcScanControl'].includes(node.type)).length, 1);
     if (!native) assert.match(outcomeText(phone), /Browser preview.*NFC unavailable/);
     assert.deepEqual(env.calls, []);
     phone.unmount();
@@ -396,7 +397,7 @@ test('actual recovered Scan input shows its captured source before any user acqu
     env.session.queue.push(before);
     const phone = await stageHarness('../src/features/scan/scan.jsx', 'ScanWorkflow', env.bindings, { kind: 'checkout', data: env.data });
     assert.equal(env.options.at(-1).input, mode);
-    assert.equal(phone.nodes().some(node => node.type === 'InkOrb'), mode === 'native');
+    assert.equal(phone.nodes().some(node => ['InkOrb','NfcScanControl'].includes(node.type)), mode === 'native');
     assert.equal(phone.button(mode === 'selection' ? 'NFC' : 'Select').props.disabled, true);
     assert.deepEqual(env.session.queue, [before]);
     assert.deepEqual(env.calls, []);
@@ -408,7 +409,7 @@ test('fresh prepared Intake remains NFC-first in browser and performs no implici
   const env = await intakeFixture(), phone = await stageHarness('../src/features/lifecycle/intake.jsx', 'MobileIntake', env.bindings, { data: env.data });
   await continueIntake(phone);
   assert.equal(phone.button('NFC').props['aria-pressed'], true);
-  assert.equal(phone.nodes().filter(node => node.type === 'InkOrb').length, 1);
+  assert.equal(phone.nodes().filter(node => ['InkOrb','NfcScanControl'].includes(node.type)).length, 1);
   assert.match(outcomeText(phone), /NFC unavailable in browser/);
   assert.deepEqual(env.calls, []); assert.equal(env.controller.getSnapshot().draft.entries.length, 0);
   phone.unmount();
@@ -563,7 +564,7 @@ test('Removal manual reader recovery depends on explicit states while preserving
   for(const readerState of ['fault','unavailable','paused','ready']){
     const storage=createDurableStorage({load:async()=>JSON.stringify({schemaVersion:1,entries:{}}),save:async()=>{}});await storage.initialize();const accountId='11111111-1111-4111-8111-111111111111',data={dataset:'demo',user:{id:accountId,role:'admin'},batteries:[],rooms:[]},controller=createRemovalController({storage,accountId,dataset:'demo',inventory:data,defaultSource:'native_nfc',write:async()=>assert.fail('Reader retry must not submit a business request')});await controller.initialize();let retries=0;
     const message='Original device diagnostic without legacy prefixes',bindings={businessStorage:()=>storage,native:true,useWorkflowLock(){},createRemovalController:()=>controller,removalEntrySource,removalDraftStorageKey,removalEligible,removalScopeMatches,getRolePermissions:()=>({retireBatteries:true}),formatTime:value=>value,saveFile(){},FEEDBACK_KEY,readFeedbackPreferences,useOwnedNfcReader:()=>({reader:{state:readerState,message,code:'TAG_LOST'},resumeReader(){retries++;},cancelReader:async()=>true})};
-    const phone=await stageHarness('../src/features/lifecycle/removal.jsx','MobileRemoval',bindings,{data}),retry=phone.nodes().find(node=>node.type==='button'&&text(node)==='Check reader again');assert.equal(!!retry,readerState!=='ready');assert.equal(phone.nodes().find(node=>node.type==='ScanOutcomeStatus').props.reader.message,message);if(retry){assert.equal(retry.props.disabled,false);retry.props.onClick();assert.equal(retries,1);}phone.unmount();
+    const phone=await stageHarness('../src/features/lifecycle/removal.jsx','MobileRemoval',bindings,{data}),retry=phone.nodes().find(node=>node.type==='NfcScanControl');assert.ok(retry);assert.equal(retry.props.reader.state,readerState);assert.equal(phone.nodes().find(node=>node.type==='ScanOutcomeStatus').props.reader.message,message);if(retry){assert.equal(retry.props.disabled,false);retry.props.onStart();assert.equal(retries,1);}phone.unmount();
   }
 });
 

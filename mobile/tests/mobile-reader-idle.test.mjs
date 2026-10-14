@@ -80,10 +80,10 @@ async function mount(kind,{platform='android',code='TIMEOUT',cancelSettles=true,
     setClock(value){clock=value;},
     resume:()=>readerHook.resumeReader(),
     pause:reason=>readerHook.cancelReader(reason),
-    failureTone:()=>kind==='scan'?result.feedback.tone==='failure':flatten(result).some(node=>node.type==='InkOrb'&&String(node.props.feedback).split(' ').includes('failure')),
+    failureTone:()=>kind==='scan'?result.feedback.tone==='failure':flatten(result).some(node=>['InkOrb','NfcScanControl'].includes(node.type)&&String(node.props.feedback).split(' ').includes('failure')),
     queueSize:()=>kind==='scan'?session.queue.length:kind==='intake'?intakeController.getSnapshot().draft.entries.length:removalController.snapshot().draft.items.length,
     waitTimer:()=>timers.findLast(timer=>timer.active&&timer.delay===250),
-    async completeRead(commit=true){assert.ok(pendingRead);pendingRead.resolve({uidHex:'0004AB00',technology:'Controlled NFC-A output',ndefStatus:'readWrite',capacityBytes:144,records:[],observedAt:'2026-10-12T05:00:00.000Z',...(platform==='ios'&&kind==='intake'?{readerSessionId:reads.at(-1).sessionId||`controlled-ios-session-${reads.length}`}:{})});pendingRead=null;if(commit)await settle();else for(let count=0;count<8;count++)await new Promise(setImmediate);},
+    async completeRead(commit=true){assert.ok(pendingRead);pendingRead.resolve({uidHex:'0004AB00',technology:'Controlled NFC-A output',ndefStatus:'readWrite',capacityBytes:144,records:[],observedAt:'2026-10-12T05:00:00.000Z',...(platform==='ios'?{readerSessionId:reads.at(-1).sessionId||`controlled-ios-session-${reads.length}`}:{})});pendingRead=null;if(commit)await settle();else for(let count=0;count<8;count++)await new Promise(setImmediate);},
     key(key){for(const handler of [...listeners.get('keydown')||[]])handler({key,preventDefault(){}});render();},
     click(label){const button=flatten(result).find(node=>node.type==='button'&&(node.props['aria-label']===label||words(node)===label));assert.ok(button,`Actual button: ${label}`);button.props.onClick();render();},
     hasEditor:()=>flatten(result).some(node=>node.props.className==='mi-editor'),
@@ -105,7 +105,7 @@ async function mount(kind,{platform='android',code='TIMEOUT',cancelSettles=true,
       for(let count=0;count<4;count++){await settle();for(const call of cancelCalls)call.resolve?.();}
     },
   };
-  render();await settle();if(kind==='intake'){view.click('Continue with these details');await settle();}return view;
+  render();await settle();if(kind==='intake'){view.click('Continue with these details');await settle();}if(platform==='ios'){assert.equal(reads.length,0,'Mount and preparation must not open iOS NFC');view.resume();await settle();}return view;
 }
 
 for(const kind of Object.keys(sources)){
@@ -206,11 +206,11 @@ for(const settings of [{platform:'ios',code:'TIMEOUT'},{platform:'android',code:
   for(const kind of Object.keys(sources)){
     const view=await mount(kind,settings);try{
       assert.equal(view.reads.length,1);assert.equal(view.waitTimer(),undefined);assert.equal(view.evidence()[0].error.code,settings.code);assert.equal(view.queueSize(),0);
-      const batchEnded=kind==='intake'&&settings.platform==='ios'&&settings.code==='TIMEOUT';
+      const batchEnded=settings.platform==='ios'&&settings.code==='TIMEOUT';
       assert.equal(view.failureTone(),!batchEnded);
       if(batchEnded){
         assert.equal(view.readerSessions[0].getSnapshot().state,'paused');assert.match(view.status(),/Saved tags are retained/);
-        view.click('Continue scanning');await view.settle();assert.equal(view.reads.length,2);assert.equal(view.reads[1].keepSessionAlive,true);assert.equal(view.reads[1].sessionId,undefined);
+        view.resume();await view.settle();assert.equal(view.reads.length,2);assert.equal(view.reads[1].keepSessionAlive,true);assert.equal(view.reads[1].sessionId,undefined);
       }
     }finally{await view.close();}
   }
@@ -224,26 +224,26 @@ for(const code of ['TIMEOUT','CANCELLED','BACKGROUND'])test(`iOS batch ${code}: 
     assert.equal(view.reads.length,1,'Returning foreground or re-enabling the surface cannot open another system sheet');
     assert.equal(view.readerState(),'paused');assert.equal(view.waitTimer(),undefined);
     assert.ok(view.readerFrames.slice(frame).every(state=>state!=='starting'),'Manual pause cannot flash a preparation state during control re-admission');
-    view.click('Continue scanning');await view.settle();
+    view.resume();await view.settle();
     assert.equal(view.reads.length,2);assert.equal(view.reads[1].keepSessionAlive,true);assert.equal(view.reads[1].sessionId,undefined,'Continue starts an explicitly new physical session');
     await view.background();await view.foreground();assert.equal(view.reads.length,2,'An active batch interrupted by background also needs Continue');assert.equal(view.readerState(),'paused');
-    view.click('Continue scanning');await view.settle();assert.equal(view.reads.length,3);assert.equal(view.reads[2].sessionId,undefined);
+    view.resume();await view.settle();assert.equal(view.reads.length,3);assert.equal(view.reads[2].sessionId,undefined);
   }finally{await view.close();}
 });
 
 test('iOS batch background keeps late raw evidence without adoption or foreground automatic restart',async()=>{
   const view=await mount('intake',{platform:'ios',cancelSettles:false});try{
-    view.click('Continue scanning');await view.settle();assert.equal(view.reads.length,2);
+    view.resume();await view.settle();assert.equal(view.reads.length,2);
     await view.background();await view.completeRead();await view.foreground();await view.pageshow();
     assert.equal(view.evidence()[1].outcome,'read');assert.equal(view.evidence()[1].result.uidHex,'0004AB00');assert.equal(view.evidence()[1].adoptions,undefined);
     assert.equal(view.queueSize(),0);assert.deepEqual(view.haptics,[]);assert.deepEqual(view.feedback,[]);assert.equal(view.reads.length,2);assert.equal(view.readerState(),'paused');
-    view.click('Continue scanning');await view.settle();assert.equal(view.reads.length,3);assert.equal(view.reads[2].sessionId,undefined);
+    view.resume();await view.settle();assert.equal(view.reads.length,3);assert.equal(view.reads[2].sessionId,undefined);
   }finally{await view.close();}
 });
 
-for(const [kind,platform]of [['scan','ios'],['removal','ios'],['intake','android']])test(`${platform} ${kind}: ordinary foreground resume semantics are preserved`,async()=>{
+for(const [kind,platform]of [['scan','ios'],['removal','ios'],['intake','android']])test(`${platform} ${kind}: foreground return respects each platform activation policy`,async()=>{
   const view=await mount(kind,{platform});try{
-    assert.equal(view.reads.length,1);await view.background();await view.foreground();assert.equal(view.reads.length,2);
+    assert.equal(view.reads.length,1);await view.background();await view.foreground();assert.equal(view.reads.length,platform==='ios'?1:2);if(platform==='ios'){view.resume();await view.settle();assert.equal(view.reads.length,2);}
   }finally{await view.close();}
 });
 

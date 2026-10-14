@@ -37,12 +37,12 @@ workflows:
             exit 1
           fi
           MOBILE_BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 1))
-          if (( MOBILE_BUILD_NUMBER <= 12 )); then
-            echo 'The assigned build number must exceed the latest confirmed App Store Connect upload (12).' >&2
+          if (( MOBILE_BUILD_NUMBER <= 13 )); then
+            echo 'The assigned build number must exceed the latest confirmed App Store Connect upload (13).' >&2
             exit 1
           fi
           mkdir -p build/ios/verification
-          printf '{"projectBuildNumber":%s,"assignedBuildNumber":%s,"minimumExclusive":12}\n' "$PROJECT_BUILD_NUMBER" "$MOBILE_BUILD_NUMBER" > build/ios/verification/build-number.json
+          printf '{"projectBuildNumber":%s,"assignedBuildNumber":%s,"minimumExclusive":13}\n' "$PROJECT_BUILD_NUMBER" "$MOBILE_BUILD_NUMBER" > build/ios/verification/build-number.json
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $MOBILE_BUILD_NUMBER" ios/App/App/Info.plist
           xcode-project build-ipa --project ios/App/App.xcodeproj --scheme App \
             --archive-directory build/ios/xcarchive --ipa-directory build/ios/ipa

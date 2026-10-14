@@ -5,6 +5,8 @@
 :is(.scan-outcome-card,.scan-outcome-reserve) strong{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:1rem;line-height:1.3;overflow-wrap:anywhere}
 :is(.scan-outcome-card,.scan-outcome-reserve)>div>span{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;font-size:.875rem;line-height:1.4;margin-top:4px;overflow-wrap:anywhere}
 .scan-outcome-details-button{width:44px;min-height:44px;flex:none;display:grid;place-items:center;background:transparent;border:0;color:inherit;border-radius:12px;padding:8px}
+.scan-outcome-reader-state{display:block;margin-top:6px;font-size:.75rem;line-height:1.3;font-weight:500;opacity:.8}
+.scan-outcome-reader-context{margin-block:16px;padding-block:12px;border-block:1px solid color-mix(in srgb,currentColor 20%,transparent)}.scan-outcome-reader-context h3{font-size:1rem;line-height:1.4;margin:0}.scan-outcome-reader-context p{margin-bottom:0}
 .scan-source-note{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 .scan-outcome-card[data-pulse=success]{background:#e4f5eb;border-color:#8bc5a5;color:#205c3d}.scan-outcome-card[data-pulse=failure]{background:#fff0ef;border-color:#dfb3ae;color:#893d35}.scan-outcome-card[data-outcome=duplicate]{background:#eef3fa;color:#33445e;border-color:#cbd7e6}
 .scan-outcome-portal{position:fixed;inset:0;height:var(--phone-viewport-height,100dvh);z-index:1470;display:flex;align-items:center;justify-content:center;padding:12px;background:#192d4980;box-sizing:border-box}
