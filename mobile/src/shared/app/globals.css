@@ -1,0 +1,17 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "../vendor/shadcn-tailwind-4.13.0.css";
+
+@import "../styles/theme.css";
+@import "../styles/base.css";
+@import "../styles/shell.css";
+@import "../styles/auth.css";
+@import "../styles/components.css";
+@import "../styles/inventory.css";
+@import "../styles/workflows.css";
+@import "../styles/motion.css";
+@import "../styles/loading.css";
+@import "../styles/materials.css";
+
+/* This light workspace does not activate dark utilities from OS preference. */
+@custom-variant dark (&:where(.dark, .dark *));

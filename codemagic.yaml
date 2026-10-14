@@ -1,0 +1,56 @@
+# Functional-test source only. Workflows are manual; neither uploads nor publishes.
+workflows:
+  mobile-ios-verify:
+    name: Mobile iOS compile check
+    instance_type: mac_mini_m2
+    max_build_duration: 45
+    environment:
+      node: 22
+      xcode: 26.6
+    scripts:
+      - name: Install the independent mobile package
+        script: |
+          cd mobile
+          npm ci --no-fund --no-audit
+      - name: Check mobile logic and build the interface
+        script: |
+          cd mobile
+          npm test
+          npm run test:plugin
+          npm run build
+          node ../scripts/prepare-mobile-native.mjs --ios
+      - name: Compile for a physical iPhone without signing
+        script: |
+          cd mobile
+          xcodebuild -resolvePackageDependencies -project ios/App/App.xcodeproj -scheme App
+          xcodebuild -project ios/App/App.xcodeproj -scheme App \
+            -destination 'generic/platform=iOS' -derivedDataPath build/ios \
+            CODE_SIGNING_ALLOWED=NO build
+    artifacts:
+      - mobile/build/ios/Logs/**
+      - mobile/build/ios/Build/Products/Debug-iphoneos/*.app
+  mobile-android-debug:
+    name: Mobile Android test package
+    instance_type: mac_mini_m2
+    max_build_duration: 45
+    environment:
+      node: 22
+      java: 21
+    scripts:
+      - name: Install and verify the mobile package
+        script: |
+          cd mobile
+          npm ci --no-fund --no-audit
+          npm test
+          npm run test:plugin
+          npm run build
+          node ../scripts/prepare-mobile-native.mjs --android
+      - name: Build an Android test package
+        script: |
+          cd mobile/android
+          : "${ANDROID_SDK_ROOT:?The Android SDK path is required}"
+          printf 'sdk.dir=%s\n' "$ANDROID_SDK_ROOT" > local.properties
+          chmod +x gradlew
+          ./gradlew assembleDebug
+    artifacts:
+      - mobile/android/app/build/outputs/apk/debug/*.apk

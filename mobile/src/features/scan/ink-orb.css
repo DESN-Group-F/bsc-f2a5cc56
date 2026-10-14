@@ -1,0 +1,51 @@
+.ink-orb {
+  --ink-orb-size: 200px;
+  --ink-orb-base-color: #075dcc;
+  --ink-orb-render-color: var(--ink-orb-base-color);
+  position: relative;
+  width: var(--ink-orb-size);
+  height: var(--ink-orb-size);
+  flex-shrink: 0;
+  overflow: visible;
+  filter: none;
+  pointer-events: none;
+}
+
+.ink-orb[data-color="yellow"] { --ink-orb-base-color: #efbd3b; }
+.ink-orb[data-color="purple"] { --ink-orb-base-color: #9270d5; }
+.ink-orb[data-color="slate"] { --ink-orb-base-color: #647891; }
+.ink-orb[data-color][data-active] { filter: none; }
+.ink-orb.ink-success { --ink-orb-render-color: #45a97a; }
+.ink-orb.ink-failure { --ink-orb-render-color: #df6466; }
+.ink-orb.ink-orb-compact { --ink-orb-size: 55px; }
+
+.ink-orb .ink-orb__activation { position: absolute; inset: 0; transform-origin: 50% 50%; }
+.ink-orb .ink-orb__art { width: 100%; height: 100%; overflow: visible; display: block; }
+.ink-orb .ink-orb__body { fill: var(--ink-orb-render-color); transition: fill 180ms ease-out; }
+.ink-orb .ink-orb__eye { fill: #fff; transform-box: fill-box; transform-origin: center; transition: transform 180ms ease-out; }
+.ink-orb .ink-orb__puzzled, .ink-orb .ink-orb__surprise { fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; opacity: 0; transition: opacity 150ms ease-out; }
+.ink-orb.ink-duplicate .ink-orb__eye--left { transform: scaleY(.68); }
+.ink-orb.ink-duplicate .ink-orb__puzzled { opacity: .9; }
+.ink-orb.ink-failure .ink-orb__eye { transform: scale(1.12); }
+.ink-orb.ink-failure .ink-orb__surprise { opacity: .85; }
+
+.ink-orb .ink-orb__droplet { position: absolute; opacity: 0; background: var(--ink-orb-render-color); border-radius: 70% 40% 65% 40%; pointer-events: none; }
+.ink-orb .ink-orb__droplet--a { top: 20%; right: 7%; width: 7px; height: 10px; }
+.ink-orb .ink-orb__droplet--b { top: 28%; right: 2%; width: 5px; height: 7px; }
+.ink-orb .ink-orb__droplet--c { top: 13%; right: 12%; width: 4px; height: 6px; }
+.ink-orb.ink-success .ink-orb__droplet { animation: ink-orb-local-splash 650ms ease-out both; }
+.ink-orb.ink-success .ink-orb__droplet--b { animation-delay: 55ms; }
+.ink-orb.ink-success .ink-orb__droplet--c { animation-delay: 100ms; }
+.ink-orb.ink-orb-compact .ink-orb__droplet { display: none; }
+.ink-orb[data-active="false"] .ink-orb__droplet, .ink-orb[data-motion-paused="true"] .ink-orb__droplet, .ink-orb[data-reduced-motion="true"] .ink-orb__droplet { animation: none; }
+
+@keyframes ink-orb-local-splash {
+  0% { opacity: 0; transform: translate(-7px, 10px) scale(.3); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate(8px, -14px) scale(.7); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ink-orb .ink-orb__body, .ink-orb .ink-orb__eye, .ink-orb .ink-orb__puzzled, .ink-orb .ink-orb__surprise { transition: none; }
+  .ink-orb.ink-success .ink-orb__droplet { animation: none; }
+}

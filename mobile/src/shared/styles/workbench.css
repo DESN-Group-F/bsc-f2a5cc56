@@ -1,0 +1,340 @@
+/* Final material and typography layer; import after workspace.css. */
+body,
+.app-main,
+.signin-page {
+  background-color: var(--canvas);
+  background-image: var(--canvas-gradient);
+}
+
+body {
+  font-optical-sizing: auto;
+}
+
+.app-sidebar {
+  border-color: var(--border);
+}
+
+.app-sidebar [data-sidebar="sidebar"] {
+  background: var(--surface);
+  box-shadow: inset -1px 0 0 var(--surface-edge);
+}
+
+.brand {
+  border-bottom-color: var(--border);
+}
+
+.brand-mark {
+  box-shadow: inset 0 1px 0 #ffffff80, 0 2px 4px #292c3310;
+}
+
+.brand strong {
+  font-size: 18px;
+  letter-spacing: -.035em;
+}
+
+.sidebar-group [data-slot="sidebar-group-label"] {
+  font-weight: 600;
+  letter-spacing: .06em;
+}
+
+.app-sidebar [data-slot="sidebar-menu-button"] {
+  border-radius: 10px;
+  letter-spacing: -.01em;
+}
+
+.app-sidebar [data-slot="sidebar-menu-button"][data-active="true"] {
+  background: var(--selection-surface);
+  box-shadow: inset 0 1px 0 #ffffffb3;
+}
+
+.topbar {
+  background: var(--surface);
+  border-bottom-color: var(--border);
+  box-shadow: 0 1px 4px #20263103;
+}
+
+.workspace {
+  padding-top: 26px;
+}
+
+.workspace-controls {
+  margin-bottom: 22px;
+}
+
+.dataset-control label {
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+.dataset-control [data-slot="select-trigger"] {
+  border-color: var(--border);
+  box-shadow: var(--shadow-control);
+}
+
+.operator-indicator {
+  line-height: 1.5;
+}
+
+.page-heading {
+  margin-bottom: 22px;
+}
+
+.page-heading h1 {
+  font-size: clamp(28px, 2.2vw, 34px);
+  font-weight: 650;
+  line-height: 1.15;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+
+.eyebrow {
+  color: var(--muted-foreground);
+  font-weight: 600;
+  letter-spacing: .065em;
+}
+
+.page-description {
+  max-width: 720px;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.heading-actions {
+  padding-top: 17px;
+}
+
+.inventory-panel,
+.manage-panel,
+.activity-panel,
+.account-card,
+.message-inbox-card {
+  background: var(--surface);
+  border-color: var(--border);
+  border-radius: var(--radius-panel);
+  box-shadow: var(--shadow-panel);
+}
+
+.summary-card,
+.scan-station-summary > div {
+  box-shadow: var(--shadow-panel);
+}
+
+.summary-value,
+.scan-station-summary strong {
+  letter-spacing: -.045em;
+}
+
+.section-heading {
+  padding: 20px 22px;
+}
+
+.section-heading h2,
+.account-card h2 {
+  font-size: 18px;
+  font-weight: 650;
+  letter-spacing: -.025em;
+  line-height: 1.35;
+}
+
+.inventory-panel > .panel-top {
+  padding-top: 10px;
+}
+
+.table-toolbar {
+  padding-block: 14px;
+}
+
+[data-slot="table-head"] {
+  background: var(--surface-subtle);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .015em;
+  color: var(--muted-foreground);
+}
+
+[data-slot="table-cell"] {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.battery-cell strong {
+  font-weight: 600;
+  letter-spacing: -.015em;
+}
+
+.battery-icon {
+  background: var(--surface-subtle);
+  border-color: var(--border);
+  box-shadow: inset 0 1px 0 var(--surface-edge);
+}
+
+.inventory-filter-panel {
+  background: var(--surface-subtle);
+  box-shadow: inset 0 1px 0 var(--surface-edge);
+}
+
+.filter-group,
+.detail-card,
+.battery-model-preview,
+.battery-model-create,
+.export-sections {
+  box-shadow: none;
+}
+
+.filter-chip {
+  border-color: var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-control);
+}
+
+.panel-footer,
+.pagination-bar {
+  background: var(--surface);
+}
+
+.personal-inventory-scope {
+  box-shadow: var(--shadow-control);
+}
+
+.movement-layout {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  align-items: start;
+  gap: 24px;
+}
+
+.movement-current {
+  background: linear-gradient(145deg, #fffdf2, var(--selection-surface));
+  box-shadow: inset 0 1px 0 var(--surface-edge), 0 2px 6px #20263105;
+}
+
+.movement-records {
+  min-width: 0;
+  padding-top: 2px;
+}
+
+.movement-records .movement-timeline-title {
+  margin-top: 0;
+}
+
+.movement-records .movement-event-heading {
+  display: grid;
+  gap: 3px;
+}
+
+.workspace-footer {
+  background: transparent;
+  border-top-color: var(--border);
+}
+
+[data-slot="button"][data-variant="outline"] {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-control);
+}
+
+[data-slot="button"][data-variant="outline"]:hover:not(:disabled) {
+  box-shadow: var(--shadow-control-hover);
+}
+
+[data-slot="dialog-content"],
+.signin-card {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: var(--shadow-dialog);
+}
+
+[data-slot="sheet-content"] {
+  background: var(--surface);
+  border-color: var(--border);
+  box-shadow: -12px 0 48px #20263114, -1px 0 4px #20263106;
+}
+
+:is([data-slot="dialog-close"], [data-slot="sheet-close"]) {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  color: var(--muted-foreground);
+  opacity: 1;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+:is([data-slot="dialog-close"], [data-slot="sheet-close"]):hover {
+  background: var(--surface-hover);
+  color: var(--foreground);
+}
+
+.activity-filter-controls {
+  padding: 0 20px 16px;
+}
+
+.activity-filter-controls .applied-filters {
+  padding: 10px 0 0;
+  border-bottom: 0;
+  background: transparent;
+}
+
+.activity-panel > .field-hint {
+  padding-inline: 20px;
+}
+
+:is([data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="combobox-content"]) {
+  background: var(--surface);
+  box-shadow: var(--shadow-popover);
+}
+
+@media (max-width: 900px) {
+  .heading-actions {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .activity-filter-controls { padding-inline: 14px; }
+  .activity-panel > .field-hint { padding-inline: 14px; }
+  .movement-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .workspace {
+    padding-top: 20px;
+  }
+
+  .page-heading {
+    margin-bottom: 18px;
+  }
+
+  .page-heading h1 {
+    font-size: 28px;
+  }
+
+  .section-heading {
+    padding: 18px 14px;
+  }
+
+  .table-toolbar {
+    padding-block: 12px;
+  }
+}
+
+@media (forced-colors: active) {
+  body,
+  .app-main,
+  .signin-page {
+    background: Canvas;
+  }
+
+  .inventory-panel,
+  .manage-panel,
+  .activity-panel,
+  .account-card,
+  .message-inbox-card,
+  .summary-card,
+  .scan-station-summary > div,
+  .filter-chip,
+  [data-slot="dialog-content"],
+  [data-slot="sheet-content"] {
+    box-shadow: none;
+  }
+}

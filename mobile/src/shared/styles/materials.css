@@ -1,0 +1,85 @@
+/* Shared material and toolbar rules; body text never inherits transparency. */
+body :is(.topbar, .app-sidebar [data-slot="sidebar-inner"], .app-sidebar[data-mobile="true"], [data-review-queue], .signin-masthead, .signin-workflow, [data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="combobox-content"]) {
+  background: var(--surface);
+  border-color: var(--glass-border);
+  transition: background-color var(--motion-fast), border-color var(--motion-fast), box-shadow var(--motion-fast);
+}
+
+@supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+  body :is(.topbar, .app-sidebar [data-slot="sidebar-inner"], .app-sidebar[data-mobile="true"], [data-review-queue], .signin-masthead, .signin-workflow, [data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="combobox-content"]) {
+    background: var(--glass-surface);
+    -webkit-backdrop-filter: blur(var(--glass-blur));
+    backdrop-filter: blur(var(--glass-blur));
+  }
+  body :is(.topbar, .app-sidebar [data-slot="sidebar-inner"], .app-sidebar[data-mobile="true"], [data-review-queue], .signin-masthead, .signin-workflow, [data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="combobox-content"]):focus-within {
+    background: var(--glass-surface-active);
+    border-color: var(--border-strong);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    body :is(.topbar, .app-sidebar [data-slot="sidebar-inner"], .app-sidebar[data-mobile="true"], [data-review-queue], .signin-masthead, .signin-workflow, [data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="combobox-content"]):hover {
+      background: var(--glass-surface-active);
+      border-color: var(--border-strong);
+    }
+  }
+  @media (hover: none), (pointer: coarse) {
+    body :is(.topbar, .app-sidebar [data-slot="sidebar-inner"], .app-sidebar[data-mobile="true"], [data-review-queue], .signin-masthead, .signin-workflow, [data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="combobox-content"]) {
+      background: var(--glass-surface-touch);
+    }
+  }
+}
+
+/* Primary, destructive and tertiary actions retain their distinct roles. */
+:is(.table-toolbar, .panel-top, .panel-actions, .pagination-bar, .heading-actions, .account-actions, .group-bulk-actions) > [data-receipt-phase] { --receipt-size: var(--control-height); }
+:is(.table-toolbar, .panel-top, .panel-actions, .pagination-bar, .heading-actions, .account-actions, .group-bulk-actions) > [data-slot="button"],
+.pagination-bar > div > [data-slot="button"], .applied-filters > [data-slot="button"],
+.topbar [data-slot="button"], .topbar [data-slot="select-trigger"], .workspace-global-scope .inventory-context > summary {
+  min-height: var(--control-height);
+  border-radius: var(--radius-control);
+  gap: 8px;
+}
+:is(.table-toolbar, .panel-top, .panel-actions, .pagination-bar, .heading-actions, .account-actions, .group-bulk-actions) > [data-slot="button"][data-variant="ghost"],
+.topbar [data-slot="button"][data-variant="ghost"], .workspace-global-scope .inventory-context > summary {
+  border: 1px solid var(--border-strong);
+  background: var(--surface);
+  color: var(--foreground);
+  box-shadow: none;
+}
+:is(.table-toolbar, .panel-top, .panel-actions, .pagination-bar, .heading-actions, .account-actions, .group-bulk-actions) > [data-slot="button"][data-variant="ghost"]:hover:not(:disabled),
+.topbar [data-slot="button"][data-variant="ghost"]:hover:not(:disabled), .workspace-global-scope .inventory-context > summary:hover {
+  background: var(--surface-subtle);
+  border-color: var(--foreground);
+}
+.workspace-global-scope .inventory-context > summary { padding-inline: 10px; font-size: 13px; }
+.workspace-global-scope .dataset-control [data-slot="select-trigger"] { background: var(--surface); }
+.topbar :is(button, summary) > svg { width: var(--control-icon-size); height: var(--control-icon-size); flex: none; }
+.table-toolbar > [data-slot="button"][aria-pressed="true"] { color: var(--primary); background: var(--selection-surface); border-color: var(--primary); }
+.table-toolbar > [data-slot="button"][aria-pressed="true"] svg { color: currentColor; }
+.table-toolbar > [data-slot="button"][aria-pressed="true"]:hover:not(:disabled) { color: var(--primary); background: var(--selection-hover); border-color: var(--primary); }
+
+@media (max-width: 767px) {
+  .workspace-global-scope .inventory-context > summary { padding-inline: 6px; gap: 4px; font-size: 11px; }
+}
+@media (max-width: 360px) {
+  .workspace-global-scope .inventory-context > summary { padding-inline: 4px; gap: 2px; }
+  .inventory-filter-toolbar > [data-slot="button"] { gap: 4px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  body :is(.topbar, .app-sidebar [data-slot="sidebar-inner"], .app-sidebar[data-mobile="true"], [data-review-queue], .signin-masthead, .signin-workflow, [data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="combobox-content"]) { transition: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  :root { --glass-surface: var(--surface); --glass-surface-active: var(--surface); --glass-surface-touch: var(--surface); }
+  body :is(.topbar, .app-sidebar [data-slot="sidebar-inner"], .app-sidebar[data-mobile="true"], [data-review-queue], .signin-masthead, .signin-workflow, [data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="combobox-content"]) {
+    background: var(--surface);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@media (forced-colors: active) {
+  :root { --glass-surface: Canvas; --glass-surface-active: Canvas; --glass-surface-touch: Canvas; --border-strong: CanvasText; }
+  body :is(.topbar, .app-sidebar [data-slot="sidebar-inner"], .app-sidebar[data-mobile="true"], [data-review-queue], .signin-masthead, .signin-workflow, [data-slot="popover-content"], [data-slot="select-content"], [data-slot="dropdown-menu-content"], [data-slot="combobox-content"]) {
+    background: Canvas;
+    border-color: CanvasText;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}

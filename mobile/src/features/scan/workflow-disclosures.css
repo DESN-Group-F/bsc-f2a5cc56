@@ -1,0 +1,41 @@
+/* Only disclosures owned by Scan and registration workflows receive this cue. */
+:is(
+  .lookup-result>details,.lookup-result article>details,
+  .phone-model>details,.phone-model-evidence,
+  .scan-protected-notice>details,.scan-reviewed-facts,.scan-device-evidence,.scan-completed,.scan-issues,
+  .mi-protected>details,.mi-preparation-error>details,.mi-model-evidence,.mi-form-diagnostics,.mi-completed,.mi-reviewed-facts,.mi-review-row>details,
+  .removal-details,.removal-details>details,
+  .mr-field-group,.mr-model-assistance,.mr-recovery>details
+)>summary{display:flex;align-items:center;list-style:none}
+:is(
+  .lookup-result>details,.lookup-result article>details,
+  .phone-model>details,.phone-model-evidence,
+  .scan-protected-notice>details,.scan-reviewed-facts,.scan-device-evidence,.scan-completed,.scan-issues,
+  .mi-form-group,.mi-protected>details,.mi-preparation-error>details,.mi-model-evidence,.mi-form-diagnostics,.mi-completed,.mi-reviewed-facts,.mi-review-row>details,
+  .removal-details,.removal-details>details,
+  .mr-field-group,.mr-model-assistance,.mr-recovery>details
+)>summary::-webkit-details-marker{display:none}
+:is(
+  .lookup-result>details,.lookup-result article>details,
+  .phone-model>details,.phone-model-evidence,
+  .scan-protected-notice>details,.scan-reviewed-facts,.scan-device-evidence,.scan-completed,.scan-issues,
+  .mi-form-group,.mi-protected>details,.mi-preparation-error>details,.mi-model-evidence,.mi-form-diagnostics,.mi-completed,.mi-reviewed-facts,.mi-review-row>details,
+  .removal-details,.removal-details>details,
+  .mr-field-group,.mr-model-assistance,.mr-recovery>details
+)>summary::marker{content:''}
+:is(
+  .lookup-result>details,.lookup-result article>details,
+  .phone-model>details,.phone-model-evidence,
+  .scan-protected-notice>details,.scan-reviewed-facts,.scan-device-evidence,.scan-completed,.scan-issues,
+  .mi-protected>details,.mi-preparation-error>details,.mi-model-evidence,.mi-form-diagnostics,.mi-completed,.mi-reviewed-facts,.mi-review-row>details,
+  .removal-details,.removal-details>details,
+  .mr-field-group,.mr-model-assistance,.mr-recovery>details
+)>summary::after{content:'';width:8px;height:8px;flex:0 0 8px;margin-left:auto;margin-right:4px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);pointer-events:none}
+:is(
+  .lookup-result>details,.lookup-result article>details,
+  .phone-model>details,.phone-model-evidence,
+  .scan-protected-notice>details,.scan-reviewed-facts,.scan-device-evidence,.scan-completed,.scan-issues,
+  .mi-protected>details,.mi-preparation-error>details,.mi-model-evidence,.mi-form-diagnostics,.mi-completed,.mi-reviewed-facts,.mi-review-row>details,
+  .removal-details,.removal-details>details,
+  .mr-field-group,.mr-model-assistance,.mr-recovery>details
+)[open]>summary::after{transform:rotate(225deg)}
