@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'dist',
   // Keep framework bridge payloads out of native logs; business evidence uses app storage.
   android: { loggingBehavior: 'none', backgroundColor: '#f5f6f8' },
-  ios: { loggingBehavior: 'none' },
+  ios: { loggingBehavior: 'none', backgroundColor: '#10141b' },
 };
 
 export default config;

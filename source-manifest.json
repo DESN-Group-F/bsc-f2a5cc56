@@ -3,7 +3,7 @@
   "purpose": "functional-test-source",
   "formalRelease": false,
   "testVersion": "0.5.2",
-  "createdAt": "2026-10-14T05:04:50.858Z",
+  "createdAt": "2026-10-14T10:19:48.432Z",
   "files": [
     {
       "path": ".gitattributes",
@@ -19,8 +19,8 @@
     },
     {
       "path": "codemagic.yaml",
-      "bytes": 4535,
-      "sha256": "f6eb5a144dff25b5de091b841df3df85592b9bb9ba20036cfd1436b0fdac5a34",
+      "bytes": 4851,
+      "sha256": "66c83877150839cceebdd515ba14056126957cffdd61767daeaace1baf01609b",
       "mode": "0644"
     },
     {
@@ -451,14 +451,14 @@
     },
     {
       "path": "mobile/capacitor.config.ts",
-      "bytes": 403,
-      "sha256": "2e6c906f5152bf1a45f739c349611d8504a32aa2f6da4b2f20882c1e41d48f04",
+      "bytes": 431,
+      "sha256": "cd4bdd71202e19ab648e55ea4cf784a9d837b297121b36ab82020fec39d388bc",
       "mode": "0644"
     },
     {
       "path": "mobile/index.html",
-      "bytes": 2885,
-      "sha256": "88330b6cc4ad6c85872e5112e46c6570762c501e3646298eeec739ae7dbb4fea",
+      "bytes": 5100,
+      "sha256": "437328c4dfd68de9a4ba89f8757a81a4d01f6306a568763c913b9397b92644e2",
       "mode": "0644"
     },
     {
@@ -493,8 +493,8 @@
     },
     {
       "path": "mobile/ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png",
-      "bytes": 38956,
-      "sha256": "e1f8e9b81f70173bbb5975d12138d82ba9cb9c9f15569be666ea21e86c0040dd",
+      "bytes": 26106,
+      "sha256": "cf3c1de8a7c92b428b214fabe06fe10e40f03cb9757838e0f7bf35566158bc6e",
       "mode": "0644"
     },
     {
@@ -511,8 +511,26 @@
     },
     {
       "path": "mobile/ios/App/App/Assets.xcassets/Splash.imageset/Contents.json",
-      "bytes": 403,
-      "sha256": "041481917eb249533ac6dd63d283bc6190b2d0642a93deda11b2ed0f6f7b605a",
+      "bytes": 381,
+      "sha256": "6feffede1be9e8ef52b8e9e6ed0dd5e779b0a8665ab426d3672388a6d4c58f33",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Assets.xcassets/Splash.imageset/launch-mark-1x.png",
+      "bytes": 1836,
+      "sha256": "e6482bff7ff868cff8ac6c75a14b4e032d5b5af83d76aa166b34ca1f2a4be2e7",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Assets.xcassets/Splash.imageset/launch-mark-2x.png",
+      "bytes": 4601,
+      "sha256": "22af4a54be8e49aeb1a953d8cfda135ee175014df376d6ec965277fb15c3c7cc",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/ios/App/App/Assets.xcassets/Splash.imageset/launch-mark-3x.png",
+      "bytes": 8322,
+      "sha256": "412b315945d744dae7543068c1411e3687535ea10294d39375e53bafde54e512",
       "mode": "0644"
     },
     {
@@ -535,8 +553,8 @@
     },
     {
       "path": "mobile/ios/App/App/Base.lproj/LaunchScreen.storyboard",
-      "bytes": 1994,
-      "sha256": "87a42e842164d75f39cca56a2cf743652f4d8e858f2eba12ae21a8ddcd9a21c6",
+      "bytes": 2218,
+      "sha256": "0db1feeefc610031f635b3bc3d3a8f96e7f8608b35cd6dd8e88760df274edc02",
       "mode": "0644"
     },
     {
@@ -547,8 +565,8 @@
     },
     {
       "path": "mobile/ios/App/App/Info.plist",
-      "bytes": 2449,
-      "sha256": "e70cb26406c398ed534b548ed07f8d2702b0247e8b120f7641ac7cf9bd42b978",
+      "bytes": 2505,
+      "sha256": "0bbfa0916d1f860bac08c44eb973ac69e192267a744fa6c2af22c97ecb11810b",
       "mode": "0644"
     },
     {
@@ -559,8 +577,8 @@
     },
     {
       "path": "mobile/ios/App/App/SceneDelegate.swift",
-      "bytes": 899,
-      "sha256": "738b9b96bb71d34d80cd8c1183cf7f8f6f2e789c64e46fb5fe6777a35ae12dfd",
+      "bytes": 1049,
+      "sha256": "5c7c8ae12bf18808c066f125937cc93ea71b4f95597220e2ee57c383e665ddac",
       "mode": "0644"
     },
     {
@@ -631,8 +649,8 @@
     },
     {
       "path": "mobile/plugins/battery-nfc/index.d.ts",
-      "bytes": 2123,
-      "sha256": "b27f4b3c8a5bc208923dfafd8615e8e956723d762e15fc198a7fa29303339dfa",
+      "bytes": 2537,
+      "sha256": "d975daa2c7eeced256f5bbcb4bf2f819e890e944977be7768dba6a81ca12de6a",
       "mode": "0644"
     },
     {
@@ -643,8 +661,8 @@
     },
     {
       "path": "mobile/plugins/battery-nfc/ios/Sources/BatteryNfcPlugin/BatteryNfcPlugin.swift",
-      "bytes": 19834,
-      "sha256": "91e2737464677c054b3718e351692ae068a1c631f39621171993a1905293a086",
+      "bytes": 19937,
+      "sha256": "98badeba40113fcb7b44f5d2d2ab052892f37f84bccaef0cc4f7e78f05f16e01",
       "mode": "0644"
     },
     {
@@ -691,8 +709,8 @@
     },
     {
       "path": "mobile/plugins/battery-nfc/tests/ios-reader-fixtures.mjs",
-      "bytes": 15083,
-      "sha256": "ec963349a431cb8bdcf144464dca6d137862518caa7e8940cff0e0c18ba0fd82",
+      "bytes": 21321,
+      "sha256": "75cea48f35d9ef6bd30afc2c6588de66158655bb0874263d731da5ccfda2c7f8",
       "mode": "0644"
     },
     {
@@ -901,14 +919,20 @@
     },
     {
       "path": "mobile/README.md",
-      "bytes": 11034,
-      "sha256": "a287f7e51d3bced8758d5f128f9b4ad6d1a2616988a1ae1137469e55bd777f46",
+      "bytes": 11563,
+      "sha256": "b5745ef5d9fa8b045a6c78e1706104e60106d558358143d21dfd220432980bba",
       "mode": "0644"
     },
     {
       "path": "mobile/resources/app-icon.svg",
       "bytes": 270,
       "sha256": "c9e6d73901a35062716fd0a4a8c7529a65361521594fd616074b8b7623a7e94d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/resources/ios-app-icon.svg",
+      "bytes": 376,
+      "sha256": "daa564e7cc0e78f698e19eddd54e6c8c89fd6cc061d7bab887d4ab9951cfb5e1",
       "mode": "0644"
     },
     {
@@ -948,27 +972,105 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/src/app/ios-accessibility.css",
+      "bytes": 3332,
+      "sha256": "a5e529e27987c43aa4648d584b461637c74508d8a06265119dea976e3b50b569",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-brand-mark.jsx",
+      "bytes": 593,
+      "sha256": "9366ed2fa85b871757a12a6a4d8f54d813da78a2f16df5200ab11ded6cf2ca5d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-business.css",
+      "bytes": 29461,
+      "sha256": "599393a90d34896073b0ad4c674188c814bf8697fae24b4684b353a6569d194e",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/src/app/ios-chrome.jsx",
-      "bytes": 9805,
-      "sha256": "bc9eee1cad8f4ed27bc8d9d19537c8d87a99c8daffcedacb1da78445d6d7c5eb",
+      "bytes": 9566,
+      "sha256": "9434e6a9159ef1723bb36a9e937ebffe02d7f23c477ada4e8223d311c6b4e7b9",
       "mode": "0644"
     },
     {
       "path": "mobile/src/app/ios-dock-motion.mjs",
-      "bytes": 4791,
-      "sha256": "4ec6aa83dbf057e21bcdb430ee47756442a3578e4f5c587e872c53b98d78c65d",
+      "bytes": 5973,
+      "sha256": "79acec70f6163a58be5e64b69878cf7f11a5287d97f2979ea45f874e5ac08437",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-ink-character.css",
+      "bytes": 784,
+      "sha256": "2ab79f9182901a1222f0519bb98089a878ca6568af96b9daf88e720d5e5d16f5",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-ink-character.jsx",
+      "bytes": 4000,
+      "sha256": "0e89f72c552cad4795893f1467d9a82f8d13b9bde39bf503f3412d777740ce8f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-lifecycle.css",
+      "bytes": 11935,
+      "sha256": "68956bb1ce387dc5a8434febcd8d90e676b768711c5c2755e190fd46122391e0",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-navigation.css",
+      "bytes": 13236,
+      "sha256": "ca9d172c4d62461978db0ae6192a5ba62adc451f4f41f9813aef755189dff78f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-orb-feedback.mjs",
+      "bytes": 4393,
+      "sha256": "6735a1b644c743d60f3ee9fb8c46535f39b2b98bde407e66a709e5554b62c82a",
       "mode": "0644"
     },
     {
       "path": "mobile/src/app/ios-presentation.css",
-      "bytes": 37048,
-      "sha256": "509895a8de4e300af926842205bcb764867147cf9925f93cd90678691d619da3",
+      "bytes": 363,
+      "sha256": "576efbcf7dedec58e0d56f755eb0dac5877de04da586cb9d48aa20da56da1ad3",
       "mode": "0644"
     },
     {
       "path": "mobile/src/app/ios-presentation.mjs",
-      "bytes": 2330,
-      "sha256": "40feb46eee0d16c34876ac6ff4efc60781dcbc132a272c6c9dcc7d1122e713ee",
+      "bytes": 2380,
+      "sha256": "52b860a2f296effe6f5a9d032a330d1815384249530317f2259056c328a8a243",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-runtime-presentation.mjs",
+      "bytes": 692,
+      "sha256": "13ffc6d6ee3bc6924d83e6c46dd30a78450dc198b036366c62dc40985dd1f634",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-startup.css",
+      "bytes": 2528,
+      "sha256": "e5d386abe6aea1fb91861c70e00cf3654c0c12835e04757af9f4d6456720a70d",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-startup.jsx",
+      "bytes": 7233,
+      "sha256": "646942cf10225fb02db37d28851574390285163204d0beabd158109b68413221",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-theme.css",
+      "bytes": 6798,
+      "sha256": "a7aee2299297799a14f5acb9ec97c0817ec6b9842cd190ea61a96e2e1fbe0da3",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/src/app/ios-workflows.css",
+      "bytes": 20275,
+      "sha256": "b88300db4ed9ae547ec068e449baac1e9aa1aed6aa5fdf52b68363fc7ec5dbb6",
       "mode": "0644"
     },
     {
@@ -997,8 +1099,8 @@
     },
     {
       "path": "mobile/src/app/phone-app.jsx",
-      "bytes": 70487,
-      "sha256": "98608330bba04b994f5aad3651fe4f6ba91a65eff524a59023f13dc17d020701",
+      "bytes": 70934,
+      "sha256": "cea7aeeeb498c472e550a226bbafabb7cf7f5a18f6e4ea1b52ea524961d613b6",
       "mode": "0644"
     },
     {
@@ -1129,8 +1231,8 @@
     },
     {
       "path": "mobile/src/business/nfc-controller.mjs",
-      "bytes": 4871,
-      "sha256": "1888bdcd01f83b1ec546eddbd2c2b50310bf81fd563de03938716a91a32f7961",
+      "bytes": 5018,
+      "sha256": "1425c660290f1788f90f64802a62a64689f49d8be7a048b678e5274c2dc5996b",
       "mode": "0644"
     },
     {
@@ -1159,8 +1261,8 @@
     },
     {
       "path": "mobile/src/diagnostics-app.jsx",
-      "bytes": 21101,
-      "sha256": "29e69e8e1e0960e673c640bb49cef2eac0185cd503a19a0dbc78de8780672d6e",
+      "bytes": 21710,
+      "sha256": "1783f9ca9c2a5e0f20c827acaf25a7be31091d60246e3246bcb99bfa1ee8d511",
       "mode": "0644"
     },
     {
@@ -1171,8 +1273,8 @@
     },
     {
       "path": "mobile/src/diagnostics.mjs",
-      "bytes": 7949,
-      "sha256": "f92661117fd93b9049a8fc6c5f80756da7ad4cf8ebe9259ca1cd16bf47eefa9e",
+      "bytes": 9699,
+      "sha256": "76beeefce029cf09e1b13a06caf37d014786d08f974365eb503c24a7bb6bc617",
       "mode": "0644"
     },
     {
@@ -1213,14 +1315,14 @@
     },
     {
       "path": "mobile/src/features/inventory/mapping-renderer.mjs",
-      "bytes": 9202,
-      "sha256": "f51df2d62c87f50f1139f89352262053c4fdfcaa2da5352ca7cc6a23cf405306",
+      "bytes": 9620,
+      "sha256": "f0c4393456e774a4b7a379e7bd4ce830d30cd9cecf90dd428f67ee546759e959",
       "mode": "0644"
     },
     {
       "path": "mobile/src/features/inventory/mapping-scene.jsx",
-      "bytes": 18506,
-      "sha256": "977526e1b6590a1d8cd2fca6a8d9ab7bec8e78deb7c01420f2249b99b97d2bff",
+      "bytes": 18626,
+      "sha256": "5fba7e8a685d16955ae9898ce18f5518d06c2d112d46161b4acc5e5e5a6141dc",
       "mode": "0644"
     },
     {
@@ -1261,8 +1363,8 @@
     },
     {
       "path": "mobile/src/features/lifecycle/intake.jsx",
-      "bytes": 41532,
-      "sha256": "21cfd0fae0604fd35d6c3e556b6631b60a6f6e6ff7c9325ccaa5c783b0f263a5",
+      "bytes": 41556,
+      "sha256": "aa3a2c17e998510f06a380a9129f3738f70e3c01635ac089c20b6b1d0ead7302",
       "mode": "0644"
     },
     {
@@ -1315,8 +1417,8 @@
     },
     {
       "path": "mobile/src/features/lifecycle/removal.jsx",
-      "bytes": 29484,
-      "sha256": "24df072261b8261b600cd3fce5324b0956ef4e8e80eb6c05fa0b73442800e94f",
+      "bytes": 29508,
+      "sha256": "d81e68a74b9784046f7373de265d469258e475ef9b8f7b690df65ceb80667da7",
       "mode": "0644"
     },
     {
@@ -1369,8 +1471,8 @@
     },
     {
       "path": "mobile/src/features/scan/lookup.jsx",
-      "bytes": 13486,
-      "sha256": "a162f1d576f96e7840c365f5e7e52818b41d11a23b931c9195cda7449f4f4e1e",
+      "bytes": 13510,
+      "sha256": "c8ce8146f3a977e72c644f880b8ed63c6ceffa96dae50782621d060b00ace905",
       "mode": "0644"
     },
     {
@@ -1398,6 +1500,12 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/src/features/scan/scan-character.jsx",
+      "bytes": 427,
+      "sha256": "7efcb167ab89e2d24228dc5a5f6474babc28b36192d97d23b6e2e83bfb1fd7e1",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/src/features/scan/scan-controller.mjs",
       "bytes": 20246,
       "sha256": "76f357f9f379d64b682c76b604c68d7ce268249c1b3458b9de12901bc2fe6399",
@@ -1411,8 +1519,8 @@
     },
     {
       "path": "mobile/src/features/scan/scan.jsx",
-      "bytes": 34538,
-      "sha256": "f54cfc9ec8a27bc302f6913792c977c67b8532c22e8ebe35f5743d1f5b74a7b6",
+      "bytes": 34562,
+      "sha256": "5f96f16878903a52777ab17ac5a43cad4ac0ecb2920e656eddde84e7e371aa9e",
       "mode": "0644"
     },
     {
@@ -1549,14 +1657,14 @@
     },
     {
       "path": "mobile/src/features/workspace/workspace.jsx",
-      "bytes": 16173,
-      "sha256": "e93250128dc6ea21a2b7d047ec19312ec48bfa5cd7e2d8b5f04ae1cc8bcf585e",
+      "bytes": 16535,
+      "sha256": "933347892a8b9810525ced9ff164106e8ebc78993c055a660119fb372d8de409",
       "mode": "0644"
     },
     {
       "path": "mobile/src/main.jsx",
-      "bytes": 10064,
-      "sha256": "65ed6617f70be7c4bd3b70c779ac41011f7a0d0417e5340e1e75dd25b6f949cc",
+      "bytes": 11013,
+      "sha256": "5e84b6a9d87aed40e7c5a732354756bfb811c175bb8b3f8400ab183c56bcc67d",
       "mode": "0644"
     },
     {
@@ -2544,21 +2652,51 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/tests/ios-dock-pointer.test.mjs",
+      "bytes": 18043,
+      "sha256": "fc5ea00fd0f51f3d6f9056c1b7d8a05f009b024b4b804235f356d66576fb73b2",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/tests/ios-intake-journey-dom.test.mjs",
+      "bytes": 19211,
+      "sha256": "4fa52300bc5e001a1379af8063b91e8591d45e053fa7419aedaa8cb499ba995f",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/tests/ios-partial-evidence.test.mjs",
+      "bytes": 8553,
+      "sha256": "1aec2155e83d879491c8a47603e48396714f882e9218efa956f6cfdef91e59a8",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/tests/ios-presentation-dom.test.mjs",
-      "bytes": 20328,
-      "sha256": "8dfc6f53b2fe5ce8cea426af16f1e0bc7d632166767e97704064c9e253833910",
+      "bytes": 22299,
+      "sha256": "8acb2b1aab782737c5dda9fbb2c779afc07485b3de30747bacb2d3d86e02763b",
       "mode": "0644"
     },
     {
       "path": "mobile/tests/ios-presentation.test.mjs",
-      "bytes": 5336,
-      "sha256": "646a09910895127057f4711fcbcb7ec6d2f01b32261089e71515428c2795a27c",
+      "bytes": 5343,
+      "sha256": "eafdfeebbeacaadfecb72ca6f1b557d1e3de727f9b595ae189e66800b29d0ac7",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/tests/ios-startup-browser.test.mjs",
+      "bytes": 13703,
+      "sha256": "f04fb4160455992ef2b455f63378c07ec9fb514bdddf657210f1fe27998b7a9c",
+      "mode": "0644"
+    },
+    {
+      "path": "mobile/tests/ios-theme-surfaces.test.mjs",
+      "bytes": 17177,
+      "sha256": "454f974a5068cfacce703ad2794c47c7b8cf9aedf2ca8b3fb0dec7924c19c1f7",
       "mode": "0644"
     },
     {
       "path": "mobile/tests/me-retained-refresh-dom.test.mjs",
-      "bytes": 13102,
-      "sha256": "809eae9bf6513ced21e3de762a608eeeb28ee901fe97c86a3acac08995b9c59c",
+      "bytes": 13174,
+      "sha256": "becb32972cb82e0187bdb16f0dbf5207dc8aaff0d79baef8db4fcc63edc4adf0",
       "mode": "0644"
     },
     {
@@ -2629,8 +2767,8 @@
     },
     {
       "path": "mobile/tests/mobile-inventory-interaction.test.mjs",
-      "bytes": 25015,
-      "sha256": "6209416da81df901e8c5cb85d18170113d74e54dbb0a21597367bdd97aa517ba",
+      "bytes": 25146,
+      "sha256": "b9a3d15d6ae254cab0d6c201925c77a41852389482ce37dd0602683cda1dd1d8",
       "mode": "0644"
     },
     {
@@ -2833,14 +2971,14 @@
     },
     {
       "path": "mobile/tests/phone-upgrade-bootstrap.test.mjs",
-      "bytes": 5014,
-      "sha256": "79ba890e50d593ddedf5400585e71e4cb9923440d998ca3f82f2a7d4fd03bcd4",
+      "bytes": 7763,
+      "sha256": "1d40bed1d9cd4a0cd28cb4bda12762a72ec0a1f64a0ddf0a3f485a23162e0430",
       "mode": "0644"
     },
     {
       "path": "mobile/tests/phone-upgrade-entry-ui.test.mjs",
-      "bytes": 13369,
-      "sha256": "28e1837346ce05b777edffce4a968110b5c437c915a46ea01a97e62fff26d343",
+      "bytes": 13391,
+      "sha256": "896b5fd9fe495ae4600c0e0bfc99bbb1d74b2f60920443dbce0c3b245875c8a6",
       "mode": "0644"
     },
     {
@@ -2995,25 +3133,15 @@
     },
     {
       "path": "scripts/verify-ios-signed-artifact.py",
-      "bytes": 8160,
-      "sha256": "f934c3b336a79f5f5ab9d0bd3c20dd8c2058d85202bbe354c18d4924c0d55140",
+      "bytes": 8486,
+      "sha256": "770d22dcfc2fc24f4c63f610eddfeceba1122304634a3e57a61ce4c76615fca7",
       "mode": "0644"
     },
     {
       "path": "templates/testflight-workflow.yaml",
-      "bytes": 1775,
-      "sha256": "1fb84889563f9fbce0654a211abc5a2da2c90fa14509fc408a98184b4a122d66",
+      "bytes": 2975,
+      "sha256": "d9b7608a898307272a1a70bf2410bb71906cddd4a54bda1c4ea9b9b99aaaaf2a",
       "mode": "0644"
     }
-  ],
-  "workflowDelta": {
-    "baseSnapshot": "ios-batch-design-20261014-local-2",
-    "baseArchiveSha256": "856d4099ee9088129d37a9aedf8b75f0d321be98e8c6cb590c26798f8688272a",
-    "verifiedSourceCommit": "bf54e9a8dce3067bc2f5e689485d68e467cacb1d",
-    "purpose": "Enable approved internal-beta workflow with bounded build number and signed-artifact evidence",
-    "changedPaths": [
-      "codemagic.yaml",
-      "scripts/verify-ios-signed-artifact.py"
-    ]
-  }
+  ]
 }

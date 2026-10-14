@@ -5,7 +5,7 @@ import { useWorkflowLock } from '../../business/workflow-boundary.jsx';
 import { getRolePermissions } from '../../shared/lib/permissions.js';
 import { removalDraftStorageKey } from '../../shared/lib/removal-draft.js';
 import { formatTime } from '../../shared/lib/client-utils.js';
-import { InkOrb } from '../scan/ink-orb.jsx';
+import { ScanCharacter as InkOrb } from '../scan/scan-character.jsx';
 import { FEEDBACK_KEY, readFeedbackPreferences } from '../scan/feedback.mjs';
 import { useScanFeedback } from '../scan/use-scan-feedback.js';
 import { useOwnedNfcReader } from '../scan/use-owned-nfc-reader.js';

@@ -1,0 +1,82 @@
+/* Authentication, recovery and device tools use the same quiet graphite system.
+   Animated startup composition and native launch continuity are separate. */
+body[data-ios-presentation=true] { margin:0; overflow:hidden; }
+body[data-ios-presentation=true] #root { height:var(--phone-viewport-height,100dvh); min-height:0; overflow:hidden; }
+body[data-ios-presentation=true] :is(.phone-signin,.phone-startup:not(.ios-startup)) { max-width:520px; padding-inline:max(28px,env(safe-area-inset-left)) max(28px,env(safe-area-inset-right)); background:transparent; color:var(--ios-ink); }
+body[data-ios-presentation=true] .phone-signin { padding-top:calc(env(safe-area-inset-top) + 56px); }
+body[data-ios-presentation=true] .phone-signin-heading { display:block; margin-bottom:30px; }
+body[data-ios-presentation=true] .phone-signin-heading .phone-brand-symbol { width:72px; height:72px; margin:0 0 24px -8px; color:var(--ios-link); background:transparent; border:0; }
+body[data-ios-presentation=true] .phone-signin-heading .phone-brand-symbol>.ios-brand-mark { width:100%; height:100%; }
+body[data-ios-presentation=true] .phone-signin h1 { font-size:2rem; font-weight:550; letter-spacing:-.035em; margin:10px 0 12px; }
+body[data-ios-presentation=true] :is(.phone-signin-heading p,.phone-startup-status p,.phone-preview-context) { color:var(--ios-muted); font-size:15px; line-height:1.6; }
+body[data-ios-presentation=true] .phone-signin :is(label,.phone-connection-form label) { color:var(--ios-muted); font-size:.8125rem; gap:9px; margin-block:20px; }
+body[data-ios-presentation=true] :is(.phone-signin-form,.phone-connection-form) input { min-height:52px; border-radius:12px; padding:14px 16px; border:1px solid var(--ios-field-line); color:var(--ios-ink); background:var(--ios-field); font-size:1rem; }
+body[data-ios-presentation=true] .phone-signin .phone-primary { min-height:52px; padding-inline:20px; border-radius:14px; margin-top:24px; font-weight:550; color:var(--ios-action-ink); }
+body[data-ios-presentation=true] :is(.phone-signin-connection,.phone-signin-tools) { border-color:var(--ios-line); margin-top:24px; }
+body[data-ios-presentation=true] :is(.phone-signin-connection,.phone-signin-tools)>summary { min-height:56px; color:var(--ios-link); }
+body[data-ios-presentation=true] .phone-signin>a { color:var(--ios-muted); }
+body[data-ios-presentation=true] :is(.phone-startup-identity,.phone-brand-symbol) { background:var(--ios-panel); color:var(--ios-link); border:1px solid var(--ios-rim); }
+body[data-ios-presentation=true] .phone-startup-progress { background:var(--ios-line); }
+body[data-ios-presentation=true] .phone-startup-progress i { background:var(--ios-link); }
+body[data-ios-presentation=true] .phone-loading { padding:24px; color:var(--ios-ink); }
+body[data-ios-presentation=true] .phone-loading p { color:var(--ios-muted); }
+body[data-ios-presentation=true] .phone-loading-skeleton span { background:var(--ios-panel); border:0; border-radius:12px; }
+body[data-ios-presentation=true] :is(.phone-alert,.mobile-error) { background:var(--ios-error-fill); color:var(--ios-error); border:1px solid var(--ios-error-line); border-radius:14px; }
+body[data-ios-presentation=true] :is(.phone-recovery,.phone-read-error,.mobile-recovery,.mobile-review) { background:var(--ios-warning-fill); color:var(--ios-warning); border:1px solid var(--ios-warning-line); border-radius:14px; }
+body[data-ios-presentation=true] .phone-recovery h2 { color:var(--ios-warning); }
+body[data-ios-presentation=true] :is(.phone-notice,.phone-saved-work,.phone-form-draft-status) { color:var(--ios-link); background:var(--ios-panel); border-color:var(--ios-line); border-radius:12px; }
+body[data-ios-presentation=true] .phone-refresh-feedback>summary { color:var(--ios-warning); background:var(--ios-warning-fill); border:1px solid var(--ios-warning-line); }
+body[data-ios-presentation=true] .phone-refresh-feedback-panel { background:var(--ios-sheet); border-color:var(--ios-rim); border-radius:18px; box-shadow:var(--ios-shadow); }
+body[data-ios-presentation=true] .phone-template-status { color:var(--ios-ink); background:var(--ios-sheet); border:1px solid var(--ios-rim); border-radius:14px; }
+body[data-ios-presentation=true] :is(.mobile-page,.mobile-nfc-control,.mobile-registration-modal) { color:var(--ios-ink); background:transparent; }
+body[data-ios-presentation=true] :is(.mobile-page,.mobile-nfc-control) button { min-height:48px; color:var(--ios-link); background:var(--ios-control); border-color:var(--ios-control-line); border-radius:16px; font-size:15px; }
+body[data-ios-presentation=true] .mobile-page summary { min-height:48px; display:flex; align-items:center; color:var(--ios-link); }
+body[data-ios-presentation=true] .mobile-page pre { padding:14px; background:var(--ios-field); border-radius:16px; color:var(--ios-muted); }
+body[data-ios-presentation=true] .mobile-success { background:var(--ios-success-fill); color:var(--ios-success); border-color:var(--ios-success-line); border-radius:14px; }
+body[data-ios-presentation=true] :is(.phone-alert,.phone-recovery,.phone-read-error,.mobile-recovery,.mobile-review,.mobile-error,.mobile-success) { font-size:.9375rem; line-height:1.55; }
+body[data-ios-presentation=true] :is(.phone-notice,.phone-saved-work,.phone-form-draft-status,.phone-connection-details p,.phone-loading p) { font-size:.8125rem; line-height:1.5; }
+
+/* Diagnostic content retains its evidence labels and raw report distinctions;
+   the former yellow/paper visual system is not used by the iOS client. */
+body[data-ios-presentation=true] .nfc-diagnostics { --muted:var(--ios-muted); height:100%; min-height:0; overflow:auto; overscroll-behavior:contain; background:var(--ios-atmosphere); color:var(--ios-ink); font-size:16px; }
+body[data-ios-presentation=true] .nfc-diagnostics .app-shell { background:transparent; max-width:760px; }
+body[data-ios-presentation=true] .nfc-diagnostics .field-test-exit { position:sticky; top:0; z-index:20; display:flex; flex-wrap:wrap; align-items:center; gap:8px 14px; padding:calc(env(safe-area-inset-top) + 10px) max(20px,env(safe-area-inset-right)) 12px max(20px,env(safe-area-inset-left)); background:var(--ios-canvas); border-bottom:1px solid var(--ios-line); -webkit-backdrop-filter:none; backdrop-filter:none; }
+body[data-ios-presentation=true] .nfc-diagnostics .field-test-exit>.small { color:var(--ios-muted); flex:1 1 170px; }
+body[data-ios-presentation=true] .nfc-diagnostics .brand { padding:24px; border-color:var(--ios-line); }
+body[data-ios-presentation=true] .nfc-diagnostics .brand-icon { background:var(--ios-control); color:var(--ios-link); border-color:var(--ios-rim); border-radius:12px; }
+body[data-ios-presentation=true] .nfc-diagnostics .brand-icon span { border-color:var(--ios-link); }
+body[data-ios-presentation=true] .nfc-diagnostics .brand-icon span::before,body[data-ios-presentation=true] .nfc-diagnostics .brand-icon span::after { background:var(--ios-link); }
+body[data-ios-presentation=true] .nfc-diagnostics .intro { padding:28px 4px 12px; }
+body[data-ios-presentation=true] .nfc-diagnostics h1 { color:var(--ios-ink); font-size:2rem; font-weight:550; letter-spacing:-.035em; }
+body[data-ios-presentation=true] .nfc-diagnostics h2 { color:var(--ios-ink); font-size:1.375rem; font-weight:550; letter-spacing:-.025em; }
+body[data-ios-presentation=true] .nfc-diagnostics :is(.intro p,.eyebrow,.scan-guide,.record details summary,.text-button,.facts dt,.raw-data dt,.stats-grid span,footer) { color:var(--ios-muted); }
+body[data-ios-presentation=true] .nfc-diagnostics .eyebrow { font-size:11px; letter-spacing:.12em; font-weight:550; }
+body[data-ios-presentation=true] .nfc-diagnostics .panel { background:var(--ios-panel); border-color:var(--ios-line); border-radius:18px; box-shadow:none; padding:24px; margin-block:20px; }
+body[data-ios-presentation=true] .nfc-diagnostics :is(.preview-banner,.uid-block,.record,.decoded) { color:var(--ios-ink); background:var(--ios-field); border-color:var(--ios-line); border-radius:16px; }
+body[data-ios-presentation=true] .nfc-diagnostics :is(.facts>div,.history-entry,.history-entry[open]>summary) { border-color:var(--ios-line); }
+body[data-ios-presentation=true] .nfc-diagnostics .facts>div { font-size:.9375rem; padding-bottom:12px; }
+body[data-ios-presentation=true] .nfc-diagnostics .button { min-height:50px; border-radius:14px; font-weight:550; font-size:.9375rem; }
+body[data-ios-presentation=true] .nfc-diagnostics .primary { color:var(--ios-action-ink); background:var(--ios-action); border-color:transparent; }
+body[data-ios-presentation=true] .nfc-diagnostics .primary:enabled:hover { background:var(--ios-action-pressed); }
+body[data-ios-presentation=true] .nfc-diagnostics .secondary { color:var(--ios-link); background:var(--ios-control); border-color:var(--ios-control-line); }
+body[data-ios-presentation=true] .nfc-diagnostics .secondary:enabled:hover { background:var(--ios-control-pressed); }
+body[data-ios-presentation=true] .nfc-diagnostics :is(.text-button,.record details summary,.feedback button) { min-width:44px; min-height:44px; }
+body[data-ios-presentation=true] .nfc-diagnostics label { color:var(--ios-muted); font-size:.8125rem; font-weight:500; }
+body[data-ios-presentation=true] .nfc-diagnostics :is(input,select) { color:var(--ios-ink); background:var(--ios-field); border-color:var(--ios-field-line); min-height:50px; border-radius:12px; font-size:1rem; }
+body[data-ios-presentation=true] .nfc-diagnostics .pill { color:var(--ios-muted); background:var(--ios-control); border-color:var(--ios-line); border-radius:10px; font-size:12px; }
+body[data-ios-presentation=true] .nfc-diagnostics .status-dot { background:var(--ios-muted); box-shadow:0 0 0 6px #a2bbd41a; }
+body[data-ios-presentation=true] .nfc-diagnostics .status-dot.available { background:var(--ios-success); box-shadow:0 0 0 6px #a7efcb1a; }
+body[data-ios-presentation=true] .nfc-diagnostics .scan-rings span { border-color:var(--ios-rim); }
+body[data-ios-presentation=true] .nfc-diagnostics .scan-rings span:nth-child(3) { background:var(--ios-control); border-color:var(--ios-control-line); }
+body[data-ios-presentation=true] .nfc-diagnostics .scan-rings b { color:var(--ios-link); }
+body[data-ios-presentation=true] .nfc-diagnostics .progress-track { background:var(--ios-line); }
+body[data-ios-presentation=true] .nfc-diagnostics .progress-track span { background:var(--ios-link); }
+body[data-ios-presentation=true] .nfc-diagnostics :is(.notice,.outcome-pending) { color:var(--ios-warning); background:var(--ios-warning-fill); border-color:var(--ios-warning-line); border-radius:16px; }
+body[data-ios-presentation=true] .nfc-diagnostics :is(.outcome-failed,.error-box) { color:var(--ios-error); background:var(--ios-error-fill); border-color:var(--ios-error-line); }
+body[data-ios-presentation=true] .nfc-diagnostics .error-text { color:var(--ios-error); }
+body[data-ios-presentation=true] .nfc-diagnostics .outcome-read { color:var(--ios-success); background:var(--ios-success-fill); border-color:var(--ios-success-line); }
+body[data-ios-presentation=true] .nfc-diagnostics .danger { color:#fff; background:#b24755; }
+body[data-ios-presentation=true] .nfc-diagnostics .feedback { color:var(--ios-ink); background:var(--ios-sheet); border:1px solid var(--ios-rim); border-radius:20px; box-shadow:var(--ios-shadow); }
+body[data-ios-presentation=true] .nfc-diagnostics :is(button,input,select):disabled { color:var(--ios-disabled-ink); background:var(--ios-disabled-fill); border-color:var(--ios-line); opacity:1; }
+@media(max-width:360px) { body[data-ios-presentation=true] .phone-signin { padding-inline:20px; } body[data-ios-presentation=true] .nfc-diagnostics .panel { padding:18px; } }
+@media(max-height:560px) { body[data-ios-presentation=true] .phone-signin { padding-top:calc(env(safe-area-inset-top) + 16px); } body[data-ios-presentation=true] .phone-signin-heading { margin-bottom:16px; } }

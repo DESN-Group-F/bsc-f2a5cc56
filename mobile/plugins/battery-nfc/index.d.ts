@@ -47,6 +47,18 @@ export interface NfcReadOptions {
   sessionId?: string;
 }
 
+export interface NfcReadFailure extends Error {
+  code?: string;
+  data?: {
+    /**
+     * iOS only. Already detected UID/NDEF progress from a rejected read.
+     * Uses the result fields above, with an explicit ndefError, and never a
+     * readerSessionId. Preserve as failed/cancelled evidence, not a proposal.
+     */
+    partialResult?: Omit<NfcReadResult, 'readerSessionId'> & { ndefError: string };
+  };
+}
+
 export interface BatteryNfcPlugin {
   getAvailability(): Promise<NfcAvailability>;
   /** Starts one explicit read, or continues a retained iOS session with its exact token. */

@@ -30,7 +30,12 @@ function cubeVertices() {
 }
 
 /** Native WebGL volume renderer; no surveyed dimensions or battery coordinates. */
-export function createMappingRenderer(canvas, modules, onLabels) {
+export const mappingPalettes = Object.freeze({
+  light: Object.freeze({ canvas:[.925,.949,.965],floor:[.81,.855,.9],room:[.61,.75,.91],muted:[.81,.86,.93],selected:[.28,.57,.98] }),
+  ios: Object.freeze({ canvas:[.0353,.051,.0824],floor:[.085,.125,.18],room:[.24,.38,.52],muted:[.15,.22,.31],selected:[.48,.71,.88] }),
+});
+export function createMappingRenderer(canvas, modules, onLabels, { appearance = 'light' } = {}) {
+  const palette = mappingPalettes[appearance] || mappingPalettes.light;
   const gl = canvas.getContext('webgl', { antialias: true, alpha: false, preserveDrawingBuffer: false });
   if (!gl) throw new Error('3D graphics are unavailable on this device. Use the room list below.');
   let boxProgram, imageProgram, boxBuffer, quadBuffer, framebuffer, texture, depth, disposed = false, matrix;
@@ -66,10 +71,10 @@ export function createMappingRenderer(canvas, modules, onLabels) {
     if (disposed || gl.isContextLost()) return;
     resize(); matrix = mappingMatrix(camera, bufferWidth / bufferHeight, modules.length);
     const selectiveBlur = !!selectedId && effectsAvailable && !simpleEffects;
-    gl.bindFramebuffer(gl.FRAMEBUFFER, selectiveBlur ? framebuffer : null); gl.viewport(0, 0, bufferWidth, bufferHeight); gl.clearColor(.925, .949, .965, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); prepareBoxes();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, selectiveBlur ? framebuffer : null); gl.viewport(0, 0, bufferWidth, bufferHeight); gl.clearColor(...palette.canvas, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); prepareBoxes();
     const span = Math.max(3.5, Math.ceil(Math.sqrt(modules.length)) * 1.7);
-    box({ center: [0, -.13, 0], size: [span * 2, .18, span * 2] }, [.81, .855, .9]);
-    modules.forEach(module => { if (selectiveBlur && module.id === selectedId) return; box(module, module.id === selectedId ? [.28, .57, .98] : selectedId ? [.81, .86, .93] : [.61, .75, .91]); });
+    box({ center: [0, -.13, 0], size: [span * 2, .18, span * 2] }, palette.floor);
+    modules.forEach(module => { if (selectiveBlur && module.id === selectedId) return; box(module, module.id === selectedId ? palette.selected : selectedId ? palette.muted : palette.room); });
     if (selectiveBlur) {
       gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT); gl.useProgram(imageProgram); gl.disable(gl.DEPTH_TEST); gl.bindBuffer(gl.ARRAY_BUFFER, quadBuffer);
       gl.disableVertexAttribArray(normals); gl.enableVertexAttribArray(imagePosition); gl.vertexAttribPointer(imagePosition, 2, gl.FLOAT, false, 8, 0); gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -78,10 +83,10 @@ export function createMappingRenderer(canvas, modules, onLabels) {
       // background depth before drawing the crisp room so picking and visible
       // occlusion agree, including overlapping modules at low camera angles.
       prepareBoxes(); gl.colorMask(false, false, false, false);
-      box({ center: [0, -.13, 0], size: [span * 2, .18, span * 2] }, [.81, .855, .9]);
-      modules.forEach(module => { if (module.id !== selectedId) box(module, [.81, .86, .93]); });
+      box({ center: [0, -.13, 0], size: [span * 2, .18, span * 2] }, palette.floor);
+      modules.forEach(module => { if (module.id !== selectedId) box(module, palette.muted); });
       gl.colorMask(true, true, true, true);
-      const selected = modules.find(module => module.id === selectedId); if (selected) box(selected, [.28, .57, .98]);
+      const selected = modules.find(module => module.id === selectedId); if (selected) box(selected, palette.selected);
     }
     onLabels?.(modules.map(module => { const point = transformPoint(matrix, [module.center[0], module.size[1] + .15, module.center[2]]); return { id: module.id, x: (point[0] + 1) * 50, y: (1 - point[1]) * 50, visible: Math.abs(point[0]) < .93 && Math.abs(point[1]) < .93 }; }));
   }

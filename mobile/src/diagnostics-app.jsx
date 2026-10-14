@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { Capacitor } from '@capacitor/core';
 import { BatteryNfc } from '@battery-inventory/nfc';
-import { APP_VERSION, STORAGE_KEY, SURFACES, loadState, emptyState, normalizeUid, canonicalTagId, decodeRecord, summarizeTrials, inventoryLookupUrl, createExport, validateReadResult } from './diagnostics.mjs';
+import { APP_VERSION, STORAGE_KEY, SURFACES, loadState, emptyState, normalizeUid, canonicalTagId, decodeRecord, summarizeTrials, inventoryLookupUrl, createExport, validateReadResult, partialReadEvidence } from './diagnostics.mjs';
 import './diagnostics.css';
 
 const platform = Capacitor.getPlatform();
@@ -56,6 +56,12 @@ function ResultView({ report, onLookup, canLookup }) {
     <p className="small muted">Record links are shown as text. They are never opened automatically. Chip identity is not verified by this read.</p>
     {onLookup && <><button type="button" className="button secondary full" onClick={() => onLookup(result.uidHex)} disabled={!canLookup}>Open inventory lookup <span aria-hidden="true">↗</span></button><p className="small muted">Opens the configured inventory website in demonstration mode. No battery is registered and no loan or location is changed here.</p></>}
   </>;
+}
+
+function PartialEvidenceView({ report }) {
+  if (report.partialResultIssue) return <p className="notice">{report.partialResultIssue}</p>;
+  if (!report.partialResult) return null;
+  return <details className="history-entry"><summary>Retained partial evidence</summary><p className="notice">A UID was observed before this read stopped. This is not a completed read or an inventory selection.</p><ResultView report={{ result: report.partialResult }} /></details>;
 }
 
 export default function DiagnosticApp({ onExit }) {
@@ -134,7 +140,7 @@ export default function DiagnosticApp({ onExit }) {
     } catch (error) {
       const code = typeof error.code === 'string' ? error.code : 'READ_FAILED';
       const cancelled = /cancel/i.test(code);
-      finish(id, { outcome: cancelled ? 'cancelled' : 'failed', error: { code, message: error.message || 'The NFC read did not complete.' } });
+      finish(id, { outcome: cancelled ? 'cancelled' : 'failed', result: null, error: { code, message: error.message || 'The NFC read did not complete.' }, ...partialReadEvidence(error) });
     }
   }
 
@@ -190,12 +196,12 @@ export default function DiagnosticApp({ onExit }) {
       </section>
       <section className="panel stats-panel"><div className="section-heading"><div><span className="eyebrow">03 / Repeatability</span><h2>{stats.total} of 10 attempts</h2></div><span className="pill">Latest 10</span></div><p className="small muted">Matches the current tag label, declared device, chip and mounting condition. Start each read yourself.</p><div className="stats-grid"><div><strong>{stats.reads}</strong><span>UID reads</span></div><div><strong>{stats.failed}</strong><span>Failed</span></div><div><strong>{stats.cancelled + stats.interrupted}</strong><span>Stopped</span></div></div><div className="progress-track" aria-label={`${stats.total} of 10 completed attempts`}><span style={{ width: `${stats.total * 10}%` }} /></div><p className="small muted">{stats.distinctUids.length} distinct UID{stats.distinctUids.length === 1 ? '' : 's'} · {stats.ndefIssues} NDEF issue{stats.ndefIssues === 1 ? '' : 's'} · {stats.cancelled} cancelled · {stats.interrupted} interrupted</p></section>
       <section className="panel" aria-live="polite"><div className="section-heading"><div><span className="eyebrow">04 / Latest result</span><h2>{latest ? outcomeLabels[latest.outcome] : 'Waiting for evidence'}</h2></div>{latest && <span className={`pill outcome-${latest.outcome}`}>{outcomeLabels[latest.outcome]}</span>}</div>
-        {!latest ? <div className="empty"><span aria-hidden="true">◇</span><p>No physical reads recorded yet.</p><p className="small muted">A successful read will show the UID, NDEF records and the device observation time.</p></div> : <><p className="small muted">{latest.setup.tagLabel} · {labels[latest.setup.surface]}<br /><Clock value={latest.startedAt} /></p>{latest.outcome === 'read' && <ResultView report={latest} onLookup={openLookup} canLookup={Boolean(state.settings.inventoryOrigin) && !lookupError} />}{latest.error && <div className="notice"><strong>{latest.error.code}</strong><p>{latest.error.message}</p></div>}{latest.outcome === 'pending' && <p className="notice">Waiting for the physical reader. No result has been recorded.</p>}</>}
+        {!latest ? <div className="empty"><span aria-hidden="true">◇</span><p>No physical reads recorded yet.</p><p className="small muted">A successful read will show the UID, NDEF records and the device observation time.</p></div> : <><p className="small muted">{latest.setup.tagLabel} · {labels[latest.setup.surface]}<br /><Clock value={latest.startedAt} /></p>{latest.outcome === 'read' && <ResultView report={latest} onLookup={openLookup} canLookup={Boolean(state.settings.inventoryOrigin) && !lookupError} />}{latest.error && <div className="notice"><strong>{latest.error.code}</strong><p>{latest.error.message}</p></div>}<PartialEvidenceView report={latest} />{latest.outcome === 'pending' && <p className="notice">Waiting for the physical reader. No result has been recorded.</p>}</>}
       </section>
       <section className="panel"><div className="section-heading"><div><span className="eyebrow">05 / Optional handoff</span><h2>Inventory website</h2></div><span className="pill">Demo only</span></div><label>Trusted HTTPS website origin<input type="url" inputMode="url" autoCapitalize="none" spellCheck="false" value={state.settings.inventoryOrigin} placeholder="https://inventory.example.edu" disabled={reading || Boolean(storageError)} onChange={(event) => updateSetting('inventoryOrigin', event.target.value)} aria-describedby="origin-help" /></label><p id="origin-help" className={`small ${lookupError ? 'error-text' : 'muted'}`}>{lookupError || 'Configure your inventory website to enable lookup after a read. This app sends the tag UID in a demonstration lookup URL only when you tap Open inventory lookup.'}</p></section>
       <section className="panel history"><div className="section-heading"><div><span className="eyebrow">06 / Saved on this device</span><h2>Test history <span className="muted">({state.reports.length})</span></h2></div></div><p className="small muted">Device clock timestamps are evidence from this phone, not server registration times. Export before uninstalling or clearing app data.</p><button className="button secondary full" onClick={() => exportReport(false)} disabled={exporting || reading}>{exporting ? 'Preparing report…' : 'Export all reports as JSON'} <span aria-hidden="true">↓</span></button>
         {state.reports.length === 0 && <p className="small muted">Availability checks and browser previews are not counted as read attempts.</p>}
-        {[...state.reports].reverse().map((report) => <details className="history-entry" key={report.id}><summary><span><strong>{report.setup.tagLabel}</strong><small><Clock value={report.startedAt} /></small></span><span className={`pill outcome-${report.outcome}`}>{outcomeLabels[report.outcome]}</span></summary><p className="small muted">{report.setup.deviceModel || 'Unknown device model'} · {report.setup.chipLabel || 'Unknown chip model'} · {labels[report.setup.surface]} · {report.platform}<br />Device and chip names are user declared.</p>{report.outcome === 'read' && <ResultView report={report} />}{report.error && <p className="notice">{report.error.code}: {report.error.message}</p>}{report.outcome === 'pending' && <p className="muted">Reader session in progress.</p>}</details>)}
+        {[...state.reports].reverse().map((report) => <details className="history-entry" key={report.id}><summary><span><strong>{report.setup.tagLabel}</strong><small><Clock value={report.startedAt} /></small></span><span className={`pill outcome-${report.outcome}`}>{outcomeLabels[report.outcome]}</span></summary><p className="small muted">{report.setup.deviceModel || 'Unknown device model'} · {report.setup.chipLabel || 'Unknown chip model'} · {labels[report.setup.surface]} · {report.platform}<br />Device and chip names are user declared.</p>{report.outcome === 'read' && <ResultView report={report} />}{report.error && <p className="notice">{report.error.code}: {report.error.message}</p>}<PartialEvidenceView report={report} />{report.outcome === 'pending' && <p className="muted">Reader session in progress.</p>}</details>)}
       </section>
       {message && <div className="feedback" role="status"><span>{message}</span><button aria-label="Dismiss message" onClick={() => setMessage('')}>×</button></div>}
       <footer>Functional testing only · Excluded from official releases.<br />Read diagnostics only. No registration, borrowing, return or location tracking.</footer>

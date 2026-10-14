@@ -1,0 +1,86 @@
+/* Quiet precision content vocabulary. Direct root declarations are intentional:
+   each shared .phone-app resets its own Android variables, including portals. */
+html[data-ios-presentation=true],
+body[data-ios-presentation=true],
+body[data-ios-presentation=true] :is(.phone-app,.ios-shell,.nfc-diagnostics,.mi-sheet,.mobile-task-dialog,.phone-choice-dialog,.scan-outcome-portal,.phone-model-portal,[data-slot=dialog-content],[data-slot=sheet-content],[data-slot=popover-content],[data-slot=select-content]) {
+  --ios-canvas:#10141b;
+  --ios-atmosphere:var(--ios-canvas);
+  --ios-panel:#171e28;
+  --ios-raised:#222d3b;
+  --ios-sheet:#1c2532;
+  --ios-field:#1a222e;
+  --ios-control:#1e2835;
+  --ios-control-pressed:#2a384b;
+  --ios-line:#ffffff12;
+  --ios-rim:#ffffff24;
+  --ios-control-line:#45566e;
+  --ios-field-line:#5d6f87;
+  --ios-ink:#f1f4fa;
+  --ios-muted:#a4afc0;
+  --ios-link:#9ac4ff;
+  --ios-action:#a7cdff;
+  --ios-action-ink:#172c48;
+  --ios-action-pressed:#bfdcff;
+  --ios-orb-color:#438cec;
+  --ios-disabled-fill:#252d39;
+  --ios-disabled-ink:#9ca8b9;
+  --ios-success:#a2d9bb;
+  --ios-success-fill:#20362e;
+  --ios-success-line:#4f856d;
+  --ios-warning:#e8ca90;
+  --ios-warning-fill:#352e22;
+  --ios-warning-line:#8d7751;
+  --ios-error:#f1b7b7;
+  --ios-error-fill:#3e282e;
+  --ios-error-line:#9a636d;
+  --ios-violet:var(--ios-link);
+  --ios-violet-fill:var(--ios-control);
+  --ios-scrim:#050a13a3;
+  --ios-radius-card:18px;
+  --ios-radius-control:12px;
+  --ios-radius-sheet:26px;
+  --ios-shadow:0 18px 48px #00000030;
+  --ios-font:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;
+  --foreground:var(--ios-ink); --muted-foreground:var(--ios-muted); --canvas:var(--ios-canvas);
+  --surface:var(--ios-panel); --surface-subtle:var(--ios-field); --surface-hover:var(--ios-control-pressed); --surface-edge:var(--ios-line);
+  --border:var(--ios-line); --border-strong:var(--ios-control-line); --background:var(--ios-sheet);
+  --card:var(--ios-panel); --card-foreground:var(--ios-ink); --popover:var(--ios-sheet); --popover-foreground:var(--ios-ink);
+  --primary:var(--ios-action); --primary-hover:var(--ios-action-pressed); --primary-foreground:var(--ios-action-ink);
+  --secondary:var(--ios-control); --secondary-foreground:var(--ios-ink); --muted:var(--ios-field);
+  --accent:var(--ios-control); --accent-foreground:var(--ios-ink); --input:var(--ios-field-line); --ring:var(--ios-link);
+  --selection-surface:#22364d; --selection-hover:#2b425d; --selection-border:#7696bd;
+  --info-foreground:var(--ios-link); --info-surface:#203044; --info-border:#536f90;
+  --success-foreground:var(--ios-success); --success-surface:var(--ios-success-fill); --success-border:var(--ios-success-line);
+  --warning-foreground:var(--ios-warning); --warning-surface:var(--ios-warning-fill); --warning-border:var(--ios-warning-line);
+  --danger-foreground:var(--ios-error); --danger-surface:var(--ios-error-fill); --danger-border:var(--ios-error-line);
+  --destructive:var(--ios-error); --overlay:var(--ios-scrim); --focus-halo:#b4d5ff33;
+  --glass-surface:var(--ios-panel); --glass-surface-active:var(--ios-raised); --glass-surface-touch:var(--ios-control);
+  --glass-border:var(--ios-rim); --shadow-control:none; --shadow-control-hover:none; --shadow-panel:none;
+  --shadow-popover:var(--ios-shadow); --shadow-dialog:0 24px 80px #0007;
+  --phone-ink:var(--ios-ink); --phone-muted:var(--ios-muted); --phone-line:var(--ios-line);
+  --phone-card:var(--ios-panel); --phone-surface:var(--ios-canvas); --phone-blue:var(--ios-link);
+  --phone-selected:var(--ios-control); --phone-focus:var(--ios-link); --phone-disabled:var(--ios-disabled-ink); --phone-danger:var(--ios-error);
+  --mi-ink:var(--ios-ink); --mi-muted:var(--ios-muted); --mi-line:var(--ios-line); --mi-blue:var(--ios-link);
+  --work-ink:var(--ios-ink); --work-muted:var(--ios-muted); --work-line:var(--ios-line);
+  --ink:var(--ios-ink); --line:var(--ios-line); --yellow:var(--ios-action);
+  --font-body:var(--ios-font);
+  color-scheme:dark; font-family:var(--ios-font); -webkit-font-smoothing:antialiased;
+}
+html[data-ios-presentation=true],body[data-ios-presentation=true] { color:var(--ios-ink); background:var(--ios-canvas); }
+body[data-ios-presentation=true] #root { background:var(--ios-atmosphere); }
+body[data-ios-presentation=true] #root>.phone-app { background:transparent; color:var(--ios-ink); }
+body[data-ios-presentation=true] :is(.phone-app,.nfc-diagnostics) { font-family:var(--ios-font); font-size:16px; font-weight:400; line-height:1.5; letter-spacing:-.012em; }
+body[data-ios-presentation=true] :is(.phone-app,.nfc-diagnostics) :is(button,input,select,textarea) { font-family:var(--ios-font); }
+body[data-ios-presentation=true] :is(.phone-app,.nfc-diagnostics) :is(h1,h2,h3) { color:var(--ios-ink); letter-spacing:-.025em; font-weight:550; }
+body[data-ios-presentation=true] :is(.phone-app,.nfc-diagnostics) :is(input:not([type=checkbox]):not([type=radio]),select,textarea) { color:var(--ios-ink); background-color:var(--ios-field); border-color:var(--ios-field-line); font-size:16px; border-radius:var(--ios-radius-control); }
+body[data-ios-presentation=true] :is(.phone-app,.nfc-diagnostics) :is(input,textarea)::placeholder { color:var(--ios-muted); opacity:.8; }
+body[data-ios-presentation=true] :is(.phone-app,.nfc-diagnostics) :is(input[type=checkbox],input[type=radio]) { accent-color:var(--ios-action); }
+body[data-ios-presentation=true] :is(.phone-app,.nfc-diagnostics) :focus-visible { outline:2px solid var(--ios-link); outline-offset:3px; }
+body[data-ios-presentation=true] :is(.phone-primary,.mobile-phone-primary) { background:var(--ios-action); color:var(--ios-action-ink); border-color:transparent; }
+body[data-ios-presentation=true] :is(.phone-primary,.mobile-phone-primary):enabled:is(:active,[data-pressed=true]) { background:var(--ios-action-pressed); color:var(--ios-action-ink); }
+body[data-ios-presentation=true] :is(.phone-secondary,.phone-header-exit) { background:var(--ios-control); color:var(--ios-link); border-color:var(--ios-control-line); border-radius:var(--ios-radius-control); }
+body[data-ios-presentation=true] :is(.phone-text-action,.phone-icon-button) { color:var(--ios-link); }
+body[data-ios-presentation=true] :is(.phone-choice>label,.phone-choice-description) { color:var(--ios-muted); }
+body[data-ios-presentation=true] .phone-choice-trigger { color:var(--ios-ink); background:var(--ios-field); border-color:var(--ios-field-line); }
+body[data-ios-presentation=true] .phone-choice-trigger[data-unavailable] { color:var(--ios-error); border-color:var(--ios-error-line); }
+body[data-ios-presentation=true] :is(.phone-primary,.phone-secondary,.phone-text-action):disabled { color:var(--ios-disabled-ink); background:var(--ios-disabled-fill); border-color:var(--ios-line); }

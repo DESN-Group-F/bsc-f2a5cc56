@@ -9,7 +9,7 @@ import { applyIntakePreparationModel, changedIntakePreparation, intakePreparatio
 import { PhoneChoice } from '../../app/phone-choice.jsx';
 import { inventoryResponse } from '../../shared/lib/client/inventory-request.js';
 import { modelApplication } from '../../shared/lib/battery-models.js';
-import { InkOrb } from '../scan/ink-orb.jsx';
+import { ScanCharacter as InkOrb } from '../scan/scan-character.jsx';
 import { FEEDBACK_KEY, readFeedbackPreferences } from '../scan/feedback.mjs';
 import { useScanFeedback } from '../scan/use-scan-feedback.js';
 import { useOwnedNfcReader } from '../scan/use-owned-nfc-reader.js';

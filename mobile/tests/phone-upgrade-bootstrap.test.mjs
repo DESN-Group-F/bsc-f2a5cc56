@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { runInNewContext } from 'node:vm';
 import postcss from 'postcss';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
@@ -31,13 +32,20 @@ test('the initial document presents the actual accessible opening state without 
   assert.match(withoutScript,/<div class="phone-startup-status" role="status" aria-live="polite">/);
   assert.match(withoutScript,/<span class="phone-startup-progress" aria-hidden="true">/);
   assert.doesNotMatch(withoutScript,/aria-valuenow|role="progressbar"|<form|<button|<iframe|onload=|onclick=/);
-  const initialIcon = withoutScript.match(/<svg\b[\s\S]*?<\/svg>/)?.[0];
+  const initialIcon = withoutScript.match(/<div class="phone-startup-identity"[^>]*>\s*(<svg\b[\s\S]*?<\/svg>)/)?.[1];
+  assert.ok(initialIcon,'The Android/general startup retains its existing identity element.');
   const reactIcon = renderToStaticMarkup(React.createElement(Battery,{size:32}));
   assert.deepEqual(initialIcon.match(/<(?:path|rect)\b[^>]*>/g),reactIcon.match(/<(?:path|rect)\b[^>]*>/g),'HTML and React retain the same existing battery identity geometry.');
 });
 
-test('critical styling is inline and matches the React startup surface without a second fade or wait',() => {
-  assert.doesNotMatch(critical.toString(),/@import|url\(|animation|transition|visibility:\s*hidden|opacity:\s*0/);
+test('critical styling preserves the Android/general startup without a second fade or wait, with motion scoped to iOS',() => {
+  assert.doesNotMatch(critical.toString(),/@import|url\(/);
+  critical.walkRules(node => {
+    if (node.parent.type === 'atrule' && node.parent.name === 'keyframes') return;
+    const iosOnly = node.selectors.every(selector => selector.startsWith('html[data-ios-presentation=true]'));
+    if (!iosOnly) assert.doesNotMatch(node.toString(),/animation|transition|visibility:\s*hidden|opacity:\s*0/,'General startup must stay visible without a motion delay.');
+    node.walkDecls(/^animation/,() => assert.ok(iosOnly && node.selectors.every(selector => selector.includes('.ios-early-mark')),'Only explicitly selected iOS launch artwork may animate.'));
+  });
   const palette = rule(phoneCss,'.phone-app','background');
   const tokens = rule(phoneCss,'.phone-app','--phone-surface');
   // The palette and tokens are separate rules; use the selector list for tokens.
@@ -51,15 +59,36 @@ test('critical styling is inline and matches the React startup surface without a
   assert.equal(declaration(initialIdentity,'background'),declaration(tokens,'--phone-selected'));
   assert.equal(declaration(initialIdentity,'color'),declaration(tokens,'--phone-blue'));
   assert.equal(rule(phoneCss,'.phone-startup','display').nodes.some(node => node.type === 'decl' && node.prop === 'animation'),false,'React cannot fade out the already-visible starting state.');
-  assert.equal(html.match(/<script\b/g)?.length,1);
+  const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
+  assert.equal(scripts.filter(([,attributes]) => /type="module"/.test(attributes)).length,1);
   assert.match(html,/<script type="module" src="\/src\/main\.jsx"><\/script>/);
+  const inline = scripts.filter(([,attributes]) => !/type="module"/.test(attributes));
+  for (const [platform,native,search,expectedIos] of [['android',true,'?presentation=ios',false],['web',false,'',false],['ios',true,'',true],['web',false,'?presentation=ios',true]]) {
+    const document = { documentElement:{dataset:{}},body:{dataset:{}},querySelector:() => theme };
+    const theme = { content:declaration(rule(critical,'html'),'background') };
+    const context = { document,window:{Capacitor:{isNativePlatform:() => native,getPlatform:() => platform}},location:{protocol:'https:',search},URLSearchParams };
+    // Only synchronous selection may precede the module; no timers or network are provided.
+    for (const [,attributes,code] of inline) { assert.doesNotMatch(attributes,/\bsrc=/);runInNewContext(code,context,{timeout:1000}); }
+    assert.equal(document.documentElement.dataset.iosPresentation,expectedIos?'true':undefined);
+    assert.equal(document.body.dataset.iosPresentation,expectedIos?'true':undefined);
+    assert.equal(theme.content,expectedIos?'#10141b':declaration(rule(critical,'html'),'background'));
+  }
 });
 
 test('React takes over the same root immediately and Android uses the matching WebView background',async() => {
   const entry = await readFile(new URL('../src/main.jsx',import.meta.url),'utf8');
   const source = ts.createSourceFile('main.jsx',entry,ts.ScriptTarget.Latest,true,ts.ScriptKind.JSX);
   const mount = source.statements.find(statement => ts.isExpressionStatement(statement) && statement.getText(source).startsWith('createRoot('));
-  assert.equal(mount?.getText(source),"createRoot(document.getElementById('root')).render(<MobileApp/>);");
+  assert.ok(mount,'React must mount immediately in a top-level expression.');
+  const calls = [],root = {},document = {getElementById(id){assert.equal(id,'root');calls.push('root');return root;}};
+  const MobileApp = () => null;
+  const mountCode = ts.transpileModule(mount.getText(source),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022}}).outputText;
+  runInNewContext(mountCode,{
+    document,React,MobileApp,
+    activateIosPresentation(value){assert.equal(value,document);calls.push('presentation');},
+    createRoot(value){assert.equal(value,root);calls.push('createRoot');return{render(element){assert.equal(element.type,MobileApp);calls.push('render');}};},
+  },{timeout:1000});
+  assert.deepEqual(calls,['presentation','root','createRoot','render'],'Presentation selection and mounting are synchronous and retain the same root.');
   const configSource = await readFile(new URL('../capacitor.config.ts',import.meta.url),'utf8');
   const compiled = ts.transpileModule(configSource,{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText.replace(/export default config;\s*$/,'return config;');
   const config = new Function(compiled)();

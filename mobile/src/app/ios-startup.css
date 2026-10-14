@@ -1,0 +1,24 @@
+body[data-ios-presentation=true] .ios-brand-mark { display:block; width:64px; height:64px; flex:none; }
+.ios-launch-scene { position:fixed; inset:0; z-index:2100; background:#10141b; color:#edf1f5; display:grid; place-content:center; justify-items:center; pointer-events:none; }
+.ios-launch-mark { width:144px; height:144px; position:absolute; left:calc(50% - 72px); top:calc(50% - 72px); display:grid; place-items:center; will-change:transform; }
+body[data-ios-presentation=true] .ios-launch-mark>.ios-brand-mark { width:96px; height:96px; }
+.ios-launch-mark .ios-brand-cells { animation:ios-cell-breathe 1800ms ease-in-out infinite; }
+.ios-launch-ink { position:absolute; inset:0; display:grid; place-items:center; opacity:0; }
+.ios-launch-ink>.ios-ink { width:144px!important; }
+.ios-launch-ink .ink-orb { --ink-orb-base-color:#438cec; --ink-orb-render-color:var(--ink-orb-base-color); }
+.ios-launch-copy { position:absolute; top:calc(50% + 104px); left:24px; right:24px; display:grid; justify-items:center; gap:10px; text-align:center; font-family:var(--ios-font,system-ui); }
+.ios-launch-copy strong { font-size:18px; font-weight:550; letter-spacing:-.35px; }
+.ios-launch-copy span { font-size:13px; color:#a0acba; }
+.ios-launch-scene[data-departing=true] .ios-brand-cells { animation:none; }
+body[data-ios-presentation=true] .ios-launch-destination { visibility:hidden; }
+.ios-startup { margin:auto; width:100%; max-width:480px; padding:calc(32px + env(safe-area-inset-top)) 28px calc(32px + env(safe-area-inset-bottom)); color:var(--ios-ink); font-family:var(--ios-font); overflow:auto; }
+.ios-startup>.ios-brand-mark { margin-bottom:24px; }
+.ios-startup-eyebrow { color:var(--ios-muted); font-size:12px; letter-spacing:.05em; }
+.ios-startup h1 { margin:12px 0; font-weight:600; font-size:clamp(28px,7vw,38px); line-height:1.12; letter-spacing:-1px; }
+.ios-startup p { color:var(--ios-muted); line-height:1.6; }
+.ios-startup-actions { display:grid; gap:12px; margin-top:30px; }
+.ios-startup-actions details { margin-top:10px; overflow-wrap:anywhere; }
+@keyframes ios-cell-breathe { 0%,100% { opacity:1; } 50% { opacity:.6; } }
+.ios-launch-scene[data-reduced-motion=true] *,body[data-ios-presentation=true] [data-phone-reduced-motion=true] .ios-launch-scene * { animation:none!important; transition:none!important; }
+.ios-launch-scene[data-foreground=false] * { animation-play-state:paused!important; }
+@media(prefers-reduced-motion:reduce) { .ios-launch-scene * { animation:none!important; transition:none!important; } }

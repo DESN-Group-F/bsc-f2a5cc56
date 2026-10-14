@@ -3,7 +3,7 @@ import { ArrowDownToLine, ArrowLeft, ArrowRight, ArrowUpFromLine, BatteryPlus, C
 import { businessStorage, native, saveFile } from '../../platform/runtime.mjs';
 import { isActiveBattery } from '../../shared/lib/battery-lifecycle.js';
 import { isSelectableRoom } from '../../shared/lib/location-catalog.js';
-import { InkOrb } from './ink-orb.jsx';
+import { ScanCharacter as InkOrb } from './scan-character.jsx';
 import { acquisitionOf, scanSourceLabel } from './scan-controller.mjs';
 import { useScanWorkflow } from './use-scan-workflow.js';
 import { scanInputMode } from './input-mode.mjs';

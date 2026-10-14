@@ -25,14 +25,14 @@ test('iOS presentation cannot alter native Android through a preview query', () 
   assert.equal(usesIosPresentation({ native:false, platform:'web', search:'?presentation=ios' }),true);
 });
 test('four operation entrances preserve independent inventory/workspace destinations', () => {
-  assert.deepEqual(IOS_MAIN_AREAS,['scan','inventory','workspace']);
+  assert.deepEqual(IOS_MAIN_AREAS,['scan','inventory','workspace','me']);
   assert.deepEqual(IOS_SCAN_ACTIONS.map(action => action.kind),['return','checkout','intake','removal']);
 });
 
 function dockFixture(reduced=false) {
   const styles=()=>({setProperty(name,value){this[name]=value;},removeProperty(name){delete this[name];}});
-  const tabs=Array.from({length:3},()=>({style:styles()})),items=Array.from({length:3},()=>({dataset:{}})),frames=new Map();let sequence=0;
-  const bar={clientWidth:280,querySelectorAll:()=>tabs,ownerDocument:{visibilityState:'visible'}},lens={style:styles(),clientHeight:54},optics={style:styles(),children:items};
+  const tabs=Array.from({length:4},()=>({style:styles()})),items=Array.from({length:4},()=>({dataset:{}})),frames=new Map();let sequence=0;
+  const bar={clientWidth:370,querySelectorAll:()=>tabs,ownerDocument:{visibilityState:'visible'}},lens={style:styles(),clientHeight:54},optics={style:styles(),children:items};
   const motion=createIosDockMotion({bar,lens,optics,reduced,requestFrame:callback=>{frames.set(++sequence,callback);return sequence;},cancelFrame:id=>frames.delete(id),observeSize:()=>({observe(){},disconnect(){}})});
   function tick(count=1){for(let i=0;i<count;i++)for(const[id,callback]of [...frames]){frames.delete(id);callback((sequence+i+1)*16);}}
   return {motion,frames,bar,lens,optics,tabs,tick};
@@ -48,8 +48,8 @@ test('reduced motion and hidden-page cancellation do not retain a navigation ani
 });
 test('dock drag remains bounded and rejects unavailable geometry', () => {
   assert.equal(iosDockPosition(10,10,300),0);
-  assert.equal(iosDockPosition(160,10,300),1);
-  assert.equal(iosDockPosition(410,10,300),2);
+  assert.equal(iosDockPosition(160,10,300),1.5);
+  assert.equal(iosDockPosition(410,10,300),3);
   assert.equal(iosDockPosition(0,10,0),null);
   assert.equal(iosDockPosition(NaN,10,300),null);
 });

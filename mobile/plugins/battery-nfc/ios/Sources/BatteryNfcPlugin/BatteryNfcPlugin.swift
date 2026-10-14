@@ -208,18 +208,14 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
         // Capture ownership when Core NFC delivers this delegate event, not
         // in a later queued block which might belong to a subsequent read.
         guard let generation = readGeneration, owns(session, generation), acceptingDetection, !readingTag else { return }
-        // Distinguish retired references from a current tag removed immediately
-        // after detection. Core NFC need not poll again after didDetect, so a
-        // current lost tag must end this attempt rather than silently stall.
+        // Only retired object identities are stale callbacks. Availability is
+        // a changing RF/session observation, not a substitute for connect's
+        // result or a reason to discard an identifier Core NFC already detected.
         let currentTags = tags.filter { tag in
-            guard !tag.isAvailable, case let .miFare(mifare) = tag else { return true }
+            guard case let .miFare(mifare) = tag else { return true }
             return !retiredTagObjects.contains { $0.object === (mifare as AnyObject) }
         }
         if !tags.isEmpty && currentTags.isEmpty { return }
-        guard currentTags.allSatisfy({ $0.isAvailable }) else {
-            fail(session, message: "The tag left the reader before it could be read. Start another read and keep the tag near your iPhone.", code: "TAG_LOST")
-            return
-        }
         guard currentTags.count == 1, let tag = currentTags.first else {
             self.fail(session, message: "Present one tag at a time and start a new read.", code: "MULTIPLE_TAGS"); return
         }
@@ -321,9 +317,16 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
             if let id = id { result["readerSessionId"] = id }
             finish(session, result: result, invalidate: invalidate, retainSession: false)
         } else {
+            // Cancellation/backgrounding must remain rejected reads. Retain
+            // already detected evidence separately without making it adoptable.
+            var data: [String: Any]?
+            if var result = partialResult {
+                result["ndefError"] = "\(code): \(message)"
+                data = ["partialResult": result]
+            }
             let call = clear(session)
             if invalidate { session.invalidate() }
-            call?.reject(message, code)
+            call?.reject(message, code, nil, data)
         }
     }
 

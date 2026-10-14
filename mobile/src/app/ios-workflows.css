@@ -1,0 +1,113 @@
+/* The five iOS workflows share one calm acquisition surface. These selectors
+   style existing state/ownership markup; they never hide a guard or an action. */
+body[data-ios-presentation=true] .phone-app.phone-workflow-layer { color:var(--ios-ink); background:var(--ios-canvas); -webkit-backdrop-filter:none; backdrop-filter:none; }
+body[data-ios-presentation=true] :is(.mobile-scan-station,.mobile-intake,.mobile-removal,.lookup-workflow,.manual-registration) { color:var(--ios-ink); font-family:var(--ios-font); }
+body[data-ios-presentation=true] :is(.mobile-scan-surface,.mi-focused-surface,.lookup-workflow) { padding-inline:18px; }
+body[data-ios-presentation=true] :is(.scan-focused-header,.mi-focused-header,.removal-top,.lookup-header,.mr-sticky-header) { color:var(--ios-ink); background:transparent; border-color:var(--ios-line); min-height:64px; gap:12px; }
+body[data-ios-presentation=true] :is(.scan-focused-title,.mi-focused-title,.removal-identity,.lookup-header) h1 { color:var(--ios-ink); font-size:1.625rem; font-weight:550; letter-spacing:-.035em; }
+body[data-ios-presentation=true] :is(.scan-focused-title>span,.mi-focused-title small,.removal-identity h1>span,.lookup-header p) { color:var(--ios-muted); font-size:13px; margin-top:4px; }
+body[data-ios-presentation=true] :is(.scan-focused-header,.mi-focused-header,.lookup-header,.removal-top,.mr-sticky-header)>button { color:var(--ios-link); background:var(--ios-control); border:1px solid var(--ios-rim); border-radius:50%; min-width:44px; min-height:44px; }
+body[data-ios-presentation=true] :is(.scan-focused-tabs,.mi-focused-tabs,.removal-input-pill,.lookup-modes) { background:var(--ios-field); border:1px solid var(--ios-line); padding:4px; border-radius:12px; box-shadow:none; }
+body[data-ios-presentation=true] :is(.scan-focused-tabs,.mi-focused-tabs,.removal-input-pill,.lookup-modes)>button,
+body[data-ios-presentation=true] .mi-focused-tabs>.scan-more-input>button { color:var(--ios-muted); background:transparent; border-radius:9px; min-height:44px; font-size:.9375rem; letter-spacing:-.01em; font-weight:500; }
+body[data-ios-presentation=true] :is(.scan-focused-tabs,.mi-focused-tabs,.removal-input-pill,.lookup-modes)>button[aria-pressed=true],
+body[data-ios-presentation=true] .mi-focused-tabs>.scan-more-input>button[aria-pressed=true] { background:var(--ios-control-pressed); color:var(--ios-ink); font-weight:550; }
+body[data-ios-presentation=true] .mi-focused-tabs>.scan-more-input>button:not([aria-pressed=true]) { color:var(--ios-link); }
+body[data-ios-presentation=true] .mi-focused-tabs button:disabled { color:var(--ios-disabled-ink); background:var(--ios-disabled-fill); opacity:1; }
+body[data-ios-presentation=true] :is(.scan-input-indicator,.removal-input-pill>.scan-input-indicator) { background:var(--ios-control-pressed); border:1px solid var(--ios-rim); border-radius:9px; }
+body[data-ios-presentation=true] :is(.scan-stage-tools,.scan-stage-utilities,.mi-stage-tools,.scan-acquisition-context,.scan-reader-state,.scan-help,.mi-help,.mi-notice,.scan-panel-heading>span,.lookup-reader>p,.mi-focused-orb>p) { color:var(--ios-muted); }
+body[data-ios-presentation=true] :is(.scan-context-control,.scan-text-button,.scan-icon-button,.mi-stage-tools>button,.mi-stage-alert>button,.mi-focused-orb>button,.mi-header-batch) { color:var(--ios-link); min-height:44px; }
+body[data-ios-presentation=true] :is(.scan-stage-panel,.scan-feedback-preferences,.mi-stage-panel,.removal-details,.scan-context,.scan-demo-panel) { color:var(--ios-ink); background:transparent; border-color:var(--ios-line); }
+body[data-ios-presentation=true] :is(.scan-stage-panel,.mi-stage-panel,.scan-panel-heading,.scan-stage-panel-heading,.mi-stage-panel-heading) h2 { color:var(--ios-ink); font-weight:550; font-size:20px; letter-spacing:-.025em; }
+body[data-ios-presentation=true] :is(.scan-focused-orb,.mi-focused-orb,.removal-orb-stage) { padding:20px 0; }
+/* Operation identity is expressed by text. The shared neutral character stays
+   blue; changing only its base preserves the original success/failure colors. */
+body[data-ios-presentation=true] :is(.mobile-scan-station,.mobile-intake,.mobile-removal,.lookup-workflow) .ios-ink .ink-orb { --ink-orb-base-color:var(--ios-orb-color); }
+body[data-ios-presentation=true] :is(.scan-focused-orb,.mi-focused-orb,.removal-orb-stage,.lookup-reader,.lookup-orb-frame)>.ios-ink { --ios-ink-size:144px; height:144px; overflow:visible; }
+body[data-ios-presentation=true] .lookup-native-stage[data-phase=result] .lookup-orb-frame>.ios-ink { --ios-ink-size:88px; height:88px; }
+body[data-ios-presentation=true] .lookup-found>.ios-ink { --ios-ink-size:40px; height:40px; flex:0 0 40px; }
+body[data-ios-presentation=true] :is(.scan-review-entry,.mi-review-entry) { min-height:70px; padding:16px 18px; background:var(--ios-panel); color:var(--ios-ink); border:1px solid var(--ios-line); border-radius:16px; box-shadow:none; }
+body[data-ios-presentation=true] :is(.scan-review-entry,.mi-review-entry) strong { font-size:16px; font-weight:550; }
+body[data-ios-presentation=true] :is(.scan-review-entry,.mi-review-entry) small { color:var(--ios-muted); font-size:13px; }
+body[data-ios-presentation=true] :is(.scan-review-entry,.mi-review-entry)[data-feedback=success] { background:var(--ios-success-fill); border-color:var(--ios-success-line); color:var(--ios-success); }
+body[data-ios-presentation=true] :is(.scan-review-entry,.mi-review-entry)[data-feedback=success] small { color:var(--ios-success); }
+body[data-ios-presentation=true] :is(.scan-review-entry,.mi-review-entry)[data-feedback=failure] { border-color:var(--ios-error-line); }
+body[data-ios-presentation=true] :is(.scan-outcome-card,.scan-duplicate-capsule) { color:var(--ios-ink); background:var(--ios-raised); border-color:var(--ios-rim); }
+body[data-ios-presentation=true] .scan-outcome-card[data-outcome=duplicate] { color:var(--ios-link); background:var(--ios-raised); border-color:var(--ios-control-line); }
+body[data-ios-presentation=true] .scan-outcome-card[data-pulse=success] { color:var(--ios-success); background:var(--ios-success-fill); border-color:var(--ios-success-line); }
+body[data-ios-presentation=true] :is(.scan-outcome-card[data-pulse=failure],.scan-duplicate-capsule[data-error=true]) { color:var(--ios-error); background:var(--ios-error-fill); border-color:var(--ios-error-line); }
+
+/* Inputs, retained selection and preparation use recessed fields with luminous
+   focus boundaries. Fixed row geometry and keyboard scroll owners are retained. */
+body[data-ios-presentation=true] :is(.scan-search,.phone-model-search-box) { background:var(--ios-field); border-color:var(--ios-field-line); color:var(--ios-muted); border-radius:12px; }
+body[data-ios-presentation=true] :is(.scan-search,.phone-model-search-box) input { background:transparent; color:var(--ios-ink); border:0; }
+body[data-ios-presentation=true] :is(.scan-tag-panel input,.scan-feedback-preferences select,.scan-context select,.mi-common-fields input,.mi-common-fields select,.mi-preferences select,.removal-review-fields input,.removal-review-fields select,.removal-review-fields textarea,.mr-field input,.mr-field select,.phone-model-field input,.phone-model-field textarea) { color:var(--ios-ink); background:var(--ios-field); border-color:var(--ios-field-line); border-radius:12px; }
+body[data-ios-presentation=true] :is(.scan-selection-row,.scan-review-row,.mi-review-row,.removal-candidates>button,.lookup-records>button,.lookup-result article,.lookup-result dl>div,.removal-details,.mr-section-title,.mr-field-group,.mi-form-group,.phone-model-preview,.phone-model-choice,.mi-batch-values>div,.mi-preparation-review dl>div) { border-color:var(--ios-line); color:var(--ios-ink); }
+body[data-ios-presentation=true] :is(.scan-selection-row small,.scan-review-row small,.scan-reviewed-facts,.mi-review-row small,.removal-candidates small,.removal-review-fields>label,.mr-field,.mr-intro,.mr-help,.mr-sticky-actions>span,.mr-review dt,.mr-recovery dt,.mr-cancel-action,.lookup-records small,.lookup-result dt,.lookup-result article p,.lookup-id,.mi-common-fields>label,.mi-step-intro,.mi-naming-help p,.mi-local-status,.mi-preparation-review dt,.mi-batch-values dt,.phone-model dt,.phone-model-note,.phone-model-heading p,.phone-model-preview>p,.phone-model-editor>p,.phone-model .phone-model-field,.phone-model-search-label) { color:var(--ios-muted); }
+body[data-ios-presentation=true] :is(.mi-preparation-review dd,.mi-batch-values dd,.phone-model,.phone-model-choice) { color:var(--ios-ink); }
+body[data-ios-presentation=true] :is(.mi-common-fields,.mi-form-group-body,.mi-editor,.mi-simulation,.mi-preferences) :is(label,legend) { color:var(--ios-muted); }
+body[data-ios-presentation=true] :is(.mi-form-group>summary,.mi-naming-help>button,.mi-batch-extra>summary,.mr-field-group>summary,.mr-model-assistance>summary,.removal-add-label,.lookup-records>button>span:last-child,.phone-model-clear,.phone-model-close) { color:var(--ios-link); }
+body[data-ios-presentation=true] :is(.mi-preparation-review dl,.mr-review) { background:transparent; color:var(--ios-ink); border:0; border-block:1px solid var(--ios-line); border-radius:0; }
+body[data-ios-presentation=true] :is(.mr-discard,.lookup-message,.phone-model-finder) { background:var(--ios-panel); color:var(--ios-ink); border-color:var(--ios-line); border-radius:16px; }
+body[data-ios-presentation=true] .mi-step-progress { gap:8px; margin-block:6px 24px; }
+body[data-ios-presentation=true] .mi-step-progress>li { color:var(--ios-muted); }
+body[data-ios-presentation=true] .mi-step-progress>li>span { border-color:var(--ios-rim); width:28px; height:28px; background:var(--ios-field); }
+body[data-ios-presentation=true] .mi-step-progress>li[aria-current=step] { color:var(--ios-link); }
+body[data-ios-presentation=true] .mi-step-progress>li[aria-current=step]>span { background:var(--ios-action); border-color:var(--ios-action); color:var(--ios-action-ink); }
+body[data-ios-presentation=true] .mi-id-explanation { background:var(--ios-panel); border-color:var(--ios-line); color:var(--ios-muted); border-radius:12px; }
+body[data-ios-presentation=true] :is(.mi-preparation>footer,.mi-setup>footer,.mr-sticky-actions,.lookup-footer) { background:var(--ios-canvas); border-color:var(--ios-line); }
+body[data-ios-presentation=true] :is(.scan-filled-button,.scan-confirm-button,.mi-primary,.mi-register-button,.phone-model-primary,.mr-primary) { color:var(--ios-action-ink); background:var(--ios-action); border:1px solid transparent; border-radius:14px; font-weight:550; }
+body[data-ios-presentation=true] .scan-portal-root[data-operation=return] .scan-confirm-button { color:var(--ios-action-ink); background:var(--ios-action); }
+body[data-ios-presentation=true] :is(.removal-review .scan-confirm-button,.manual-registration .mr-danger) { background:#b24755; color:#fff; }
+body[data-ios-presentation=true] :is(.scan-secondary-button,.mi-secondary,.mi-selection-actions button,.mi-simulation form>button,.mi-preparation-error button,.mi-editor>div:last-child>button:not(.mi-primary),.mi-next-details,.removal-selection-controls>button,.mr-sticky-actions>button:not(.mr-primary),.mr-button-row>button:not(.mr-primary),.mr-cancel-action>button,.mr-discard>button,.phone-model-secondary,.phone-model-pick,.scan-local-confirm button:not(.scan-filled-button)) { color:var(--ios-link); background:var(--ios-control); border:1px solid var(--ios-control-line); border-radius:14px; }
+body[data-ios-presentation=true] :is(.phone-model-text,.mi-review-sheet>header>button,.mi-review-row>div>button) { color:var(--ios-link); background:transparent; }
+body[data-ios-presentation=true] .phone-model-results>button { color:var(--ios-ink); background:transparent; border-color:var(--ios-line); }
+body[data-ios-presentation=true] .phone-model-results small { color:var(--ios-muted); }
+body[data-ios-presentation=true] .phone-model-finder .phone-model-results>button[aria-pressed=true] { color:var(--ios-ink); background:var(--selection-surface); }
+body[data-ios-presentation=true] .scan-demo-panel>div>button { background:var(--ios-control); color:var(--ios-link); border-color:var(--ios-control-line); border-radius:14px; }
+
+/* Portal sheets are independently styled even when their source route is inert. */
+body[data-ios-presentation=true] :is(.scan-review-backdrop,.scan-confirm-backdrop,.scan-outcome-portal,.phone-model-portal) { background:var(--ios-scrim); color:var(--ios-ink); }
+body[data-ios-presentation=true] .mi-portal-root { background:var(--ios-scrim)!important; }
+body[data-ios-presentation=true] :is(.scan-review-sheet,.mi-review-sheet,.scan-local-confirm,.scan-outcome-dialog,.phone-model-finder) { background:var(--ios-sheet); color:var(--ios-ink); border:1px solid var(--ios-rim); border-radius:var(--ios-radius-sheet); box-shadow:var(--ios-shadow); -webkit-backdrop-filter:none; backdrop-filter:none; }
+body[data-ios-presentation=true] :is(.scan-review-sheet,.mi-review-sheet)>header { padding:12px 16px; border-color:var(--ios-line); }
+body[data-ios-presentation=true] :is(.scan-review-sheet,.mi-review-sheet)>header small { color:var(--ios-muted); }
+body[data-ios-presentation=true] :is(.scan-review-sheet,.mi-review-sheet)>footer { padding:14px 16px; background:var(--ios-sheet); border-color:var(--ios-line); }
+body[data-ios-presentation=true] :is(.scan-review-sheet,.mi-review-sheet)>footer small { color:var(--ios-muted); }
+body[data-ios-presentation=true] :is(.scan-sheet-handle,.mi-sheet-handle) { background:#b1c5dd66; }
+body[data-ios-presentation=true] :is(.scan-review-sheet h2>span,.scan-local-confirm p) { color:var(--ios-muted); }
+body[data-ios-presentation=true] :is([data-phone-dialog-header],[data-phone-dialog-footer]) { background:var(--ios-sheet); border-color:var(--ios-line); color:var(--ios-ink); }
+body[data-ios-presentation=true] :is(.scan-input-menu,.scan-local-confirm) { color:var(--ios-ink); background:var(--ios-sheet); border-color:var(--ios-rim); border-radius:24px; }
+body[data-ios-presentation=true] .scan-input-menu button { background:transparent; color:var(--ios-ink); }
+body[data-ios-presentation=true] :is(.scan-device-evidence,.scan-completed,.scan-issues) { background:var(--ios-field); border-color:var(--ios-line); }
+body[data-ios-presentation=true] :is(.mobile-scan-station,.mobile-intake,.scan-portal-root,.mi-portal-root,.removal-portal-root,.lookup-workflow,.manual-registration,.phone-model-portal) pre { color:var(--ios-muted); background:var(--ios-field); }
+
+/* Feedback semantics stay distinct: staged evidence, warning, error and receipt. */
+body[data-ios-presentation=true] :is(.scan-protected-notice,.mi-protected,.scan-stage-alert,.mi-stage-alert,.mr-warning,.mr-notice,.mr-blocked,.mr-recovery,.phone-model-protected,.phone-model-conflict) { color:var(--ios-warning); background:var(--ios-warning-fill); border-color:var(--ios-warning-line); border-radius:18px; }
+body[data-ios-presentation=true] :is(.scan-protected-notice,.mi-protected,.mr-recovery,.mr-notice)>button { background:#6a532359; color:var(--ios-warning); border-color:var(--ios-warning-line); }
+body[data-ios-presentation=true] :is(.scan-notice,.scan-exit-reason,.phone-model-choice small) { color:var(--ios-warning); }
+body[data-ios-presentation=true] :is(.mi-error,.mi-preparation-error,.mi-review-row em,.removal-error,.removal-input-feedback[role=alert],.mr-error,.phone-model-error) { color:var(--ios-error); background:var(--ios-error-fill); border-color:var(--ios-error-line); }
+body[data-ios-presentation=true] :is(.scan-saved-summary,.removal-saved-summary,.mr-success,.lookup-found) { color:var(--ios-success); background:var(--ios-success-fill); border-color:var(--ios-success-line); }
+body[data-ios-presentation=true] .mr-success-mark { color:var(--ios-success); background:#477d614d; }
+body[data-ios-presentation=true] .lookup-state { color:var(--ios-link); background:var(--ios-control); }
+
+/* Preparation, acquisition and review use the same readable text hierarchy.
+   Existing grids, retained queues and sticky keyboard exits remain in place. */
+body[data-ios-presentation=true] :is(.mobile-scan-station,.mobile-intake,.mobile-removal,.lookup-workflow,.manual-registration,.scan-portal-root,.mi-portal-root,.removal-portal-root,.phone-model-portal) { font-size:.9375rem; line-height:1.55; }
+body[data-ios-presentation=true] :is(.mobile-scan-station,.mobile-intake,.mobile-removal,.lookup-workflow,.manual-registration,.scan-portal-root,.mi-portal-root,.removal-portal-root,.phone-model-portal) button { min-height:44px; font-size:.9375rem; }
+body[data-ios-presentation=true] :is(.scan-selection-row strong,.scan-review-row strong,.mi-review-row strong,.removal-candidates strong,.lookup-records strong,.phone-model-results strong) { font-size:1rem; font-weight:500; }
+body[data-ios-presentation=true] :is(.scan-selection-row small,.scan-review-row small,.mi-review-row small,.removal-candidates small,.lookup-records small,.phone-model-results small,.mi-step-intro,.mi-id-explanation,.mi-naming-help p,.mi-local-status,.mi-help,.mi-notice,.scan-help,.scan-acquisition-context,.scan-context,.scan-notice,.scan-exit-reason,.phone-model-note,.phone-model-search-label,.phone-model-heading p,.phone-model-field,.lookup-id,.lookup-result dt,.removal-input-feedback,.removal-review-fields>label,.mi-preparation-review dt,.mi-batch-values dt) { font-size:.8125rem; line-height:1.5; }
+body[data-ios-presentation=true] :is(.mi-common-fields,.mi-form-group-body,.mi-editor,.mi-simulation,.mi-preferences,.scan-tag-panel,.scan-feedback-preferences) :is(label,legend) { font-size:.8125rem; line-height:1.5; }
+body[data-ios-presentation=true] :is(.mobile-scan-station,.mobile-intake,.mobile-removal,.lookup-workflow,.manual-registration,.scan-portal-root,.mi-portal-root,.removal-portal-root,.phone-model-portal) :is(input:not([type=checkbox]):not([type=radio]),select,textarea) { min-height:48px; font-size:1rem; }
+body[data-ios-presentation=true] :is(.mi-review-sheet,.scan-review-sheet)>footer :is(label,small) { font-size:.8125rem; line-height:1.5; }
+body[data-ios-presentation=true] :is(.mi-review-sheet,.scan-review-sheet)>footer select { background:var(--ios-field); border-color:var(--ios-field-line); color:var(--ios-ink); }
+body[data-ios-presentation=true] :is(.mi-preparation-review dd,.mi-batch-values dd,.lookup-result dd,.phone-model dd) { font-size:.9375rem; line-height:1.5; }
+body[data-ios-presentation=true] :is(.scan-selection-row,.scan-review-row,.mi-review-row) { padding-block:18px; }
+body[data-ios-presentation=true] :is(.mi-step-progress small,.scan-reviewed-facts,.scan-review-sheet>header small,.mi-review-sheet>header small) { font-size:.8125rem; }
+body[data-ios-presentation=true] :is(.mi-error,.mi-preparation-error,.removal-error,.mr-error,.phone-model-error,.scan-protected-notice,.mi-protected,.mr-recovery) { font-size:.9375rem; line-height:1.55; }
+body[data-ios-presentation=true] .mi-preparation-review dl { padding-inline:0; }
+body[data-ios-presentation=true] :is(.scan-stage-panel,.mi-stage-panel,.scan-portal-root,.mi-portal-root,.removal-portal-root,.phone-model-portal,.manual-registration) button:disabled { color:var(--ios-disabled-ink); background-color:var(--ios-disabled-fill); border-color:var(--ios-line); opacity:1; }
+body[data-ios-presentation=true] :is(.mobile-scan-station,.mobile-intake,.mobile-removal,.lookup-workflow,.manual-registration,.phone-model-portal) button { transition:background-color 140ms ease,border-color 140ms ease,transform 140ms ease; }
+body[data-ios-presentation=true] :is(.mobile-scan-station,.mobile-intake,.mobile-removal,.lookup-workflow,.manual-registration,.phone-model-portal) button:enabled:is(:active,[data-pressed=true]) { filter:brightness(1.12); }
+@media(max-width:360px) { body[data-ios-presentation=true] :is(.mobile-scan-surface,.mi-focused-surface,.lookup-workflow) { padding-inline:12px; } }
+@media(min-width:600px) and (max-height:540px) { body[data-ios-presentation=true] :is(.scan-focused-header,.mi-focused-header,.removal-top,.lookup-header) { min-height:48px; } body[data-ios-presentation=true] :is(.scan-focused-orb,.mi-focused-orb,.removal-orb-stage,.lookup-reader,.lookup-orb-frame)>.ios-ink { --ios-ink-size:112px; height:112px; } }

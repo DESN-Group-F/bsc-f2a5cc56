@@ -10,9 +10,14 @@ import { StartupSurface } from './app/startup-surface.jsx';
 import { usePhoneViewport } from './app/phone-viewport.js';
 import { Pressable } from './app/phone-ui.jsx';
 import { markPhoneMilestone } from './app/phone-milestones.mjs';
+import { iosPresentation, activateIosPresentation } from './app/ios-runtime-presentation.mjs';
+import { IosBrandMark } from './app/ios-brand-mark.jsx';
+import { IosLaunchScene, IosStartupFailure } from './app/ios-startup.jsx';
 import './shared/app/globals.css';
 import './app.css';
 import './app/phone.css';
+import './app/ios-presentation.css';
+import './app/ios-startup.css';
 
 export function MobileApp() {
   const [origin,setOrigin] = useState(''), [error,setError] = useState('');
@@ -20,6 +25,8 @@ export function MobileApp() {
   const [busy,setBusy] = useState(false), [fieldTest,setFieldTest] = useState(false);
   const [username,setUsername] = useState(''), [password,setPassword] = useState('');
   const [savedMotion,setSavedMotion] = useState(false), [connectionOpen,setConnectionOpen] = useState(false);
+  const [entryState,setEntryState] = useState('loading');
+  const launchComplete = useRef(false);
   const alive = useRef(true), localRuntime = useRef(null), stopStorage = useRef(null), coordinator = useRef(null);
   const viewport = usePhoneViewport();
   if (!coordinator.current) coordinator.current = createStartupCoordinator({
@@ -102,14 +109,15 @@ export function MobileApp() {
   return <div className="phone-app" data-phone-layout={viewport.layout} data-phone-keyboard={String(viewport.keyboardOpen)} data-phone-reduced-motion={String(reducedMotion)}>
     {error && <div className="phone-alert global" role="alert"><span>{error}</span><Pressable className="phone-icon-button" aria-label="Dismiss notice" onClick={() => setError('')}>×</Pressable></div>}
     {storageError && resolved && <div className="phone-recovery" role="alert"><h2>Device save needs attention</h2><p>Captured requests are retained. Retry the device save before continuing.</p><Pressable className="phone-secondary" onClick={exportRecovery}>Export retained data</Pressable><Pressable className="phone-primary" disabled={saving} onClick={() => businessStorage().retryPersistence().catch(failure => setError(failure.message))}>Retry durable save</Pressable><details><summary>Technical details</summary><p>{storageError}</p></details></div>}
-    {!resolved ? <StartupSurface state={{...startup,saveError:storageError}} onRetry={retryOpening} onExport={exportRecovery} busy={busy}>{failedConnection && connectionSettings}</StartupSurface> : user ? <MobileShell key={user.id} initialUser={user} origin={origin} storageError={storageError} saving={saving} onSignedOut={() => coordinator.current.signedOut()} onFieldTest={() => setFieldTest(true)} onExportRecovery={exportRecovery}/> : <section className="phone-signin" aria-label={configuration ? 'Connect the application' : 'Staff sign-in'}>
-      <header className="phone-signin-heading"><div className="phone-brand-symbol"><Battery size={28}/></div><div><p className="phone-eyebrow">Battery Inventory</p><h1>{configuration ? 'Connect your workspace' : 'Sign in'}</h1><p>{configuration ? 'Enter the trusted service address provided for this project.' : 'Use your assigned staff account.'}</p></div></header>
+    {!resolved ? (iosPresentation ? (startup.phase === 'failed' ? <IosStartupFailure state={{...startup,saveError:storageError}} onRetry={retryOpening} onExport={exportRecovery} busy={busy}>{failedConnection && connectionSettings}</IosStartupFailure> : null) : <StartupSurface state={{...startup,saveError:storageError}} onRetry={retryOpening} onExport={exportRecovery} busy={busy}>{failedConnection && connectionSettings}</StartupSurface>) : user ? <MobileShell onEntryState={setEntryState} key={user.id} initialUser={user} origin={origin} storageError={storageError} saving={saving} onSignedOut={() => coordinator.current.signedOut()} onFieldTest={() => setFieldTest(true)} onExportRecovery={exportRecovery}/> : <section className="phone-signin" aria-label={configuration ? 'Connect the application' : 'Staff sign-in'}>
+      <header className="phone-signin-heading"><div className="phone-brand-symbol">{iosPresentation ? <IosBrandMark/> : <Battery size={28}/>}</div><div><p className="phone-eyebrow">Battery Inventory</p><h1>{configuration ? 'Connect your workspace' : 'Sign in'}</h1><p>{configuration ? 'Enter the trusted service address provided for this project.' : 'Use your assigned staff account.'}</p></div></header>
       {!native && <p className="phone-preview-context">Isolated browser preview · Native NFC unavailable</p>}
       {connectionSettings}
       {!configuration && <form onSubmit={login} className="phone-signin-form" aria-busy={busy}><label>Username<input value={username} onChange={event => setUsername(event.target.value)} autoComplete="username" required disabled={busy}/></label><label>Password<input type="password" value={password} onChange={event => setPassword(event.target.value)} autoComplete="current-password" required disabled={busy}/></label><Pressable type="submit" className="phone-primary" disabled={busy || !!storageError}>{busy ? 'Signing in…' : 'Sign in'}<LogIn size={19}/></Pressable></form>}
       <details className="phone-signin-tools"><summary>Device diagnostics</summary><Pressable className="phone-secondary" disabled={busy || saving || !!storageError} onClick={() => setFieldTest(true)}><Radio size={18}/>NFC field test</Pressable><p className="phone-muted">Diagnostic attempts stay on this device. No account is required.</p>{native && <Pressable className="phone-text-action" disabled={busy} onClick={() => clearNativeSession().catch(failure => setError(failure.message))}>Reset local sign-in credential</Pressable>}</details>
       {!native && <a href="/mobile-preview" target="_blank" rel="noreferrer">Open local test account setup<ArrowRight size={16}/></a>}
     </section>}
+    {iosPresentation && <IosLaunchScene phase={startup.phase} entry={entryState} reducedMotion={reducedMotion} initialVisible={!launchComplete.current} onComplete={() => { launchComplete.current=true; }}/>}
   </div>;
 }
-createRoot(document.getElementById('root')).render(<MobileApp/>);
+createRoot((activateIosPresentation(document),document.getElementById('root'))).render(<MobileApp/>);

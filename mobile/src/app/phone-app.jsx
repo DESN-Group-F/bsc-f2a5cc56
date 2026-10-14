@@ -50,6 +50,7 @@ import { MissingInspectionRecovery } from './missing-inspection-recovery.jsx';
 import { PhoneArrivalsProvider, usePhoneArrivals } from './phone-arrivals.jsx';
 import { IosDock, IosSearch } from './ios-chrome.jsx';
 import { usesIosPresentation, iosSearchDestination, iosRouteTransition } from './ios-presentation.mjs';
+import { activateIosPresentation } from './ios-runtime-presentation.mjs';
 
 const areas = [['scan','Scan',ScanLine],['inventory','Inventory',Package],['workspace','Workspace',LayoutGrid],['me','Me',UserRound]];
 const pageTitles = { 'assets':'Intake & removal','intake-choice':'Working intake','removal-history':'Removal history','inspection-recovery':'Inspection recovery','service':'App settings','diagnostics':'Device diagnostics','battery-records':'Battery records','teaching-groups':'Teaching groups','task-plans':'Recurring tasks','messages':'Messages','my-activity':'My activity','account':'My account','manage':'Manage records','directories':'Directories','accounts':'Staff accounts','activity':'Activity history' };
@@ -69,12 +70,11 @@ const MemoArrivalInventoryView = memo(ArrivalInventoryView);
 const MemoWorkspaceScreen = memo(WorkspaceScreen);
 const MemoMeScreen = memo(MeScreen);
 
-export function MobileShell({ initialUser, origin, storageError, saving, onSignedOut, onFieldTest, onExportRecovery }) {
+export function MobileShell({ initialUser, origin, storageError, saving, onSignedOut, onFieldTest, onExportRecovery, onEntryState }) {
   const [iosPresentation] = useState(() => usesIosPresentation({ platform:Capacitor.getPlatform(), native, search:globalThis.location?.search }));
   useLayoutEffect(() => {
     if (!iosPresentation) return;
-    const previous=document.body.getAttribute('data-ios-presentation'); document.body.setAttribute('data-ios-presentation','true');
-    return () => { if (previous === null) document.body.removeAttribute('data-ios-presentation'); else document.body.setAttribute('data-ios-presentation',previous); };
+    activateIosPresentation(document,iosPresentation);
   }, [iosPresentation]);
   const inventory = useInventoryData(initialUser);
   const { data,user,dataset,loading,error,revision,load:inventoryLoad,changeDataset,acceptReviewedInventory,setError:setReadError } = inventory;
@@ -103,6 +103,10 @@ export function MobileShell({ initialUser, origin, storageError, saving, onSigne
   const datasetPickerLocked = protectedWithoutPortal || datasetOtherPortalLocked || lifecycleDestination || page === 'inspection-recovery';
   const inventoryReading = loading || backgroundRefreshing;
   const ready = recoveryChecked && !!data && data.dataset === dataset && data.user.id === user.id && !inventoryReading && !error && !storageError && !recoveryError;
+  useEffect(() => {
+    if (!iosPresentation || !onEntryState) return;
+    onEntryState(error || recoveryError || storageError ? 'attention' : !data || !recoveryChecked || recovering ? 'loading' : workflow || overlayOpen || area !== 'scan' || page || detail ? 'restored' : 'scan');
+  },[iosPresentation,onEntryState,error,recoveryError,storageError,!!data,recoveryChecked,!!recovering,!!workflow,overlayOpen,area,page,detail]);
   useEffect(() => { if (ready) setNotice(clearReadinessNotice); },[ready,notice]);
 
   const { unreadCount,acceptUnreadCount } = useMessageCount(dataset,user.id,area === 'me' && page === 'messages',revision);
@@ -456,7 +460,15 @@ export function MobileShell({ initialUser, origin, storageError, saving, onSigne
   return <PhoneUIProvider namespace={namespace} scrollRef={main} reducedMotion={reducedMotion} backRegistry={backRegistry}>
     <PhoneArrivalsProvider namespace={namespace} data={data} load={load}>
     <div className={'phone-shell' + (iosPresentation ? ' ios-shell' : '') + (floating ? ' phone-workflow-open' : '') + (keyboardOpen ? ' phone-keyboard-open' : '')} style={{'--phone-focus-enter':`${PHONE_FOCUS_ENTRY_MS}ms`,'--phone-focus-exit':`${PHONE_FOCUS_EXIT_MS}ms`}} inert={floating ? true : undefined} aria-hidden={floating ? true : undefined} data-reduced-motion={reducedMotion} data-phone-layout={layout} data-phone-keyboard={String(keyboardOpen)}>
-      <header className="phone-topbar" data-ink-gaze-scope>{iosPresentation && <IosSearch routeKey={route.key} disabled={live.current.admission.category === 'protected' || lifecycleDestination || page === 'inspection-recovery' || !!entryPending} onSearch={text => startView(iosSearchDestination(route,text,crypto.randomUUID()))}/>} {backAvailable && <Pressable className="phone-icon-button" aria-label="Back to previous view" onClick={() => { if (!backRegistry.handle({})) goBack(); }} disabled={protectedLocked}><ArrowLeft size={22}/></Pressable>}<div className="phone-title-block"><h1>{title}</h1><span className="phone-sync-status" role="status" aria-live="polite" data-sync-state={data ? error ? 'stale' : refreshing ? 'refreshing' : 'ready' : 'initial'}>{data && (refreshing ? 'Refreshing records…' : error ? 'Showing last loaded records' : '')}</span></div><div className="phone-topbar-actions">{lifecycleDestination && <Pressable className="phone-header-exit" aria-label="Exit Intake & removal" onClick={exitLifecycle} disabled={protectedLocked}>Exit</Pressable>}<PhoneUIBoundary workflowOwner={datasetPickerOwner}><PhoneChoice label="Shared inventory" aria-label="Shared inventory" variant="compact" value={dataset} options={[{value:'live',label:'Working'},{value:'demo',label:'Demo'}]} disabled={datasetPickerLocked} onChange={next => void selectDataset(next)}/></PhoneUIBoundary>{refreshControl}</div></header>
+      <header className="phone-topbar" data-ink-gaze-scope data-nested={backAvailable}>
+        {backAvailable && <Pressable className="phone-icon-button" aria-label="Back to previous view" onClick={() => { if (!backRegistry.handle({})) goBack(); }} disabled={protectedLocked}><ArrowLeft size={22}/></Pressable>}
+        <div className="phone-title-block">{iosPresentation&&<p className="ios-context-label">Battery Inventory</p>}<h1>{title}</h1><span className="phone-sync-status" role="status" aria-live="polite" data-sync-state={data ? error ? 'stale' : refreshing ? 'refreshing' : 'ready' : 'initial'}>{data && (refreshing ? 'Refreshing records…' : error ? 'Showing last loaded records' : '')}</span></div>
+        <div className="phone-topbar-actions">
+          {iosPresentation && <IosSearch routeKey={route.key} disabled={live.current.admission.category === 'protected' || lifecycleDestination || page === 'inspection-recovery' || !!entryPending} onSearch={text => startView(iosSearchDestination(route,text,crypto.randomUUID()))}/>}
+          {lifecycleDestination && <Pressable className="phone-header-exit" aria-label="Exit Intake & removal" onClick={exitLifecycle} disabled={protectedLocked}>Exit</Pressable>}
+          <PhoneUIBoundary workflowOwner={datasetPickerOwner}><PhoneChoice label="Shared inventory" aria-label="Shared inventory" variant="compact" value={dataset} options={[{value:'live',label:'Working'},{value:'demo',label:'Demo'}]} disabled={datasetPickerLocked} onChange={next => void selectDataset(next)}/></PhoneUIBoundary>{refreshControl}
+        </div>
+      </header>
       <main ref={main} className="phone-main" data-phone-scroll id="phone-content" tabIndex={-1} data-phone-content-state={!data ? error ? 'failed' : 'loading' : inventoryReading ? 'refreshing' : error ? 'stale' : 'ready'} onScroll={event => navigation.rememberScroll(navigation.getSnapshot().current.key,event.currentTarget.scrollTop)}>
         {(notice||actionError||recoveryError||entryPending&&!(area==='scan'&&!page&&!detail))&&<div className="phone-shell-status" data-scroll-status={area==='scan'&&!page&&!detail?'home':'view'}>
         {entryPending && !(area === 'scan' && !page && !detail) && <div className="scan-entry-progress" role="status" aria-live="polite"><span>{phoneEntryMessage(entryPending)}</span>{entryPending.phase === 'failed' && <Pressable className="phone-secondary" onClick={retryOpening}>Retry</Pressable>}<Pressable className="phone-secondary" onClick={cancelOpening} aria-label="Cancel opening">Cancel</Pressable></div>}

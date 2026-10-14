@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="theme-color" content="#f5f6f8" />
     <title>Battery Inventory</title>
+    <script>
+      // Establish the iOS canvas before module loading; native Android ignores preview queries.
+      (() => {
+        const bridge = window.Capacitor, native = bridge?.isNativePlatform?.() || location.protocol === 'capacitor:';
+        const ios = native ? bridge?.getPlatform?.() === 'ios' || location.protocol === 'capacitor:' : new URLSearchParams(location.search).get('presentation') === 'ios';
+        if (ios) { document.documentElement.dataset.iosPresentation = 'true'; document.querySelector('meta[name="theme-color"]').content = '#10141b'; }
+      })();
+    </script>
     <style>
       html, body { margin: 0; height: 100%; background: #f5f6f8; }
       #root { height: 100dvh; }
@@ -17,12 +25,23 @@
       [data-initial-startup] .phone-startup-status p { font-size: .875rem; line-height: 1.55; color: #526075; margin: 8px 0; }
       [data-initial-startup] .phone-startup-progress { display: block; height: 3px; width: 100%; background: #dce6f4; border-radius: 4px; overflow: hidden; margin-top: 24px; }
       [data-initial-startup] .phone-startup-progress i { display: block; height: 100%; width: 35%; background: #075dcc; border-radius: 4px; }
+      .ios-early-mark { display:none; }
+      html[data-ios-presentation=true],html[data-ios-presentation=true] body { background:#10141b; color-scheme:dark; }
+      html[data-ios-presentation=true] [data-initial-startup] { background:#10141b; color:#edf1f5; }
+      html[data-ios-presentation=true] [data-initial-startup] .phone-startup { display:block; max-width:none; padding:0; }
+      html[data-ios-presentation=true] [data-initial-startup] .phone-startup-identity,html[data-ios-presentation=true] [data-initial-startup] .phone-eyebrow,html[data-ios-presentation=true] [data-initial-startup] .phone-startup-status { display:none; }
+      html[data-ios-presentation=true] .ios-early-mark { display:block; position:absolute; width:96px; height:96px; left:calc(50% - 48px); top:calc(50% - 48px); }
+      html[data-ios-presentation=true] .ios-early-mark g { animation:ios-early-pulse 1800ms ease-in-out infinite; }
+      @keyframes ios-early-pulse { 0%,100% {opacity:1} 50% {opacity:.6} }
+      @media(prefers-reduced-motion:reduce) { html[data-ios-presentation=true] .ios-early-mark g { animation:none; } }
     </style>
   </head>
   <body>
+    <script>if (document.documentElement.dataset.iosPresentation === 'true') document.body.dataset.iosPresentation = 'true';</script>
     <div id="root">
       <div class="phone-app" data-initial-startup>
         <section class="phone-startup" aria-busy="true" data-startup-phase="opening">
+          <svg class="ios-early-mark" viewBox="0 0 48 48" fill="none" role="img" aria-label="Opening Battery Inventory"><rect width="48" height="48" rx="14" fill="#438cec"/><g fill="#fff"><rect x="13" y="16" width="8" height="18" rx="4"/><rect x="27" y="16" width="8" height="18" rx="4"/><path d="M16 13h2m12 0h2" stroke="#fff" stroke-width="2" stroke-linecap="round"/></g></svg>
           <div class="phone-startup-identity" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M 22 14 L 22 10"></path><rect x="2" y="6" width="16" height="12" rx="2"></rect></svg></div>
           <p class="phone-eyebrow">Battery Inventory</p>
           <div class="phone-startup-status" role="status" aria-live="polite">

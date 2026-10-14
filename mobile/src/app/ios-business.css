@@ -1,0 +1,226 @@
+/* Quiet precision uses flat operational lists and explicit grouped boundaries.
+   Existing selection, form, scroll and action ownership is preserved. */
+.ios-shell :is(.mobile-work-entry-list,.mobile-work-entry,.mobile-me-summary,.mi-record) { background:transparent; border-color:var(--ios-line); color:var(--ios-ink); box-shadow:none; }
+.ios-shell .mobile-work-entry-list { border:0; border-radius:0; }
+.ios-shell .mobile-work-entry { min-height:76px; padding:18px 0; border:0; border-bottom:1px solid var(--ios-line); border-radius:0; gap:14px; }
+.ios-shell .mobile-work-entry>svg,.ios-shell .mobile-work-section-heading button { color:var(--ios-link); }
+.ios-shell .mobile-work-entry-copy strong { font-size:1rem; font-weight:500; line-height:1.4; }
+.ios-shell .mobile-work-entry-copy small { color:var(--ios-muted); font-size:.8125rem; line-height:1.5; margin-top:5px; }
+.ios-shell :is(.mobile-work-home,.mobile-work-page,.mobile-inventory) :is(h1,h2,h3) { color:inherit; }
+.ios-shell .phone-settings-group h2 { color:inherit; }
+.ios-shell :is(.mobile-inventory button,.mi-inventory-search input) { color:var(--ios-ink); background:var(--ios-control); border-color:var(--ios-line); }
+.ios-shell .mobile-inventory :is(.mi-area-tabs button,.mi-status-tabs button,.mi-record-main,.mi-row-detail,.mi-text-button) { background:transparent; }
+.ios-shell .mobile-inventory .mi-area-tabs button[aria-selected=true] { color:var(--ios-link); }
+.ios-shell .mobile-inventory :is(.mi-status-tabs button[aria-selected=true],.mi-chips button,.mi-record.is-selected) { background:var(--selection-surface); color:var(--ios-ink); border-color:var(--selection-border); }
+.ios-shell .mi-fixed-scope { background:var(--ios-panel); color:var(--ios-muted); border-color:var(--ios-line); border-radius:12px; }
+.ios-shell .mi-selection-bar { background:var(--ios-sheet); border-color:var(--ios-rim); border-radius:16px; }
+.ios-shell .mi-selection-bar>span { color:var(--ios-ink); }
+.ios-shell .mobile-inventory .mi-primary { background:var(--ios-action); color:var(--ios-action-ink); }
+.ios-shell .mi-toolbar b { background:var(--ios-raised); color:var(--ios-ink); }
+.ios-shell .mi-record { border:0; border-bottom:1px solid var(--ios-line); border-radius:0; margin-bottom:0; }
+.ios-shell .mobile-inventory .mi-record-main { padding:19px 4px 19px 0; }
+.ios-shell .mi-record strong { font-size:1rem; font-weight:500; }
+.ios-shell .mi-record small { font-size:.8125rem; color:var(--ios-muted); }
+.ios-shell .mobile-inventory .mi-record.is-selected { border-radius:12px; }
+.ios-shell .mobile-inventory .mi-record.is-selecting .mi-record-main { padding-inline-start:56px; }
+.ios-shell :is(.mi-inventory-search input,.mobile-phone-search>label) { border-radius:12px; }
+.ios-shell .mi-area-tabs { border-color:var(--ios-line); gap:12px; }
+.ios-shell .mobile-inventory .mi-status-tabs button { border-radius:10px; }
+.ios-shell .mobile-inventory .mi-room-switcher .is-active { background:var(--ios-control); color:var(--ios-link); border-color:var(--ios-control-line); }
+.ios-shell .mobile-inventory .mi-arrivals-entry button { background:var(--ios-success-fill); color:var(--ios-success); border-color:var(--ios-success-line); }
+.ios-shell .mi-scene-wrap { background:var(--ios-field); border-color:var(--ios-rim); border-radius:18px; }
+.ios-shell .mi-scene-label { background:var(--ios-sheet); color:var(--ios-muted); border-color:var(--ios-rim); border-radius:10px; }
+.ios-shell .mi-scene-label.is-selected { background:#274462; color:var(--ios-ink); border-color:var(--ios-link); }
+.ios-shell .mi-schematic { color:var(--ios-muted); background:var(--ios-canvas); padding:6px 9px; border-radius:8px; }
+.ios-shell .mi-scene-fallback { color:var(--ios-muted); background:var(--ios-field); }
+.ios-shell .mobile-work-empty { color:var(--ios-muted); background:transparent; border:0; border-block:1px solid var(--ios-line); border-radius:0; padding:28px 4px; font-size:.9375rem; line-height:1.6; }
+.ios-shell .mobile-work-home { padding:12px 24px 28px; }
+.ios-shell .mobile-work-section { margin-top:30px; }
+.ios-shell .mobile-work-section h2 { color:var(--ios-muted); font-size:.8125rem; font-weight:500; letter-spacing:.04em; margin-bottom:8px; }
+.ios-shell .mobile-me-header { margin:4px 0 24px; }
+.ios-shell .mobile-me-header h1 { font-size:28px; font-weight:500; letter-spacing:-.035em; }
+.ios-shell .mobile-me-summaries { border-block:1px solid var(--ios-line); gap:0; padding:6px 0; }
+.ios-shell .mobile-me-summary { padding:18px 14px 18px 0; border:0; border-radius:0; gap:9px; }
+.ios-shell .mobile-me-summary+.mobile-me-summary { padding-left:18px; border-left:1px solid var(--ios-line); }
+.ios-shell .mobile-me-summary strong { font-size:.9375rem; font-weight:500; color:var(--ios-ink); }
+.ios-shell .mobile-me-summary small { font-size:.8125rem; line-height:1.5; color:var(--ios-muted); }
+.ios-shell .mobile-me-summary-number { font-size:2.25rem; font-weight:400; letter-spacing:-.04em; color:var(--ios-ink); }
+.ios-shell .mobile-me-avatar { width:58px; height:58px; border-radius:18px; background:var(--ios-control); color:var(--ios-link); font-size:1.25rem; font-weight:400; }
+.ios-shell .mobile-work-icon { width:32px; height:44px; border-radius:0; }
+body[data-ios-presentation=true] .mobile-inventory button:disabled { color:var(--ios-disabled-ink); background:var(--ios-disabled-fill); border-color:var(--ios-line); }
+body[data-ios-presentation=true] .temporal-picker .temporal-picker-actions { background:var(--ios-sheet); }
+.ios-shell :is(.mobile-work-page,.phone-detail,.phone-compat-page) { width:100%; margin:0; border-radius:0; background:transparent; color:var(--phone-ink); padding:12px 24px 28px; }
+.ios-shell :is(.mobile-work-page,.phone-detail,.phone-settings) h2 { letter-spacing:-.018em; }
+.ios-shell :is(.mobile-work-page,.phone-detail,.phone-settings) :is(button,summary) { -webkit-tap-highlight-color:transparent; }
+.ios-shell :is(.mobile-work-page,.phone-detail,.phone-settings,.mi-sheet,.mobile-task-dialog) button {
+  transition:background-color 140ms ease,border-color 140ms ease,color 140ms ease,box-shadow 140ms ease;
+}
+.ios-shell :is(.mobile-work-page,.phone-detail,.phone-settings,.mi-sheet,.mobile-task-dialog) :is(button,summary,input,textarea,select):focus-visible { outline:2px solid #b4d4ff; outline-offset:3px; }
+
+/* Inventory filters and short task sheets keep their existing fixed frames and
+   single scrolling bodies. No geometry here changes dismissal ownership. */
+.ios-shell :is(.mi-sheet,.mobile-task-dialog) { background:var(--ios-sheet); color:var(--ios-ink); border-color:var(--ios-rim); border-radius:var(--ios-radius-sheet); box-shadow:var(--ios-shadow); -webkit-backdrop-filter:none; backdrop-filter:none; }
+.ios-shell :is(.mi-sheet,.mobile-task-dialog)::backdrop { background:#050912b8; }
+.ios-shell :is(.mi-sheet,.mobile-task-dialog)>header { padding:14px 16px 12px 20px; border-color:var(--ios-line); }
+.ios-shell :is(.mi-sheet,.mobile-task-dialog) h2 { color:var(--ios-ink); font-size:21px; font-weight:600; letter-spacing:-.025em; }
+.ios-shell :is(.mi-sheet-body,.mobile-task-dialog-body) { padding:18px 20px; scroll-padding-block:18px; }
+.ios-shell .mi-sheet .mi-mobile-date-picker[data-slot=popover-content] { max-height:min(var(--radix-popover-content-available-height,calc(var(--phone-viewport-height,100dvh) - 24px)),calc(var(--phone-viewport-height,100dvh) - 24px)); }
+.ios-shell :is(.mi-sheet,.mobile-task-dialog)>footer { padding:12px 20px; border-color:var(--ios-line); background:var(--ios-sheet); gap:10px; }
+.ios-shell :is(.mi-sheet,.mobile-task-dialog) button { min-height:48px; border-radius:14px; color:#dce8fa; background:var(--ios-control); border-color:var(--ios-control-line); }
+.ios-shell .mobile-inventory .mi-sheet .mi-primary,
+.ios-shell .mobile-task-dialog .mi-primary { background:var(--ios-action); color:var(--ios-action-ink); border-color:transparent; }
+.ios-shell .mi-sheet .mi-return-action { background:var(--ios-action); color:var(--ios-action-ink); border-color:transparent; }
+.ios-shell .mobile-inventory .mi-sheet :is(.mi-icon-button,.mi-text-button),
+.ios-shell .mobile-task-dialog>header>button { background:transparent; color:var(--ios-link); border-color:transparent; }
+.ios-shell :is(.mi-field,.mi-help,.mi-action-list small,.mi-review-list small,.mobile-task-dialog>header p,.mobile-template-choice small) { color:var(--ios-muted); }
+.ios-shell .mi-field { gap:8px; margin-bottom:18px; font-weight:500; }
+.ios-shell .mi-field :is(input,select) { color:var(--ios-ink); background:var(--ios-field); border-color:var(--ios-field-line); border-radius:13px; }
+.ios-shell :is(.mi-filter-category,.mi-range,.mi-review-list li) { border-color:var(--ios-line); }
+.ios-shell :is(.mi-filter-category summary span,.mi-range legend,.mi-search-field svg) { color:#b8cce8; }
+.ios-shell .mi-filter-category>summary { display:flex; align-items:center; gap:10px; padding-block:16px; font-weight:550; list-style:none; }
+.ios-shell .mi-filter-category>summary::marker { content:''; }
+.ios-shell .mi-filter-category>summary::-webkit-details-marker { display:none; }
+.ios-shell .mi-filter-category>summary::after { content:''; flex:none; width:7px; height:7px; margin-left:auto; margin-right:4px; border-right:1.5px solid currentColor; border-bottom:1.5px solid currentColor; transform:rotate(45deg); transition:transform 160ms ease; }
+.ios-shell .mi-filter-category>summary>span { float:none; margin-left:auto; }
+.ios-shell .mi-filter-category>summary:has(>span)::after { margin-left:0; }
+.ios-shell .mi-filter-category[open]>summary::after { transform:rotate(225deg); }
+.ios-shell .mi-filter-category[open]>summary { color:var(--ios-link); }
+.ios-shell .mi-sheet .mi-action-list button { padding:15px; background:var(--ios-raised); color:var(--ios-ink); }
+.ios-shell .mi-sheet .mi-action-list strong { font-weight:550; }
+.ios-shell .mi-sheet .mi-review-list li>button { background:transparent; }
+.ios-shell .mi-mobile-date-picker .temporal-picker-actions { background:var(--ios-raised); }
+body[data-ios-presentation=true] .mi-mobile-date-picker [data-slot=calendar] button { min-height:44px; min-width:0; padding:0; border-color:transparent; background:transparent; color:#dce8fa; border-radius:9px; }
+body[data-ios-presentation=true] .mi-mobile-date-picker [data-slot=calendar] button:is([data-selected-single=true],[data-range-start=true],[data-range-end=true]) { background:var(--ios-action); color:var(--ios-action-ink); }
+body[data-ios-presentation=true] .mi-mobile-date-picker [data-slot=calendar] button[data-range-middle=true] { background:#293d57; color:#dceaff; }
+body[data-ios-presentation=true] .mi-mobile-date-picker .rdp-dropdown_root { min-height:44px; display:flex; align-items:center; }
+.ios-shell .mobile-template-choice { padding:16px; color:var(--ios-ink); background:var(--ios-raised); border-color:var(--ios-control-line); border-radius:16px; }
+.ios-shell .mobile-template-choice>svg { color:var(--ios-link); }
+
+/* A flat record hierarchy: identity, primary command, segmented sections, facts. */
+.ios-shell .phone-detail-identity { padding:4px 0 18px; }
+.ios-shell .phone-detail-identity h1 { font-size:28px; font-weight:600; letter-spacing:-.035em; margin:5px 0 12px; }
+.ios-shell .phone-detail-actions { gap:9px; margin-bottom:20px; }
+.ios-shell .phone-detail .phone-secondary { background:var(--ios-control); color:var(--ios-link); border-color:var(--ios-control-line); border-radius:14px; }
+.ios-shell .phone-detail .phone-primary { background:var(--ios-action); color:var(--ios-action-ink); border-color:transparent; border-radius:14px; }
+.ios-shell .phone-detail .phone-tabs { gap:4px; padding:4px; border:1px solid var(--ios-line); border-radius:12px; background:var(--ios-field); }
+.ios-shell .phone-detail .phone-tabs button { border:0; border-radius:12px; font-size:14px; color:#aebbd0; }
+.ios-shell .phone-detail .phone-tabs button[aria-selected=true] { color:var(--ios-ink); background:var(--ios-control-pressed); }
+.ios-shell :is(.phone-status,.mi-battery-status,.mi-new-badge) { background:#18382d; color:#a4e4bf!important; }
+.ios-shell :is(.phone-status,.mi-battery-status)[data-status=out] { background:#223850; color:#bad7ff!important; }
+.ios-shell :is(.phone-status,.mi-battery-status)[data-status=retired] { background:#29303a; color:#bdc6d4!important; }
+.ios-shell :is(.phone-evidence-note,.mi-room-summary) { background:var(--ios-panel); color:var(--ios-ink); border-color:var(--ios-line); border-radius:14px; }
+.ios-shell .phone-detail-facts strong { font-size:17px; font-weight:550; }
+.ios-shell .phone-detail-facts article { padding-block:17px; }
+.ios-shell .phone-history-event { padding-block:16px; }
+.ios-shell .phone-history-event h3 { font-size:16px; font-weight:550; }
+.ios-shell .phone-history pre { background:var(--ios-field); color:#c0cddd; border:1px solid var(--ios-line); }
+.ios-shell :is(.mi-building-filter,.mi-room-list>button) { background:var(--ios-panel); }
+.ios-shell .mobile-inventory .mi-room-list [aria-pressed=true] { background:#223850; border-color:#6388b5; }
+.ios-shell :is(.mi-summary-title>strong,.mi-eyebrow,.mi-evidence-preview span,.mi-evidence-preview small) { color:#b1bed0; }
+.ios-shell .mi-record-checkbox span { background:var(--ios-field); border-color:#8291a8; }
+.ios-shell .mi-record-checkbox input:checked+span { background:var(--ios-action); color:var(--ios-action-ink); border-color:var(--ios-action); }
+.ios-shell .mobile-inventory :is(.mi-toolbar button[aria-pressed=true],.mi-map-view [aria-pressed=true]) { background:var(--ios-action); color:var(--ios-action-ink); border-color:transparent; }
+.ios-shell .mobile-inventory .mi-building-filter [aria-pressed=true] { background:#223850; color:#dceaff; border-color:#6388b5; }
+
+/* Workspace pages reuse their real rows, form labels and disclosures. */
+.ios-shell :is(.mobile-phone-list,.mobile-todo-list,.mobile-me-loan-list,.mobile-task-card,.mobile-teaching-card,.mobile-directory-card,.mobile-event-card,.mobile-actual-run) { background:transparent; border:0; border-bottom:1px solid var(--ios-line); border-radius:0; box-shadow:none; }
+.ios-shell :is(.mobile-task-card,.mobile-teaching-card,.mobile-directory-card,.mobile-event-card,.mobile-actual-run) { padding:20px 0; }
+.ios-shell :is(.mobile-task-list,.mobile-teaching-list,.mobile-directory-list,.mobile-event-list,.mobile-actual-runs) { gap:0; }
+.ios-shell :is(.mobile-message-row,.mobile-account-row,.mobile-todo-item,.mobile-me-loan-list button) { padding:18px 0; }
+.ios-shell .mobile-phone-purpose { color:var(--ios-muted); margin-bottom:24px; font-size:.9375rem; line-height:1.6; }
+.ios-shell :is(.mobile-phone-more>summary,.mobile-phone-tabs button,.mobile-phone-actions button,.mobile-phone-form button,.mobile-phone-pagination button,.mobile-phone-signout,.mobile-event-current button) { background:var(--ios-control); color:var(--ios-link); border-color:var(--ios-control-line); border-radius:13px; }
+.ios-shell :is(.mobile-phone-more-actions,.mobile-phone-resource-status>details>div) { background:var(--ios-raised); color:var(--ios-ink); border-color:#4a5b73; border-radius:17px; box-shadow:0 12px 36px #0006; }
+.ios-shell .mobile-phone-more-actions>button { background:transparent; color:var(--ios-ink); border-radius:11px; }
+.ios-shell :is(.mobile-phone-tabs button[aria-pressed=true],.mobile-phone-actions button.primary,.mobile-phone-primary,.mobile-phone-form button.mobile-phone-primary) { color:var(--ios-action-ink); background:var(--ios-action); border-color:transparent; }
+.ios-shell :is(.mobile-phone-search>label,.mobile-phone-filter-row select,.mobile-phone-form input,.mobile-phone-form select,.mobile-phone-form textarea) { color:var(--ios-ink); background:var(--ios-field); border-color:var(--ios-field-line); border-radius:13px; }
+.ios-shell .mobile-phone-form { gap:20px; padding-top:22px; margin-top:24px; }
+.ios-shell .mobile-phone-form label { color:var(--ios-muted); font-size:.8125rem; gap:8px; line-height:1.5; }
+.ios-shell .mobile-phone-form :is(input,select,textarea) { font-size:1rem; }
+.ios-shell :is(.mobile-phone-kicker,.mobile-phone-text-button,.mobile-work-icon-button,.mobile-phone-search-clear,.mobile-event-evidence summary,.mobile-actual-records-toggle,.mobile-actual-identity,.mobile-phone-resource-status>button,.mobile-phone-resource-status>details>summary) { color:var(--ios-link); }
+.ios-shell :is(.mobile-phone-context,.mobile-phone-filters,.mobile-phone-form-disclosure,.mobile-me-loans,.mobile-account-history,.mobile-task-requirements,.mobile-actual-snapshot)>summary { color:var(--ios-link); min-height:52px; }
+.ios-shell :is(.mobile-phone-notice,.mobile-actual-continue,.mobile-phone-applied button,.mobile-message-row.unread,.mobile-event-card.selected) { color:var(--ios-link); background:var(--selection-surface); border-color:var(--selection-border); border-radius:12px; }
+.ios-shell :is(.mobile-message-row.unread,.mobile-event-card.selected) { padding-inline:12px; }
+.ios-shell :is(.mobile-phone-context pre,.mobile-event-evidence pre,.mobile-actual-snapshot pre,.mobile-directory-owner code) { color:#c0cddd; background:var(--ios-field); border:1px solid var(--ios-line); border-radius:12px; }
+.ios-shell :is(.mobile-message-row>svg,.mobile-account-row>svg,.mobile-task-main>svg,.mobile-event-main>svg,.mobile-message-row em,.mobile-account-row em,.mobile-teaching-counts dd) { color:var(--ios-link); }
+.ios-shell :is(.mobile-phone-details,.mobile-actual-facts) { row-gap:12px; padding-block:16px; }
+.ios-shell .mobile-account-identity { padding:6px 0 4px; }
+.ios-shell .mobile-account-identity h2 { font-size:22px; font-weight:550; }
+.ios-shell :is(.mobile-work-icon-blue,.mobile-work-icon-violet,.mobile-work-icon-green,.mobile-work-icon-peach,.mobile-loan-symbol,.mobile-teaching-symbol,.mobile-event-symbol) { color:var(--ios-link); background:transparent; }
+.ios-shell .mobile-work-count { color:var(--ios-link); background:var(--ios-control); }
+.ios-shell :is(.mobile-task-date,.mobile-actual-pending) { color:var(--ios-warning); background:var(--ios-warning-fill); }
+.ios-shell .mobile-todo-date.overdue { color:var(--ios-warning); }
+.ios-shell :is(.mobile-work-load-error,.mi-error) { color:var(--ios-error); background:var(--ios-error-fill); border:1px solid var(--ios-error-line); border-radius:14px; }
+.ios-shell .mobile-work-load-error button { color:var(--ios-error); background:var(--ios-error-fill); border-color:var(--ios-error-line); }
+.ios-shell .mobile-phone-resource-status[data-resource-state=stale] { color:var(--ios-error); }
+
+/* Preferences retain native checkbox semantics with a full-height touch target. */
+.ios-shell .phone-settings { padding:8px 20px 24px; }
+.ios-shell .phone-settings-group { background:transparent; border:0; margin:10px 0 28px; }
+.ios-shell .phone-settings-group h2 { font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:var(--ios-muted); margin:0 0 10px; padding-inline:4px; }
+.ios-shell .phone-settings-group .phone-setting { padding:16px 0; background:transparent; min-height:72px; border-bottom:1px solid var(--ios-line); border-radius:0; }
+.ios-shell .phone-settings-group .phone-setting:nth-child(2),.ios-shell .phone-settings-group .phone-setting:last-child { border-radius:0; }
+.ios-shell .phone-setting input[type=checkbox] { position:relative; appearance:none; -webkit-appearance:none; width:52px; height:44px; margin:0; background:transparent; border:0; cursor:pointer; }
+.ios-shell .phone-setting input[type=checkbox]::before { content:''; position:absolute; inset:6px 0; border:1px solid #69788e; background:#354153; border-radius:18px; transition:background-color 150ms,border-color 150ms; }
+.ios-shell .phone-setting input[type=checkbox]::after { content:''; position:absolute; width:24px; height:24px; top:10px; left:4px; border-radius:50%; background:var(--ios-ink); box-shadow:0 1px 4px #0005; transition:transform 150ms; }
+.ios-shell .phone-setting input[type=checkbox]:checked::before { background:var(--ios-action); border-color:var(--ios-action); }
+.ios-shell .phone-setting input[type=checkbox]:checked::after { transform:translateX(20px); background:var(--ios-action-ink); }
+.ios-shell .phone-setting input[type=checkbox]:disabled { opacity:.5; cursor:default; }
+.ios-shell .phone-connection-details { background:var(--ios-field); border-color:var(--ios-line); padding:12px 16px; border-radius:18px; }
+
+/* Choice and shared business portals are outside the shell DOM. Semantic tokens
+   above also cover their nested calendars, selects and record panels. */
+body[data-ios-presentation=true] :is([data-slot=dialog-content],[data-slot=sheet-content],.phone-choice-dialog,[data-slot=popover-content],[data-slot=select-content]) { color:var(--ios-ink); background:var(--ios-sheet); border-color:var(--ios-rim); box-shadow:var(--ios-shadow); }
+body[data-ios-presentation=true] .phone-choice-dialog { color:var(--ios-ink)!important; background:var(--ios-sheet)!important; border-color:var(--ios-rim)!important; border-radius:26px!important; box-shadow:var(--ios-shadow); -webkit-backdrop-filter:none; backdrop-filter:none; }
+body[data-ios-presentation=true] .phone-choice-dialog::backdrop { background:#050912b8; }
+body[data-ios-presentation=true] .phone-choice-dialog :is(.phone-choice-options>button,.phone-choice-search input) { color:var(--ios-ink); }
+body[data-ios-presentation=true] .phone-choice-dialog :is(.phone-choice-options small,.phone-choice-search>svg,.phone-choice-empty) { color:var(--ios-muted); }
+body[data-ios-presentation=true] .phone-choice-dialog :is(.phone-choice-frame>header>button,.phone-choice-frame>footer>button,.phone-choice-empty>button) { color:var(--ios-link); }
+body[data-ios-presentation=true] .phone-choice-dialog .phone-choice-search { background:var(--ios-field); border-color:var(--ios-field-line); }
+body[data-ios-presentation=true] .phone-choice-dialog .phone-choice-frame>footer { border-color:var(--ios-line); }
+body[data-ios-presentation=true] .phone-choice-dialog .phone-choice-options>button[aria-selected=true] { background:#293d57; color:#dceaff; }
+.ios-shell :is(.phone-choice>label,.phone-choice-description) { color:var(--ios-muted); }
+.ios-shell .phone-choice-trigger { color:var(--ios-ink); background:var(--ios-field); border-color:var(--ios-field-line); }
+.ios-shell .phone-choice-trigger[data-unavailable] { color:#ffb4ad; border-color:#ab666f; }
+body[data-ios-presentation=true] [data-phone-task] :is([data-slot=dialog-close],[data-slot=sheet-close]) { color:var(--ios-link); background:#263348; }
+body[data-ios-presentation=true] [data-phone-task] :is([data-slot=dialog-title],[data-slot=sheet-title]) { color:var(--ios-ink); letter-spacing:-.02em; font-weight:600; }
+body[data-ios-presentation=true] [data-phone-task] :is([data-slot=dialog-description],[data-slot=sheet-description],.field-hint) { color:var(--ios-muted); }
+body[data-ios-presentation=true] [data-phone-task] :is([data-slot=dialog-header],[data-slot=dialog-footer],[data-slot=sheet-header],[data-phone-dialog-header],[data-phone-dialog-footer]) { background:var(--ios-panel); border-color:var(--ios-line); }
+body[data-ios-presentation=true] [data-phone-task] :is(input:not([type=checkbox]):not([type=radio]),textarea,[data-slot=select-trigger]) { color:var(--ios-ink); background:var(--ios-field); border-color:var(--ios-field-line); border-radius:12px; }
+body[data-ios-presentation=true] [data-phone-task] [data-slot=button] { border-radius:12px; min-height:44px; font-size:.9375rem; }
+body[data-ios-presentation=true] [data-phone-task] [data-slot=button][data-variant=default] { background:var(--ios-action); color:var(--ios-action-ink); }
+body[data-ios-presentation=true] [data-phone-task] [data-slot=button][data-variant=outline] { color:var(--ios-link); background:var(--ios-control); border-color:#51637e; }
+body[data-ios-presentation=true] [data-phone-task] [data-slot=button][data-variant=destructive] { color:#fff; background:#ab3846; }
+body[data-ios-presentation=true] [data-phone-task] :is([data-slot=tabs-trigger],[data-slot=accordion-trigger],summary) { min-height:44px; }
+body[data-ios-presentation=true] [data-phone-task] :is(.mobile-task-confirmation,.mobile-task-latest,.mobile-task-completed) { background:#223850; color:#dceaff; }
+body[data-ios-presentation=true] [data-phone-task] .mobile-task-confirmation small { color:#afc4df; }
+body[data-ios-presentation=true] [data-phone-task=battery-record] [data-inspection-outcome=concern_observed] { color:#f0d9a7; background:#352d1d; border-color:#8f7547; }
+body[data-ios-presentation=true] [data-phone-task=battery-record] [data-inspection-outcome=concern_observed] :is(p,strong) { color:#f0d9a7; }
+body[data-ios-presentation=true] [data-phone-task] :is([data-slot=button],input,textarea,summary):focus-visible { outline:2px solid #b4d4ff; outline-offset:3px; }
+
+/* Real content remains readable at phone width; fields keep 16px text while
+   supporting facts and evidence use a quieter, consistently sized second tier. */
+.ios-shell :is(.mobile-inventory,.mobile-work-home,.mobile-work-page,.phone-detail,.phone-settings,.phone-lifecycle) { font-size:.9375rem; line-height:1.55; }
+.ios-shell :is(.mobile-inventory,.mobile-work-home,.mobile-work-page,.phone-detail,.phone-settings,.phone-lifecycle,.mi-sheet,.mobile-task-dialog) button { min-height:44px; font-size:.9375rem; }
+.ios-shell :is(.mi-inventory-search input,.mi-field input,.mi-field select,.mobile-phone-search input,.mobile-phone-filter-row select,.phone-choice-trigger) { font-size:1rem; min-height:48px; }
+.ios-shell :is(.mi-count,.mi-help,.mi-field,.mi-review-list small,.mobile-phone-details,.mobile-actual-facts,.mobile-phone-pagination,.mobile-phone-context,.mobile-phone-details dt,.mobile-actual-facts dt) { font-size:.8125rem; line-height:1.5; }
+.ios-shell :is(.mobile-phone-details dd,.mobile-actual-facts dd,.mobile-task-main strong,.mobile-event-main strong,.mobile-directory-card strong,.mobile-message-row strong,.mobile-account-row strong,.mobile-todo-item strong,.mobile-me-loan-list strong) { font-size:.9375rem; font-weight:500; }
+.ios-shell :is(.mobile-task-main small,.mobile-task-main em,.mobile-task-cycles small,.mobile-work-group-preview small,.mobile-message-row small,.mobile-message-row em,.mobile-account-row small,.mobile-account-row em,.mobile-todo-date,.mobile-todo-state,.mobile-me-loan-list small,.phone-setting small,.phone-destination small,.phone-detail-facts small) { font-size:.8125rem; line-height:1.5; }
+.ios-shell :is(.phone-status,.mi-battery-status,.mi-new-badge) { font-size:.75rem; font-weight:500; border-radius:6px; }
+.ios-shell .phone-settings-group .phone-destination { border:0; border-bottom:1px solid var(--ios-line); border-radius:0; background:transparent; padding:18px 0; }
+body[data-ios-presentation=true] :is([data-phone-task],.phone-choice-dialog) { font-size:.9375rem; line-height:1.55; }
+body[data-ios-presentation=true] [data-phone-task] :is(label,legend,.field-hint,[data-slot=dialog-description],[data-slot=sheet-description]) { font-size:.8125rem; line-height:1.5; }
+body[data-ios-presentation=true] [data-phone-task] :is(input:not([type=checkbox]):not([type=radio]),select,textarea,[data-slot=select-trigger]) { min-height:44px; font-size:1rem; }
+body[data-ios-presentation=true] [data-phone-task] :is([data-slot=dialog-close],[data-slot=sheet-close]) { min-width:44px; min-height:44px; }
+body[data-ios-presentation=true] .phone-choice-dialog :is(.phone-choice-options>button,.phone-choice-frame>footer>button,.phone-choice-empty>button) { min-height:48px; font-size:.9375rem; }
+body[data-ios-presentation=true] .phone-choice-dialog :is(.phone-choice-options small,.phone-choice-empty) { font-size:.8125rem; }
+
+/* Feedback follows input state; it never hides disabled reasons or changes a
+   route's admission, scroll ownership or form submission behavior. */
+.ios-shell :is(.mobile-work-page,.phone-detail,.phone-settings,.mi-sheet,.mobile-task-dialog) button:not(:disabled):is(:active,[data-pressed=true]),
+body[data-ios-presentation=true] .phone-choice-dialog .phone-choice-options>button:not(:disabled):is(:active,[data-pressed=true]) { filter:brightness(1.12); box-shadow:none; }
+.ios-shell :is(.mobile-work-home,.mobile-work-page,.phone-detail,.phone-settings,.mi-sheet,.mobile-task-dialog) button:disabled { background:var(--ios-disabled-fill)!important; color:var(--ios-disabled-ink)!important; border-color:var(--ios-line)!important; opacity:1; }
+.ios-shell :is(.mi-field input,.mobile-phone-form input,.mobile-phone-form textarea):disabled { background:var(--ios-disabled-fill); color:var(--ios-disabled-ink); border-color:var(--ios-line); }
+body[data-ios-presentation=true] [data-phone-task] [data-slot=button]:disabled { background:var(--ios-disabled-fill); color:var(--ios-disabled-ink); border-color:var(--ios-line); opacity:1; }
+@media(max-width:360px) { .ios-shell :is(.mobile-work-page,.phone-detail,.phone-compat-page,.phone-settings) { padding-inline:16px; } .ios-shell :is(.mi-sheet-body,.mobile-task-dialog-body) { padding:16px; } .ios-shell :is(.mi-sheet,.mobile-task-dialog)>footer { padding-inline:16px; } .ios-shell .mobile-me-summary+.mobile-me-summary { border-left:0; border-top:1px solid var(--ios-line); padding-left:0; } }
+@media(max-height:500px) { .ios-shell :is(.mi-sheet,.mobile-task-dialog)>header { padding-block:6px; } .ios-shell :is(.mi-sheet,.mobile-task-dialog)>footer { padding-block:6px; } }
+

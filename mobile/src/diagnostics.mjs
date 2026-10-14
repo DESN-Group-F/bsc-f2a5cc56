@@ -76,12 +76,35 @@ export function validateReadResult(result) {
         && ['typeHex', 'idHex', 'payloadHex'].every((key) => typeof record[key] === 'string' && record[key].length % 2 === 0 && /^[a-f0-9]*$/i.test(record[key])));
   } catch { return false; }
 }
+const partialResultKeys = new Set(['uidHex', 'technology', 'ndefStatus', 'capacityBytes', 'records', 'observedAt', 'ndefError']);
+const invalidPartialEvidence = 'Partial NFC evidence could not be validated. It was not adopted as a completed read.';
+function validatePartialReadResult(result) {
+  return validateReadResult(result) && result.uidHex === normalizeUid(result.uidHex)
+    && typeof result.ndefError === 'string' && result.ndefError.length > 0
+    && Object.keys(result).every(key => partialResultKeys.has(key))
+    && result.records.every(record => Object.keys(record).every(key => ['tnf', 'typeHex', 'idHex', 'payloadHex'].includes(key)));
+}
+/** Rejected native reads remain rejected. Only validated observation progress is retained. */
+export function partialReadEvidence(error) {
+  const supplied = error?.data?.partialResult;
+  if (supplied === undefined) return {};
+  if (!supplied || typeof supplied !== 'object' || Array.isArray(supplied)) return { partialResultIssue: invalidPartialEvidence };
+  const { readerSessionId, ...partialResult } = supplied;
+  if (!validatePartialReadResult(partialResult)) return { partialResultIssue: invalidPartialEvidence };
+  return { partialResult: JSON.parse(JSON.stringify(partialResult)) };
+}
+export function validateRetainedPartialEvidence(report) {
+  if (report.partialResult === undefined && report.partialResultIssue === undefined) return true;
+  if (!['failed', 'cancelled'].includes(report.outcome) || report.result !== null) return false;
+  if (report.partialResultIssue !== undefined) return report.partialResult === undefined && report.partialResultIssue === invalidPartialEvidence;
+  return validatePartialReadResult(report.partialResult);
+}
 function validReport(report) {
   return report && typeof report.id === 'string' && typeof report.startedAt === 'string' && Number.isFinite(Date.parse(report.startedAt))
     && outcomes.includes(report.outcome) && report.setup && typeof report.setup.tagLabel === 'string'
     && typeof report.setup.deviceModel === 'string' && typeof report.setup.chipLabel === 'string' && SURFACES.includes(report.setup.surface)
     && typeof report.platform === 'string' && (report.error === null || (report.error && typeof report.error.code === 'string' && typeof report.error.message === 'string'))
-    && (report.outcome !== 'read' || validateReadResult(report.result));
+    && (report.outcome !== 'read' || validateReadResult(report.result)) && validateRetainedPartialEvidence(report);
 }
 
 export function loadState(raw) {

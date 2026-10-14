@@ -5,6 +5,7 @@ import { mappingUnknownReason, UNKNOWN_MAPPING_ROOM } from '../../shared/lib/inv
 import { mappingSummaries } from './inventory-model.mjs';
 import { defaultMappingCamera, schematicRoomModules } from './mapping-geometry.mjs';
 import { createMappingRenderer } from './mapping-renderer.mjs';
+import { iosPresentation } from '../../app/ios-runtime-presentation.mjs';
 import { REFERENCE_BUILDINGS, SUPPORTED_BUILDING_ID } from '../../shared/lib/location-catalog.js';
 import { usePhoneBack, usePhoneReducedMotion } from '../../app/phone-ui.jsx';
 import { PhoneTaskDialog } from '../workspace/phone-task-dialog.jsx';
@@ -60,7 +61,7 @@ export function MappingScene({ data, memoryKey, active = true, onRoom }) {
   }, [memoryKey]);
   useEffect(() => {
     setFailure(''); let engine;
-    try { engine = createMappingRenderer(canvas.current, modules, setLabels); renderer.current = engine; renderSoon(); }
+    try { engine = createMappingRenderer(canvas.current, modules, setLabels, { appearance:iosPresentation?'ios':'light' }); renderer.current = engine; renderSoon(); }
     catch (error) { setFailure(error.message); }
     const resize = new ResizeObserver(renderSoon); resize.observe(canvas.current);
     const lost = event => { event.preventDefault(); endInteraction(); setFailure('The 3D scene was interrupted. Use the room list, or return to Mapping to retry.'); cancelAnimationFrame(frame.current); frame.current = 0; };

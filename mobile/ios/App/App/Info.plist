@@ -66,6 +66,8 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>UIUserInterfaceStyle</key>
+	<string>Dark</string>
 	<key>NFCReaderUsageDescription</key>
 	<string>Read battery tags for identification and reviewed inventory workflows.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>

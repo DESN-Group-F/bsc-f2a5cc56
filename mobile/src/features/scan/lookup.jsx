@@ -6,7 +6,7 @@ import { batteryStatusLabel } from '../../shared/lib/battery-lifecycle.js';
 import { formatTime, storageRoomLabel } from '../../shared/lib/client-utils.js';
 import { useWorkflowLock } from '../../business/workflow-boundary.jsx';
 import { Pressable, usePhoneBack, usePhoneContext } from '../../app/phone-ui.jsx';
-import { InkOrb } from './ink-orb.jsx';
+import { ScanCharacter as InkOrb } from './scan-character.jsx';
 import { createLookupController } from './lookup-controller.mjs';
 import { readFeedbackPreferences } from './feedback.mjs';
 import { useScanFeedback } from './use-scan-feedback.js';

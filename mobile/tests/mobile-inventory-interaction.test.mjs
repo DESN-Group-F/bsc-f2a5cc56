@@ -44,7 +44,7 @@ async function componentHarness(file, names, extra = {}) {
     if (!prior || !deps || deps.some((value, i) => !Object.is(value, prior.deps?.[i]))) { hooks[index] = { deps, cleanup: prior?.cleanup }; pending.push(() => { hooks[index].cleanup?.(); hooks[index].cleanup = run(); }); }
   };
   const bindings = {
-    ...model, ...interaction, ...query, ...lifecycle, ...locations, ...mapping, getRolePermissions, recentNewArrivals, currentSydneyDate, formatTime, defaultMappingCamera, schematicRoomModules,visiblePhoneOverlays,
+    ...model, ...interaction, ...query, ...lifecycle, ...locations, ...mapping, getRolePermissions, recentNewArrivals, currentSydneyDate, formatTime, defaultMappingCamera, schematicRoomModules,visiblePhoneOverlays, iosPresentation:false,
     PhoneTaskDialog: 'phone-task-dialog', React: { Fragment: 'fragment', useId: () => 'test-title', useCallback: callback => callback, createContext(value) { const context = { value }; context.Provider = { context }; return context; }, useContext: context => context.value }, MappingScene: 'mapping-scene', TemporalInput: 'temporal-input',
     inventoryScrollOwner: element => interaction.inventoryScrollOwner(element, document),
     window: { getSelection: () => null, matchMedia: () => ({ matches: false, addEventListener() {}, removeEventListener() {} }) }, document,
@@ -151,6 +151,7 @@ test('actual Mapping preserves page drags until deliberate interaction and disab
   let canvas = nodes(tree).find(node => node.type === 'canvas'); const target = canvas.props.ref.current;
   const event = (id, x, y, type = 'pointermove') => ({ type, currentTarget: target, pointerId: id, clientX: x, clientY: y, stopPropagation() {} });
   const initial = harness.draws.at(-1);
+  assert.ok(initial, 'The controlled Mapping renderer must initialize and draw before gesture assertions');
   canvas.props.onPointerDown(event(1, 50, 50, 'pointerdown')); canvas.props.onPointerMove(event(1, 70, 100)); canvas.props.onPointerUp(event(1, 70, 100, 'pointerup'));
   harness.step(); assert.deepEqual(harness.draws.at(-1), initial); assert.equal(harness.captures.size, 0);
   tree = harness.render('MappingScene', props); assert.equal(nodes(tree).some(node => node.props.className === 'mi-room-summary'), false);

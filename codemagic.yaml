@@ -1,4 +1,4 @@
-# Reviewed local-2 source with explicit owner-beta workflow activation. All workflows are manual.
+# Manual testing milestone; only the selected workflow executes.
 workflows:
   mobile-ios-verify:
     name: Mobile iOS compile check
@@ -96,22 +96,26 @@ workflows:
             exit 1
           fi
           MOBILE_BUILD_NUMBER=$((PROJECT_BUILD_NUMBER + 1))
-          if (( MOBILE_BUILD_NUMBER <= 8 )); then
-            echo 'The assigned build number must exceed the latest confirmed App Store Connect upload (8).' >&2
+          if (( MOBILE_BUILD_NUMBER <= 10 )); then
+            echo 'The assigned build number must exceed the latest confirmed App Store Connect upload (10).' >&2
             exit 1
           fi
           mkdir -p build/ios/verification
-          printf '{"projectBuildNumber":%s,"assignedBuildNumber":%s,"minimumExclusive":8}\n' "$PROJECT_BUILD_NUMBER" "$MOBILE_BUILD_NUMBER" > build/ios/verification/build-number.json
+          printf '{"projectBuildNumber":%s,"assignedBuildNumber":%s,"minimumExclusive":10}\n' "$PROJECT_BUILD_NUMBER" "$MOBILE_BUILD_NUMBER" > build/ios/verification/build-number.json
           /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $MOBILE_BUILD_NUMBER" ios/App/App/Info.plist
           xcode-project build-ipa --project ios/App/App.xcodeproj --scheme App \
             --archive-directory build/ios/xcarchive --ipa-directory build/ios/ipa
-      - name: Verify signed package and crash-symbol identity
+      - name: Verify signed package and crash-symbol identity before publishing
         script: |
           set -euo pipefail
           cd mobile
           python3 ../scripts/verify-ios-signed-artifact.py
+          # Only a fully verified IPA becomes an artifact available to the publisher.
+          mkdir build/ios/verified-ipa
+          cp build/ios/ipa/*.ipa build/ios/verified-ipa/BatteryInventory.ipa.pending
+          mv build/ios/verified-ipa/BatteryInventory.ipa.pending build/ios/verified-ipa/BatteryInventory.ipa
     artifacts:
-      - mobile/build/ios/ipa/*.ipa
+      - mobile/build/ios/verified-ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
       - mobile/build/ios/xcarchive/**/*.dSYM
       - mobile/build/ios/verification/*.json

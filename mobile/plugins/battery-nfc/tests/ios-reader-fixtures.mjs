@@ -14,9 +14,12 @@ public class CAPPluginCall {
     public var options: [String: Any]
     var results: [[String: Any]] = []
     var errors: [(String, String)] = []
+    var errorData: [[String: Any]?] = []
     public init(_ options: [String: Any] = [:]) { self.options = options }
     public func resolve(_ result: [String: Any] = [:]) { results.append(result) }
-    public func reject(_ message: String, _ code: String) { errors.append((message, code)) }
+    public func reject(_ message: String, _ code: String, _ error: Error? = nil, _ data: [String: Any]? = nil) {
+        errors.append((message, code)); errorData.append(data)
+    }
 }
 public class FixtureBundle {
     public static let main = FixtureBundle()
@@ -187,12 +190,25 @@ struct HarnessFailure: Error { let message: String }
         try check(defaultCall.results.count == 1 && defaultSession.invalidateCount == 1, "Default diagnostics remain a single read")
         try check(defaultCall.results[0]["readerSessionId"] == nil, "Default result has no continuous token")
 
+        let unavailableDetection = read(plugin)
+        let unavailableSession = NFCTagReaderSession.instances.last!
+        let unavailableTag = FixtureMiFareTag([0x01, 0x02, 0x03, 0x04])
+        unavailableTag.isAvailable = false
+        finishTag(unavailableSession, unavailableTag)
+        try check(unavailableSession.connectCallbacks.count == 1 && unavailableDetection.errors.isEmpty, "A newly detected tag is connected instead of rejected by an availability snapshot")
+        try check(unavailableDetection.results.first?["uidHex"] as? String == "01020304", "Successful connection retains the already detected UID")
+        try check(unavailableDetection.results.first?["ndefError"] == nil && unavailableSession.invalidateCount == 1, "Actual NDEF completion, not availability, determines the result")
+
         let immediateLoss = read(plugin)
         let lostSession = NFCTagReaderSession.instances.last!
-        let lostTag = FixtureMiFareTag([0x01, 0x02, 0x03, 0x04])
+        let lostTag = FixtureMiFareTag([0x01, 0x02, 0x03, 0x05])
         lostTag.isAvailable = false
         lostSession.emit(lostTag)
-        try check(immediateLoss.errors.first?.1 == "TAG_LOST" && lostSession.invalidateCount == 1, "Current tag removed after detection fails promptly instead of waiting for timeout")
+        try check(immediateLoss.results.isEmpty && immediateLoss.errors.isEmpty && lostSession.connectCallbacks.count == 1, "Connection result is awaited before classifying a detected tag")
+        lostSession.connectCallbacks[0](NSError(domain: "NFCFixture", code: 100, userInfo: [NSLocalizedDescriptionKey: "The tag connection was lost."])); pump()
+        try check(immediateLoss.results.first?["uidHex"] as? String == "01020305", "Real connection failure does not erase the UID already observed")
+        try check((immediateLoss.results.first?["ndefError"] as? String)?.contains("TAG_CONNECTION: NFCFixture 100") == true, "Real connection failure remains explicit, not a complete NDEF success")
+        try check(lostTag.statusCallbacks.isEmpty && lostSession.invalidateCount == 1, "Connection failure closes the session without attempting NDEF")
 
         let lossSeed = read(plugin, ["keepSessionAlive": true])
         let lossSession = NFCTagReaderSession.instances.last!
@@ -201,13 +217,71 @@ struct HarnessFailure: Error { let message: String }
         let lossID = try token(lossSeed)
         previousTag.isAvailable = false
         let lostContinuation = read(plugin, ["keepSessionAlive": true, "sessionId": lossID])
+        previousTag.isAvailable = true
         lossSession.emit(previousTag)
-        try check(lostContinuation.errors.isEmpty && lossSession.invalidateCount == 0, "Retired tag callback cannot terminate a new generation")
+        try check(lostContinuation.errors.isEmpty && lossSession.invalidateCount == 0 && lossSession.connectCallbacks.count == 1, "Retired object callbacks remain stale even when their availability value is true")
         let lostNextTag = FixtureMiFareTag([0x01, 0x02, 0x03, 0x05])
         lostNextTag.isAvailable = false
         lossSession.emit(lostNextTag)
-        try check(lostContinuation.errors.first?.1 == "TAG_LOST", "New current-generation lost tag is not mistaken for a retired callback")
-        try check(read(plugin, ["keepSessionAlive": true, "sessionId": lossID]).errors.first?.1 == "TAG_LOST", "Lost-tag terminal reason survives continuation")
+        try check(lossSession.connectCallbacks.count == 2, "A new unavailable tag is not mistaken for the retired tag")
+        lossSession.connectCallbacks[1](NSError(domain: "NFCFixture", code: 100)); pump()
+        try check(lostContinuation.results.first?["uidHex"] as? String == "01020305", "Current-generation connection failure retains only that generation's UID")
+        try check((lostContinuation.results.first?["ndefError"] as? String)?.hasPrefix("TAG_CONNECTION:") == true, "Continuous connection failure is retained with the partial UID")
+        try check(read(plugin, ["keepSessionAlive": true, "sessionId": lossID]).errors.first?.1 == "TAG_CONNECTION", "Actual connection failure remains terminal for the session token")
+
+        for stage in ["status", "message"] {
+            let optionalFailure = read(plugin)
+            let optionalSession = NFCTagReaderSession.instances.last!
+            let optionalTag = FixtureMiFareTag([0x00, 0x02, 0x03, 0x04])
+            optionalSession.emit(optionalTag)
+            optionalSession.connectCallbacks[0](nil); pump()
+            if stage == "status" {
+                optionalTag.statusCallbacks[0](.notSupported, -1, NSError(domain: "NFCFixture", code: 100)); pump()
+            } else {
+                optionalTag.statusCallbacks[0](.readWrite, 137, nil); pump()
+                optionalTag.ndefCallbacks[0](nil, NSError(domain: "NFCFixture", code: 100)); pump()
+            }
+            let expected = stage == "status" ? "NDEF_STATUS:" : "NDEF_READ:"
+            try check(optionalFailure.results.first?["uidHex"] as? String == "00020304", "NDEF failure preserves leading-zero UID evidence")
+            try check((optionalFailure.results.first?["ndefError"] as? String)?.hasPrefix(expected) == true, "NDEF failure preserves its actual operation stage")
+            try check((optionalFailure.results.first?["records"] as? [[String: Any]])?.isEmpty == true && optionalSession.invalidateCount == 1, "Failed NDEF invents no records and ends the physical session")
+        }
+
+        let unsupportedNdef = read(plugin)
+        let unsupportedSession = NFCTagReaderSession.instances.last!
+        let unsupportedTag = FixtureMiFareTag([0x01, 0x02, 0x03, 0x04])
+        unsupportedSession.emit(unsupportedTag)
+        unsupportedSession.connectCallbacks[0](nil); pump()
+        unsupportedTag.statusCallbacks[0](.notSupported, 0, nil); pump()
+        try check(unsupportedNdef.results.first?["ndefStatus"] as? String == "notSupported" && unsupportedNdef.results.first?["ndefError"] == nil, "NDEF unsupported is distinct from a failed NDEF operation")
+        try check(unsupportedTag.ndefCallbacks.isEmpty && unsupportedNdef.results.first?["capacityBytes"] is NSNull, "Unsupported NDEF does not invent capacity or request a message")
+
+        for interruption in ["system", "cancel", "background"] {
+            let interrupted = read(plugin, ["keepSessionAlive": true])
+            let interruptedSession = NFCTagReaderSession.instances.last!
+            let interruptedTag = FixtureMiFareTag([0x00, 0x02, 0x03, 0x06])
+            interruptedSession.emit(interruptedTag)
+            if interruption == "system" {
+                interruptedSession.end(.readerSessionInvalidationErrorUserCanceled)
+            } else if interruption == "cancel" {
+                cancel(plugin)
+            } else {
+                UIApplication.shared.applicationState = .background
+                NotificationCenter.default.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+                UIApplication.shared.applicationState = .active
+            }
+            let code = interruption == "background" ? "BACKGROUND" : "CANCELLED"
+            let progress = interrupted.errorData.first.flatMap { $0 }?["partialResult"] as? [String: Any]
+            try check(interrupted.results.isEmpty && interrupted.errors.first?.1 == code, "Interruption remains a rejected read, never an adoptable success")
+            try check(progress?["uidHex"] as? String == "00020306" && (progress?["ndefError"] as? String)?.hasPrefix(code + ":") == true, "Interrupted read retains detected evidence separately with its terminal reason")
+            try check(progress?["readerSessionId"] == nil, "Rejected partial evidence has no continuation capability")
+            interruptedSession.connectCallbacks[0](nil); pump()
+            try check(interruptedTag.statusCallbacks.isEmpty && interrupted.results.isEmpty && interrupted.errors.count == 1, "Late connection callback cannot revive or replace rejected evidence")
+        }
+
+        let noDetection = read(plugin)
+        cancel(plugin)
+        try check(noDetection.errors.first?.1 == "CANCELLED" && noDetection.errorData.first.flatMap({ $0 }) == nil, "Cancellation before detection does not invent partial evidence")
 
         let heldRead = read(plugin, ["keepSessionAlive": true])
         let heldSession = NFCTagReaderSession.instances.last!

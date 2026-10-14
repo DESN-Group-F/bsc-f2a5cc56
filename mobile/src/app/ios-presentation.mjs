@@ -4,7 +4,7 @@ export function usesIosPresentation({ platform, native, search = '' }) {
   return new URLSearchParams(search).get('presentation') === 'ios';
 }
 
-export const IOS_MAIN_AREAS = Object.freeze(['scan', 'inventory', 'workspace']);
+export const IOS_MAIN_AREAS = Object.freeze(['scan', 'inventory', 'workspace', 'me']);
 export const IOS_SCAN_ACTIONS = Object.freeze([
   { kind:'return', label:'Check in', detail:'Receive batteries', color:'yellow' },
   { kind:'checkout', label:'Check out', detail:'Prepare a loan', color:'blue' },
@@ -14,7 +14,7 @@ export const IOS_SCAN_ACTIONS = Object.freeze([
 
 export function iosDockPosition(clientX, left, width) {
   if (!Number.isFinite(clientX) || !Number.isFinite(left) || !Number.isFinite(width) || width <= 0) return null;
-  return Math.max(0, Math.min(2, (clientX - left) / width * 3 - .5));
+  return Math.max(0, Math.min(IOS_MAIN_AREAS.length - 1, (clientX - left) / width * IOS_MAIN_AREAS.length - .5));
 }
 
 export function iosSearchDestination(route, text, requestId) {

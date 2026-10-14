@@ -27,6 +27,7 @@ const workspaceUrl = new URL('../src/features/workspace/workspace.jsx', import.m
 const workspaceSource = await readFile(workspaceUrl, 'utf8');
 const workspaceAst = ts.createSourceFile('workspace.jsx', workspaceSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.JSX);
 const meSource = `import {Pressable} from '../../app/phone-ui.jsx';
+import {iosPresentation} from '../../app/ios-runtime-presentation.mjs';
 import {ArrowRight,CalendarDays,ChevronRight,History,Inbox,Settings2,UserRound,Battery,LogOut} from 'lucide-react';
 import {useTaskEndpoint} from '../../shared/hooks/use-task-endpoint.js';
 import {currentSydneyDate} from '../../shared/lib/battery-age.js';

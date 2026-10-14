@@ -1,0 +1,25 @@
+/* No route or action is removed for compact, keyboard or accessibility modes. */
+body[data-ios-presentation=true][data-phone-layout=editing] :is(.scan-focused-header,.mi-focused-header,.removal-top,.lookup-header,.mr-sticky-header,.scan-stage-footer,.removal-stage-footer,.mi-preparation>footer,.mr-sticky-actions) { background:var(--ios-sheet); border-color:var(--ios-line); }
+body[data-ios-presentation=true][data-phone-layout=editing] :is(.scan-focused-header,.mi-focused-header,.removal-top,.lookup-header) { min-height:44px; }
+body[data-ios-presentation=true][data-phone-layout=editing] :is(.phone-choice-dialog,.mi-sheet,.mobile-task-dialog,.phone-model-finder) { border-radius:20px!important; }
+body[data-ios-presentation=true] :is(.scan-portal-root,.mi-portal-root,.removal-portal-root,.phone-model-portal,.scan-outcome-portal) { font-family:var(--ios-font); }
+@media(prefers-reduced-motion:reduce) {
+  body[data-ios-presentation=true] *,body[data-ios-presentation=true] *::before,body[data-ios-presentation=true] *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
+  body[data-ios-presentation=true] .ios-shell.phone-workflow-open { transform:none; }
+}
+body[data-ios-presentation=true][data-phone-reduced-motion=true] *,body[data-ios-presentation=true][data-phone-reduced-motion=true] *::before,body[data-ios-presentation=true][data-phone-reduced-motion=true] *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important; }
+body[data-ios-presentation=true] .ios-shell[data-reduced-motion=true],body[data-ios-presentation=true] .ios-shell[data-reduced-motion=true] *,body[data-ios-presentation=true] .ios-shell[data-reduced-motion=true] *::before,body[data-ios-presentation=true] .ios-shell[data-reduced-motion=true] *::after { animation:none!important; transition:none!important; }
+body[data-ios-presentation=true] .ios-shell[data-reduced-motion=true].phone-workflow-open { transform:none; }
+@media(prefers-reduced-transparency:reduce) {
+  body[data-ios-presentation=true],body[data-ios-presentation=true] :is(.phone-app,.ios-shell,.nfc-diagnostics,.mi-sheet,.mobile-task-dialog,.phone-choice-dialog,.scan-outcome-portal,.phone-model-portal,[data-slot=dialog-content],[data-slot=sheet-content],[data-slot=popover-content],[data-slot=select-content]) {
+    --ios-atmosphere:#10141b; --ios-scrim:#080e18;
+  }
+  body[data-ios-presentation=true] * { -webkit-backdrop-filter:none!important; backdrop-filter:none!important; }
+  body[data-ios-presentation=true] :is(.ios-search-panel,.ios-dock) { background:var(--ios-sheet); }
+  body[data-ios-presentation=true] .ios-dock-selection { background:#435268; box-shadow:none; }
+  body[data-ios-presentation=true] .ios-optic-window { display:none; }
+  body[data-ios-presentation=true] .ios-dock>button { z-index:4; opacity:1!important; }
+}
+@media(prefers-contrast:more) {
+  body[data-ios-presentation=true],body[data-ios-presentation=true] :is(.phone-app,.ios-shell,.nfc-diagnostics,.mi-sheet,.mobile-task-dialog,.phone-choice-dialog,.scan-outcome-portal,.phone-model-portal,[data-slot=dialog-content],[data-slot=sheet-content],[data-slot=popover-content],[data-slot=select-content]) { --ios-line:#859ab5; --ios-rim:#a5bad4; --ios-muted:#d0dbee; --ios-control-line:#93b0d4; --ios-field-line:#96b1d1; }
+}

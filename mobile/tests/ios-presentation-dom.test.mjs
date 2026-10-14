@@ -51,6 +51,7 @@ async function mount(t,{ ios=true, width=390, height=844, reducedMotion='no-pref
   const page=await browser.newPage({viewport:{width,height},reducedMotion}), errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.route('https://ios.fixture.test/**',route=>route.fulfill({contentType:'text/html',body:'<meta name="viewport" content="width=device-width,initial-scale=1"><style>'+bundled.css+'</style><div id="root"></div><script type="module">'+bundled.js.replaceAll('</script','<\\/script')+'</script>'}));
   await page.goto('https://ios.fixture.test/'+(ios?'?presentation=ios':''));
+  if(process.env.MOBILE_PRESENTATION_CSS)await page.addStyleTag({content:await readFile(process.env.MOBILE_PRESENTATION_CSS,'utf8')});
   await page.waitForSelector(ios?'.ios-operation':'.scan-lookup-target');assert.deepEqual(errors,[]);
   return page;
 }
@@ -58,7 +59,7 @@ const visibleInventory=page=>page.locator('.phone-route:not([hidden]) .mobile-in
 async function search(page,text) { await page.getByRole('button',{name:'Search inventory',exact:true}).click();await page.locator('#ios-inventory-search').fill(text);await page.locator('.ios-search-panel').getByRole('button',{name:'Search',exact:true}).click(); }
 
 test('iOS home and navigation are scoped while Android-compatible browser home stays unchanged',browserOptions,async t=>{
-  const page=await mount(t);assert.equal(await page.locator('.ios-operation').count(),4);assert.equal(await page.locator('.ios-dock button').count(),3);assert.equal(await page.locator('.ios-me-control').count(),1);assert.equal(await page.locator('.phone-bottom-bar').count(),0);
+  const page=await mount(t);assert.equal(await page.locator('.ios-operation').count(),3);assert.equal(await page.locator('.ios-intake-entry').count(),1);assert.equal(await page.locator('.ios-dock button').count(),4);assert.equal(await page.locator('.ios-scan-home .ink-orb').count(),1);assert.equal(await page.locator('.phone-bottom-bar').count(),0);
   const android=await mount(t,{ios:false});assert.equal(await android.locator('.phone-bottom-bar button').count(),4);assert.equal(await android.locator('.scan-action-tile').count(),4);assert.equal(await android.locator('.ios-operation').count(),0);
 });
 test('new operation entry retains cancellable saving admission and owns only one workflow',browserOptions,async t=>{
@@ -66,13 +67,13 @@ test('new operation entry retains cancellable saving admission and owns only one
   await page.locator('.ios-entry-status').getByRole('button',{name:'Cancel',exact:true}).click();await page.evaluate(()=>fixture.setSaving(false));assert.deepEqual(await page.evaluate(()=>fixture.opens),[]);
   await page.getByRole('button',{name:'Check out: Prepare a loan',exact:true}).click();await page.waitForSelector('.ios-workflow');assert.deepEqual(await page.evaluate(()=>fixture.opens),['checkout']);assert.equal(await page.locator('.ios-shell[inert]').count(),1);assert.equal(await page.locator('.ios-search-trigger:disabled').count(),1);
 });
-test('dock drag commits its destination on release and Me stays independently accessible',browserOptions,async t=>{
+test('dock drag commits its destination on release and Me shares the admitted navigation',browserOptions,async t=>{
   const page=await mount(t), dock=await page.locator('.ios-dock').boundingBox();
   await page.mouse.move(dock.x+30,dock.y+22);await page.mouse.down();await page.mouse.move(dock.x+dock.width-25,dock.y+22,{steps:7});assert.equal(await page.locator('.ios-dock[data-dragging=true]').count(),1);assert.equal(await page.locator('.ios-dock button[aria-current=page]').textContent(),'Scan');
-  await page.mouse.up();await page.waitForFunction(()=>document.querySelector('.ios-dock button[aria-current=page]')?.textContent==='Workspace');await page.locator('.ios-me-control').click();await page.waitForSelector('.ios-me-control[aria-current=page]');assert.equal(await page.locator('.ios-dock button[aria-current=page]').count(),0);
+  await page.mouse.up();await page.waitForFunction(()=>document.querySelector('.ios-dock button[aria-current=page]')?.textContent==='Me');await page.locator('.ios-dock').getByRole('button',{name:'Workspace',exact:true}).click();await page.waitForFunction(()=>document.querySelector('.ios-dock button[aria-current=page]')?.textContent==='Workspace');assert.equal(await page.locator('.ios-dock button[aria-current=page]').count(),1);
 });
 test('floating search uses real inventory filters, retains owner scope and chosen records, and performs no business write',browserOptions,async t=>{
-  const page=await mount(t);await page.locator('.ios-me-control').click();await page.getByRole('button',{name:'My responsibility',exact:true}).click();await visibleInventory(page).waitFor();assert.equal(await visibleInventory(page).locator('.mi-record').count(),2);
+  const page=await mount(t);await page.getByRole('button',{name:'Me, 2 unread messages',exact:true}).click();await page.getByRole('button',{name:'My responsibility',exact:true}).click();await visibleInventory(page).waitFor();assert.equal(await visibleInventory(page).locator('.mi-record').count(),2);
   await page.evaluate(()=>fixture.requests=[]);
   await visibleInventory(page).getByRole('button',{name:'Select batteries',exact:true}).click();await visibleInventory(page).getByRole('checkbox',{name:'Select BAT-1',exact:true}).check();
   await search(page,'BAT-2');await page.waitForFunction(()=>document.querySelector('.phone-route:not([hidden]) .mi-inventory-search input')?.value==='BAT-2');assert.equal(await visibleInventory(page).locator('.mi-record').count(),0);assert.deepEqual(await page.evaluate(()=>fixture.view({kind:'owner',id:'STAFF-A'}).selectedIds),['BAT-1']);
@@ -98,13 +99,28 @@ test('iOS inventory sheets retain readable foreground and full-size actions',bro
 });
 test('search close restores focus and reduced-motion compact layouts keep actionable controls',browserOptions,async t=>{
   const page=await mount(t,{width:320,height:568,reducedMotion:'reduce'});await page.getByRole('button',{name:'Search inventory',exact:true}).click();await page.keyboard.press('Escape');assert.equal(await page.locator('.ios-search-panel').count(),0);assert.equal(await page.getByRole('button',{name:'Search inventory',exact:true}).evaluate(node=>node===document.activeElement),true);
-  assert.equal(await page.evaluate(()=>document.querySelector('.ios-shell').scrollWidth>320),false);assert.equal(await page.locator('.ios-operation').count(),4);
+  assert.equal(await page.evaluate(()=>document.querySelector('.ios-shell').scrollWidth>320),false);assert.equal(await page.locator('.ios-operation').count(),3);assert.equal(await page.locator('.ios-intake-entry').count(),1);
   if(process.env.IOS_PRESENTATION_SCREENSHOT_DIR){await mkdir(process.env.IOS_PRESENTATION_SCREENSHOT_DIR,{recursive:true});await page.screenshot({path:process.env.IOS_PRESENTATION_SCREENSHOT_DIR+'/ios-home-320.png'});await page.setViewportSize({width:390,height:844});await page.screenshot({path:process.env.IOS_PRESENTATION_SCREENSHOT_DIR+'/ios-home-390.png'});}
+});
+
+test('real iOS shell keeps four full-width bottom destinations after rotating to compact landscape',browserOptions,async t=>{
+  const page=await mount(t);await page.setViewportSize({width:844,height:390});
+  await page.locator('.ios-shell[data-phone-layout=wide]').waitFor();
+  const geometry=await page.evaluate(()=>{
+    const rect=selector=>{const r=document.querySelector(selector).getBoundingClientRect();return{x:r.x,y:r.y,width:r.width,height:r.height,bottom:r.bottom};};
+    return{header:rect('.phone-topbar'),main:rect('.phone-main'),nav:rect('.ios-navigation'),dock:rect('.ios-dock'),buttons:[...document.querySelectorAll('.ios-dock>button')].map(n=>{const r=n.getBoundingClientRect();return{width:r.width,height:r.height,y:r.y};})};
+  });
+  assert.ok(geometry.header.height<=90,'Landscape header must not grow into the content area.');
+  assert.ok(geometry.nav.width>=800&&geometry.dock.width>=500,'The iOS dock must not inherit the narrow Android side rail.');
+  assert.ok(geometry.nav.y>=geometry.main.bottom-1&&geometry.nav.bottom<=391,'Navigation remains below the scroll owner and inside the viewport.');
+  for(const button of geometry.buttons)assert.ok(button.width>=100&&button.height>=44&&Math.abs(button.y-geometry.buttons[0].y)<1,'All four destinations retain usable targets in one row.');
+  await page.locator('.ios-dock').getByRole('button',{name:'Inventory',exact:true}).click();await visibleInventory(page).waitFor();
+  await page.locator('.ios-dock').getByRole('button',{name:'Scan',exact:true}).click();await page.getByRole('button',{name:'Intake: Register new stock',exact:true}).click();
+  await page.locator('.ios-workflow').waitFor();
 });
 
 test('iOS filter calendar stays inside its sheet when the date field is scrolled into view',browserOptions,async t=>{
   const page=await mount(t);
-  if(process.env.MOBILE_PRESENTATION_CSS)await page.addStyleTag({content:await readFile(process.env.MOBILE_PRESENTATION_CSS,'utf8')});
   await page.locator('.ios-dock').getByRole('button',{name:'Inventory',exact:true}).click();
   await visibleInventory(page).getByRole('button',{name:'Filter',exact:true}).click();
   const sheet=page.getByRole('dialog',{name:'Filter batteries',exact:true});
@@ -122,7 +138,7 @@ test('iOS filter calendar stays inside its sheet when the date field is scrolled
 
 test('filter validation brings repeated errors into view without losing its draft, fixed scope or chosen records',browserOptions,async t=>{
   const page=await mount(t,{width:390,height:568});
-  await page.locator('.ios-me-control').click();await page.getByRole('button',{name:'My responsibility',exact:true}).click();
+  await page.getByRole('button',{name:'Me, 2 unread messages',exact:true}).click();await page.getByRole('button',{name:'My responsibility',exact:true}).click();
   const inventory=visibleInventory(page),scope=inventory.getByRole('region',{name:'Fixed inventory scope'});
   await inventory.waitFor();const scopeText=await scope.textContent();
   await inventory.getByRole('button',{name:'Select batteries',exact:true}).click();await inventory.getByRole('checkbox',{name:'Select BAT-1',exact:true}).check();

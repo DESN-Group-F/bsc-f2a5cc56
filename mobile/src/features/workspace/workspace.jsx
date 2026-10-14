@@ -6,7 +6,8 @@ import { currentSydneyDate } from '../../shared/lib/battery-age.js';
 import { formatDateOnly } from '../../shared/lib/client-utils.js';
 import { downloadTeachingCheckoutReport } from '../../shared/lib/client/teaching-checkout-download.js';
 import { TeachingGroupsPanel } from '../../shared/components/inventory/teaching-groups-panel.js';
-import { InkOrb } from '../scan/ink-orb.jsx';
+import { ScanCharacter as InkOrb } from '../scan/scan-character.jsx';
+import { iosPresentation } from '../../app/ios-runtime-presentation.mjs';
 import { MobileMessages } from './mobile-messages.jsx';
 import { MobileTasks } from './mobile-tasks.jsx';
 import { MobileActivity } from './mobile-activity.jsx';
@@ -51,9 +52,10 @@ export function MeScreen({ data, user, dataset, unreadCount, onOpen, onPersonal,
   const summary = personalBatterySummary(data, user.id);
   const loans = (data?.batteries || []).filter(battery => battery.loanId && battery.borrowerAccountId === user.id);
   const role = user.role === 'admin' ? 'Administrator' : 'Staff';
+  const initials = (user.displayName || user.username || '').trim().split(/\s+/).slice(0,2).map(part=>Array.from(part)[0] || '').join('').toLocaleUpperCase();
   return <section className="mobile-work-home mobile-me-home" aria-label="My work">
     <header className="mobile-me-header" data-ink-gaze-scope>
-      <div className="mobile-me-avatar" aria-hidden="true"><InkOrb compact color="blue" active={active} /></div>
+      <div className="mobile-me-avatar" aria-hidden="true">{iosPresentation ? <span className="ios-profile-initials">{initials || <UserRound size={26}/>}</span> : <InkOrb compact color="blue" active={active} />}</div>
       <div><h1>{user.displayName || user.username}</h1><p>{role} · {user.username}</p></div>
       <Pressable type="button" className="mobile-work-icon-button" onClick={() => onOpen('account')} aria-label="Edit my profile"><Settings2 size={22} aria-hidden="true" /></Pressable>
     </header>

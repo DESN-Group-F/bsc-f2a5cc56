@@ -51,7 +51,7 @@ function entry(t,{origin='https://fixture.example',session='deferred',savedMotio
   const scope=createServiceScopeController({storage,origin,service:{configure:async({origin:value})=>{env.configurations.push(value);env.origin=value;},getConfiguration:async()=>({origin:env.origin})}});
   const jsx=(type,props,key)=>typeof type==='function'&&['StartupSurface','InitialContentSurface'].includes(type.name)?type(props):({type,props:props??{},key});
   const surfaces=compile(sources['app/startup-surface.jsx'],['StartupSurface','InitialContentSurface'],{startupPresentation},jsx);
-  const actual=compile(sources['main.jsx'],['MobileApp'],{...state,...surfaces,createStartupCoordinator,recoverNfcEvidence,native:true,window,document,
+  const actual=compile(sources['main.jsx'],['MobileApp'],{...state,...surfaces,createStartupCoordinator,recoverNfcEvidence,iosPresentation:false,native:true,window,document,
     usePhoneViewport:()=>env.viewport,initializeRuntime:async()=>{env.prepares++;return{origin:env.origin,storage};},businessStorage:()=>storage,
     configureOrigin:value=>scope.configure(value),clearNativeSession:async()=>assert.fail('Entry must not silently clear credentials.'),saveFile:async()=>{},
     markPhoneMilestone:name=>markPhoneMilestone(name,{getEntriesByName:key=>env.marks.filter(item=>item===key),mark:key=>env.marks.push(key)}),

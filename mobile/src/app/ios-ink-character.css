@@ -1,0 +1,8 @@
+.ios-ink { position:relative; }
+.ios-ink>.ios-ink-body { position:absolute; inset:0; transform-origin:50% 50%; transition:transform 110ms cubic-bezier(.2,.75,.2,1); }
+.phone-pressable[data-pressed=true]:not(:disabled) .ios-ink[data-active=true][data-reduced-motion=false]>.ios-ink-body { transform:scale(.74); }
+.ios-ink>.ios-ink-body>.ink-orb { width:100%!important; height:100%!important; }
+.ios-ink[data-activation-echo=true]>.ios-ink-body { visibility:hidden; }
+.ios-ink>.ios-ink-canvas { position:absolute; inset:0; display:block; width:100%; height:100%; overflow:visible; pointer-events:none; }
+.ios-ink[data-reduced-motion=true]>.ios-ink-body { transition:none; }
+@media(prefers-reduced-motion:reduce) { .ios-ink>.ios-ink-body { transition:none; transform:none!important; } }
