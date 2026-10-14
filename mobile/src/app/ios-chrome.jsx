@@ -8,20 +8,26 @@ import { phoneEntryMessage, phoneEntryTitle } from './phone-entry-intent.mjs';
 import './ios-presentation.css';
 
 export function IosScanHome({ active, entryPending, onLookup, onOperation, onCancelOpening, onRetryOpening }) {
-  const primary=useRef(null);
+  const primary=useRef(null), entryStatus=useRef(null);
   const preparing = !!entryPending && entryPending.phase !== 'failed';
   const actions = ['checkout','return','removal'].map(kind=>IOS_SCAN_ACTIONS.find(action=>action.kind===kind));
   const icons = { checkout:ArrowUpFromLine, return:ArrowDownToLine, removal:Trash2 };
+  useEffect(()=>{
+    const status=entryStatus.current, owner=status?.closest('.phone-main');
+    if(!entryPending||!owner)return;
+    const box=status.getBoundingClientRect(), viewport=owner.getBoundingClientRect();
+    if(box.top<viewport.top)owner.scrollTop+=box.top-viewport.top;
+    else if(box.bottom>viewport.bottom)owner.scrollTop+=box.bottom-viewport.bottom;
+  },[entryPending?.token,entryPending?.phase]);
   return <section className="mobile-scan-home ios-scan-home" data-ink-gaze-scope>
     <div className="ios-scan-focus"><p className="ios-scan-purpose">SCAN TO VIEW · NO STOCK CHANGES</p>
       <Pressable className="ios-scan-primary" disabled={!!entryPending || !onLookup} onClick={()=>{primary.current?.burst({departing:true});onLookup?.();}} aria-label="Start scan to view battery details; no stock changes"><IosInkCharacter ref={primary} color="blue" active={active && !preparing}/><span className="ios-orb-shadow" aria-hidden="true"/></Pressable>
-      <h2>A little tap.<br/>A clearer picture.</h2><p className="ios-scan-description">Read a tag to see its battery record.</p>
+      {entryPending ? <div ref={entryStatus} className="ios-entry-status" role="status" aria-live="polite" aria-busy={preparing}><div className="ios-entry-status-copy"><strong>{preparing&&<span className="ios-entry-spinner" aria-hidden="true"/>}{phoneEntryTitle(entryPending)}</strong><p>{phoneEntryMessage(entryPending)}</p></div><div className="ios-entry-status-actions">{entryPending.phase === 'failed' && <Pressable onClick={onRetryOpening}>Retry</Pressable>}<Pressable className="scan-entry-cancel" onClick={onCancelOpening}>Cancel</Pressable></div></div> : <><h2>A little tap.<br/>A clearer picture.</h2><p className="ios-scan-description">Read a tag to see its battery record.</p></>}
     </div>
     <Pressable className="ios-intake-entry" disabled={!!entryPending || !onOperation} onClick={()=>onOperation?.('intake')} aria-label="Intake: Register new stock"><span className="ios-intake-symbol"><Plus size={23} aria-hidden="true"/></span><span><strong>Add a batch</strong><small>Prepare once. Review before registering.</small></span><ArrowRight size={20} aria-hidden="true"/></Pressable>
     <div className="ios-operation-grid" aria-label="Scan and battery operations">
       {actions.map(action => { const Icon=icons[action.kind];return <Pressable key={action.kind} className="ios-operation" disabled={!!entryPending || !onOperation} onClick={()=>onOperation?.(action.kind)} aria-label={`${action.label}: ${action.detail}`}><Icon size={22} aria-hidden="true"/><span>{action.label}</span></Pressable>; })}
     </div>
-    {entryPending && <div className="ios-entry-status" aria-live="polite" aria-busy={preparing}><div><strong>{phoneEntryTitle(entryPending)}</strong><p>{phoneEntryMessage(entryPending)}</p></div>{entryPending.phase === 'failed' && <Pressable onClick={onRetryOpening}>Retry</Pressable>}<Pressable className="scan-entry-cancel" onClick={onCancelOpening}>Cancel</Pressable></div>}
   </section>;
 }
 

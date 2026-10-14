@@ -29,7 +29,8 @@
 .ios-shell .mobile-inventory .mi-room-switcher .is-active { background:var(--ios-control); color:var(--ios-link); border-color:var(--ios-control-line); }
 .ios-shell .mobile-inventory .mi-arrivals-entry button { background:var(--ios-success-fill); color:var(--ios-success); border-color:var(--ios-success-line); }
 .ios-shell .mi-scene-wrap { background:var(--ios-field); border-color:var(--ios-rim); border-radius:18px; }
-.ios-shell .mi-scene-label { background:var(--ios-sheet); color:var(--ios-muted); border-color:var(--ios-rim); border-radius:10px; }
+.ios-shell .mi-scene-label { background:var(--ios-sheet); color:var(--ios-muted); border-color:var(--ios-rim); border-radius:10px; width:max-content; max-width:140px; left:clamp(76px,var(--mi-scene-label-x),calc(100% - 76px)); }
+.ios-shell .mi-scene-label b { flex:none; }
 .ios-shell .mi-scene-label.is-selected { background:#274462; color:var(--ios-ink); border-color:var(--ios-link); }
 .ios-shell .mi-schematic { color:var(--ios-muted); background:var(--ios-canvas); padding:6px 9px; border-radius:8px; }
 .ios-shell .mi-scene-fallback { color:var(--ios-muted); background:var(--ios-field); }
@@ -60,6 +61,16 @@ body[data-ios-presentation=true] .temporal-picker .temporal-picker-actions { bac
 /* Inventory filters and short task sheets keep their existing fixed frames and
    single scrolling bodies. No geometry here changes dismissal ownership. */
 .ios-shell :is(.mi-sheet,.mobile-task-dialog) { background:var(--ios-sheet); color:var(--ios-ink); border-color:var(--ios-rim); border-radius:var(--ios-radius-sheet); box-shadow:var(--ios-shadow); -webkit-backdrop-filter:none; backdrop-filter:none; }
+/* A definite frame avoids native dialog/flex intrinsic-height differences in
+   WebKit. Only the evidence or template body scrolls; actions keep their size. */
+.ios-shell .mobile-task-dialog {
+  inset:calc(12px + env(safe-area-inset-top)) calc(12px + env(safe-area-inset-right)) calc(12px + env(safe-area-inset-bottom)) calc(12px + env(safe-area-inset-left));
+  width:min(650px,calc(var(--phone-viewport-width,100vw) - 24px - env(safe-area-inset-left) - env(safe-area-inset-right)));
+  height:min(640px,calc(var(--phone-viewport-height,100dvh) - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+  max-height:calc(var(--phone-viewport-height,100dvh) - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+}
+.ios-shell .mobile-task-dialog[data-dialog-size=summary] { height:min(400px,calc(var(--phone-viewport-height,100dvh) - 24px - env(safe-area-inset-top) - env(safe-area-inset-bottom))); }
+.ios-shell :is(.mobile-task-dialog-body,.mi-sheet-body) { flex:1 1 auto; }
 .ios-shell :is(.mi-sheet,.mobile-task-dialog)::backdrop { background:#050912b8; }
 .ios-shell :is(.mi-sheet,.mobile-task-dialog)>header { padding:14px 16px 12px 20px; border-color:var(--ios-line); }
 .ios-shell :is(.mi-sheet,.mobile-task-dialog) h2 { color:var(--ios-ink); font-size:21px; font-weight:600; letter-spacing:-.025em; }

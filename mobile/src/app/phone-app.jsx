@@ -103,6 +103,9 @@ export function MobileShell({ initialUser, origin, storageError, saving, onSigne
   const datasetPickerLocked = protectedWithoutPortal || datasetOtherPortalLocked || lifecycleDestination || page === 'inspection-recovery';
   const inventoryReading = loading || backgroundRefreshing;
   const ready = recoveryChecked && !!data && data.dataset === dataset && data.user.id === user.id && !inventoryReading && !error && !storageError && !recoveryError;
+  // Opening a private group definition uses the retained snapshot. Ordinary
+  // inventory refresh is not a permission or durable-recovery boundary.
+  const groupDefinitionReady = !!data && data.dataset === dataset && data.user.id === user.id && !error && !protectedLocked;
   useEffect(() => {
     if (!iosPresentation || !onEntryState) return;
     onEntryState(error || recoveryError || storageError ? 'attention' : !data || !recoveryChecked || recovering ? 'loading' : workflow || overlayOpen || area !== 'scan' || page || detail ? 'restored' : 'scan');
@@ -218,13 +221,22 @@ export function MobileShell({ initialUser, origin, storageError, saving, onSigne
     window.addEventListener('battery-mobile-back',back,{ capture:true }); return () => window.removeEventListener('battery-mobile-back',back,{ capture:true });
   },[keyboardOpen,backRegistry,workflow,saving,storageError,recovering,recoveryError,sessionBusy,panelLocked,boundaryLocked,overlayOpen,navigation,user.id]);
 
-  const changed = useCallback(async () => { await load(dataset); },[load,dataset]);
+  const changed = useCallback(async () => {
+    const tracker=syncTracker.current,epoch=tracker.epoch+1;
+    try { await load(dataset); }
+    catch(failure) {
+      if(tracker.active&&tracker===syncTracker.current&&tracker.latest?.epoch===epoch)setReadError(failure.message);
+      throw failure;
+    }
+  },[load,dataset,setReadError]);
   const closeWorkflow = useCallback(() => {
     const previous = workflow; setWorkflow(null); lockHandler('workflow:' + previous?.nonce)(false);
     setClosingWorkflow(true);try{setSavedWork(discoverMobileDrafts(businessStorage(),user.id));}catch(failure){setRecoveryError(failure.message);}
     setNotice(value=>value===RECOVERY_NOTICE?'':value);
     requestAnimationFrame(() => { if (previous?.returnRoute === live.current.navigation.getSnapshot().current.key) { main.current?.scrollTo({ top:previous.returnScroll || 0,behavior:'instant' }); restorePhoneFocus(previous.returnFocus); } });
-    void refresh();
+    // Scan writes refresh on acknowledgement; dismissal must not create a
+    // second network wait before the next reader can be opened.
+    if(!['lookup','checkout','return'].includes(previous?.kind))void refresh();
   },[refresh,workflow]);
   const closeTeaching = useCallback(snapshot => { acceptReviewedInventory(snapshot); setTeaching(null); lockHandler('teaching-overlay')(false); },[acceptReviewedInventory]);
   function resume(pending) { if (!pending) return; entryGate.current.invalidate(); if (dataset !== pending.dataset) changeDataset(pending.dataset); setRecovering(pending); setNotice(RECOVERY_NOTICE); }
@@ -456,7 +468,7 @@ export function MobileShell({ initialUser, origin, storageError, saving, onSigne
   useEffect(() => backRegistry.register(() => { const node = readFeedback.current; if (!node?.open) return false; node.open = false; return true; },600),[backRegistry]);
   const refreshControl = error && data ? <details ref={readFeedback} className="phone-refresh-feedback"><summary aria-label="Review refresh failure"><RefreshCw size={19}/><i aria-hidden="true">!</i></summary><div className="phone-refresh-feedback-panel"><PhoneReadError error={error} stale compact busy={refreshing} onRetry={refresh}/></div></details> : <Pressable className={'phone-icon-button' + (refreshing ? ' is-updating' : '')} disabled={refreshing || protectedLocked} onClick={refresh} aria-label="Refresh inventory" aria-busy={refreshing}><RefreshCw size={19}/></Pressable>;
   const backAvailable = view.stacks[area].length > 1 || !!page || !!detail || !!scope;
-  const shell = { data,user,dataset,navigation,revision,ready,workflow,overlayOpen,operationLocked,protectedLocked,unreadCount,origin,preferences,motionPreference,systemReduced,notice,changed,write,open,goBack,push,personal,openDetail,startOperation,rootStartOperation,rootGroup,openGroupView,selectDataset,exitInspectionRecovery,edit,setExportDraft,setImportKind,setGroupMaintenance,setTeaching,setLocations,setFullRecord,acceptUnreadCount,lockHandler,signout,preference,changeMotion,onFieldTest,onExportRecovery,closeWorkflow,detailExport,rootLookup,rootRegister,openAppSettings,entryPending,cancelOpening,retryOpening,iosPresentation };
+  const shell = { data,user,dataset,navigation,revision,ready,groupDefinitionReady,workflow,overlayOpen,operationLocked,protectedLocked,unreadCount,origin,preferences,motionPreference,systemReduced,notice,changed,write,open,goBack,push,personal,openDetail,startOperation,rootStartOperation,rootGroup,openGroupView,selectDataset,exitInspectionRecovery,edit,setExportDraft,setImportKind,setGroupMaintenance,setTeaching,setLocations,setFullRecord,acceptUnreadCount,lockHandler,signout,preference,changeMotion,onFieldTest,onExportRecovery,closeWorkflow,detailExport,rootLookup,rootRegister,openAppSettings,entryPending,cancelOpening,retryOpening,iosPresentation };
   return <PhoneUIProvider namespace={namespace} scrollRef={main} reducedMotion={reducedMotion} backRegistry={backRegistry}>
     <PhoneArrivalsProvider namespace={namespace} data={data} load={load}>
     <div className={'phone-shell' + (iosPresentation ? ' ios-shell' : '') + (floating ? ' phone-workflow-open' : '') + (keyboardOpen ? ' phone-keyboard-open' : '')} style={{'--phone-focus-enter':`${PHONE_FOCUS_ENTRY_MS}ms`,'--phone-focus-exit':`${PHONE_FOCUS_EXIT_MS}ms`}} inert={floating ? true : undefined} aria-hidden={floating ? true : undefined} data-reduced-motion={reducedMotion} data-phone-layout={layout} data-phone-keyboard={String(keyboardOpen)}>
@@ -509,7 +521,7 @@ function ArrivalInventoryView({ active, ...props }) {
 
 function RouteView({ route,active,backdropVisible,shell }) {
   const { area,page,pageContext,scope,detail } = route;
-  const { data,user,dataset,revision,workflow,ready,overlayOpen,operationLocked,unreadCount,open,goBack,push,personal,openDetail,startOperation,rootStartOperation,rootGroup,selectDataset,edit,setExportDraft,setImportKind,setGroupMaintenance,setTeaching,setLocations,setFullRecord,changed,write,acceptUnreadCount,lockHandler,onFieldTest,onExportRecovery,preferences,motionPreference,systemReduced,origin,preference,changeMotion,signout,rootLookup,rootRegister,openAppSettings } = shell;
+  const { data,user,dataset,revision,workflow,ready,groupDefinitionReady,overlayOpen,operationLocked,unreadCount,open,goBack,push,personal,openDetail,startOperation,rootStartOperation,rootGroup,selectDataset,edit,setExportDraft,setImportKind,setGroupMaintenance,setTeaching,setLocations,setFullRecord,changed,write,acceptUnreadCount,lockHandler,onFieldTest,onExportRecovery,preferences,motionPreference,systemReduced,origin,preference,changeMotion,signout,rootLookup,rootRegister,openAppSettings } = shell;
   if (detail) {
     const battery = data.batteries.find(item => item.id === detail.id); let boundaryError = '';
     try { verifyDetailBoundary(detail,data,user.id); } catch (failure) { boundaryError = failure.message; }
@@ -528,5 +540,5 @@ function RouteView({ route,active,backdropVisible,shell }) {
   if (page === 'diagnostics') return <section className="phone-compat-page"><div className="phone-destination-list"><Pressable className="phone-destination" onClick={onExportRecovery}><span><strong>Export device recovery</strong><small>Keep captured requests and device evidence</small></span><ChevronRight size={20}/></Pressable><Pressable className="phone-destination" disabled={accountHasDeviceWork(businessStorage(),user.id)} onClick={onFieldTest}><Radio size={20}/><span><strong>NFC field test</strong><small>Device evidence only</small></span><ChevronRight size={20}/></Pressable></div><NfcDiagnostics/></section>;
   if (page === 'inspection-recovery') return <MissingInspectionRecovery active={active} data={data} batteryId={pageContext.batteryId} write={write} onExportRecovery={onExportRecovery} onLockedChange={lockHandler(route.key)} onExit={shell.exitInspectionRecovery}/ >;
   const taskDetail = ['task-plans','messages'].includes(page) ? (id,context) => openDetail(id,context,{ taskReview:true,sourceRoute:route.key }) : openDetail;
-  return <WorkspacePage view={page} active={active} backdropVisible={backdropVisible} data={data} user={user} dataset={dataset} onBack={goBack} returnBlocked={operationLocked} onChanged={changed} onDetail={taskDetail} onOperation={startOperation} onLockedChange={lockHandler(route.key)} onEdit={edit} onImport={setImportKind} onExport={setExportDraft} write={write} ready={ready && active && !overlayOpen && !workflow} revision={revision} onUnreadCount={acceptUnreadCount} onOpen={open} onGroupView={(group,select) => shell.openGroupView(group,select,route.key)} overlayOpen={overlayOpen || !!workflow} initialGroupId={pageContext.activeGroupId} initialMessageId={pageContext.messageId} initialTaskId={pageContext.taskId} initialTaskContext={pageContext.taskContext} initialTools={pageContext.initialTools} activityGroupId={pageContext.groupId} onTeachingReturn={run => setTeaching({ kind:'return',run,personalScope:'all' })} onTeachingContinue={(run,group,ids) => setTeaching({ kind:'continue',run,group,ids,personalScope:'all' })} onTeachingExchange={(run,item) => setTeaching({ kind:'exchange',run,item,personalScope:'all' })} onGroupMaintenance={(ids,group) => setGroupMaintenance({ ids,group })} onGroupRemoval={(ids,reference) => startOperation('retire',ids,reference)} onGroupActivity={reference => push('workspace',{ page:'activity',pageContext:{ groupId:reference.id } })}/>;
+  return <WorkspacePage view={page} active={active} backdropVisible={backdropVisible} data={data} user={user} dataset={dataset} onBack={goBack} returnBlocked={operationLocked} onChanged={changed} onDetail={taskDetail} onOperation={startOperation} onLockedChange={lockHandler(route.key)} onEdit={edit} onImport={setImportKind} onExport={setExportDraft} write={write} ready={ready && active && !overlayOpen && !workflow} groupDefinitionReady={groupDefinitionReady && active && !overlayOpen && !workflow} revision={revision} onUnreadCount={acceptUnreadCount} onOpen={open} onGroupView={(group,select) => shell.openGroupView(group,select,route.key)} overlayOpen={overlayOpen || !!workflow} initialGroupId={pageContext.activeGroupId} initialMessageId={pageContext.messageId} initialTaskId={pageContext.taskId} initialTaskContext={pageContext.taskContext} initialTools={pageContext.initialTools} activityGroupId={pageContext.groupId} onTeachingReturn={run => setTeaching({ kind:'return',run,personalScope:'all' })} onTeachingContinue={(run,group,ids) => setTeaching({ kind:'continue',run,group,ids,personalScope:'all' })} onTeachingExchange={(run,item) => setTeaching({ kind:'exchange',run,item,personalScope:'all' })} onGroupMaintenance={(ids,group) => setGroupMaintenance({ ids,group })} onGroupRemoval={(ids,reference) => startOperation('retire',ids,reference)} onGroupActivity={reference => push('workspace',{ page:'activity',pageContext:{ groupId:reference.id } })}/>;
 }

@@ -89,6 +89,7 @@ function domNode(props = {}, parentElement = null) {
 
 async function mount(t, kind = 'scan') {
   const stageHooks = hooks(), floatingHooks = hooks(), listeners = new Map(), timers = new Set(), calls = [], configurations = [];
+  const readerControl = { pause: async () => true };
   const owner = 'controlled-workflow-1', workflow = { kind: kind === 'scan' ? 'checkout' : kind, nonce: owner }, context = { active: true, workflowOwner: owner };
   const user = { id: 'STAFF-A', role: 'staff', displayName: 'Staff A' }, battery = { id: 'BAT-001', name: 'Teaching battery', version: 4, tagId: null, loanId: null, lifecycleStatus: 'active' };
   const data = { dataset: 'demo', user, batteries: [battery], rooms: [], people: [{ id: 'OWNER-A', accountId: user.id, role: 'staff', name: 'Staff A' }], staffDirectory: [{ id: user.id, active: true }], buildings: [{ id: 'J18' }] }, session = { queue: [], completed: [], issues: [], attempt: null, room: null };
@@ -99,7 +100,8 @@ async function mount(t, kind = 'scan') {
   const notify = () => subscribers.forEach(callback => callback({ ...state }));
   const controller = {
     getSnapshot: () => ({ ...state }), updateInventory() {}, subscribe(callback) { subscribers.add(callback); return () => subscribers.delete(callback); },
-    canExit: () => !session.attempt, needsExitConfirmation: () => session.queue.length > 0,
+    canExit: () => !session.attempt, needsExitConfirmation: () => session.queue.length > 0 || session.issues.some(issue => !issue.acknowledged),
+    async exit() { calls.push({action:'exit'}); return true; },
     async addSelections(ids) { calls.push({ action: 'stage', ids }); session.queue = ids.map(id => ({ battery, source: 'selection', acquisition: 'selection', tagId: null })); notify(); return session.queue; },
     async confirmQueue() { calls.push({ action: 'confirm' }); return { type: 'confirmed' }; },
     async clearQueue() { calls.push({ action: 'clear' }); session.queue = []; notify(); return true; },
@@ -127,7 +129,7 @@ async function mount(t, kind = 'scan') {
   const timing = { setTimeout(callback, delay) { const timer = { callback, delay }; timers.add(timer); return timer; }, clearTimeout(timer) { timers.delete(timer); } };
   const rawPortal = (element, target) => ({ type: 'portal', props: { children: element, target } });
   const common = { document, window, ...timing, React: { Fragment: 'fragment', cloneElement: (element, props) => ({ ...element, props: { ...element.props, ...props } }) }, native: false, businessStorage: () => storage, usePhoneContext: () => context, usePhoneBack() {}, usePhonePress: () => ({}), useWorkflowLock() {}, createPortal: rawPortal, reactPortal: rawPortal, Pressable: 'button', InkOrb: 'InkOrb', FEEDBACK_KEY, acquisitionOf, scanInputMode, emptyScanCandidates, projectScanCandidates, filterScanCandidates, readFeedbackPreferences, scanFeedbackOutcome, expireScanFeedback, playScanFeedback() {}, teachingNfcBridge: () => null, scanSourceLabel: () => 'Manual selection', isActiveBattery: () => true, scanScopeMatches: () => true, isSelectableRoom: () => true, createScanController: () => controller,
-    createIntakeController: () => controller, intakeDefaultValues, intakeEntrySource, intakeError, intakeStringFields, reviewedIntakeCommon, normalizedIntakePreparation, changedIntakePreparation, applyIntakePreparationModel, CommonFields:'CommonFields', IntakePreparation:'IntakePreparation', PhoneChoice:'PhoneChoice', ScanOutcomeStatus:'ScanOutcomeStatus', useScanModeMotion(){}, useOwnedNfcReader:()=>({reader:{state:'unavailable',message:'Native NFC unavailable in browser'},resumeReader(){},cancelReader(){}}), modelCreateStorageKey: () => 'model:none', currentSydneyDate: () => '2026-10-12', modelApplication: old => old, getRolePermissions: () => ({ retireBatteries: true }),
+    createIntakeController: () => controller, intakeDefaultValues, intakeEntrySource, intakeError, intakeStringFields, reviewedIntakeCommon, normalizedIntakePreparation, changedIntakePreparation, applyIntakePreparationModel, CommonFields:'CommonFields', IntakePreparation:'IntakePreparation', PhoneChoice:'PhoneChoice', ScanOutcomeStatus:'ScanOutcomeStatus', useScanModeMotion(){}, useOwnedNfcReader:()=>({reader:{state:'unavailable',message:'Native NFC unavailable in browser'},resumeReader(){},cancelReader(...args){return readerControl.pause(...args);}}), modelCreateStorageKey: () => 'model:none', currentSydneyDate: () => '2026-10-12', modelApplication: old => old, getRolePermissions: () => ({ retireBatteries: true }),
     createRemovalController: () => controller, removalEntrySource, removalDraftStorageKey, acquireRemovalNative, createGuardedRemovalBridge, removalEligible, removalScopeMatches, formatTime: value => value, async saveFile(file) { calls.push({ action: 'export', filename: file.filename, content: await file.blob.text() }); },
     usePhoneFormDraft({ initial }) { const [value, setValue] = stageHooks.useState(initial); return { value, setValue, pending: false, clearing: false, error: '', save: async () => value, clear: async () => {}, retry: async () => {} }; },
   };
@@ -163,7 +165,7 @@ async function mount(t, kind = 'scan') {
   function render() {
     for (let pass = 0; pass < 20; pass++) {
       const before = context.active;
-      stageHooks.reset(); stageTree = Component({ kind: 'checkout', data, user, dataset: 'demo' });
+      stageHooks.reset(); stageTree = Component({ kind: 'checkout', data, user, dataset: 'demo', onExit: () => calls.push({action:'closed'}) });
       portalNodes = []; domNodes = []; composeDOM(stageTree); const stageDirty = stageHooks.commit(); readDialogs();
       floatingHooks.reset(); floatingTree = FloatingWorkflow({ open: true, label: 'Check out', owner, workflowOwner: owner, inactive: externalLocked, reducedMotion: false, children: stageTree });
       floatingTree.props.children.props.ref.current = layer;
@@ -176,7 +178,7 @@ async function mount(t, kind = 'scan') {
     assert.fail('The actual station and ownership boundary must settle.');
   }
   const view = {
-    calls, session, draft, configurations, context, controller, state, render,
+    calls, session, draft, configurations, context, controller, state, render, readerControl,
     get externalLocked() { return externalLocked; }, get portalLocked() { return portalLocked; },
     portals: () => portalNodes,
     button(label) { const button = flatten(stageTree).find(node => node.type === 'button' && (node.props['aria-label'] === label || words(node) === label)); assert.ok(button, `Actual rendered button: ${label}`); return button; },
@@ -199,6 +201,39 @@ async function mount(t, kind = 'scan') {
   };
   t.after(() => { stageHooks.unmount(); floatingHooks.unmount(); }); render(); return view;
 }
+
+test('leaving a rejected tag keeps acquisition paused through cancellation and durable exit', async t => {
+  const view = await mount(t);
+  view.session.issues.push({id:'retired-tag',acknowledged:false,message:'This battery is retired.'});
+  await view.click('Exit scanning');
+  assert.equal(view.configurations.at(-1).reviewOpen,true);
+  let releaseCancel, releaseSave;
+  view.readerControl.pause = () => new Promise(resolve => { releaseCancel = resolve; });
+  view.controller.exit = async () => { view.calls.push({action:'exit'}); await new Promise(resolve => { releaseSave = resolve; }); return true; };
+  const confirm = view.portals().find(node => node.tagName === 'BUTTON' && words({props:node.props}) === 'Exit scanning');
+  const closing = confirm.props.onClick(); view.render();
+  assert.equal(view.configurations.at(-1).reviewOpen,true,'Closing the confirmation must not re-admit the NFC reader.');
+  assert.equal(view.button('Keep working').props.disabled,true);
+  releaseCancel(true); await new Promise(resolve => setImmediate(resolve)); view.render();
+  assert.equal(view.configurations.at(-1).reviewOpen,true,'Durable cleanup must finish before releasing the station.');
+  assert.equal(view.calls.filter(call => call.action === 'closed').length,0);
+  releaseSave(); await closing; view.render();
+  assert.equal(view.calls.filter(call => call.action === 'exit').length,1);
+  assert.equal(view.calls.filter(call => call.action === 'closed').length,1);
+  assert.equal(view.configurations.at(-1).reviewOpen,true,'The retained exit-animation subtree cannot start another read.');
+});
+
+test('a failed scan departure retains its confirmation and allows an explicit retry without rearming', async t => {
+  const view=await mount(t);view.session.issues.push({id:'retired-tag',acknowledged:false});await view.click('Exit scanning');
+  view.readerControl.pause=async()=>false;
+  const confirm=()=>view.portals().find(node=>node.tagName==='BUTTON'&&words({props:node.props})==='Exit scanning');
+  await confirm().props.onClick();view.render();
+  assert.equal(view.configurations.at(-1).reviewOpen,true);
+  assert.equal(view.button('Keep working').props.disabled,false);
+  assert.equal(view.calls.filter(call=>call.action==='closed').length,0);
+  view.readerControl.pause=async()=>true;await confirm().props.onClick();view.render();
+  assert.equal(view.calls.filter(call=>call.action==='closed').length,1);
+});
 
 test('actual own Scan Review remains actionable through its floating context while acquisition is paused', async t => {
   const view = await mount(t); await view.stage(); await view.click('Review queue, 1 battery');

@@ -234,6 +234,27 @@ test('a captured read wait survives unrelated saving and opens only after both r
   view.env.saving=false;view.render();await settle();view.render();assert.equal(view.active('ScanWorkflow').props.kind,'checkout');
 });
 
+test('leaving a scan does not add a blocking inventory read before the next scan',async t=>{
+  for(const kind of ['checkout','return','lookup'])await t.test(kind,async child=>{
+    const view=mount(child);let reads=0;view.env.load=async()=>{reads++;};
+    const home=view.active('ScanHome');await(kind==='lookup'?home.props.onLookup():home.props.onOperation(kind));view.render();
+    view.active(kind==='lookup'?'LookupWorkflow':'ScanWorkflow').props.onExit();view.render();await settle();view.render();
+    assert.equal(reads,0,'Confirmed writes already refresh; leaving a rejected or read-only scan must not start another GET.');
+    await view.active('ScanHome').props.onLookup();view.render();await settle();view.render();
+    assert.ok(view.active('LookupWorkflow'));
+  });
+});
+
+test('a failed post-movement refresh remains a read error after leaving the station',async t=>{
+  const view=mount(t);await view.active('ScanHome').props.onOperation('checkout');view.render();
+  view.env.load=async()=>{throw new Error('Confirmed write; current inventory unavailable.');};
+  await assert.rejects(view.active('ScanWorkflow').props.onChanged(),/current inventory unavailable/);view.render();
+  view.active('ScanWorkflow').props.onExit();view.render();await settle();view.render();
+  assert.match(view.env.error,/current inventory unavailable/);
+  await view.active('ScanHome').props.onLookup();view.render();assert.equal(view.active('LookupWorkflow'),undefined);
+  assert.equal(view.active('ScanHome').props.entryPending.phase,'failed');
+});
+
 test('a next operation waits for the genuinely released closing boundary',async t=>{
   const view=mount(t);await view.active('ScanHome').props.onOperation('checkout');view.render();
   const boundary=value=>{const event=new Event('battery-mobile-workflow-active');Object.defineProperty(event,'detail',{value});view.window.dispatchEvent(event);view.render();};

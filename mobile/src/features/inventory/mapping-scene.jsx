@@ -147,7 +147,7 @@ export function MappingScene({ data, memoryKey, active = true, onRoom }) {
       <section className="mi-scene-pane" aria-label="Schematic room scene" hidden={mapView === 'rooms'}>
         <div className="mi-scene-wrap">
           <canvas ref={canvas} className={`mi-scene${interacting ? ' is-interacting' : ''}`} aria-label="Schematic three-dimensional room scene. Use the room list for accessible room selection." onPointerDown={pointerDown} onPointerMove={pointerMove} onPointerUp={pointerUp} onPointerCancel={pointerUp} onLostPointerCapture={pointerUp} />
-          {!failure && <div className="mi-scene-labels" aria-hidden="true">{labels.filter(item => item.visible).map(label => { const room = summaries.find(item => item.id === label.id); return <span key={label.id} className={`mi-scene-label ${selectedId === label.id ? 'is-selected' : ''}`} style={{ left: `${label.x}%`, top: `${label.y}%` }}>{room?.label}<b>{room?.total ?? 0}</b></span>; })}</div>}
+          {!failure && <div className="mi-scene-labels" aria-hidden="true">{labels.filter(item => item.visible).map(label => { const room = summaries.find(item => item.id === label.id); return <span key={label.id} className={`mi-scene-label ${selectedId === label.id ? 'is-selected' : ''}`} style={{ left: iosPresentation ? undefined : `${label.x}%`, '--mi-scene-label-x': `${label.x}%`, top: `${label.y}%` }}>{room?.label}<b>{room?.total ?? 0}</b></span>; })}</div>}
           <span className="mi-schematic">Illustrative geometry · not surveyed</span>
           {failure && <div className="mi-scene-fallback" role="status"><MapPin size={26} /><strong>Use the room list</strong><p>{failure}</p></div>}
         </div>
@@ -161,6 +161,6 @@ export function MappingScene({ data, memoryKey, active = true, onRoom }) {
       </section>
     </div>
     <p className="mi-evidence-note">Counts describe recorded observations and loans, not live physical sensing. Viewing the map captures no location.</p>
-    {active && !wide && summaryOpen && summary && <PhoneTaskDialog title="Room summary" onClose={() => setSummaryOpen(false)} actions={<button className="mi-primary" onClick={openRecords}>View room records<ChevronRight size={19} aria-hidden="true" /></button>}>{summaryContent()}</PhoneTaskDialog>}
+    {active && !wide && summaryOpen && summary && <PhoneTaskDialog title="Room summary" size="summary" onClose={() => setSummaryOpen(false)} actions={<button className="mi-primary" onClick={openRecords}>View room records<ChevronRight size={19} aria-hidden="true" /></button>}>{summaryContent()}</PhoneTaskDialog>}
   </section>;
 }

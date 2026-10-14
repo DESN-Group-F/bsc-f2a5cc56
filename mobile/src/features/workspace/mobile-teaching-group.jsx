@@ -36,7 +36,7 @@ function ActualLoan({ presentation, data, group, locked, run, onExchange, onDeta
   </article>;
 }
 
-export function MobileTeachingGroupDetail({ data, user, dataset, group, ready, revision = 0, overlayOpen = false, returnBlocked = false, active = true, onBackGroups, onTools, onDetail, onOperation, onEdit, onExport, onChanged, onActivity, onMaintenance, onReturn, onContinue, onExchange }) {
+export function MobileTeachingGroupDetail({ data, user, dataset, group, ready, groupDefinitionReady = ready, revision = 0, overlayOpen = false, returnBlocked = false, active = true, onBackGroups, onTools, onDetail, onOperation, onEdit, onExport, onChanged, onActivity, onMaintenance, onReturn, onContinue, onExchange }) {
   const viewKey = `${user.id}:${dataset}:${group.id}`;
   const [tab, setTab] = usePhoneViewState(viewKey, 'tab', 'members');
   const [search, setSearch] = usePhoneViewState(viewKey, 'search', '');
@@ -103,7 +103,7 @@ export function MobileTeachingGroupDetail({ data, user, dataset, group, ready, r
     finally { setDownloading(null); }
   }
   return <section className="mobile-teaching-detail" aria-label={`${group.name} teaching group`}>
-    <p className="mobile-phone-purpose">{group.name} · saved membership and actual loans are separate.</p><div className="mobile-phone-actions"><Pressable type="button" disabled={overlayOpen || !!choice || !!manager || !!downloading} onClick={onTools}>Edit group definition</Pressable><Pressable type="button" onClick={onBackGroups}>All teaching groups</Pressable></div>
+    <p className="mobile-phone-purpose">{group.name} · saved membership and actual loans are separate.</p><div className="mobile-phone-actions"><Pressable type="button" disabled={!groupDefinitionReady || overlayOpen || !!choice || !!manager || !!downloading} onClick={onTools}>Edit group definition</Pressable><Pressable type="button" onClick={onBackGroups}>All teaching groups</Pressable></div>
     {group.notes && <details className="mobile-phone-context"><summary>Group notes</summary><p>{group.notes}</p></details>}
     <PhoneTools onRefresh={resource.refresh} label="Group definition & all tools" disabled={overlayOpen || !!choice || !!manager || !!downloading} actions={[{ label: 'Group activity', disabled: !ready || overlayOpen, onClick: () => onActivity(reference) }, ...(permissions.editBatteryRecords && onMaintenance ? [{ label: 'Update selected members', disabled: locked, onClick: updateSelectedMembers }] : [])]}><span className="mobile-phone-caption">{group.batteryIds.length} saved members</span></PhoneTools>
     <div className="mobile-phone-actions">{tab === 'members' && <Pressable type="button" className="primary" disabled={locked} onClick={() => operation('checkout', group.batteryIds)}>Review group checkout</Pressable>}</div>

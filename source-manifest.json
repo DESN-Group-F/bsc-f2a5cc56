@@ -3,7 +3,7 @@
   "purpose": "functional-test-source",
   "formalRelease": false,
   "testVersion": "0.5.2",
-  "createdAt": "2026-10-14T10:24:15.673Z",
+  "createdAt": "2026-10-14T11:08:10.271Z",
   "files": [
     {
       "path": ".gitattributes",
@@ -20,7 +20,7 @@
     {
       "path": "codemagic.yaml",
       "bytes": 4851,
-      "sha256": "ffcc30de188e65713b1f54b64659a2e6c1ff92b27511884ee1fa99d895dc3196",
+      "sha256": "f4171e8ec96953455e145076d5a60679acc7e9664fa48a644b0cce49ac7ff4ba",
       "mode": "0644"
     },
     {
@@ -985,14 +985,14 @@
     },
     {
       "path": "mobile/src/app/ios-business.css",
-      "bytes": 29461,
-      "sha256": "599393a90d34896073b0ad4c674188c814bf8697fae24b4684b353a6569d194e",
+      "bytes": 30596,
+      "sha256": "cb7835124bd0c2213697c6e74cc92e4e892599775f6764fa3979e4aff67929b3",
       "mode": "0644"
     },
     {
       "path": "mobile/src/app/ios-chrome.jsx",
-      "bytes": 9566,
-      "sha256": "9434e6a9159ef1723bb36a9e937ebffe02d7f23c477ada4e8223d311c6b4e7b9",
+      "bytes": 10193,
+      "sha256": "828cb7f94a2d41af588b7ecbba7d04c3aa7c667c6bc712f76f44ca165af5966f",
       "mode": "0644"
     },
     {
@@ -1021,8 +1021,8 @@
     },
     {
       "path": "mobile/src/app/ios-navigation.css",
-      "bytes": 13236,
-      "sha256": "ca9d172c4d62461978db0ae6192a5ba62adc451f4f41f9813aef755189dff78f",
+      "bytes": 14825,
+      "sha256": "986864e752e634c39b59822812a611a72b27c9dd2b86ecb84c7a7ffacbcc9b0d",
       "mode": "0644"
     },
     {
@@ -1099,8 +1099,8 @@
     },
     {
       "path": "mobile/src/app/phone-app.jsx",
-      "bytes": 70934,
-      "sha256": "cea7aeeeb498c472e550a226bbafabb7cf7f5a18f6e4ea1b52ea524961d613b6",
+      "bytes": 71787,
+      "sha256": "9f38a2137860aee49cbcd749044dbf8928bd46ae07efe1be30aa4941b8089ff2",
       "mode": "0644"
     },
     {
@@ -1321,8 +1321,8 @@
     },
     {
       "path": "mobile/src/features/inventory/mapping-scene.jsx",
-      "bytes": 18626,
-      "sha256": "5fba7e8a685d16955ae9898ce18f5518d06c2d112d46161b4acc5e5e5a6141dc",
+      "bytes": 18708,
+      "sha256": "fec2c31634032a2112dafbb70ad153fbae7bddee0b7e2e3db21fa055cdbd47b5",
       "mode": "0644"
     },
     {
@@ -1519,8 +1519,8 @@
     },
     {
       "path": "mobile/src/features/scan/scan.jsx",
-      "bytes": 34562,
-      "sha256": "5f96f16878903a52777ab17ac5a43cad4ac0ecb2920e656eddde84e7e371aa9e",
+      "bytes": 35275,
+      "sha256": "fb8ef37ad2826194386c4c7965127be412717b162b7ecda99d3e634b99d08565",
       "mode": "0644"
     },
     {
@@ -1597,8 +1597,8 @@
     },
     {
       "path": "mobile/src/features/workspace/mobile-teaching-group.jsx",
-      "bytes": 17219,
-      "sha256": "cb95e2d9f91a57afc3968ef767d896322a0e91ae7a7c2ace91b04426794d0404",
+      "bytes": 17274,
+      "sha256": "18213870c3fb720631dfef29c660ba3a2eb885c18bb81b87c75a82ad9d91c580",
       "mode": "0644"
     },
     {
@@ -1615,8 +1615,8 @@
     },
     {
       "path": "mobile/src/features/workspace/phone-task-dialog.jsx",
-      "bytes": 1518,
-      "sha256": "10120b5116036bde8cb4a04b2be0f5fea02338fd31ad9e6f35056abbb134e166",
+      "bytes": 1560,
+      "sha256": "08a11bfd9a0e06df671ed133acc8c81dd180d9f9d9dba43d8868931ec4b2a4ca",
       "mode": "0644"
     },
     {
@@ -1657,8 +1657,8 @@
     },
     {
       "path": "mobile/src/features/workspace/workspace.jsx",
-      "bytes": 16535,
-      "sha256": "933347892a8b9810525ced9ff164106e8ebc78993c055a660119fb372d8de409",
+      "bytes": 16907,
+      "sha256": "f079fe5679f2afab99331146603397cb23f890f6e0b97087165d58fdc2206df7",
       "mode": "0644"
     },
     {
@@ -2664,6 +2664,12 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/tests/ios-mapping-dialog-dom.test.mjs",
+      "bytes": 11557,
+      "sha256": "b2aa1254574355ce6163ee792cefb76468bd5800de025bfbf5eaabc40f9cd95f",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/tests/ios-partial-evidence.test.mjs",
       "bytes": 8553,
       "sha256": "1aec2155e83d879491c8a47603e48396714f882e9218efa956f6cfdef91e59a8",
@@ -2671,8 +2677,8 @@
     },
     {
       "path": "mobile/tests/ios-presentation-dom.test.mjs",
-      "bytes": 22299,
-      "sha256": "8acb2b1aab782737c5dda9fbb2c779afc07485b3de30747bacb2d3d86e02763b",
+      "bytes": 32420,
+      "sha256": "7902d3319945733a9fb45c763e87c2322a859c4a61790d73c0aaf3bc3ce4d748",
       "mode": "0644"
     },
     {
@@ -2869,8 +2875,8 @@
     },
     {
       "path": "mobile/tests/mobile-shell-ui.test.mjs",
-      "bytes": 97596,
-      "sha256": "e4a6bbd0e70ce30c6969a1cb204c396d57fb872d6a891103a73dfa677fbc5721",
+      "bytes": 99137,
+      "sha256": "2ab6544c33e01616fdb99fb44fd335ef76425215e9710a8cb8753a7492fdddcb",
       "mode": "0644"
     },
     {
@@ -2899,8 +2905,8 @@
     },
     {
       "path": "mobile/tests/mobile-workflow-overlay.test.mjs",
-      "bytes": 36800,
-      "sha256": "f301ce8b58208afc5d282f11c582e3e0e63a4f58b2d33040accb976bebd1bc9b",
+      "bytes": 39486,
+      "sha256": "a8fb8ba580a67066e025d8748578f89480e9a8733f7202d7abcb4b1309ecbf62",
       "mode": "0644"
     },
     {
@@ -3042,6 +3048,12 @@
       "mode": "0644"
     },
     {
+      "path": "mobile/tests/teaching-groups-refresh-dom.test.mjs",
+      "bytes": 11104,
+      "sha256": "0573cd8152dc85ede50556215084c640fe3ce87216a38adafd47d680afe38595",
+      "mode": "0644"
+    },
+    {
       "path": "mobile/tests/teaching-nfc-bridge.test.mjs",
       "bytes": 4616,
       "sha256": "8b2c833eb8a5cb663b89e2ca6b0fd2ea8e19b71ae896431cfd23d068adb7faf0",
@@ -3134,13 +3146,13 @@
     {
       "path": "scripts/verify-ios-signed-artifact.py",
       "bytes": 8486,
-      "sha256": "770d22dcfc2fc24f4c63f610eddfeceba1122304634a3e57a61ce4c76615fca7",
+      "sha256": "f8c0c594ab13203abde52fe480cc0ade0698dcacaf0f66197a59c0fb2aa0b627",
       "mode": "0644"
     },
     {
       "path": "templates/testflight-workflow.yaml",
       "bytes": 2975,
-      "sha256": "12825ff147d4eb42ee1be3759c8cb7b79169b10c08bd7d8579f248e362facb72",
+      "sha256": "321b95d29f169199735263fcfaf4c33e38cf2c4a400a763f013d32416a332c24",
       "mode": "0644"
     }
   ]
