@@ -28,6 +28,13 @@ final class BusinessDataStore {
             throw ServiceFailure(message: "Business recovery data could not be read. Existing files were preserved; do not replace pending work.", code: "BUSINESS_STORAGE")
         }
         defer { try? input.close() }
+        // Some Foundation versions expose a directory as an empty FileHandle.
+        // Inspect the opened object, never a separate path existence check.
+        var metadata = stat()
+        guard fstat(input.fileDescriptor, &metadata) == 0,
+              (metadata.st_mode & mode_t(S_IFMT)) == mode_t(S_IFREG) else {
+            throw ServiceFailure(message: "Business recovery data could not be read. Existing files were preserved; do not replace pending work.", code: "BUSINESS_STORAGE")
+        }
         var bytes = Data()
         do {
             while let chunk = try input.read(upToCount: 16384), !chunk.isEmpty {
