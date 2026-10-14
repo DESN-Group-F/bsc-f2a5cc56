@@ -1,5 +1,6 @@
 import Capacitor
 import Foundation
+import UIKit
 
 @objc(BatteryServicePlugin)
 public class BatteryServicePlugin: CAPPlugin, CAPBridgedPlugin {
@@ -11,11 +12,29 @@ public class BatteryServicePlugin: CAPPlugin, CAPBridgedPlugin {
         CAPPluginMethod(name: "clearSession", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "loadBusinessData", returnType: CAPPluginReturnPromise),
         CAPPluginMethod(name: "saveBusinessData", returnType: CAPPluginReturnPromise),
-        CAPPluginMethod(name: "request", returnType: CAPPluginReturnPromise)
+        CAPPluginMethod(name: "request", returnType: CAPPluginReturnPromise),
+        CAPPluginMethod(name: "haptic", returnType: CAPPluginReturnPromise)
     ]
     private let queue = DispatchQueue(label: "battery.inventory.service")
     private let sessions = SecureSessionStore()
     private let originKey = "battery.service.origin.v1"
+
+    // Interaction feedback never waits behind business storage or network work.
+    // UIKit selects the device-specific effect; this does not request a duration
+    // or assert that the hardware/settings will produce a perceptible vibration.
+    @objc public func haptic(_ call: CAPPluginCall) {
+        DispatchQueue.main.async {
+            guard let strength = call.getString("strength"), ["light", "medium"].contains(strength) else {
+                call.reject("Haptic strength must be light or medium.", "INVALID_ARGUMENT"); return
+            }
+            guard UIApplication.shared.applicationState == .active else { call.resolve(); return }
+            let style: UIImpactFeedbackGenerator.FeedbackStyle = strength == "medium" ? .medium : .light
+            let generator = UIImpactFeedbackGenerator(style: style)
+            generator.prepare()
+            generator.impactOccurred()
+            call.resolve()
+        }
+    }
 
     private func execute(_ call: CAPPluginCall, _ action: @escaping () throws -> Void) {
         queue.async {

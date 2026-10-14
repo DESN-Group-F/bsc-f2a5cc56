@@ -1,5 +1,5 @@
 import React, { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
-import { registerPlugin } from '@capacitor/core';
+import { Capacitor, registerPlugin } from '@capacitor/core';
 import { ScanLine, Package, LayoutGrid, UserRound, RefreshCw, ArrowLeft, Radio, ChevronRight, Settings2 } from 'lucide-react';
 import { useInventoryData, useInventoryPolling } from '../shared/hooks/use-inventory-data.js';
 import { useMessageCount } from '../shared/hooks/use-message-count.js';
@@ -48,6 +48,8 @@ import { PhoneReadError } from './phone-read-error.jsx';
 import { phoneScrollIntent, trackPhoneScroll } from './phone-scroll.mjs';
 import { MissingInspectionRecovery } from './missing-inspection-recovery.jsx';
 import { PhoneArrivalsProvider, usePhoneArrivals } from './phone-arrivals.jsx';
+import { IosDock, IosSearch } from './ios-chrome.jsx';
+import { usesIosPresentation, iosSearchDestination, iosRouteTransition } from './ios-presentation.mjs';
 
 const areas = [['scan','Scan',ScanLine],['inventory','Inventory',Package],['workspace','Workspace',LayoutGrid],['me','Me',UserRound]];
 const pageTitles = { 'assets':'Intake & removal','intake-choice':'Working intake','removal-history':'Removal history','inspection-recovery':'Inspection recovery','service':'App settings','diagnostics':'Device diagnostics','battery-records':'Battery records','teaching-groups':'Teaching groups','task-plans':'Recurring tasks','messages':'Messages','my-activity':'My activity','account':'My account','manage':'Manage records','directories':'Directories','accounts':'Staff accounts','activity':'Activity history' };
@@ -68,6 +70,12 @@ const MemoWorkspaceScreen = memo(WorkspaceScreen);
 const MemoMeScreen = memo(MeScreen);
 
 export function MobileShell({ initialUser, origin, storageError, saving, onSignedOut, onFieldTest, onExportRecovery }) {
+  const [iosPresentation] = useState(() => usesIosPresentation({ platform:Capacitor.getPlatform(), native, search:globalThis.location?.search }));
+  useLayoutEffect(() => {
+    if (!iosPresentation) return;
+    const previous=document.body.getAttribute('data-ios-presentation'); document.body.setAttribute('data-ios-presentation','true');
+    return () => { if (previous === null) document.body.removeAttribute('data-ios-presentation'); else document.body.setAttribute('data-ios-presentation',previous); };
+  }, [iosPresentation]);
   const inventory = useInventoryData(initialUser);
   const { data,user,dataset,loading,error,revision,load:inventoryLoad,changeDataset,acceptReviewedInventory,setError:setReadError } = inventory;
   const namespace = user.id + ':' + dataset, datasetPickerOwner = 'dataset-picker:' + namespace, sessions = useRef(new Map()), main = useRef(null);
@@ -82,7 +90,7 @@ export function MobileShell({ initialUser, origin, storageError, saving, onSigne
   const [teaching,setTeaching] = useState(null), [groupMaintenance,setGroupMaintenance] = useState(null), [groupDefinition,setGroupDefinition] = useState(null), [locations,setLocations] = useState(false), [movement,setMovement] = useState(null);
   const [panelLocks,setPanelLocks] = useState({}), lockCallbacks = useRef(new Map()), [boundaryLocked,setBoundaryLocked] = useState(false), [portalLocked,setPortalLocked] = useState(false), [externalPortalLocked,setExternalPortalLocked] = useState(false), [datasetOtherPortalLocked,setDatasetOtherPortalLocked] = useState(false);
   const [notice,setNotice] = useState(''), [actionError,setError] = useState(''), [recoveryError,setRecoveryError] = useState(''), [recovering,setRecovering] = useState(null), [recoveryChecked,setRecoveryChecked] = useState(false), [sessionBusy,setSessionBusy] = useState(false);
-  const [backgroundRefreshing,setBackgroundRefreshing] = useState(false), syncTracker = useRef({ namespace,active:true,reads:0,epoch:0,latest:null }), destinationMotion = useRef(null), readFeedback = useRef(null);
+  const [backgroundRefreshing,setBackgroundRefreshing] = useState(false), syncTracker = useRef({ namespace,active:true,reads:0,epoch:0,latest:null }), destinationMotion = useRef(null), destinationView = useRef(null), readFeedback = useRef(null);
   if (syncTracker.current.namespace !== namespace) { syncTracker.current.active = false; syncTracker.current = { namespace,active:true,reads:0,epoch:0,latest:null }; }
   const [preferences,setPreferences] = useState(() => { try { return { haptics:true,sounds:false,...JSON.parse(businessStorage().getItem('preference:mobile-feedback') || '{}') }; } catch { return { haptics:true,sounds:false }; } });
   const [motionPreference,setMotionPreference] = useState(() => businessStorage().getItem('preference:mobile-motion') === 'reduce' ? 'reduce' : 'system');
@@ -256,6 +264,13 @@ export function MobileShell({ initialUser, origin, storageError, saving, onSigne
       remember();entryGate.current.invalidate();setNotice(clearLifecycleNotice);current.navigation.activate(destination.area);return;
     }
     if(current.lifecycleDestination) {setNotice(LIFECYCLE_EXIT_NOTICE);return;}
+    if(destination.type==='search'){
+      const currentRoute=current.navigation.getSnapshot().current;
+      remember();entryGate.current.invalidate();
+      if(currentRoute.area==='inventory'&&!currentRoute.page&&!currentRoute.detail)current.navigation.replace({pageContext:{...currentRoute.pageContext,searchRequest:destination.request}});
+      else current.navigation.push('inventory',{scope:destination.scope,pageContext:{searchRequest:destination.request,sharedSearch:!destination.scope},trigger},{returnToOrigin:true});
+      return;
+    }
     const target=destination.type==='personal'?'inventory':['messages','my-activity','account','service','diagnostics'].includes(destination.page)?'me':'workspace';
     const values=destination.type==='personal'?{scope:{kind:destination.boundary,id:current.user.id,label:destination.label}}:{page:destination.page,pageContext:destination.context};
     remember();entryGate.current.invalidate();current.navigation.push(target,{...values,trigger},{returnToOrigin:true});
@@ -422,21 +437,26 @@ export function MobileShell({ initialUser, origin, storageError, saving, onSigne
   const floating = !!workflow && ['lookup','checkout','return','intake','retire'].includes(workflow.kind), title = detail ? 'Battery record' : page === 'messages' && pageContext.taskContext === 'open' ? 'My tasks' : pageTitles[page] || scope?.label || areas.find(([id]) => id === area)?.[1];
   useLayoutEffect(() => {
     destinationMotion.current?.cancel(); destinationMotion.current = null;
-    if (!data || workflow || reducedMotion) return;
+    const previous = destinationView.current; destinationView.current = view;
+    if (!data || workflow || reducedMotion || iosPresentation && document.visibilityState === 'hidden') return;
     const node = main.current?.querySelector?.('.phone-route:not([hidden])');
     if (!node?.animate) return;
-    destinationMotion.current = node.animate([{ opacity:.75,transform:'translateX(4px)' },{ opacity:1,transform:'none' }],{ duration:190,easing:'cubic-bezier(.2,0,0,1)' });
-    return () => { destinationMotion.current?.cancel(); destinationMotion.current = null; };
-  },[namespace,route.key,!!data,!!workflow,reducedMotion]);
+    const transition = iosPresentation ? iosRouteTransition(previous, view) : { frames:[{ opacity:.75,transform:'translateX(4px)' },{ opacity:1,transform:'none' }], options:{ duration:190,easing:'cubic-bezier(.2,0,0,1)' } };
+    if (!transition) return;
+    destinationMotion.current = node.animate(transition.frames, transition.options);
+    const cancelHidden = () => { if (document.visibilityState === 'hidden') { destinationMotion.current?.cancel(); destinationMotion.current = null; } };
+    if (iosPresentation) document.addEventListener('visibilitychange',cancelHidden);
+    return () => { if (iosPresentation) document.removeEventListener('visibilitychange',cancelHidden); destinationMotion.current?.cancel(); destinationMotion.current = null; };
+  },[namespace,route.key,!!data,!!workflow,reducedMotion,iosPresentation]);
   const refreshing = loading || backgroundRefreshing;
   useEffect(() => backRegistry.register(() => { const node = readFeedback.current; if (!node?.open) return false; node.open = false; return true; },600),[backRegistry]);
   const refreshControl = error && data ? <details ref={readFeedback} className="phone-refresh-feedback"><summary aria-label="Review refresh failure"><RefreshCw size={19}/><i aria-hidden="true">!</i></summary><div className="phone-refresh-feedback-panel"><PhoneReadError error={error} stale compact busy={refreshing} onRetry={refresh}/></div></details> : <Pressable className={'phone-icon-button' + (refreshing ? ' is-updating' : '')} disabled={refreshing || protectedLocked} onClick={refresh} aria-label="Refresh inventory" aria-busy={refreshing}><RefreshCw size={19}/></Pressable>;
   const backAvailable = view.stacks[area].length > 1 || !!page || !!detail || !!scope;
-  const shell = { data,user,dataset,navigation,revision,ready,workflow,overlayOpen,operationLocked,protectedLocked,unreadCount,origin,preferences,motionPreference,systemReduced,notice,changed,write,open,goBack,push,personal,openDetail,startOperation,rootStartOperation,rootGroup,openGroupView,selectDataset,exitInspectionRecovery,edit,setExportDraft,setImportKind,setGroupMaintenance,setTeaching,setLocations,setFullRecord,acceptUnreadCount,lockHandler,signout,preference,changeMotion,onFieldTest,onExportRecovery,closeWorkflow,detailExport,rootLookup,rootRegister,openAppSettings,entryPending,cancelOpening,retryOpening };
+  const shell = { data,user,dataset,navigation,revision,ready,workflow,overlayOpen,operationLocked,protectedLocked,unreadCount,origin,preferences,motionPreference,systemReduced,notice,changed,write,open,goBack,push,personal,openDetail,startOperation,rootStartOperation,rootGroup,openGroupView,selectDataset,exitInspectionRecovery,edit,setExportDraft,setImportKind,setGroupMaintenance,setTeaching,setLocations,setFullRecord,acceptUnreadCount,lockHandler,signout,preference,changeMotion,onFieldTest,onExportRecovery,closeWorkflow,detailExport,rootLookup,rootRegister,openAppSettings,entryPending,cancelOpening,retryOpening,iosPresentation };
   return <PhoneUIProvider namespace={namespace} scrollRef={main} reducedMotion={reducedMotion} backRegistry={backRegistry}>
     <PhoneArrivalsProvider namespace={namespace} data={data} load={load}>
-    <div className={'phone-shell' + (floating ? ' phone-workflow-open' : '') + (keyboardOpen ? ' phone-keyboard-open' : '')} style={{'--phone-focus-enter':`${PHONE_FOCUS_ENTRY_MS}ms`,'--phone-focus-exit':`${PHONE_FOCUS_EXIT_MS}ms`}} inert={floating ? true : undefined} aria-hidden={floating ? true : undefined} data-reduced-motion={reducedMotion} data-phone-layout={layout} data-phone-keyboard={String(keyboardOpen)}>
-      <header className="phone-topbar" data-ink-gaze-scope>{backAvailable && <Pressable className="phone-icon-button" aria-label="Back to previous view" onClick={() => { if (!backRegistry.handle({})) goBack(); }} disabled={protectedLocked}><ArrowLeft size={22}/></Pressable>}<div className="phone-title-block"><h1>{title}</h1><span className="phone-sync-status" role="status" aria-live="polite" data-sync-state={data ? error ? 'stale' : refreshing ? 'refreshing' : 'ready' : 'initial'}>{data && (refreshing ? 'Refreshing records…' : error ? 'Showing last loaded records' : '')}</span></div><div className="phone-topbar-actions">{lifecycleDestination && <Pressable className="phone-header-exit" aria-label="Exit Intake & removal" onClick={exitLifecycle} disabled={protectedLocked}>Exit</Pressable>}<PhoneUIBoundary workflowOwner={datasetPickerOwner}><PhoneChoice label="Shared inventory" aria-label="Shared inventory" variant="compact" value={dataset} options={[{value:'live',label:'Working'},{value:'demo',label:'Demo'}]} disabled={datasetPickerLocked} onChange={next => void selectDataset(next)}/></PhoneUIBoundary>{refreshControl}</div></header>
+    <div className={'phone-shell' + (iosPresentation ? ' ios-shell' : '') + (floating ? ' phone-workflow-open' : '') + (keyboardOpen ? ' phone-keyboard-open' : '')} style={{'--phone-focus-enter':`${PHONE_FOCUS_ENTRY_MS}ms`,'--phone-focus-exit':`${PHONE_FOCUS_EXIT_MS}ms`}} inert={floating ? true : undefined} aria-hidden={floating ? true : undefined} data-reduced-motion={reducedMotion} data-phone-layout={layout} data-phone-keyboard={String(keyboardOpen)}>
+      <header className="phone-topbar" data-ink-gaze-scope>{iosPresentation && <IosSearch routeKey={route.key} disabled={live.current.admission.category === 'protected' || lifecycleDestination || page === 'inspection-recovery' || !!entryPending} onSearch={text => startView(iosSearchDestination(route,text,crypto.randomUUID()))}/>} {backAvailable && <Pressable className="phone-icon-button" aria-label="Back to previous view" onClick={() => { if (!backRegistry.handle({})) goBack(); }} disabled={protectedLocked}><ArrowLeft size={22}/></Pressable>}<div className="phone-title-block"><h1>{title}</h1><span className="phone-sync-status" role="status" aria-live="polite" data-sync-state={data ? error ? 'stale' : refreshing ? 'refreshing' : 'ready' : 'initial'}>{data && (refreshing ? 'Refreshing records…' : error ? 'Showing last loaded records' : '')}</span></div><div className="phone-topbar-actions">{lifecycleDestination && <Pressable className="phone-header-exit" aria-label="Exit Intake & removal" onClick={exitLifecycle} disabled={protectedLocked}>Exit</Pressable>}<PhoneUIBoundary workflowOwner={datasetPickerOwner}><PhoneChoice label="Shared inventory" aria-label="Shared inventory" variant="compact" value={dataset} options={[{value:'live',label:'Working'},{value:'demo',label:'Demo'}]} disabled={datasetPickerLocked} onChange={next => void selectDataset(next)}/></PhoneUIBoundary>{refreshControl}</div></header>
       <main ref={main} className="phone-main" data-phone-scroll id="phone-content" tabIndex={-1} data-phone-content-state={!data ? error ? 'failed' : 'loading' : inventoryReading ? 'refreshing' : error ? 'stale' : 'ready'} onScroll={event => navigation.rememberScroll(navigation.getSnapshot().current.key,event.currentTarget.scrollTop)}>
         {(notice||actionError||recoveryError||entryPending&&!(area==='scan'&&!page&&!detail))&&<div className="phone-shell-status" data-scroll-status={area==='scan'&&!page&&!detail?'home':'view'}>
         {entryPending && !(area === 'scan' && !page && !detail) && <div className="scan-entry-progress" role="status" aria-live="polite"><span>{phoneEntryMessage(entryPending)}</span>{entryPending.phase === 'failed' && <Pressable className="phone-secondary" onClick={retryOpening}>Retry</Pressable>}<Pressable className="phone-secondary" onClick={cancelOpening} aria-label="Cancel opening">Cancel</Pressable></div>}
@@ -449,7 +469,7 @@ export function MobileShell({ initialUser, origin, storageError, saving, onSigne
         {data && workflow?.kind === 'registration' && <Registration user={user} initialData={data} onExit={closeWorkflow}/>}
         {data && workflow?.kind === 'manual_registration' && <PhoneUIBoundary workflowOwner={workflow.nonce} active={!externalPortalLocked}><ManualRegistration data={data} user={user} dataset={dataset} onExit={closeWorkflow} onChanged={changed} onLockedChange={workflowLock}/></PhoneUIBoundary>}
       </main>
-      <nav className="phone-bottom-bar" style={{ '--nav-index':areas.findIndex(([id]) => id === area) }} aria-label="Primary mobile navigation" hidden={keyboardOpen}>{areas.map(([id,label,Icon]) => <Pressable key={id} aria-current={area === id ? 'page' : undefined} disabled={live.current.admission.category==='protected'||page==='inspection-recovery'} onClick={() => navigate(id)}><span className="phone-nav-icon"><Icon size={22}/>{id === 'me' && unreadCount > 0 && <i aria-label={unreadCount + ' unread messages'}/>} {id === 'inventory' && <ArrivalNavigationIndicator active={!workflow && !keyboardOpen}/>}</span><span>{label}</span></Pressable>)}</nav>
+      <>{iosPresentation ? <IosDock area={area} hidden={keyboardOpen} disabled={live.current.admission.category === 'protected' || page === 'inspection-recovery'} unreadCount={unreadCount} onNavigate={navigate} inventoryIndicator={<ArrivalNavigationIndicator active={!workflow && !keyboardOpen}/>}/> : <nav className="phone-bottom-bar" style={{ '--nav-index':areas.findIndex(([id]) => id === area) }} aria-label="Primary mobile navigation" hidden={keyboardOpen}>{areas.map(([id,label,Icon]) => <Pressable key={id} aria-current={area === id ? 'page' : undefined} disabled={live.current.admission.category==='protected'||page==='inspection-recovery'} onClick={() => navigate(id)}><span className="phone-nav-icon"><Icon size={22}/>{id === 'me' && unreadCount > 0 && <i aria-label={unreadCount + ' unread messages'}/>} {id === 'inventory' && <ArrivalNavigationIndicator active={!workflow && !keyboardOpen}/>}</span><span>{label}</span></Pressable>)}</nav>}</>
     </div>
     {data && movement && <PhoneBusinessSurface task="movement-review"><MovementDialog key={movement.nonce} draft={movement} data={data} write={write} onClose={snapshot => { acceptReviewedInventory(snapshot); setMovement(null); }}/></PhoneBusinessSurface>}
     {data && teaching && <PhoneBusinessSurface task="teaching-review"><TeachingCheckoutDialog data={data} draft={teaching} onChanged={changed} onClose={closeTeaching} onLockedChange={lockHandler('teaching-overlay')}/></PhoneBusinessSurface>}
@@ -460,7 +480,7 @@ export function MobileShell({ initialUser, origin, storageError, saving, onSigne
     {data && locations && <PhoneBusinessSurface task="location-tools"><LocationToolsPanel data={data} ready={ready} onChanged={changed} onClose={() => setLocations(false)}/></PhoneBusinessSurface>}
     {exportDraft && <PhoneBusinessSurface task="export"><ExportDialog draft={exportDraft} dataset={dataset} onClose={() => setExportDraft(null)}/></PhoneBusinessSurface>}
     {importKind && <MobileImportDialog kind={importKind} write={write} onClose={() => setImportKind(null)}/ >}
-    <FloatingWorkflow open={floating} owner={workflow?.nonce} label={workflow?.kind + ' · ' + (dataset === 'demo' ? 'Demonstration' : 'Working')} inactive={externalPortalLocked} reducedMotion={reducedMotion}>{data && floating && (workflow.kind === 'lookup' ? <LookupWorkflow key={workflow.nonce} data={data} user={user} dataset={dataset} onExit={closeWorkflow} onLockedChange={workflowLock} onExport={lookupExport}/> : ['checkout','return'].includes(workflow.kind) ? <ScanWorkflow key={workflow.nonce} {...workflow} data={data} user={user} dataset={dataset} initialIds={workflow.ids} onExit={closeWorkflow} onChanged={changed} onLockedChange={workflowLock}/> : workflow.kind === 'intake' ? <MobileIntake key={workflow.nonce} data={data} user={user} dataset={dataset} write={write} onChanged={changed} onExit={closeWorkflow} onLockedChange={workflowLock}/> : <MobileRemoval key={workflow.nonce} data={data} user={user} dataset={dataset} write={write} initialIds={workflow.ids} teachingGroup={workflow.teachingGroup} scope={workflow.scope} onExit={closeWorkflow} onChanged={changed} onLockedChange={workflowLock}/>)}</FloatingWorkflow>
+    <FloatingWorkflow iosPresentation={iosPresentation} open={floating} owner={workflow?.nonce} label={workflow?.kind + ' · ' + (dataset === 'demo' ? 'Demonstration' : 'Working')} inactive={externalPortalLocked} reducedMotion={reducedMotion}>{data && floating && (workflow.kind === 'lookup' ? <LookupWorkflow key={workflow.nonce} data={data} user={user} dataset={dataset} onExit={closeWorkflow} onLockedChange={workflowLock} onExport={lookupExport}/> : ['checkout','return'].includes(workflow.kind) ? <ScanWorkflow key={workflow.nonce} {...workflow} data={data} user={user} dataset={dataset} initialIds={workflow.ids} onExit={closeWorkflow} onChanged={changed} onLockedChange={workflowLock}/> : workflow.kind === 'intake' ? <MobileIntake key={workflow.nonce} data={data} user={user} dataset={dataset} write={write} onChanged={changed} onExit={closeWorkflow} onLockedChange={workflowLock}/> : <MobileRemoval key={workflow.nonce} data={data} user={user} dataset={dataset} write={write} initialIds={workflow.ids} teachingGroup={workflow.teachingGroup} scope={workflow.scope} onExit={closeWorkflow} onChanged={changed} onLockedChange={workflowLock}/>)}</FloatingWorkflow>
     </PhoneArrivalsProvider>
   </PhoneUIProvider>;
 }
@@ -481,11 +501,11 @@ function RouteView({ route,active,backdropVisible,shell }) {
   if (detail) {
     const battery = data.batteries.find(item => item.id === detail.id); let boundaryError = '';
     try { verifyDetailBoundary(detail,data,user.id); } catch (failure) { boundaryError = failure.message; }
-    return battery ? <BatteryPage battery={battery} data={data} active={active} readOnly={route.readOnly === true} revision={revision} boundaryError={boundaryError} onBack={goBack} onFullRecord={() => { if (!boundaryError && !route.readOnly) setFullRecord(true); }} onExport={shell.detailExport} onOperation={(kind,ids) => { if (!boundaryError && !route.readOnly) startOperation(kind,ids,detail.group || detail.scope); }}/> : <div className="phone-alert">This asset is no longer in the current register.<Pressable className="phone-secondary" onClick={goBack}>Return</Pressable></div>;
+    return battery ? <BatteryPage battery={battery} data={data} active={active} iosPresentation={shell.iosPresentation} readOnly={route.readOnly === true} revision={revision} boundaryError={boundaryError} onBack={goBack} onFullRecord={() => { if (!boundaryError && !route.readOnly) setFullRecord(true); }} onExport={shell.detailExport} onOperation={(kind,ids) => { if (!boundaryError && !route.readOnly) startOperation(kind,ids,detail.group || detail.scope); }}/> : <div className="phone-alert">This asset is no longer in the current register.<Pressable className="phone-secondary" onClick={goBack}>Return</Pressable></div>;
   }
   if (!page) {
-    if (area === 'scan') return <MemoScanHome data={data} user={user} dataset={dataset} active={active} onOperation={rootStartOperation} onLookup={rootLookup} entryPending={active ? shell.entryPending : null} onCancelOpening={shell.cancelOpening} onRetryOpening={shell.retryOpening}/>;
-    if (area === 'inventory') return <div className="phone-inventory-host"><MemoArrivalInventoryView data={data} user={user} dataset={dataset} scope={scope} active={active} onDetail={openDetail} onOperation={rootStartOperation} onExport={setExportDraft} onEdit={edit} onGroup={rootGroup} onRegister={rootRegister}/></div>;
+    if (area === 'scan') return <MemoScanHome iosPresentation={shell.iosPresentation} data={data} user={user} dataset={dataset} active={active} onOperation={rootStartOperation} onLookup={rootLookup} entryPending={active ? shell.entryPending : null} onCancelOpening={shell.cancelOpening} onRetryOpening={shell.retryOpening}/>;
+    if (area === 'inventory') return <div className="phone-inventory-host"><MemoArrivalInventoryView searchRequest={pageContext.searchRequest} areaMemoryKey={pageContext.sharedSearch ? route.key : undefined} data={data} user={user} dataset={dataset} scope={scope} active={active} onDetail={openDetail} onOperation={rootStartOperation} onExport={setExportDraft} onEdit={edit} onGroup={rootGroup} onRegister={rootRegister}/></div>;
     if (area === 'workspace') return <MemoWorkspaceScreen data={data} user={user} dataset={dataset} active={active} onOpen={open}/>;
     return <MemoMeScreen data={data} user={user} dataset={dataset} unreadCount={unreadCount} active={active} onOpen={open} onPersonal={personal} onDetail={openDetail} onAppSettings={openAppSettings} onSignOut={signout}/>;
   }

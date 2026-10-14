@@ -9,6 +9,7 @@ import { formatDateOnly, formatTime } from '../../shared/lib/client-utils.js';
 import { currentSydneyDate } from '../../shared/lib/battery-age.js';
 import { MobileTaskCycleDialog, taskCompletionRecovery } from './mobile-task-cycle.jsx';
 import { TaskDownloadDialog } from '../../shared/components/inventory/tasks/task-download-dialog.js';
+import { PhoneBusinessSurface } from './phone-business-surface.jsx';
 import { TaskDeliveryNotice, TaskGenerationWarnings } from '../../shared/components/inventory/tasks/task-notices.js';
 import { useWorkflowLock } from '../../business/workflow-boundary.jsx';
 import { acknowledgeMessageAction, verifyMessageRead } from './workspace-requests.mjs';
@@ -135,6 +136,6 @@ export function MobileMessages({ active = true, data, initialTaskContext = null,
     </>}
     <details className="mobile-phone-context"><summary>Scheduling information</summary><TaskDeliveryNotice /></details>
     {cycle && <MobileTaskCycleDialog active={active} cycle={cycle} data={data} onDetail={onDetail} onClose={() => setCycle(null)} onSaved={async () => { setCycle(null); await changed(); }} />}
-    {active && download && <TaskDownloadDialog request={download} onClose={() => setDownload(null)} onBusyChange={setDownloadBusy} />}
+    {active && download && <PhoneBusinessSurface task="export"><TaskDownloadDialog request={download} onClose={() => setDownload(null)} onBusyChange={setDownloadBusy} /></PhoneBusinessSurface>}
   </div>;
 }

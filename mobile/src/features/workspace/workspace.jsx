@@ -88,6 +88,7 @@ export function WorkspaceScreen({ data, user, dataset, onOpen }) {
 }
 
 export function WorkspacePage({ view, data, user, dataset, onBack, onChanged, onDetail, onOperation, onLockedChange, onEdit, onImport, onExport, onOpen, onGroupView, ready = true, revision = 0, overlayOpen = false, returnBlocked = false, active = true, backdropVisible = false, onUnreadCount, onTeachingReturn, onTeachingContinue, onTeachingExchange, onGroupMaintenance, onGroupRemoval, onGroupActivity, initialGroupId = null, initialMessageId = null, initialTaskId = null, initialTaskContext = null, initialTools = false, activityGroupId = null, onActivityGroupChange }) {
+  const phoneContext = usePhoneContext();
   const target = workspaceView(view), memoryKey = workspaceStateKey(user.id, dataset, target);
   const [activeGroupId, setActiveGroupId] = usePhoneViewState(memoryKey, 'activeGroupId', initialGroupId);
   const [groupDefinition, setGroupDefinition] = useState(false), [groupMembers, setGroupMembers] = useState(null);
@@ -113,7 +114,7 @@ export function WorkspacePage({ view, data, user, dataset, onBack, onChanged, on
   else if (target === 'battery-records') content = <><p className="mobile-phone-purpose">The shared battery register. Open a record to inspect evidence or prepare a permitted change.</p><InventoryScreen data={data} user={user} dataset={dataset} active={active} onDetail={onDetail} onOperation={onOperation} onEdit={onEdit} onExport={onExport} onRegister={() => onOpen?.('assets')} management onImport={onImport} onGroup={setGroupMembers} />{active && groupMembers && <PhoneBusinessSurface task="group-definition"><TeachingGroupsPanel data={data} initialIds={groupMembers} onClose={() => setGroupMembers(null)} onChanged={changed} onSaved={() => setGroupMembers(null)} onFilter={group => onGroupView?.(group, false)} onSelect={group => onGroupView?.(group, true)} /></PhoneBusinessSurface>}</>;
   else content = <div className="mobile-work-load-error" role="alert"><h2>Workspace unavailable</h2><p>Return to Workspace and choose an available destination.</p></div>;
   return <section className={`mobile-work-page mobile-work-page-${target}`} aria-label={initialTaskContext === 'open' && target === 'messages' ? 'My tasks' : pageTitles[target] ?? 'Workspace'} hidden={!active && !backdropVisible} inert={!active ? true : undefined}>
-    <header className="mobile-work-page-heading"><Pressable type="button" className="mobile-work-icon-button" onClick={childBack} disabled={overlayOpen || returnBlocked} aria-label="Back to previous page"><ArrowLeft size={22} aria-hidden="true" /></Pressable><h1>{activeGroup?.name || pageTitles[target] || 'Workspace'}</h1></header>
+    <header className="mobile-work-page-heading"><Pressable type="button" className="mobile-work-icon-button" onClick={event => { if (!phoneContext?.back.handle(event)) childBack(); }} disabled={overlayOpen || returnBlocked} aria-label="Back to previous page"><ArrowLeft size={22} aria-hidden="true" /></Pressable><h1>{activeGroup?.name || (initialTaskContext === 'open' && target === 'messages' ? 'My tasks' : pageTitles[target]) || 'Workspace'}</h1></header>
     <div className="mobile-work-page-content">{content}</div>
   </section>;
 }

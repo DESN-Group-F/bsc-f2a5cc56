@@ -5,6 +5,7 @@ import ts from 'typescript';
 import { jsx, jsxs, Fragment } from 'react/jsx-runtime';
 import * as model from '../src/features/workspace/workspace-model.mjs';
 import { workspaceStateKey } from '../src/features/workspace/phone-view-state.mjs';
+import { createPhoneBackRegistry } from '../src/app/phone-interaction.mjs';
 
 // The actual phone page owns the inert/visible boundary; its child panels are
 // inert React element types here. This does not establish browser blur or focus.
@@ -14,12 +15,12 @@ const imports = {};
 for (const statement of parsed.statements.filter(ts.isImportDeclaration)) for (const binding of statement.importClause?.namedBindings?.elements ?? []) imports[binding.name.text] = binding.name.text;
 const code = ts.transpileModule(parsed.statements.filter(statement => !ts.isImportDeclaration(statement)).map(statement => statement.getFullText(parsed)).join('\n'), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, '').replace(/^export /gm, '');
 function mount(view = 'messages', initialTaskContext = null) {
-  const states = []; let pointer = 0;
+  const states = [], back = createPhoneBackRegistry(); let pointer = 0, registrations = [], routeExits = 0;
   const state = initial => { const key = pointer++; if (!(key in states)) states[key] = typeof initial === 'function' ? initial() : initial; return [states[key], next => { states[key] = typeof next === 'function' ? next(states[key]) : next; }]; };
-  const bindings = { ...imports, ...model, workspaceStateKey, usePhoneBack() {}, useEffect() {}, usePhoneViewState: (key, field, initial) => state(initial), useCallback: callback => callback, useState: state };
+  const bindings = { ...imports, ...model, workspaceStateKey, usePhoneContext: () => ({ back }), usePhoneBack(enabled, close, priority = 300) { if (enabled) registrations.push(back.register(() => { close(); return true; }, priority)); }, useEffect() {}, usePhoneViewState: (key, field, initial) => state(initial), useCallback: callback => callback, useState: state };
   const keys = Object.keys(bindings), Component = new Function(...keys, '_jsx', '_jsxs', '_Fragment', `${code}\nreturn WorkspacePage;`)(...keys.map(key => bindings[key]), jsx, jsxs, Fragment);
-  const props = { view, data: { user: { id: 'review-account', role: 'staff' }, dataset: 'demo' }, user: { id: 'review-account', role: 'staff' }, dataset: 'demo', initialTaskContext };
-  return { render(patch = {}) { Object.assign(props, patch); pointer = 0; return Component(props); } };
+  const props = { view, data: { user: { id: 'review-account', role: 'staff' }, dataset: 'demo', teachingGroups: [] }, user: { id: 'review-account', role: 'staff' }, dataset: 'demo', initialTaskContext, onBack: () => { routeExits++; } };
+  return { back, exits: () => routeExits, render(patch = {}) { for (const unregister of registrations) unregister(); registrations = []; Object.assign(props, patch); pointer = 0; return Component(props); } };
 }
 function find(tree, type) {
   if (Array.isArray(tree)) return tree.map(child => find(child, type)).find(Boolean);
@@ -47,4 +48,37 @@ for (const [route, panel, taskContext] of [['messages', 'MobileMessages', 'open'
   const restored = view.render({ active: true, backdropVisible: false });
   assert.equal(restored.props.inert, undefined); assert.equal(find(restored, panel).props.active, true);
   assert.equal(find(restored, 'MessagesPanel'), undefined, 'Phone routes no longer open a whole shared web panel by default');
+});
+
+test('the visible workspace Back consumes an open child layer before leaving its route', () => {
+  const view = mount(), event = { source: 'page-back' }; let messageOpen = true, received;
+  view.back.register(value => { if (!messageOpen) return false; received = value; messageOpen = false; return true; }, 300);
+  const tree = view.render({ active: true }), back = find(find(tree, 'header'), 'Pressable');
+  assert.equal(back.props['aria-label'], 'Back to previous page');
+  back.props.onClick(event);
+  assert.equal(messageOpen, false); assert.equal(received, event); assert.equal(view.exits(), 0);
+  back.props.onClick(event);
+  assert.equal(view.exits(), 1, 'Only a subsequent Back with no consuming child leaves the workspace route');
+});
+
+test('workspace Back preserves child and teaching-group priorities before returning to its origin', () => {
+  const view = mount('teaching-groups'); let childOpen = true;
+  view.back.register(() => { if (!childOpen) return false; childOpen = false; return true; }, 300);
+  const data = { user: { id: 'review-account', role: 'staff' }, dataset: 'demo', teachingGroups: [{ id: 'group-a', name: 'Group A', state: 'active', ownerAccountId: 'review-account', batteryIds: [] }] };
+  let tree = view.render({ active: true, data, initialGroupId: 'group-a' });
+  assert.ok(find(tree, 'MobileTeachingGroupDetail'));
+  find(find(tree, 'header'), 'Pressable').props.onClick({});
+  assert.equal(childOpen, false); assert.equal(view.exits(), 0);
+  tree = view.render(); assert.ok(find(tree, 'MobileTeachingGroupDetail'), 'Closing the inner child retains its teaching group');
+  find(find(tree, 'header'), 'Pressable').props.onClick({});
+  tree = view.render(); assert.ok(find(tree, 'MobileTeachingGroups')); assert.equal(view.exits(), 0);
+  find(find(tree, 'header'), 'Pressable').props.onClick({});
+  assert.equal(view.exits(), 1);
+});
+
+test('My tasks keeps its visible heading consistent with the route identity', () => {
+  const taskTree = mount('messages', 'open').render({ active: true });
+  assert.equal(taskTree.props['aria-label'], 'My tasks');
+  assert.equal(find(taskTree, 'h1').props.children, 'My tasks');
+  assert.equal(find(mount('messages').render({ active: true }), 'h1').props.children, 'Messages');
 });

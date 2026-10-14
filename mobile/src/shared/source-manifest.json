@@ -90,8 +90,8 @@
     {
       "source": "components/inventory/battery-history.tsx",
       "path": "components/inventory/battery-history.js",
-      "sourceSha256": "ea8cd10568e0aabe8807070fdc6287fa7dbd5abc463f52ade33912e04d939907",
-      "sha256": "3c099dbd59b467a9b936151ec20b384f5d9774cc28b443ec667a49c4763aa36e"
+      "sourceSha256": "38fd56967f3b231f37f8a824aad1e85fa3ffe5057481eca7b0e08f05d32d2299",
+      "sha256": "2a6bf8933828c4a8e35d84642972d0521b59f046c974553fd408f37c65aa2cab"
     },
     {
       "source": "components/inventory/battery-history.module.css",

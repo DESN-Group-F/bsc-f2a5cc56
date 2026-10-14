@@ -19,7 +19,7 @@ function mount(t) {
   const original = Object.getOwnPropertyDescriptor(globalThis,'fetch');
   Object.defineProperty(globalThis,'fetch',{configurable:true,value:(_url,{signal})=>new Promise((resolve,reject)=>requests.push({signal,resolve,reject}))});
   t.after(()=>{cells.forEach(cell=>cell?.cleanup?.());if(original)Object.defineProperty(globalThis,'fetch',original);else delete globalThis.fetch;});
-  const bindings={...imports,useState,useEffect,usePhoneViewState,inventoryResponse:value=>value,batteryStatusLabel:()=> 'In store',isActiveBattery:()=>true,formatTime:value=>value,storageRoomLabel:()=> 'Room unknown',durationLabel:value=>value,actionNames:{}};
+  const bindings={...imports,useState,useEffect,useRef:initial=>useState({current:initial})[0],usePhoneContentMotion(){},usePhoneViewState,inventoryResponse:value=>value,batteryStatusLabel:()=> 'In store',isActiveBattery:()=>true,formatTime:value=>value,storageRoomLabel:()=> 'Room unknown',durationLabel:value=>value,actionNames:{}};
   const keys=Object.keys(bindings),Component=new Function(...keys,'_jsx','_jsxs','_Fragment',`${code}\nreturn BatteryPage;`)(...keys.map(key=>bindings[key]),jsx,jsx,'Fragment');
   const props={battery:{id:'BAT-00000001',name:'Original',loanId:null},data:{dataset:'demo'},active:true,revision:1};
   return { requests,views, render(patch={},commit=true) {Object.assign(props,patch);index=0;effects=[];tree=Component(props);if(commit)effects.forEach(fn=>fn());return tree;}, tree:()=>tree, complete(request,name='Loaded') {request.resolve({battery:{...props.battery,name},events:[]});} };

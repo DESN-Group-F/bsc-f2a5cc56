@@ -18,5 +18,7 @@ export interface BatteryServicePlugin {
   loadBusinessData(): Promise<{ data: string | null }>;
   saveBusinessData(options: { data: string; codec?: 'gzip-base64-v1' }): Promise<void>;
   request(options: ServiceRequest): Promise<ServiceResponse>;
+  /** iOS only: requests foreground UIKit impact feedback; hardware output is not guaranteed. */
+  haptic(options: { strength: 'light' | 'medium' }): Promise<void>;
 }
 export declare const BatteryService: BatteryServicePlugin;

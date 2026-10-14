@@ -35,7 +35,7 @@ async function mount(kind,{platform='android',code='TIMEOUT',cancelSettles=true,
   const storage=createDurableStorage({load:async()=>JSON.stringify({schemaVersion:1,entries:{}}),save:async()=>{}});await storage.initialize();
   const user={id:'11111111-1111-4111-8111-111111111111',role:'admin',displayName:'Staff A'};
   const data={dataset:'demo',user,batteries:[],people:[{id:'OWNER-A',role:'staff',accountId:user.id,name:'Staff A'}],staffDirectory:[{id:user.id,active:true}],rooms:[],buildings:[{id:'J18'}]};
-  const reads=[],feedback=[],haptics=[],timers=[],listeners=new Map(),hooks=[],effects=[],cancelCalls=[],readerSessions=[];let pendingRead,cursor=0,dirty=true,result,closed=false,surfaceActive=true,readerHook,feedbackHook,clock=Date.now();
+  const reads=[],feedback=[],haptics=[],timers=[],listeners=new Map(),hooks=[],effects=[],cancelCalls=[],readerSessions=[],readerFrames=[];let pendingRead,cursor=0,dirty=true,result,closed=false,surfaceActive=true,readerHook,feedbackHook,clock=Date.now();
   const adapter={getAvailability:async()=>({platform,available:true,enabled:true}),read(options){reads.push(options);if(reads.length===1)return Promise.reject(Object.assign(new Error('Controlled reader stop'),{code}));return new Promise((resolve,reject)=>{pendingRead={resolve,reject};});},async cancel(){const owned=pendingRead,call={owned};cancelCalls.push(call);if(deferCancel)await new Promise(resolve=>{call.resolve=resolve;});if(cancelSettles)owned?.reject(Object.assign(new Error('Controlled cancellation'),{code:'CANCELLED'}));if(cancelSettles&&pendingRead===owned)pendingRead=null;}};
   const listen=(name,run)=>{if(!listeners.has(name))listeners.set(name,new Set());listeners.get(name).add(run);};
   const unlisten=(name,run)=>listeners.get(name)?.delete(run);
@@ -49,7 +49,7 @@ async function mount(kind,{platform='android',code='TIMEOUT',cancelSettles=true,
     useState(initial){const index=cursor++;if(!hooks[index])hooks[index]={value:typeof initial==='function'?initial():initial};return [hooks[index].value,next=>{const value=typeof next==='function'?next(hooks[index].value):next;if(!Object.is(value,hooks[index].value)){hooks[index].value=value;dirty=true;}}];},
     useRef(initial){return hooks[cursor++]??={current:initial};},useEffect:effect,useLayoutEffect:effect,useWorkflowLock(){},usePhoneBack(){},usePhoneContext:()=>({active:surfaceActive}),usePhoneFormDraft({initial}){const [value,setValue]=bindings.useState(initial);return{value,setValue,pending:false,error:'',save:async()=>value,clear:async()=>{},retry:async()=>{}};},usePhoneViewState(_key,initial){return bindings.useState(initial);},useScanModeMotion(){},
     setTimeout(run,delay){const timer={run,delay,active:true};timers.push(timer);return timer;},clearTimeout(timer){if(timer)timer.active=false;},
-    businessStorage:()=>storage,teachingNfcBridge:()=>null,createTeachingNfcBridge,withNfcFailureContext,createScanController:()=>scanController,acquisitionOf:()=>null,
+    Capacitor:{getPlatform:()=>platform},businessStorage:()=>storage,teachingNfcBridge:()=>null,createTeachingNfcBridge,withNfcFailureContext,createScanController:()=>scanController,acquisitionOf:()=>null,
     createIntakeController:options=>{intakeQueueFeedback=options.onQueueAccepted;return intakeController;},intakeDefaultValues,intakeEntrySource,intakeError,intakeStringFields,reviewedIntakeCommon,applyIntakePreparationModel,changedIntakePreparation,normalizedIntakePreparation,
     createRemovalController:()=>removalController,acquireRemovalNative,createGuardedRemovalBridge,removalEligible,removalScopeMatches,removalDraftStorageKey,removalEntrySource,
     readFeedbackPreferences,scanFeedbackOutcome,expireScanFeedback,FEEDBACK_KEY,playScanFeedback:outcome=>feedback.push(outcome),Date:class extends Date{static now(){return clock;}},
@@ -66,11 +66,12 @@ async function mount(kind,{platform='android',code='TIMEOUT',cancelSettles=true,
   bindings.useScanFeedback=options=>{feedbackHook=useScanFeedback(options);return feedbackHook;};
   const [file,name]=sources[kind],Component=await compile(file,name,bindings);
   const props={kind:'checkout',data,user,dataset:'demo',reviewOpen:false,input:'native'};
-  function render(){let count=0;do{assert.ok(count++<30,'Actual effects settle');dirty=false;cursor=0;result=Component(props);for(const node of flatten(result))if(node.props.ref&&!node.props.ref.current)node.props.ref.current={scrollTop:0,isConnected:true,querySelector:()=>({focus(){}}),querySelectorAll:()=>[],contains:()=>true,focus(){}};while(effects.length)effects.shift()();}while(dirty);return result;}
+  function render(){let count=0;do{assert.ok(count++<30,'Actual effects settle');dirty=false;cursor=0;result=Component(props);readerFrames.push(readerHook.reader.state);for(const node of flatten(result))if(node.props.ref&&!node.props.ref.current)node.props.ref.current={scrollTop:0,isConnected:true,querySelector:()=>({focus(){}}),querySelectorAll:()=>[],contains:()=>true,focus(){}};while(effects.length)effects.shift()();}while(dirty);return result;}
   async function settle(){for(let count=0;count<8;count++){await new Promise(setImmediate);if(!closed)render();}}
-  const view={storage,reads,feedback,haptics,props,render,settle,cancelCalls,readerSessions,
+  const view={storage,reads,feedback,haptics,props,render,settle,cancelCalls,readerSessions,readerFrames,
     evidence:()=>Object.entries(storage.entries()).filter(([key])=>key.startsWith(NFC_PREFIX)).map(([,raw])=>JSON.parse(raw)),
     status:()=>readerHook.reader.message,
+    readerState:()=>readerHook.reader.state,
     feedbackState:()=>feedbackHook.feedback,
     present(outcome){feedbackHook.present(outcome);render();},
     beginAcquisition(uid,attempt){feedbackHook.beginAcquisition(uid,attempt);render();},
@@ -82,7 +83,7 @@ async function mount(kind,{platform='android',code='TIMEOUT',cancelSettles=true,
     failureTone:()=>kind==='scan'?result.feedback.tone==='failure':flatten(result).some(node=>node.type==='InkOrb'&&String(node.props.feedback).split(' ').includes('failure')),
     queueSize:()=>kind==='scan'?session.queue.length:kind==='intake'?intakeController.getSnapshot().draft.entries.length:removalController.snapshot().draft.items.length,
     waitTimer:()=>timers.findLast(timer=>timer.active&&timer.delay===250),
-    async completeRead(commit=true){assert.ok(pendingRead);pendingRead.resolve({uidHex:'0004AB00',technology:'Controlled NFC-A output',ndefStatus:'readWrite',capacityBytes:144,records:[],observedAt:'2026-10-12T05:00:00.000Z'});pendingRead=null;if(commit)await settle();else for(let count=0;count<8;count++)await new Promise(setImmediate);},
+    async completeRead(commit=true){assert.ok(pendingRead);pendingRead.resolve({uidHex:'0004AB00',technology:'Controlled NFC-A output',ndefStatus:'readWrite',capacityBytes:144,records:[],observedAt:'2026-10-12T05:00:00.000Z',...(platform==='ios'&&kind==='intake'?{readerSessionId:reads.at(-1).sessionId||`controlled-ios-session-${reads.length}`}:{})});pendingRead=null;if(commit)await settle();else for(let count=0;count<8;count++)await new Promise(setImmediate);},
     key(key){for(const handler of [...listeners.get('keydown')||[]])handler({key,preventDefault(){}});render();},
     click(label){const button=flatten(result).find(node=>node.type==='button'&&(node.props['aria-label']===label||words(node)===label));assert.ok(button,`Actual button: ${label}`);button.props.onClick();render();},
     hasEditor:()=>flatten(result).some(node=>node.props.className==='mi-editor'),
@@ -94,6 +95,7 @@ async function mount(kind,{platform='android',code='TIMEOUT',cancelSettles=true,
     hiddenWithoutEvent(){document.visibilityState='hidden';},
     mismatchWithoutEffects(){props.dataset='live';props.data={...data,dataset:'live'};dirty=false;cursor=0;result=Component(props);},
     async foreground(){document.visibilityState='visible';for(const listener of [...listeners.get('visibilitychange')||[]])listener();render();await settle();},
+    async pageshow(){for(const listener of [...listeners.get('pageshow')||[]])listener();render();await settle();},
     async background(){document.visibilityState='hidden';for(const listener of [...listeners.get('visibilitychange')||[]])listener();render();await settle();},
     async close(){
       closed=true;for(const hook of hooks)hook?.cleanup?.();
@@ -200,10 +202,49 @@ test('failure provenance never borrows the preceding accepted attempt and an exp
   } finally {await view.close();}
 });
 
-for(const settings of [{platform:'ios',code:'TIMEOUT'},{platform:'android',code:'TAG_LOST'}])test(`${settings.platform} ${settings.code}: all actual workflows retain manual fault recovery instead of auto-opening a reader`,async()=>{
+for(const settings of [{platform:'ios',code:'TIMEOUT'},{platform:'android',code:'TAG_LOST'}])test(`${settings.platform} ${settings.code}: all actual workflows require deliberate continuation instead of auto-opening a reader`,async()=>{
   for(const kind of Object.keys(sources)){
-    const view=await mount(kind,settings);try{assert.equal(view.reads.length,1);assert.equal(view.waitTimer(),undefined);assert.equal(view.evidence()[0].error.code,settings.code);assert.equal(view.failureTone(),true);assert.equal(view.queueSize(),0);}finally{await view.close();}
+    const view=await mount(kind,settings);try{
+      assert.equal(view.reads.length,1);assert.equal(view.waitTimer(),undefined);assert.equal(view.evidence()[0].error.code,settings.code);assert.equal(view.queueSize(),0);
+      const batchEnded=kind==='intake'&&settings.platform==='ios'&&settings.code==='TIMEOUT';
+      assert.equal(view.failureTone(),!batchEnded);
+      if(batchEnded){
+        assert.equal(view.readerSessions[0].getSnapshot().state,'paused');assert.match(view.status(),/Saved tags are retained/);
+        view.click('Continue scanning');await view.settle();assert.equal(view.reads.length,2);assert.equal(view.reads[1].keepSessionAlive,true);assert.equal(view.reads[1].sessionId,undefined);
+      }
+    }finally{await view.close();}
   }
+});
+
+for(const code of ['TIMEOUT','CANCELLED','BACKGROUND'])test(`iOS batch ${code}: foreground and enabled-control return retain a visible pause until Continue`,async()=>{
+  const view=await mount('intake',{platform:'ios',code});try{
+    assert.equal(view.readerState(),'paused');assert.equal(view.reads.length,1);
+    await view.background();const frame=view.readerFrames.length;
+    await view.foreground();await view.pageshow();await view.deactivate();view.activate();await view.settle();
+    assert.equal(view.reads.length,1,'Returning foreground or re-enabling the surface cannot open another system sheet');
+    assert.equal(view.readerState(),'paused');assert.equal(view.waitTimer(),undefined);
+    assert.ok(view.readerFrames.slice(frame).every(state=>state!=='starting'),'Manual pause cannot flash a preparation state during control re-admission');
+    view.click('Continue scanning');await view.settle();
+    assert.equal(view.reads.length,2);assert.equal(view.reads[1].keepSessionAlive,true);assert.equal(view.reads[1].sessionId,undefined,'Continue starts an explicitly new physical session');
+    await view.background();await view.foreground();assert.equal(view.reads.length,2,'An active batch interrupted by background also needs Continue');assert.equal(view.readerState(),'paused');
+    view.click('Continue scanning');await view.settle();assert.equal(view.reads.length,3);assert.equal(view.reads[2].sessionId,undefined);
+  }finally{await view.close();}
+});
+
+test('iOS batch background keeps late raw evidence without adoption or foreground automatic restart',async()=>{
+  const view=await mount('intake',{platform:'ios',cancelSettles:false});try{
+    view.click('Continue scanning');await view.settle();assert.equal(view.reads.length,2);
+    await view.background();await view.completeRead();await view.foreground();await view.pageshow();
+    assert.equal(view.evidence()[1].outcome,'read');assert.equal(view.evidence()[1].result.uidHex,'0004AB00');assert.equal(view.evidence()[1].adoptions,undefined);
+    assert.equal(view.queueSize(),0);assert.deepEqual(view.haptics,[]);assert.deepEqual(view.feedback,[]);assert.equal(view.reads.length,2);assert.equal(view.readerState(),'paused');
+    view.click('Continue scanning');await view.settle();assert.equal(view.reads.length,3);assert.equal(view.reads[2].sessionId,undefined);
+  }finally{await view.close();}
+});
+
+for(const [kind,platform]of [['scan','ios'],['removal','ios'],['intake','android']])test(`${platform} ${kind}: ordinary foreground resume semantics are preserved`,async()=>{
+  const view=await mount(kind,{platform});try{
+    assert.equal(view.reads.length,1);await view.background();await view.foreground();assert.equal(view.reads.length,2);
+  }finally{await view.close();}
 });
 
 test('actual intake Escape closes only its draft editor, then Review close resumes the native reader with the original queued draft',async()=>{

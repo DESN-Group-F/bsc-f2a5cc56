@@ -47,7 +47,9 @@ test('mobile review has confirmation inside the sheet, retains focus/queue close
   assert.ok(jsx.indexOf('scan-confirm-button') > jsx.indexOf('scan-review-sheet'));
   assert.match(jsx, /Close review and retain queue/); assert.match(jsx, /useDialogFocus\(reviewOpen, reviewSheet, reviewEntry/);
   assert.match(hook, /!reviewOpen/); assert.match(hook, /visibilitychange/); assert.match(hook, /useOwnedNfcReader/);
-  const reader=await readFile(new URL('../src/features/scan/use-owned-nfc-reader.js',import.meta.url),'utf8'),session=await readFile(new URL('../src/features/scan/native-reader-session.mjs',import.meta.url),'utf8');
-  assert.match(reader,/session\.pause/);assert.match(session,/cancelledBridge\.cancel\(\)/);assert.match(session,/await cancellationBarrier/);
+  const reader=await readFile(new URL('../src/features/scan/use-owned-nfc-reader.js',import.meta.url),'utf8');
+  assert.match(reader,/session\.pause/);
+  // Cancellation ordering and cross-instance ownership are exercised by the
+  // reader-session and iOS batch behavior suites, independently of helper names.
   assert.match(css, /prefers-reduced-motion:reduce/); assert.match(css, /scan-review-sheet>footer/);
 });

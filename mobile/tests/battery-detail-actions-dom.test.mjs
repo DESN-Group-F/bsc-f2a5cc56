@@ -20,7 +20,7 @@ const battery={id:'BAT-00000001',name:'A retained battery with a long descriptiv
 const props={battery,data:{dataset:'demo'},revision:1,onOperation:(kind,ids)=>f.calls.push({kind,ids}),onFullRecord:()=>f.calls.push('full-record'),onExport:()=>f.calls.push('export')};
 window.fetch=()=>new Promise(resolve=>f.resolve=()=>resolve(new Response(JSON.stringify({battery,events:[]}))));
 const root=createRoot(document.getElementById('root'));
-f.render=patch=>{Object.assign(props,patch);root.render(<PhoneUIProvider namespace='fixture:demo'><div className='phone-app'><BatteryPage {...props}/></div></PhoneUIProvider>);};f.render();
+f.render=patch=>{Object.assign(props,patch);root.render(<PhoneUIProvider namespace='fixture:demo' reducedMotion={props.reducedMotion===true}><div className={'phone-app'+(props.iosPresentation?' ios-shell':'')}><BatteryPage {...props}/></div></PhoneUIProvider>);};f.render();
 `;
 
 test('record actions retain hierarchy and readable bounds on narrow, wide and enlarged-text layouts', options, async t => {
@@ -71,4 +71,29 @@ test('record actions retain hierarchy and readable bounds on narrow, wide and en
       } finally { await page.close(); }
     });
   }
+  await t.test('iOS record sections redirect an active fade, retain refreshed evidence and respect reduced motion',async()=>{
+    const page=await browser.newPage({viewport:{width:390,height:844}});
+    try {
+      await page.route('https://battery-layout.fixture.test/',route=>route.fulfill({contentType:'text/html',body:'<style>'+styles.join('\n').replace(/@import[^;]+;/g,'')+'</style><div id="root"></div>'}));
+      await page.goto('https://battery-layout.fixture.test/');
+      await page.addScriptTag({content:compiled.outputFiles.find(file=>file.path.endsWith('.js')||file.path==='<stdout>').text,type:'module'});
+      await page.getByRole('tab',{name:'Overview',exact:true}).waitFor();
+      await page.evaluate(()=>{
+        fixture.resolve();fixture.render({iosPresentation:true});fixture.motions=[];
+        const animate=Element.prototype.animate;
+        Element.prototype.animate=function(...args){const result=animate.apply(this,args);if(this.hasAttribute('data-record-section'))fixture.motions.push(result);return result;};
+      });
+      await page.getByRole('tab',{name:'Location',exact:true}).click();await page.locator('[data-record-section=location]').waitFor();
+      await page.evaluate(()=>document.querySelector('[role=tab][aria-selected=true]').closest('[role=tablist]').querySelector('button:last-child').click());
+      await page.locator('[data-record-section=history]').waitFor();
+      assert.equal(await page.evaluate(()=>fixture.motions.length),2);assert.equal(await page.evaluate(()=>fixture.motions[0].playState),'idle');
+      await page.evaluate(()=>fixture.render({revision:2}));await page.getByText('Updating record…',{exact:true}).waitFor();
+      assert.equal(await page.locator('[data-record-section=history]').count(),1);assert.equal(await page.evaluate(()=>fixture.motions.length),2);
+      await page.evaluate(()=>fixture.resolve());await page.getByText('Updating record…',{exact:true}).waitFor({state:'hidden'});
+      await page.evaluate(()=>fixture.render({reducedMotion:true}));await page.getByRole('tab',{name:'Overview',exact:true}).click();
+      await page.locator('[data-record-section=overview]').waitFor();assert.equal(await page.evaluate(()=>fixture.motions.length),2);
+      await page.evaluate(()=>fixture.render({iosPresentation:false,reducedMotion:false}));await page.getByRole('tab',{name:'Location',exact:true}).click();
+      await page.locator('[data-record-section=location]').waitFor();assert.equal(await page.evaluate(()=>fixture.motions.length),2,'Android-compatible detail keeps its previous behavior');
+    } finally {await page.close();}
+  });
 });

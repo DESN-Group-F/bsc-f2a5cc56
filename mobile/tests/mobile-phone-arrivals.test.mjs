@@ -11,6 +11,7 @@ import * as interaction from '../src/app/phone-interaction.mjs';
 import * as scrolling from '../src/app/phone-scroll.mjs';
 import { markPhoneMilestone } from '../src/app/phone-milestones.mjs';
 import {phoneAdmission} from '../src/app/phone-admission.mjs';
+import * as iosPresentation from '../src/app/ios-presentation.mjs';
 
 // Actual provider, shared hook, store and shell consumer functions run against
 // controlled hooks/timers/transport. Feature JSX is retained as descriptors;
@@ -112,7 +113,7 @@ test('actual 48-hour expiry and fresh snapshot anchoring use monotonic elapsed t
 
 test('actual shell has no arrival clock subscription while its inventory and badge consumers update',t=>{
   const env=environment(t),storage={getItem:()=>null},bindings={...env.hooks,...navigation,...interaction,...scrolling,...env.actual,memo,markPhoneMilestone,
-    registerPlugin:()=>({}),businessStorage:()=>storage,native:false,MOBILE_BUILD:'controlled',discoverMobileRecovery:()=>null,discoverMobileDrafts:()=>[],phoneAdmission,
+    ...iosPresentation,Capacitor:{getPlatform:()=> 'web'},registerPlugin:()=>({}),businessStorage:()=>storage,native:false,MOBILE_BUILD:'controlled',discoverMobileRecovery:()=>null,discoverMobileDrafts:()=>[],phoneAdmission,
     useInventoryData:()=>({data:env.data,user:env.data.user,dataset:'demo',loading:false,error:'',revision:0,load:env.load,refresh(){},setError(){}}),
     useMessageCount:()=>({unreadCount:0,acceptUnreadCount(){}}),useInventoryPolling(){},usePhoneViewport:()=>({keyboardOpen:false,systemReduced:false}),
   };

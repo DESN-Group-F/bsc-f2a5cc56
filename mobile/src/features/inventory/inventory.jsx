@@ -46,33 +46,36 @@ function Range({ name, draft, setDraft, title, lowKey, highKey, date = false, in
   const portalContainer = React.useContext(SheetPortalContext);
   const modeKey = `${name}Mode`, mode = draft[modeKey];
   function bound(key, value) { setDraft(old => ({ ...old, [key]: value === '' ? null : date ? value : Number(value) })); }
-  return <fieldset className="mi-range"><legend>{title}</legend><Choice label="Recorded value" value={mode} options={[{ id: 'any', label: 'Any' }, { id: 'known', label: 'Recorded' }, { id: 'unknown', label: 'Not recorded' }]} onChange={value => setDraft(old => ({ ...old, [modeKey]: value, ...(value === 'unknown' ? { [lowKey]: null, [highKey]: null } : {}) }))} /><div className="mi-range-bounds">{[lowKey, highKey].map((key, index) => <label key={key} className="mi-field">{index ? 'Maximum' : 'Minimum'}{date ? <TemporalInput portalContainer={portalContainer} pickerContentProps={{ collisionBoundary: portalContainer, collisionPadding: 8, sticky: 'always', updatePositionStrategy: 'always', className: 'mi-mobile-date-picker' }} type="date" aria-label={`${title} ${index ? 'maximum' : 'minimum'}`} disabled={mode === 'unknown'} value={draft[key] ?? ''} onChange={event => bound(key, event.target.value)} /> : <input type="number" min={integer ? 0 : '0.000001'} step={integer ? 1 : 'any'} disabled={mode === 'unknown'} value={draft[key] ?? ''} onChange={event => bound(key, event.target.value)} />}</label>)}</div></fieldset>;
+  return <fieldset className="mi-range"><legend>{title}</legend><Choice label="Recorded value" value={mode} options={[{ id: 'any', label: 'Any' }, { id: 'known', label: 'Recorded' }, { id: 'unknown', label: 'Not recorded' }]} onChange={value => setDraft(old => ({ ...old, [modeKey]: value, ...(value === 'unknown' ? { [lowKey]: null, [highKey]: null } : {}) }))} /><div className="mi-range-bounds">{[lowKey, highKey].map((key, index) => <label key={key} className="mi-field">{index ? 'Maximum' : 'Minimum'}{date ? <TemporalInput portalContainer={portalContainer} pickerContentProps={{ collisionBoundary: portalContainer, collisionPadding: 8, sticky: 'always', updatePositionStrategy: 'always', className: 'mi-mobile-date-picker' }} type="date" aria-label={`${title} ${index ? 'maximum' : 'minimum'}`} disabled={mode === 'unknown'} value={draft[key] ?? ''} onChange={event => bound(key, event.target.value)} /> : <input type="number" aria-label={`${title} ${index ? 'maximum' : 'minimum'}`} min={integer ? 0 : '0.000001'} step={integer ? 1 : 'any'} disabled={mode === 'unknown'} value={draft[key] ?? ''} onChange={event => bound(key, event.target.value)} />}</label>)}</div></fieldset>;
 }
 function FilterSheet({ data, scope, filter, onApply, onClose, fullRegister = false }) {
-  const [draft, setDraft] = useState(filter), [error, setError] = useState('');
+  const [draft, setDraft] = useState(filter), [error, setError] = useState(''), errorRef = useRef(null);
+  function revealError() { errorRef.current?.focus({ preventScroll:true }); errorRef.current?.scrollIntoView({ block:'nearest', behavior:'instant' }); }
+  useLayoutEffect(() => { if (error) revealError(); }, [error]);
   const chips = mobileFilterChips(draft, data, scope, fullRegister);
   const count = category => chips.filter(item => item.category === category).length;
   const update = patch => { setError(''); setDraft(old => ({ ...old, ...patch })); };
-  function apply() { const parsed = inventoryFilterSchema.safeParse(draft); if (!parsed.success) { setError(parsed.error.issues.map(item => item.message).join(' ')); return; } onApply(parsed.data); onClose(); }
+  function apply() { const parsed = inventoryFilterSchema.safeParse(draft); if (!parsed.success) { setError(parsed.error.issues.map(item => item.message).join(' ')); revealError(); return; } onApply(parsed.data); onClose(); }
   function values(key) { return [...new Set(data.batteries.map(item => item[key]).filter(value => value?.trim()))].sort((a, b) => a.localeCompare(b, 'en', { numeric: true })); }
   function savedChoice(key, title) { return <Choice label={title} value={draft[`${key}Unknown`] ? '__unknown' : draft[key] === null ? '__all' : `saved:${draft[key]}`} options={[{ id: '__all', label: 'All saved values' }, { id: '__unknown', label: 'Not recorded' }, ...values(key).map(value => ({ id: `saved:${value}`, label: value }))]} onChange={value => update({ [key]: value.startsWith('saved:') ? value.slice(6) : null, [`${key}Unknown`]: value === '__unknown' })} />; }
   const holders = [...new Map(data.batteries.filter(item => item.loanId && item.borrowerKind === 'staff' && item.borrowerAccountId).map(item => [item.borrowerAccountId, item.borrowerName ?? 'Staff account'])).entries()];
   const category = (title, key, children) => <details className="mi-filter-category"><summary>{title}{count(key) > 0 && <span>{count(key)} applied</span>}</summary><div>{children}</div></details>;
   return <Sheet title="Filter batteries" onClose={onClose} wide footer={<><button onClick={() => { setDraft(initialInventoryView(scope, fullRegister).filter); setError(''); }}>Clear filters</button><button className="mi-primary" onClick={apply}>Apply filters</button></>}>
+    {error && <p ref={errorRef} className="mi-error" role="alert" tabIndex={-1}>{error}</p>}
     <label className="mi-field mi-search-field">Search<div><Search size={18} /><input value={draft.search} maxLength={200} placeholder="ID, name, model, tag, people or storage" onChange={event => update({ search: event.target.value })} /></div></label>
     {category('Battery details', 'details', <>{<Choice label="Record status" value={draft.lifecycle} options={[{ id: 'active', label: 'Active batteries' }, { id: 'all', label: 'All including removed' }, { id: 'scrapped', label: 'Scrapped' }, { id: 'permanently_removed', label: 'Permanently removed' }]} onChange={lifecycle => update({ lifecycle, status: 'all' })} />}{savedChoice('chemistry', 'Chemistry')}{savedChoice('model', 'Model')}<Range title="Capacity (mAh)" name="capacity" draft={draft} setDraft={setDraft} lowKey="capacityMinMah" highKey="capacityMaxMah" /><Range title="Voltage (V)" name="voltage" draft={draft} setDraft={setDraft} lowKey="voltageMin" highKey="voltageMax" /></>)}
     {category('Location', 'location', <><Choice label="Registered storage building" value={draft.building} options={[{ id: 'all', label: 'All buildings' }, ...(data.buildings ?? []).map(item => ({ id: item.id, label: `${item.id} · ${item.name}`, disabled: item.id !== 'J18' }))]} onChange={building => update({ building, room: 'all' })} /><Choice label="Registered storage room" value={draft.room} options={[{ id: 'all', label: 'All storage rooms' }, { id: '__unspecified', label: 'Room not specified' }, ...(data.rooms ?? []).filter(item => isSelectableRoom(item) && (draft.building === 'all' || item.buildingId === draft.building)).map(item => ({ id: item.id, label: `${item.number} · ${item.name}${item.isPlaceholder ? ' · Placeholder' : ''}` }))]} onChange={room => update({ room })} /><Choice label="Last observed location" value={draft.observedRoom} options={[{ id: 'all', label: 'All last observations' }, { id: '__not_observed', label: 'Not observed' }, { id: '__unavailable', label: 'Recorded address unavailable' }, ...lastObservedLocations(data.batteries)]} onChange={observedRoom => update({ observedRoom })} /><p className="mi-help">Registered home and dated observation are separate. Current room directory labels do not rewrite saved evidence.</p></>)}
     {category('People', 'people', <><Choice label="Responsible owner" value={draft.owner} options={[{ id: 'all', label: 'All responsible owners' }, ...(data.people ?? []).filter(item => item.role === 'staff' && item.accountId).map(item => ({ id: item.id, label: `${item.name} · ${data.staffDirectory?.find(staff => staff.id === item.accountId)?.username ?? item.accountId}` }))]} onChange={owner => update({ owner })} /><Choice label="Current staff holder" value={draft.holder} options={[{ id: 'all', label: 'All current holders' }, ...holders.map(([id, name]) => ({ id, label: `${name} · ${data.staffDirectory?.find(item => item.id === id)?.username ?? id}` }))]} onChange={holder => update({ holder })} />{scope?.kind !== 'group' && <Choice label="My teaching group" value={draft.groupId ?? '__all'} options={[{ id: '__all', label: 'All batteries' }, ...(data.teachingGroups ?? []).filter(item => item.state === 'active' && item.ownerAccountId === data.user.id).map(item => ({ id: item.id, label: `${item.name} · ${item.batteryIds.length} members` }))]} onChange={value => update({ groupId: value === '__all' ? null : value })} />}</>)}
     {category('Age & activity', 'activity', <><Range title="Age since manufacture (days)" name="age" draft={draft} setDraft={setDraft} lowKey="ageMinDays" highKey="ageMaxDays" integer /><Range title="Latest checkout date" name="checkout" draft={draft} setDraft={setDraft} lowKey="checkoutFrom" highKey="checkoutTo" date /><Range title="Latest charge date" name="charge" draft={draft} setDraft={setDraft} lowKey="chargeFrom" highKey="chargeTo" date /><p className="mi-help">Age as of {currentSydneyDate()}. Checkout and charge dates use Australia/Sydney.</p></>)}
     {category('Sort order', 'sort', <><Choice label="Sort by" value={draft.sortBy} options={inventorySortOptions} onChange={sortBy => update({ sortBy })} /><Choice label="Direction" value={draft.sortDirection} options={[{ id: 'asc', label: 'Ascending' }, { id: 'desc', label: 'Descending' }]} onChange={sortDirection => update({ sortDirection })} /><p className="mi-help">Unknown values stay last in both directions. Battery ID breaks ties.</p></>)}
-    {error && <p className="mi-error" role="alert">{error}</p>}
   </Sheet>;
 }
 
-export function InventoryScreen({ data, user, dataset, scope = null, onDetail, onOperation, onExport, onEdit, onGroup, active = true, arrivals = data?.newArrivals, onViewNewArrivals, arrivalsPending = false, arrivalsError = '', onRegister, management = false, onImport }) {
+export function InventoryScreen({ data, user, dataset, scope = null, onDetail, onOperation, onExport, onEdit, onGroup, active = true, arrivals = data?.newArrivals, onViewNewArrivals, arrivalsPending = false, arrivalsError = '', onRegister, management = false, onImport, searchRequest = null, areaMemoryKey = null }) {
   const phoneContext = usePhoneContext();
   const accountId = user?.id ?? data?.user?.id ?? '', contextKey = `${accountId}:${dataset}`;
-  const savedArea = areaMemory.get(contextKey);
+  const areaContextKey=areaMemoryKey ? contextKey+':'+areaMemoryKey : contextKey;
+  const savedArea = areaMemory.get(areaContextKey);
   const [area, setArea] = useState(savedArea?.area ?? 'batteries'), [openRooms, setOpenRooms] = useState(savedArea?.openRooms ?? []), [roomScope, setRoomScope] = useState(savedArea?.roomScope ?? null);
   const [sheet, setSheet] = useState(null);
   const [handoff, setHandoff] = useState(null), [handoffError, setHandoffError] = useState('');
@@ -86,31 +89,42 @@ export function InventoryScreen({ data, user, dataset, scope = null, onDetail, o
   usePhoneBack(() => { if (sheet) return false; if (roomScope) setRoomScope(null); else setArea('batteries'); return true; }, { enabled: active && !scope && area === 'mapping', priority: 20 });
   current.current = { key, view };
   const [tapGuard] = useState(() => createInventoryTapGuard({ lastScrollAt: () => lastScroll.current }));
-  useEffect(() => { setSheet(null); const saved = areaMemory.get(contextKey); setArea(saved?.area ?? 'batteries'); setOpenRooms(saved?.openRooms ?? []); setRoomScope(saved?.roomScope ?? null); }, [contextKey]);
-  useEffect(() => { areaMemory.set(contextKey, { ...areaMemory.get(contextKey), area, openRooms, roomScope }); }, [contextKey, area, openRooms, roomScope]);
+  useEffect(() => { setSheet(null); const saved = areaMemory.get(areaContextKey); setArea(saved?.area ?? 'batteries'); setOpenRooms(saved?.openRooms ?? []); setRoomScope(saved?.roomScope ?? null); }, [areaContextKey]);
+  useEffect(() => { areaMemory.set(areaContextKey, { ...areaMemory.get(areaContextKey), area, openRooms, roomScope }); }, [areaContextKey, area, openRooms, roomScope]);
   useLayoutEffect(() => {
     if (!active) return;
     const owner = inventoryScrollOwner(root.current); if (!owner) return;
-    const top = pageChanged.current ? resultHeadingScrollTop(resultHeading.current, owner) : overview ? areaMemory.get(contextKey)?.overviewScroll ?? 0 : readInventoryView(key, currentScope, management).scrollTop;
+    const top = pageChanged.current ? resultHeadingScrollTop(resultHeading.current, owner) : overview ? areaMemory.get(areaContextKey)?.overviewScroll ?? 0 : readInventoryView(key, currentScope, management).scrollTop;
     pageChanged.current = false; owner.scrollTop = top;
     if (!overview) rememberInventoryView(key, { ...readInventoryView(key, currentScope, management), scrollTop: top });
-  }, [key, area, active, view.page, view.pageSize, view.filter, overview]);
+  }, [key, area, active, view.page, view.pageSize, view.filter, overview, areaContextKey]);
   useEffect(() => {
     if (!active) return;
     const owner = inventoryScrollOwner(root.current); if (!owner) return;
     const source = owner === document.scrollingElement ? document : owner;
     const save = () => {
       lastScroll.current = performance.now();
-      if (overview) areaMemory.set(contextKey, { ...areaMemory.get(contextKey), overviewScroll: owner.scrollTop });
+      if (overview) areaMemory.set(areaContextKey, { ...areaMemory.get(areaContextKey), overviewScroll: owner.scrollTop });
       else if (current.current.key === key) { const next = { ...current.current.view, scrollTop: owner.scrollTop }; rememberInventoryView(key, next); current.current.view = next; }
     };
     source.addEventListener('scroll', save, { passive: true });
     return () => source.removeEventListener('scroll', save);
-  }, [active, key, contextKey, overview]);
+  }, [active, key, areaContextKey, overview]);
   function updateView(patch) { const next = { ...view, scrollTop: readInventoryView(key, currentScope, management).scrollTop, ...patch }; rememberInventoryView(key, next); setRecord({ key, view: next }); }
   function changeFilter(patch) { updateView({ filter: { ...view.filter, ...patch }, page: 0, scrollTop: 0 }); }
   function clearFilters() { updateView({ filter: initialInventoryView(currentScope, management).filter, page: 0, scrollTop: 0 }); }
   function changePage(next) { pageChanged.current = true; updateView({ page: next, scrollTop: 0 }); }
+  const appliedSearch = useRef(null);
+  useEffect(() => {
+    if (!active || !searchRequest || appliedSearch.current === searchRequest.id) return;
+    appliedSearch.current = searchRequest.id;
+    // Reuse this mounted inventory's complete query and fixed personal/group/room boundary.
+    // Search never clears chosen records or acknowledges New arrivals.
+    changeFilter({ search:String(searchRequest.text ?? '').slice(0,200) });
+    if (overview) setArea('batteries');
+    const frame=requestAnimationFrame(() => root.current?.querySelector('.mi-inventory-search input')?.focus({ preventScroll:true }));
+    return () => cancelAnimationFrame(frame);
+  }, [active, searchRequest?.id]);
   const queryData = useMemo(() => data ? { ...data, newArrivals: arrivals } : null, [data, arrivals]);
   const query = useMemo(() => {
     if (!data || data.dataset !== dataset || data.user.id !== accountId) return { matching: [], boundary: new Set(), statusCounts: { all: 0, in: 0, out: 0 }, baseActiveCount: 0, error: 'Waiting for this account and inventory snapshot.' };

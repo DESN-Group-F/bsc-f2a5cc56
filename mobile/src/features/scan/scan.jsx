@@ -14,6 +14,7 @@ import { PhoneChoice } from '../../app/phone-choice.jsx';
 import { ScanOutcomeStatus } from './outcome-status.jsx';
 import { useScanModeMotion } from './use-scan-mode-motion.js';
 import { phoneEntryMessage, phoneEntryTitle } from '../../app/phone-entry-intent.mjs';
+import { IosScanHome } from '../../app/ios-chrome.jsx';
 
 const titles = { checkout: 'Check out', return: 'Check in / Return', intake: 'New battery intake', removal: 'Retire or remove' };
 const icons = { checkout: ArrowUpFromLine, return: ArrowDownToLine, intake: BatteryPlus, removal: Trash2 };
@@ -21,8 +22,9 @@ const colors = { checkout: 'blue', return: 'yellow', intake: 'purple', removal: 
 const datasetLabel = dataset => dataset === 'demo' ? 'Demonstration inventory' : 'Working inventory';
 const timeLabel = value => new Date(value).toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short', hour12: false });
 
-export function ScanHome({ data, user, dataset, active = true, onOperation, onLookup, entryPending = null, onCancelOpening, onRetryOpening }) {
+export function ScanHome({ data, user, dataset, active = true, onOperation, onLookup, entryPending = null, onCancelOpening, onRetryOpening, iosPresentation = false }) {
   const phoneContext=usePhoneContext();
+  if (iosPresentation) return <IosScanHome active={active} entryPending={entryPending} onLookup={onLookup} onOperation={onOperation} onCancelOpening={onCancelOpening} onRetryOpening={onRetryOpening}/>;
   const preparing = !!entryPending && entryPending.phase !== 'failed';
   const labels = { checkout:'Check out',return:'Return',intake:'Intake',removal:'Removal' };
   const descriptions = { checkout:'Check out: prepare batteries for your account',return:'Return: prepare batteries from a recorded loan',intake:'Intake: register new batteries',removal:'Removal: review battery retirement or removal' };

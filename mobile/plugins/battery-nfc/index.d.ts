@@ -25,13 +25,33 @@ export interface NfcReadResult {
   ndefError?: string;
   /** Device-clock observation timestamp in ISO 8601 UTC. */
   observedAt: string;
+  /** iOS only: opaque foreground session token for explicitly requested continuous reads. */
+  readerSessionId?: string;
+}
+
+export interface NfcReadOptions {
+  /** Default 20 s; integer bounds 1–60 s, including any wait for tag removal. */
+  timeoutMs?: number;
+  /**
+   * iOS only. Keep Apple's system sheet open after a successful read.
+   * The next read still requires an explicit call and the returned session token.
+   * Errors, backgrounding, cancellation and system expiry end the session.
+   * Other platforms retain their existing single-read behavior.
+   */
+  keepSessionAlive?: boolean;
+  /**
+   * iOS only. Continue this exact session; requires keepSessionAlive: true.
+   * A closed/stale session rejects and never opens another sheet automatically.
+   * Omit only for an explicitly started new session.
+   */
+  sessionId?: string;
 }
 
 export interface BatteryNfcPlugin {
   getAvailability(): Promise<NfcAvailability>;
-  /** Starts one explicit read. Default 20 s; integer bounds 1–60 s. */
-  read(options?: { timeoutMs?: number }): Promise<NfcReadResult>;
-  /** Stops this plugin's pending session. Idempotent when no session is running. */
+  /** Starts one explicit read, or continues a retained iOS session with its exact token. */
+  read(options?: NfcReadOptions): Promise<NfcReadResult>;
+  /** Stops a pending or idle retained session. Idempotent when no session is running. */
   cancel(): Promise<void>;
 }
 

@@ -11,6 +11,7 @@ import * as detailBoundary from '../src/app/detail-boundary.mjs';
 import * as scrolling from '../src/app/phone-scroll.mjs';
 import { markPhoneMilestone } from '../src/app/phone-milestones.mjs';
 import * as inventoryModel from '../src/features/inventory/inventory-model.mjs';
+import * as iosPresentation from '../src/app/ios-presentation.mjs';
 
 // Actual Shell, RouteView, React.memo objects and UI context helpers execute.
 // Feature bodies stay descriptors; shallow-prop/context evidence does not
@@ -63,7 +64,7 @@ function mount(t){
   const load=async()=>{},refresh=()=>{},changeDataset=dataset=>{env.data={...env.data,dataset,user:{...env.data.user,defaultDataset:dataset}};},acceptUnreadCount=()=>{};
   const features={ScanHome:function ScanHome(){},WorkspaceScreen:function WorkspaceScreen(){},MeScreen:function MeScreen(){}};
   const actual=compile(shellSource,['MobileShell','MemoScanHome','MemoArrivalInventoryView','MemoWorkspaceScreen','MemoMeScreen'],{...hooks,...navigation,...interaction,...entryIntent,...scrolling,...detailBoundary,...inventoryModel,...ui,...features,markPhoneMilestone,
-    registerPlugin:()=>({}),native:false,MOBILE_BUILD:'controlled',businessStorage:()=>storage,accountHasDeviceWork:()=>false,discoverMobileRecovery:()=>null,discoverMobileDrafts:()=>[],phoneAdmission,
+    ...iosPresentation,Capacitor:{getPlatform:()=> 'web'},registerPlugin:()=>({}),native:false,MOBILE_BUILD:'controlled',businessStorage:()=>storage,accountHasDeviceWork:()=>false,discoverMobileRecovery:()=>null,discoverMobileDrafts:()=>[],phoneAdmission,
     clearEmptyDeviceWork:async()=>{env.calls.push('recovery-check');},
     useInventoryData:()=>({data:env.data,user:env.data.user,dataset:env.data.dataset,loading:false,error:'',revision:0,load,refresh,changeDataset,acceptReviewedInventory(){},setError(){}}),
     useInventoryPolling(){},useMessageCount:()=>({unreadCount:env.unread,acceptUnreadCount}),usePhoneViewport:()=>({keyboardOpen:false,systemReduced:false}),usePhoneArrivals:()=>({arrivals:undefined,acknowledge:undefined,pending:false,error:''}),

@@ -5,7 +5,7 @@ import { restorePhoneFocus } from './phone-interaction.mjs';
 export const PHONE_FOCUS_ENTRY_MS = 420, PHONE_FOCUS_EXIT_MS = 240;
 let workflowBoundarySequence = 0;
 
-export function FloatingWorkflow({ open = true, label, owner, inactive = false, reducedMotion = false, children }) {
+export function FloatingWorkflow({ open = true, label, owner, inactive = false, reducedMotion = false, iosPresentation = false, children }) {
   const surface=useRef(null), retained=useRef(null), fallbackOwner=useRef(null), [shown,setShown]=useState(open);
   if (!fallbackOwner.current) fallbackOwner.current = `phone-workflow:${++workflowBoundarySequence}`;
   if (open) retained.current={label,children,owner:owner || fallbackOwner.current};
@@ -40,5 +40,5 @@ export function FloatingWorkflow({ open = true, label, owner, inactive = false, 
     return()=>{document.removeEventListener('keydown',containFocus);restorePhoneFocus(previousFocus);};
   },[open]);
   if(!open&&!shown)return createPortal(null,document.body);
-  return createPortal(<div ref={surface} className="phone-app phone-workflow-layer" data-phone-workflow-owner={workflowOwner} style={{'--phone-focus-enter':`${PHONE_FOCUS_ENTRY_MS}ms`,'--phone-focus-exit':`${PHONE_FOCUS_EXIT_MS}ms`}} data-state={open?'open':'closed'} role="dialog" aria-modal={open?true:undefined} aria-label={retained.current?.label||label} aria-hidden={!open?true:undefined} tabIndex={-1} inert={inactive||!open?true:undefined}><PhoneUIBoundary active={open && !inactive} workflowOwner={workflowOwner}>{retained.current?.children}</PhoneUIBoundary></div>,document.body);
+  return createPortal(<div ref={surface} className={'phone-app phone-workflow-layer' + (iosPresentation ? ' ios-workflow' : '')} data-phone-workflow-owner={workflowOwner} style={{'--phone-focus-enter':`${PHONE_FOCUS_ENTRY_MS}ms`,'--phone-focus-exit':`${PHONE_FOCUS_EXIT_MS}ms`}} data-state={open?'open':'closed'} role="dialog" aria-modal={open?true:undefined} aria-label={retained.current?.label||label} aria-hidden={!open?true:undefined} tabIndex={-1} inert={inactive||!open?true:undefined}><PhoneUIBoundary active={open && !inactive} workflowOwner={workflowOwner}>{retained.current?.children}</PhoneUIBoundary></div>,document.body);
 }

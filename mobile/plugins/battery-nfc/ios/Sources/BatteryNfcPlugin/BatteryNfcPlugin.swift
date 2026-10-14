@@ -14,14 +14,36 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
         CAPPluginMethod(name: "cancel", returnType: CAPPluginReturnPromise)
     ]
 
-    // All session state is accessed on the main queue. The session object is the
-    // request identity; a callback from an invalidated session cannot finish a new read.
+    // The delegate and all state run on the main queue. A physical reader session
+    // can own several explicitly requested reads; every read has its own identity.
     private var readerSession: NFCTagReaderSession?
+    private var readerSessionID: String?
+    private var readGeneration: UUID?
     private var pendingCall: CAPPluginCall?
     private var timeout: DispatchWorkItem?
+    private var removalCheck: DispatchWorkItem?
     private var readingTag = false
+    private var acceptingDetection = false
+    private var keepSessionAlive = false
+    private var retainedTag: NFCTag?
+    private final class RetiredTagObject {
+        weak var object: AnyObject?
+        init(_ object: AnyObject) { self.object = object }
+    }
+    // Weak identity avoids retaining Core NFC resources after restartPolling.
+    // Live identities are never evicted while the physical session continues.
+    private var retiredTagObjects: [RetiredTagObject] = []
+    private var readCount = 0
     private var partialResult: [String: Any]?
     private var backgroundObserver: NSObjectProtocol?
+    private struct TerminalReason {
+        let id: String
+        let message: String
+        let code: String
+    }
+    // Retain recent terminal reasons for continuation calls that arrive after a
+    // cancellation/expiry between reads. Older tokens still fail closed.
+    private var terminalSessions: [TerminalReason] = []
 
     public override func load() {
         backgroundObserver = NotificationCenter.default.addObserver(
@@ -36,6 +58,7 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
     deinit {
         if let observer = backgroundObserver { NotificationCenter.default.removeObserver(observer) }
         timeout?.cancel()
+        removalCheck?.cancel()
         readerSession?.invalidate()
     }
 
@@ -55,13 +78,40 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
     @objc public func read(_ call: CAPPluginCall) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { call.reject("NFC plugin is no longer available.", "UNAVAILABLE"); return }
-            guard self.readerSession == nil, self.pendingCall == nil else {
+            var keepAlive = false
+            if let raw = call.options["keepSessionAlive"] {
+                guard let number = raw as? NSNumber, CFGetTypeID(number) == CFBooleanGetTypeID() else {
+                    call.reject("keepSessionAlive must be a boolean.", "INVALID_ARGUMENT"); return
+                }
+                keepAlive = number.boolValue
+            }
+            var continuationID: String?
+            if let raw = call.options["sessionId"] {
+                guard let value = raw as? String, !value.isEmpty, value.count <= 64, keepAlive else {
+                    call.reject("sessionId requires keepSessionAlive and a non-empty session token.", "INVALID_ARGUMENT"); return
+                }
+                continuationID = value
+            }
+            if let id = continuationID {
+                guard self.readerSessionID == id, self.readerSession != nil, self.keepSessionAlive else {
+                    if let reason = self.terminalSessions.last(where: { $0.id == id }) {
+                        call.reject(reason.message, reason.code)
+                    } else {
+                        call.reject("This NFC session has ended. Start a new scan explicitly.", "SESSION_ENDED")
+                    }
+                    return
+                }
+            } else if self.readerSession != nil {
+                call.reject("An NFC session is already open. Continue or cancel it first.", "BUSY"); return
+            }
+            guard self.pendingCall == nil else {
                 call.reject("An NFC read is already running. Finish or cancel it first.", "BUSY"); return
             }
             guard NFCTagReaderSession.readingAvailable else {
                 call.reject("Core NFC tag reading is unavailable on this device.", "UNAVAILABLE"); return
             }
             guard UIApplication.shared.applicationState == .active else {
+                self.cancelPending(message: "NFC reading stopped because the app entered the background.", code: "BACKGROUND")
                 call.reject("Keep the app in the foreground to read a tag.", "BACKGROUND"); return
             }
             guard let usage = Bundle.main.object(forInfoDictionaryKey: "NFCReaderUsageDescription") as? String,
@@ -77,22 +127,72 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
                 }
                 duration = number.doubleValue
             }
-            guard let session = NFCTagReaderSession(pollingOption: .iso14443, delegate: self, queue: .main) else {
-                call.reject("The NFC reader session could not be created.", "UNAVAILABLE"); return
+            let session: NFCTagReaderSession
+            if continuationID != nil, let existing = self.readerSession {
+                session = existing
+            } else {
+                guard let created = NFCTagReaderSession(pollingOption: .iso14443, delegate: self, queue: .main) else {
+                    call.reject("The NFC reader session could not be created.", "UNAVAILABLE"); return
+                }
+                session = created
+                self.readerSession = session
+                self.readerSessionID = UUID().uuidString
+                self.keepSessionAlive = keepAlive
+                self.readCount = 0
             }
-            self.readerSession = session
+            let generation = UUID()
+            self.readGeneration = generation
             self.pendingCall = call
             self.readingTag = false
+            self.acceptingDetection = continuationID == nil
             self.partialResult = nil
-            session.alertMessage = "Hold the top of your iPhone near one battery NFC tag. This read does not change the tag."
             let timeout = DispatchWorkItem { [weak self, weak session] in
-                guard let self = self, let session = session, self.readerSession === session else { return }
+                guard let self = self, let session = session, self.owns(session, generation) else { return }
                 self.fail(session, message: "The NFC read timed out.", code: "TIMEOUT", preserveUid: true)
             }
             self.timeout = timeout
             DispatchQueue.main.asyncAfter(deadline: .now() + duration / 1_000, execute: timeout)
-            session.begin()
+            if continuationID != nil {
+                self.waitForRemoval(session, generation: generation)
+            } else {
+                session.alertMessage = "Hold the top of your iPhone near one battery NFC tag. This read does not change the tag."
+                session.begin()
+            }
         }
+    }
+
+    private func owns(_ session: NFCTagReaderSession, _ generation: UUID) -> Bool {
+        readerSession === session && readGeneration == generation && pendingCall != nil
+    }
+
+    private func waitForRemoval(_ session: NFCTagReaderSession, generation: UUID) {
+        guard owns(session, generation) else { return }
+        // Do not restart polling while the previously read tag is available:
+        // restartPolling invalidates old tag objects, which is not evidence of
+        // physical removal. Check availability before discarding that reference.
+        if let tag = retainedTag, tag.isAvailable {
+            session.alertMessage = "\(readCount) read. Move this tag away before presenting the next tag."
+            let check = DispatchWorkItem { [weak self, weak session] in
+                guard let self = self, let session = session else { return }
+                self.waitForRemoval(session, generation: generation)
+            }
+            removalCheck = check
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2, execute: check)
+            return
+        }
+        removalCheck = nil
+        if case let .miFare(tag)? = retainedTag {
+            retiredTagObjects.removeAll { $0.object == nil }
+            guard retiredTagObjects.count < 256 else {
+                fail(session, message: "This NFC session has reached its reference limit. Saved reads are retained; start a new scan explicitly.", code: "SESSION_ENDED")
+                return
+            }
+            retiredTagObjects.append(RetiredTagObject(tag))
+        }
+        retainedTag = nil
+        acceptingDetection = true
+        session.alertMessage = "\(readCount) read. Hold the top of your iPhone near the next battery NFC tag."
+        session.restartPolling()
     }
 
     @objc public func cancel(_ call: CAPPluginCall) {
@@ -105,67 +205,81 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
     public func tagReaderSessionDidBecomeActive(_ session: NFCTagReaderSession) {}
 
     public func tagReaderSession(_ session: NFCTagReaderSession, didDetect tags: [NFCTag]) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self, self.readerSession === session, !self.readingTag else { return }
-            guard tags.count == 1, let tag = tags.first else {
-                self.fail(session, message: "Present one tag at a time and start a new read.", code: "MULTIPLE_TAGS"); return
-            }
-            guard case let .miFare(mifare) = tag else {
-                self.fail(session, message: "This diagnostic reader supports NFC-A MIFARE tags such as NTAG213.", code: "UNSUPPORTED_TAG"); return
-            }
-            guard !mifare.identifier.isEmpty else {
-                self.fail(session, message: "The reader did not return a tag identifier.", code: "NO_UID"); return
-            }
-            self.readingTag = true
-            self.partialResult = [
-                "uidHex": Self.hex(mifare.identifier),
-                "technology": "NFC-A / ISO 14443 / \(Self.family(mifare.mifareFamily))",
-                "ndefStatus": "unknown", "capacityBytes": NSNull(), "records": [[String: Any]](),
-                "observedAt": ISO8601DateFormatter().string(from: Date())
-            ]
-            session.connect(to: tag) { [weak self] error in
-                DispatchQueue.main.async {
-                    guard let self = self, self.readerSession === session else { return }
-                    if let error = error {
-                        self.fail(session, message: Self.errorText(error), code: "TAG_CONNECTION", preserveUid: true); return
-                    }
-                    mifare.queryNDEFStatus { [weak self] status, capacity, error in
-                        DispatchQueue.main.async {
-                            guard let self = self, self.readerSession === session else { return }
-                            if let error = error {
-                                self.fail(session, message: Self.errorText(error), code: "NDEF_STATUS", preserveUid: true); return
-                            }
-                            switch status {
-                            case .notSupported:
-                                self.partialResult?["ndefStatus"] = "notSupported"
-                                self.completePartial(session); return
-                            case .readOnly:
-                                self.partialResult?["ndefStatus"] = "readOnly"
-                            case .readWrite:
-                                self.partialResult?["ndefStatus"] = "readWrite"
-                            @unknown default:
-                                self.partialResult?["ndefStatus"] = "unknown"
-                            }
-                            self.partialResult?["capacityBytes"] = capacity >= 0 ? capacity as Any : NSNull()
-                            mifare.readNDEF { [weak self] message, error in
-                                DispatchQueue.main.async {
-                                    guard let self = self, self.readerSession === session else { return }
-                                    if let error = error {
-                                        // An initialized blank tag has no NDEF message; its UID is still real evidence.
-                                        if let nfcError = error as? NFCReaderError,
-                                           nfcError.code == .ndefReaderSessionErrorZeroLengthMessage {
-                                            self.completePartial(session)
-                                        } else {
-                                            self.fail(session, message: Self.errorText(error), code: "NDEF_READ", preserveUid: true)
-                                        }
-                                        return
+        // Capture ownership when Core NFC delivers this delegate event, not
+        // in a later queued block which might belong to a subsequent read.
+        guard let generation = readGeneration, owns(session, generation), acceptingDetection, !readingTag else { return }
+        // Distinguish retired references from a current tag removed immediately
+        // after detection. Core NFC need not poll again after didDetect, so a
+        // current lost tag must end this attempt rather than silently stall.
+        let currentTags = tags.filter { tag in
+            guard !tag.isAvailable, case let .miFare(mifare) = tag else { return true }
+            return !retiredTagObjects.contains { $0.object === (mifare as AnyObject) }
+        }
+        if !tags.isEmpty && currentTags.isEmpty { return }
+        guard currentTags.allSatisfy({ $0.isAvailable }) else {
+            fail(session, message: "The tag left the reader before it could be read. Start another read and keep the tag near your iPhone.", code: "TAG_LOST")
+            return
+        }
+        guard currentTags.count == 1, let tag = currentTags.first else {
+            self.fail(session, message: "Present one tag at a time and start a new read.", code: "MULTIPLE_TAGS"); return
+        }
+        guard case let .miFare(mifare) = tag else {
+            self.fail(session, message: "This diagnostic reader supports NFC-A MIFARE tags such as NTAG213.", code: "UNSUPPORTED_TAG"); return
+        }
+        guard !mifare.identifier.isEmpty else {
+            self.fail(session, message: "The reader did not return a tag identifier.", code: "NO_UID"); return
+        }
+        self.readingTag = true
+        self.acceptingDetection = false
+        self.retainedTag = tag
+        self.partialResult = [
+            "uidHex": Self.hex(mifare.identifier),
+            "technology": "NFC-A / ISO 14443 / \(Self.family(mifare.mifareFamily))",
+            "ndefStatus": "unknown", "capacityBytes": NSNull(), "records": [[String: Any]](),
+            "observedAt": ISO8601DateFormatter().string(from: Date())
+        ]
+        session.connect(to: tag) { [weak self] error in
+            DispatchQueue.main.async {
+                guard let self = self, self.owns(session, generation) else { return }
+                if let error = error {
+                    self.fail(session, message: Self.errorText(error), code: "TAG_CONNECTION", preserveUid: true); return
+                }
+                mifare.queryNDEFStatus { [weak self] status, capacity, error in
+                    DispatchQueue.main.async {
+                        guard let self = self, self.owns(session, generation) else { return }
+                        if let error = error {
+                            self.fail(session, message: Self.errorText(error), code: "NDEF_STATUS", preserveUid: true); return
+                        }
+                        switch status {
+                        case .notSupported:
+                            self.partialResult?["ndefStatus"] = "notSupported"
+                            self.completePartial(session); return
+                        case .readOnly:
+                            self.partialResult?["ndefStatus"] = "readOnly"
+                        case .readWrite:
+                            self.partialResult?["ndefStatus"] = "readWrite"
+                        @unknown default:
+                            self.partialResult?["ndefStatus"] = "unknown"
+                        }
+                        self.partialResult?["capacityBytes"] = capacity >= 0 ? capacity as Any : NSNull()
+                        mifare.readNDEF { [weak self] message, error in
+                            DispatchQueue.main.async {
+                                guard let self = self, self.owns(session, generation) else { return }
+                                if let error = error {
+                                    // An initialized blank tag has no NDEF message; its UID is still real evidence.
+                                    if let nfcError = error as? NFCReaderError,
+                                       nfcError.code == .ndefReaderSessionErrorZeroLengthMessage {
+                                        self.completePartial(session)
+                                    } else {
+                                        self.fail(session, message: Self.errorText(error), code: "NDEF_READ", preserveUid: true)
                                     }
-                                    self.partialResult?["records"] = (message?.records ?? []).map { record in
-                                        ["tnf": Int(record.typeNameFormat.rawValue), "typeHex": Self.hex(record.type),
-                                         "idHex": Self.hex(record.identifier), "payloadHex": Self.hex(record.payload)] as [String: Any]
-                                    }
-                                    self.completePartial(session)
+                                    return
                                 }
+                                self.partialResult?["records"] = (message?.records ?? []).map { record in
+                                    ["tnf": Int(record.typeNameFormat.rawValue), "typeHex": Self.hex(record.type),
+                                     "idHex": Self.hex(record.identifier), "payloadHex": Self.hex(record.payload)] as [String: Any]
+                                }
+                                self.completePartial(session)
                             }
                         }
                     }
@@ -175,19 +289,20 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
     }
 
     public func tagReaderSession(_ session: NFCTagReaderSession, didInvalidateWithError error: Error) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self, self.readerSession === session else { return }
-            let nfcError = error as? NFCReaderError
-            let cancelled = nfcError?.code == .readerSessionInvalidationErrorUserCanceled
-            let code: String
-            switch nfcError?.code {
-            case .readerSessionInvalidationErrorUserCanceled: code = "CANCELLED"
-            case .readerSessionInvalidationErrorSessionTimeout: code = "TIMEOUT"
-            case .readerSessionInvalidationErrorSystemIsBusy: code = "BUSY"
-            default: code = "NFC_SESSION"
-            }
-            self.fail(session, message: Self.errorText(error), code: code, preserveUid: !cancelled, invalidate: false)
+        // Invalidation owns the entire physical session, including an idle
+        // interval or a newer read in that same session. It is not a delayed
+        // result of the preceding read and must terminate the current owner.
+        guard readerSession === session else { return }
+        let nfcError = error as? NFCReaderError
+        let cancelled = nfcError?.code == .readerSessionInvalidationErrorUserCanceled
+        let code: String
+        switch nfcError?.code {
+        case .readerSessionInvalidationErrorUserCanceled: code = "CANCELLED"
+        case .readerSessionInvalidationErrorSessionTimeout: code = "TIMEOUT"
+        case .readerSessionInvalidationErrorSystemIsBusy: code = "BUSY"
+        default: code = "NFC_SESSION"
         }
+        self.fail(session, message: Self.errorText(error), code: code, preserveUid: !cancelled, invalidate: false)
     }
 
     private func cancelPending(message: String, code: String) {
@@ -196,9 +311,15 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
 
     private func fail(_ session: NFCTagReaderSession, message: String, code: String, preserveUid: Bool = false, invalidate: Bool = true) {
         guard readerSession === session else { return }
+        let id = keepSessionAlive ? readerSessionID : nil
+        if let id = id {
+            terminalSessions.append(TerminalReason(id: id, message: message, code: code))
+            if terminalSessions.count > 16 { terminalSessions.removeFirst(terminalSessions.count - 16) }
+        }
         if preserveUid, var result = partialResult {
             result["ndefError"] = "\(code): \(message)"
-            finish(session, result: result, invalidate: invalidate)
+            if let id = id { result["readerSessionId"] = id }
+            finish(session, result: result, invalidate: invalidate, retainSession: false)
         } else {
             let call = clear(session)
             if invalidate { session.invalidate() }
@@ -211,8 +332,17 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
         finish(session, result: result)
     }
 
-    private func finish(_ session: NFCTagReaderSession, result: [String: Any], invalidate: Bool = true) {
+    private func finish(_ session: NFCTagReaderSession, result: [String: Any], invalidate: Bool = true, retainSession: Bool = true) {
         guard readerSession === session else { return }
+        if keepSessionAlive && retainSession {
+            var result = result
+            result["readerSessionId"] = readerSessionID
+            readCount += 1
+            let call = clearRead()
+            session.alertMessage = "\(readCount) read. Move this tag away before presenting the next tag. No inventory change has been confirmed."
+            call?.resolve(result)
+            return
+        }
         let call = clear(session)
         if invalidate {
             session.alertMessage = result["ndefError"] == nil ? "Tag read. No tag data was changed." : "Tag ID read. NDEF details are incomplete."
@@ -223,12 +353,26 @@ public class BatteryNfcPlugin: CAPPlugin, CAPBridgedPlugin, NFCTagReaderSessionD
 
     private func clear(_ session: NFCTagReaderSession) -> CAPPluginCall? {
         guard readerSession === session else { return nil }
+        let call = clearRead()
+        readerSession = nil
+        readerSessionID = nil
+        keepSessionAlive = false
+        retainedTag = nil
+        retiredTagObjects.removeAll()
+        readCount = 0
+        return call
+    }
+
+    private func clearRead() -> CAPPluginCall? {
         timeout?.cancel()
         timeout = nil
+        removalCheck?.cancel()
+        removalCheck = nil
         let call = pendingCall
         pendingCall = nil
-        readerSession = nil
+        readGeneration = nil
         readingTag = false
+        acceptingDetection = false
         partialResult = nil
         return call
     }

@@ -8,6 +8,20 @@ export const apiPaths = ['/api/session', '/api/inventory', '/api/accounts', '/ap
 let service, storage, serviceScope;
 const originalFetch = globalThis.fetch.bind(globalThis);
 const contextBase = () => native ? 'https://mobile.invalid' : location.origin;
+export function createNativeHapticAdapter({ platform, service, register = registerPlugin }) {
+  if (platform === 'android') {
+    const ui = register('BatteryUi');
+    return durationMs => ui.haptic({ durationMs });
+  }
+  if (platform === 'ios') {
+    // Existing scan preferences encode light/medium as 12/25 for Android.
+    // iOS requests a UIKit style, not an exact vibration duration.
+    return durationMs => Number.isFinite(durationMs) && durationMs > 0
+      ? service.haptic({ strength: durationMs >= 25 ? 'medium' : 'light' })
+      : Promise.resolve();
+  }
+  return undefined;
+}
 export function checkedApiPath(input) {
   const value = typeof input === 'string' ? input : input?.url;
   const url = new URL(value, contextBase());
@@ -27,10 +41,7 @@ export async function initializeRuntime() {
   window.__batteryWorkflowStorage = storage;
   window.__batteryLocationLocks = native ? createNativeRecoveryLocks() : navigator.locks;
   window.__batteryMobileSaveFile = saveFile;
-  if (native && Capacitor.getPlatform() === 'android') {
-    const ui = registerPlugin('BatteryUi');
-    window.__batteryMobileHaptic = durationMs => ui.haptic({ durationMs });
-  }
+  if (native) window.__batteryMobileHaptic = createNativeHapticAdapter({ platform: Capacitor.getPlatform(), service });
   const { createTeachingNfcBridge } = await import('../business/teaching-nfc-bridge.mjs');
   const adapter = native ? (await import('@battery-inventory/nfc')).BatteryNfc : null;
   window.__batteryTeachingNfc = createTeachingNfcBridge({ adapter, storage, platform: Capacitor.getPlatform() });

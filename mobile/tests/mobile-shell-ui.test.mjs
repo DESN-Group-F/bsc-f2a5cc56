@@ -1,4 +1,5 @@
 import { test } from 'node:test';
+import * as iosPresentation from '../src/app/ios-presentation.mjs';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import ts from 'typescript';
@@ -117,7 +118,7 @@ function mount(t, { deferRecovery = false, initialRecovery = null, missingBatter
   const load = (...args) => env.load(...args), refresh = () => env.refresh(), setReadError = value => { env.error = value; }, changeDataset = value => { env.dataset = value; };
   const bindings = { ...importNames, ...navigation, ...interaction, ...entryIntent, ...detailBoundary, ...scrolling, ...inventoryModel, ...state, markPhoneMilestone,phoneAdmission,
     memo: component => component,
-    registerPlugin: () => ({ backgroundApp: async () => {} }), native: false, MOBILE_BUILD: 'controlled-test',
+    ...iosPresentation,Capacitor:{getPlatform:()=> 'web'},registerPlugin: () => ({ backgroundApp: async () => {} }), native: false, MOBILE_BUILD: 'controlled-test',
     businessStorage: () => env.storage || storage, accountHasDeviceWork: () => false, discoverMobileRecovery: (...args) => env.discoverRecovery ? env.discoverRecovery(...args) : env.pendingRecovery || null,
     discoverMobileDrafts:(...args)=>env.discoverRecovery?realDiscoverMobileDrafts(...args):[],
     clearEmptyDeviceWork: async (_storage, accountId) => { if (env.clearEmpty) return env.clearEmpty(_storage,accountId); if (!env.deferRecovery) return; let resolve; const promise = new Promise(done => { resolve = done; }); clearCalls.push({ accountId, resolve }); await promise; },
