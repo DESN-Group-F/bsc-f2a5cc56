@@ -325,6 +325,7 @@ struct DatasetMenu: View {
             .frame(height: 38)
             .interactiveGlass(glass)
         }
+        .tint(.primary)
         .accessibilityLabel("Inventory: \(app.dataset.title)")
     }
 }
@@ -376,17 +377,18 @@ struct ScanItemCard: View {
         HStack(spacing: 12) {
             BatteryGlyph(tint: mode == .checkout ? Tone.checkout : Color(red: 0.54, green: 0.38, blue: 0))
             VStack(alignment: .leading, spacing: 2) {
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text(item.battery.name).font(.body.weight(.semibold)).lineLimit(1)
-                    Text(item.battery.id).font(.mono).foregroundStyle(.secondary)
+                Text(item.battery.name).font(.body.weight(.semibold)).lineLimit(1)
+                HStack(spacing: 6) {
+                    Text(item.battery.id).font(.monoSmall).fixedSize()
+                    Text(item.battery.specLine).font(.footnote).lineLimit(1)
                 }
-                Text(item.battery.specLine).font(.footnote).foregroundStyle(.secondary).lineLimit(1)
+                .foregroundStyle(.secondary)
             }
             Spacer(minLength: 4)
-            Label(readyText, systemImage: "checkmark")
-                .labelStyle(.titleAndIcon)
-                .font(.caption.weight(.semibold))
+            Image(systemName: "checkmark.circle.fill")
+                .font(.title3)
                 .foregroundStyle(Tone.success)
+                .accessibilityLabel(readyText)
             Button(action: onRemove) {
                 Image(systemName: "xmark").font(.footnote.weight(.bold)).foregroundStyle(.secondary)
                     .frame(width: 34, height: 34)
@@ -459,6 +461,7 @@ struct ReturnRoomMenu: View {
             .frame(height: 46)
             .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 18))
         }
+        .tint(.primary)
         .disabled(rooms.isEmpty)
     }
 }
