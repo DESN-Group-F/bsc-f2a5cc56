@@ -77,6 +77,7 @@ struct BatteryDetailView: View {
                 ProgressView().padding(.top, 120)
             }
         }
+        .defaultScrollAnchor(app.preview == .detailBottom ? .bottom : .top)
         .background(Color(.systemGroupedBackground))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

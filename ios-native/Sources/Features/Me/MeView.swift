@@ -6,6 +6,7 @@ struct MeView: View {
     @Environment(\.colorScheme) private var colorScheme
     @State private var haptics = Haptics.enabled
     @State private var confirmSignOut = false
+    @State private var creatingGroup = false
 
     var body: some View {
         let me = app.user
@@ -73,6 +74,9 @@ struct MeView: View {
                     Button { app.registration = RegistrationRequest() } label: {
                         Label("Register a new battery", systemImage: "plus.circle")
                     }
+                    Button { creatingGroup = true } label: {
+                        Label("New teaching group", systemImage: "person.3")
+                    }
                     let concerns = app.inventory.active.filter(\.hasOpenConcern)
                     if !concerns.isEmpty {
                         Button { app.pendingDetailId = concerns[0].id; app.tab = .inventory } label: {
@@ -99,6 +103,7 @@ struct MeView: View {
             .listStyle(.insetGrouped)
             .navigationTitle("Me")
             .toolbarTitleDisplayMode(.inline)
+            .sheet(isPresented: $creatingGroup) { GroupEditorSheet(group: nil) }
             .confirmationDialog("Sign out of Battery Inventory?", isPresented: $confirmSignOut, titleVisibility: .visible) {
                 Button("Sign out", role: .destructive) { Task { await app.signOut() } }
             } message: {

@@ -33,7 +33,7 @@ struct InventoryView: View {
                     }
                 }
 
-                if filter.lifecycle == .active && !selecting && search.isEmpty {
+                if filter.lifecycle == .active && !selecting && search.isEmpty && !app.inventory.groups.isEmpty {
                     Section {
                         GroupStrip { group in path.append(.group(group.id)) } onCreate: { creatingGroup = true }
                             .listRowBackground(Color.clear)

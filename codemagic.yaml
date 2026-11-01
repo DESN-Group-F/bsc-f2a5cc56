@@ -41,7 +41,7 @@ workflows:
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
           xcrun simctl install "$UDID" "$APP"
           mkdir -p screenshots
-          LIGHT="signin scan scanList scanGroup scanUncertain inventory inventoryFiltered newArrivals detail detailConcern detailRetired register registerReview inspection retire group groupEditor filter pendingWrite inbox me"
+          LIGHT="signin scan scanList scanGroup scanUncertain inventory inventoryFiltered newArrivals detail detailBottom detailConcern detailRetired register registerReview inspection retire group groupEditor filter pendingWrite inbox me"
           DARK="scan inventory detailConcern register inspection me"
           for appearance in light dark; do
             xcrun simctl ui "$UDID" appearance "$appearance"

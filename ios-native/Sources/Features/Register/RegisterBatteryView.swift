@@ -106,7 +106,9 @@ struct RegisterBatteryView: View {
                         Spacer()
                         Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
                     }
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
                 if let chosenModel {
                     ForEach(chosenModel.warnings ?? [], id: \.self) { warning in
                         Label(warning, systemImage: "exclamationmark.triangle").font(.footnote).foregroundStyle(.orange)

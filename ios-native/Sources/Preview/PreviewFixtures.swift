@@ -4,7 +4,7 @@ import Foundation
 /// Preview mode never contacts the server and uses only the fictional data below.
 enum PreviewScreen: String, CaseIterable {
     case signin, scan, scanWelcome, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, scanGroup
-    case inventory, inventoryFiltered, newArrivals, detail, detailConcern, detailRetired
+    case inventory, inventoryFiltered, newArrivals, detail, detailBottom, detailConcern, detailRetired
     case register, registerReview, inspection, retire, group, groupEditor, filter, pendingWrite
     case inbox, me
 
@@ -73,7 +73,7 @@ enum PreviewFixtures {
             app.scan.previewPending(PendingMovement(id: "preview", accountId: userId, dataset: .demo, kind: "checkout",
                                                     batteryIds: inStore.map(\.id), body: Data(), createdAt: Date(), attempts: 1))
         case .inventory, .inventoryFiltered, .newArrivals: app.tab = .inventory
-        case .detail:
+        case .detail, .detailBottom:
             app.tab = .inventory
             app.pendingDetailId = "BAT-00000004"
         case .detailConcern:
