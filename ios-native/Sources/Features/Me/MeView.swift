@@ -24,6 +24,7 @@ struct MeView: View {
                         }
                     }
                     .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 8, trailing: 0))
 
                     HStack(spacing: 8) {
@@ -33,6 +34,7 @@ struct MeView: View {
                                  detail: "\(responsible.filter(\.isInUse).count) out right now", tint: .primary, filled: false)
                     }
                     .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
                     .listRowInsets(EdgeInsets())
                 }
 
@@ -71,17 +73,18 @@ struct MeView: View {
                 }
 
                 Section("Quick actions") {
-                    Button { app.registration = RegistrationRequest() } label: {
-                        Label("Register a new battery", systemImage: "plus.circle")
+                    QuickActionRow(title: "Register a new battery", systemImage: "plus.circle") {
+                        app.registration = RegistrationRequest()
                     }
-                    Button { creatingGroup = true } label: {
-                        Label("New teaching group", systemImage: "person.3")
+                    QuickActionRow(title: "New teaching group", systemImage: "person.3") {
+                        creatingGroup = true
                     }
                     let concerns = app.inventory.active.filter(\.hasOpenConcern)
                     if !concerns.isEmpty {
-                        Button { app.pendingDetailId = concerns[0].id; app.tab = .inventory } label: {
-                            Label("\(concerns.count) \(concerns.count == 1 ? "battery has" : "batteries have") an inspection concern", systemImage: "exclamationmark.triangle")
-                                .foregroundStyle(Tone.failure)
+                        QuickActionRow(title: "\(concerns.count) \(concerns.count == 1 ? "battery has" : "batteries have") an inspection concern",
+                                       systemImage: "exclamationmark.triangle", tint: Tone.failure) {
+                            app.pendingDetailId = concerns[0].id
+                            app.tab = .inventory
                         }
                     }
                 }
@@ -118,6 +121,30 @@ struct MeView: View {
         let dates = batteries.compactMap { Sydney.date($0.checkedOutAt) }
         guard let first = dates.min() else { return "—" }
         return Sydney.friendly(Sydney.timestamp(first)).replacingOccurrences(of: "Today, ", with: "since ")
+    }
+}
+
+/// A list action with a fixed-width icon column, so titles and separators line up whatever the symbol's width.
+struct QuickActionRow: View {
+    let title: String
+    let systemImage: String
+    var tint: Color = Tone.checkout
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 12) {
+                Image(systemName: systemImage)
+                    .font(.body.weight(.medium))
+                    .frame(width: 30, alignment: .center)
+                Text(title)
+                    .alignmentGuide(.listRowSeparatorLeading) { $0[.leading] }
+                Spacer(minLength: 0)
+            }
+            .foregroundStyle(tint)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 
