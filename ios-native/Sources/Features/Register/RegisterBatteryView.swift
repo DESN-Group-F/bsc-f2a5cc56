@@ -315,15 +315,15 @@ struct RegisterBatteryView: View {
     private var problems: [String] {
         var list: [String] = []
         let n = trimmed(name)
-        if n.count < 2 || n.count > 120 { list.append("Name needs 2–120 characters.") }
-        if trimmed(chemistry).count > 40 { list.append("Chemistry is limited to 40 characters.") }
-        if trimmed(modelText).count > 120 { list.append("Model is limited to 120 characters.") }
+        if n.serverLength < 2 || n.serverLength > 120 { list.append("Name needs 2–120 characters.") }
+        if trimmed(chemistry).serverLength > 40 { list.append("Chemistry is limited to 40 characters.") }
+        if trimmed(modelText).serverLength > 120 { list.append("Model is limited to 120 characters.") }
         if let c = capacity, !(c > 0 && c <= 1_000_000) { list.append("Capacity must be above 0 mAh.") }
         if let v = voltage, !(v > 0 && v <= 1000) { list.append("Voltage must be between 0 and 1000 V.") }
         if owner == nil { list.append("Choose who is responsible.") }
         if building == nil { list.append("J18 isn't available yet. Pull to refresh Inventory and try again.") }
         if let tag = tagValue {
-            if tag.count > 128 { list.append("Tag ID is limited to 128 characters.") }
+            if tag.serverLength > 128 { list.append("Tag ID is limited to 128 characters.") }
             if let existing = app.inventory.battery(tagId: tag) { list.append("That tag is already registered to \(existing.id).") }
         }
         if firstUseMode == "date" && firstUsed == nil { list.append("Pick the first-use date, or choose another first-use option.") }
@@ -339,7 +339,7 @@ struct RegisterBatteryView: View {
         return list
     }
 
-    private func trimmed(_ s: String) -> String { s.trimmingCharacters(in: .whitespacesAndNewlines) }
+    private func trimmed(_ s: String) -> String { s.jsTrimmed }
 
     private func prepare() {
         if ownerId.isEmpty, let me = app.inventory.staffOwners.first(where: { $0.accountId == app.user?.id }) { ownerId = me.id }

@@ -288,9 +288,9 @@ struct GroupEditorSheet: View {
 
     private var problems: [String] {
         var list: [String] = []
-        let n = name.trimmingCharacters(in: .whitespacesAndNewlines)
-        if n.isEmpty || n.count > 80 { list.append("Name needs 1–80 characters.") }
-        if notes.count > 500 { list.append("Notes are limited to 500 characters.") }
+        let n = name.jsTrimmed
+        if n.isEmpty || n.serverLength > 80 { list.append("Name needs 1–80 characters.") }
+        if notes.jsTrimmed.serverLength > 500 { list.append("Notes are limited to 500 characters.") }
         if members.isEmpty { list.append("Add at least one battery.") }
         if members.count > 100 { list.append("A group holds at most 100 batteries.") }
         let duplicate = app.inventory.groups.contains { $0.id != group?.id && $0.name.lowercased() == n.lowercased() }
@@ -310,8 +310,8 @@ struct GroupEditorSheet: View {
         let newRequest = RequestID.make()
         let request = TeachingGroupRequest(action: group == nil ? "create" : "update", requestId: newRequest,
                                            id: group?.id ?? RequestID.make(),
-                                           name: name.trimmingCharacters(in: .whitespacesAndNewlines),
-                                           notes: notes.trimmingCharacters(in: .whitespacesAndNewlines),
+                                           name: name.jsTrimmed,
+                                           notes: notes.jsTrimmed,
                                            batteryIds: members, expectedVersion: group?.version)
         guard let body = WriteCenter.groupBody(app.dataset, payload: request) else { return }
         requestId = newRequest

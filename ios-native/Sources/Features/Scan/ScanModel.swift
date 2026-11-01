@@ -405,10 +405,15 @@ final class ScanModel {
             let receipt = try await app.service.sendMovement(body: entry.body)
             guard receipt.requestId == entry.id,
                   receipt.kind == entry.kind,
+                  receipt.batteryIds.count == entry.batteryIds.count,
+                  Set(receipt.batteryIds).count == receipt.batteryIds.count,
                   Set(receipt.batteryIds) == Set(entry.batteryIds),
                   receipt.count == entry.batteryIds.count,
-                  entry.kind != "checkout" || receipt.borrowerAccountId == entry.accountId,
-                  Self.groupEvidenceMatches(receipt.teachingGroup, entry: entry) else {
+                  Sydney.date(receipt.at) != nil,
+                  entry.kind != "checkout" || (receipt.borrowerAccountId == entry.accountId
+                                               && !(receipt.borrower ?? "").trimmingCharacters(in: .whitespaces).isEmpty),
+                  Self.groupEvidenceMatches(receipt.teachingGroup, entry: entry),
+                  Self.scanEvidenceMatches(receipt.scan, entry: entry) else {
                 markUncertain("The server's receipt didn't match this request. It's kept so you can check it.")
                 return
             }
@@ -422,6 +427,7 @@ final class ScanModel {
                 submissionError = failure.message
                 refuse(isRetry ? "Not recorded: \(failure.message)" : failure.message)
                 await app.inventory.refresh()
+                reviewAgainstLatest()
             case .unauthorized where !isRetry:
                 // Nothing ran on this attempt. Keep the list; sign in and confirm again.
                 app.pending.remove(id: entry.id)
@@ -437,7 +443,42 @@ final class ScanModel {
         }
     }
 
-    private struct GroupProbe: Decodable { let teachingGroup: GroupReference? }
+    private struct GroupProbe: Decodable { let teachingGroup: GroupReference?; let scan: ScanEcho? }
+
+    /// The receipt must retain the reviewed scan source and exact bindings (order-independent).
+    static func scanEvidenceMatches(_ echoed: ScanEcho?, entry: PendingMovement) -> Bool {
+        guard let sent = (try? JSONDecoder().decode(WriteEnvelope<GroupProbe>.self, from: entry.body))?.payload.scan else {
+            return true
+        }
+        guard let echoed else { return false }
+        return echoed.sorted == sent.sorted
+    }
+
+    /// After a rejection the reviewed versions, loans and group version are stale. Rebuild the list from
+    /// the latest inventory so the next confirm is a fresh review, dropping batteries that no longer fit.
+    private func reviewAgainstLatest() {
+        guard let app else { return }
+        var refreshed: [Item] = []
+        var dropped: [String] = []
+        for item in items {
+            guard let latest = app.inventory.battery(id: item.battery.id), latest.isActive,
+                  mode == .checkout ? latest.isInStore : latest.isInUse,
+                  source != .nfc || latest.tagId == item.tagId else {
+                dropped.append(item.battery.id)
+                continue
+            }
+            refreshed.append(Item(battery: latest, tagId: source == .nfc ? item.tagId : latest.tagId, evidence: item.evidence))
+        }
+        items = refreshed
+        if let current = group {
+            group = app.inventory.groups.first { $0.id == current.id }
+            if let updated = group, !items.allSatisfy({ updated.batteryIds.contains($0.battery.id) }) { group = nil }
+        }
+        if items.isEmpty { source = nil; sessionId = RequestID.make(); latestId = nil; group = nil }
+        if !dropped.isEmpty {
+            submissionError = (submissionError.map { $0 + " " } ?? "") + "Removed from the list after refreshing: \(dropped.joined(separator: ", "))."
+        }
+    }
 
     /// A group-scoped movement must come back with matching group evidence; an ordinary one must not have any.
     static func groupEvidenceMatches(_ evidence: GroupEvidence?, entry: PendingMovement) -> Bool {

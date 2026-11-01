@@ -4,6 +4,25 @@ import Foundation
 // Shapes follow docs/ios-native-api-contract.md §7, §8, §10, §11 and the server's strict zod schemas:
 // nullable fields without a server default are always sent as explicit nulls.
 
+// MARK: - Text normalisation
+
+extension String {
+    /// Trims exactly what JavaScript's `String.prototype.trim` (and so zod's `.trim()`) removes,
+    /// so the value we save and compare equals what the server stores and echoes.
+    var jsTrimmed: String {
+        trimmingCharacters(in: String.jsWhitespace)
+    }
+
+    /// Length as the server counts it (UTF-16 code units).
+    var serverLength: Int { utf16.count }
+
+    static let jsWhitespace: CharacterSet = {
+        var set = CharacterSet.whitespaces   // Unicode Zs plus tab
+        set.insert(charactersIn: "\n\u{0B}\u{0C}\r\u{2028}\u{2029}\u{FEFF}")
+        return set
+    }()
+}
+
 // MARK: - Registration (§7)
 
 struct ModelSelectionRef: Codable, Equatable, Sendable {

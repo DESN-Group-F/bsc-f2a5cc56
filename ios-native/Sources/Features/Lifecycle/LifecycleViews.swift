@@ -129,8 +129,8 @@ struct RetireSheet: View {
         var list: [String] = []
         if batteries.count != batteryIds.count { list.append("Some batteries are no longer in this inventory.") }
         if batteries.contains(where: { issue(for: $0) != nil }) { list.append("Only active batteries in store can be retired.") }
-        if reason.count > 1000 { list.append("The reason is limited to 1000 characters.") }
-        if destination.count > 200 { list.append("The destination is limited to 200 characters.") }
+        if reason.jsTrimmed.serverLength > 1000 { list.append("The reason is limited to 1000 characters.") }
+        if destination.jsTrimmed.serverLength > 200 { list.append("The destination is limited to 200 characters.") }
         return list
     }
 
@@ -139,8 +139,8 @@ struct RetireSheet: View {
         working = true
         defer { working = false }
         let newRequest = RequestID.make()
-        let trimmedReason = reason.trimmingCharacters(in: .whitespacesAndNewlines)
-        let trimmedDestination = destination.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedReason = reason.jsTrimmed
+        let trimmedDestination = destination.jsTrimmed
         let payload = LifecyclePayload(
             requestId: newRequest, kind: kind, reason: trimmedReason,
             destination: kind == "permanently_removed" && !trimmedDestination.isEmpty ? trimmedDestination : nil,
@@ -372,15 +372,18 @@ struct InspectionSheet: View {
     private var problems: [String] {
         var list: [String] = []
         if !battery.isActive { list.append("Retired batteries can't get new inspections.") }
-        if notesRequired && notes.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+        if notesRequired && notes.jsTrimmed.isEmpty {
             list.append(outcome == "concern_observed" ? "Describe the concern." : "Describe the check.")
         }
         if kind == "capacity_measurement" {
             if measured == nil || (measured ?? 0) <= 0 { list.append("Enter the measured capacity.") }
-            if method.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { list.append("Describe the method.") }
+            if (measured ?? 0) > 1_000_000 { list.append("The measured capacity is too large.") }
+            if method.jsTrimmed.isEmpty { list.append("Describe the method.") }
         }
         if performedAt > Date() { list.append("The time can't be in the future.") }
-        if notes.count > 2000 || method.count > 1000 || reference.count > 1000 { list.append("A field is too long.") }
+        if notes.jsTrimmed.serverLength > 2000 || method.jsTrimmed.serverLength > 1000 || reference.jsTrimmed.serverLength > 1000 {
+            list.append("A field is too long.")
+        }
         return list
     }
 
@@ -394,9 +397,9 @@ struct InspectionSheet: View {
         let payload = InspectionPayload(
             requestId: newRequest, batteryId: battery.id, expectedBatteryVersion: battery.version,
             kind: kind, outcome: outcome, performedAt: Sydney.timestamp(at),
-            method: method.trimmingCharacters(in: .whitespacesAndNewlines),
-            notes: notes.trimmingCharacters(in: .whitespacesAndNewlines),
-            reference: reference.trimmingCharacters(in: .whitespacesAndNewlines),
+            method: method.jsTrimmed,
+            notes: notes.jsTrimmed,
+            reference: reference.jsTrimmed,
             capacityMah: kind == "capacity_measurement" ? measured : nil)
         guard let body = WriteCenter.inventoryBody(app.dataset, action: "inspection", payload: payload) else { return }
         requestId = newRequest

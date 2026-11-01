@@ -82,7 +82,7 @@ final class WriteCenter {
             return .confirmed(confirmation)
         } catch let failure as APIFailure {
             switch failure.kind {
-            case .rejected where !isRetry || failure.isFinalRejection:
+            case .rejected where !isRetry || failure.isFinalRejection || Self.definitelyRejectedOnRetry(entry, failure):
                 settle(entry)
                 Haptics.refused()
                 Task { await app.inventory.refresh() }
@@ -102,6 +102,17 @@ final class WriteCenter {
             let message = "Couldn't confirm with the server."
             lastError[entry.id] = message
             return .uncertain(message)
+        }
+    }
+
+    /// Validation failures that happen before any reservation repeat identically for the same bytes,
+    /// so they settle a retried request too (mirrors the web's *FailureStatus helpers per action).
+    static func definitelyRejectedOnRetry(_ entry: PendingWrite, _ failure: APIFailure) -> Bool {
+        guard let status = failure.status else { return false }
+        switch entry.action {
+        case "lifecycle", "retired_asset", "teaching_group": return status == 400 || status == 422
+        case "intake": return status == 400 || status == 404 || status == 422 || status == 501
+        default: return false
         }
     }
 

@@ -246,7 +246,8 @@ enum InventoryQuery {
                 let compared: ComparisonResult
                 switch (a, b) {
                 case let (.number(x), .number(y)): compared = x < y ? .orderedAscending : (x > y ? .orderedDescending : .orderedSame)
-                case let (.text(x), .text(y)): compared = x.compare(y, options: [.numeric, .caseInsensitive, .diacriticInsensitive])
+                case let (.text(x), .text(y)):
+                    compared = x.compare(y, options: [.numeric, .caseInsensitive, .diacriticInsensitive], range: nil, locale: english)
                 default: compared = .orderedSame
                 }
                 if compared == .orderedSame { return idOrder(lhs.0.id, rhs.0.id) }
@@ -255,8 +256,11 @@ enum InventoryQuery {
         }.map(\.0)
     }
 
+    private static let english = Locale(identifier: "en")
+
+    /// Same as the web: `localeCompare("en", {numeric:true})`, then code-unit order.
     private static func idOrder(_ a: String, _ b: String) -> Bool {
-        let r = a.compare(b, options: .numeric)
+        let r = a.compare(b, options: .numeric, range: nil, locale: english)
         return r == .orderedSame ? a < b : r == .orderedAscending
     }
 

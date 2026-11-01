@@ -404,8 +404,25 @@ struct MovementReceipt: Codable, Sendable {
     let at: String
     let requestId: String
     let borrowerAccountId: String?
+    let borrower: String?
     let replayed: Bool?
     let teachingGroup: GroupEvidence?
+    let scan: ScanEcho?
+}
+
+/// The scan context as sent and as echoed in a movement receipt.
+struct ScanEcho: Codable, Equatable, Sendable {
+    struct Binding: Codable, Equatable, Sendable {
+        let batteryId: String
+        let tagId: String?
+        let version: Int
+        let nfcEvidence: NFCEvidence?
+    }
+    let sessionId: String
+    let source: String
+    let bindings: [Binding]
+
+    var sorted: ScanEcho { ScanEcho(sessionId: sessionId, source: source, bindings: bindings.sorted { $0.batteryId < $1.batteryId }) }
 }
 
 /// Teaching group evidence attached to a group-scoped operation's receipt.
