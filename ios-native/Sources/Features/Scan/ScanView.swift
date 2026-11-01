@@ -3,6 +3,7 @@ import SwiftUI
 struct ScanView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.heroNamespace) private var hero
     @Namespace private var segment
     @State private var gaze: CGPoint?
     @State private var gazeToken = 0
@@ -129,6 +130,7 @@ struct ScanView: View {
                 InkView(tint: scan.tint, mood: scan.mood, reaction: scan.reaction, gaze: gaze,
                         animated: scenePhase == .active)
                     .frame(width: inkSize, height: inkSize)
+                    .heroInk(hero)
                     .overlay {
                         if scan.readerActive { ListeningRings(tint: scan.mode.tint) }
                     }
@@ -359,6 +361,7 @@ struct NoticeCapsule: View {
         case .duplicate: return "questionmark.circle"
         case .refused: return "exclamationmark.circle"
         case .info: return "arrow.triangle.2.circlepath"
+        case .greeting: return "hand.wave"
         }
     }
 

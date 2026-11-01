@@ -8,6 +8,7 @@ enum InkMood: Equatable, Sendable {
     case happy       // accepted tag or confirmed movement (colour turns green, eyes unchanged)
     case puzzled     // duplicate: no colour change, squint and tilt
     case surprised   // refused tag: wide eyes, red
+    case shy         // password entry: eyes closed
 }
 
 /// The app's character: a flat 2D ink drop with white eyes.
@@ -171,7 +172,7 @@ private struct InkCanvas: View, Animatable {
         default: break
         }
         let look = lookVector(t: t)
-        let blink = blinkScale(t: t)
+        let blink: CGFloat = mood == .shy ? 0.16 : blinkScale(t: t)
         let anchor = CGPoint(x: center.x + radius * 0.17 + look.x * radius * 0.10,
                              y: center.y + radius * 0.02 + look.y * radius * 0.09)
         let spacing = radius * 0.27
@@ -208,6 +209,7 @@ private struct InkCanvas: View, Animatable {
         if let gaze { return CGPoint(x: max(-1, min(1, gaze.x)), y: max(-1, min(1, gaze.y))) }
         switch mood {
         case .listening: return CGPoint(x: 0.15, y: -0.9)
+        case .shy: return CGPoint(x: -0.2, y: 0.6)
         case .puzzled: return CGPoint(x: -0.5, y: 0.2)
         case .surprised: return .zero
         default: break

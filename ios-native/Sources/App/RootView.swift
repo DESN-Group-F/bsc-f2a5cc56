@@ -16,6 +16,7 @@ struct BatteryInventoryApp: App {
 struct RootView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.scenePhase) private var scenePhase
+    @Namespace private var hero
 
     var body: some View {
         ZStack {
@@ -25,10 +26,11 @@ struct RootView: View {
             case .signedOut:
                 SignInView().transition(.opacity)
             case .signedIn:
-                MainTabs().transition(.opacity.combined(with: .scale(scale: 0.98)))
+                MainTabs().transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 1.03)), removal: .opacity))
             }
         }
-        .animation(.smooth(duration: 0.45), value: app.session)
+        .environment(\.heroNamespace, hero)
+        .animation(.spring(response: 0.7, dampingFraction: 0.86), value: app.session)
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await app.refreshAll() } }
         }
@@ -69,12 +71,21 @@ struct MainTabs: View {
 
 struct LaunchView: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.heroNamespace) private var hero
+    @State private var dropped = false
 
     var body: some View {
         ZStack {
             Color(.systemGroupedBackground).ignoresSafeArea()
-            InkView(tint: Tone.adaptiveInk(colorScheme))
-                .frame(width: 140, height: 140)
+            InkView(tint: Tone.adaptiveInk(colorScheme), reaction: dropped ? 1 : 0)
+                .frame(width: 150, height: 150)
+                .heroInk(hero)
+                .scaleEffect(dropped ? 1 : 0.35)
+                .opacity(dropped ? 1 : 0)
+                .offset(y: dropped ? 0 : -40)
+        }
+        .onAppear {
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.62)) { dropped = true }
         }
     }
 }

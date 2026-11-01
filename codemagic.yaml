@@ -43,7 +43,7 @@ workflows:
           mkdir -p screenshots
           for appearance in light dark; do
             xcrun simctl ui "$UDID" appearance "$appearance"
-            for screen in signin scan scanList scanDuplicate scanReturn scanDone scanUncertain inventory detail inbox me; do
+            for screen in signin scan scanWelcome scanList scanDuplicate scanReturn scanDone scanUncertain inventory detail inbox me; do
               xcrun simctl launch --terminate-running-process "$UDID" com.batteryinventory.mobile -uiPreview "$screen" >/dev/null
               sleep 4
               xcrun simctl io "$UDID" screenshot "screenshots/${appearance}-${screen}.png" >/dev/null

@@ -3,7 +3,7 @@ import Foundation
 /// Screens that can be opened directly with `-uiPreview <name>` for simulator screenshots.
 /// Preview mode never contacts the server and uses only the fictional data below.
 enum PreviewScreen: String, CaseIterable {
-    case signin, scan, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, inventory, detail, inbox, me
+    case signin, scan, scanWelcome, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, inventory, detail, inbox, me
 
     static func fromLaunchArguments() -> PreviewScreen? {
         guard let raw = UserDefaults.standard.string(forKey: "uiPreview") else { return nil }
@@ -30,6 +30,9 @@ enum PreviewFixtures {
         switch screen {
         case .signin: break
         case .scan: app.tab = .scan
+        case .scanWelcome:
+            app.tab = .scan
+            app.scan.previewNotice(.init(kind: .greeting, text: "Welcome back, Tim · Demo inventory"), mood: .happy)
         case .scanList:
             app.tab = .scan
             app.scan.previewState(items: inStore, mode: .checkout, phase: .scanning)

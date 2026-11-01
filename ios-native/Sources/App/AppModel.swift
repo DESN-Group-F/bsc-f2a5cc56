@@ -61,28 +61,39 @@ final class AppModel {
 
     func start() async {
         guard preview == nil else { return }
-        guard service.client.hasSession else { session = .signedOut; return }
+        let launched = Date()
+        // Let Ink's drop-in finish (about half a second) instead of flashing the next screen.
+        func settle() async {
+            let remaining = 0.55 - Date().timeIntervalSince(launched)
+            if remaining > 0 { try? await Task.sleep(for: .seconds(remaining)) }
+        }
+        guard service.client.hasSession else { await settle(); session = .signedOut; return }
         do {
             let response = try await service.session()
-            if let user = response.user { await signedIn(user) } else { session = .signedOut }
-        } catch let failure as APIFailure where failure.kind == .uncertain {
-            // Offline at launch: keep the stored session and let screens retry.
-            session = .signedOut
+            await settle()
+            if let user = response.user { await signedIn(user, welcome: false) } else { session = .signedOut }
         } catch {
+            await settle()
             session = .signedOut
         }
     }
 
     func signIn(username: String, password: String) async throws {
         let user = try await service.signIn(username: username, password: password)
-        await signedIn(user)
+        Haptics.confirmed()
+        await signedIn(user, welcome: true)
     }
 
-    private func signedIn(_ user: StaffUser) async {
+    private func signedIn(_ user: StaffUser, welcome: Bool) async {
         if UserDefaults.standard.string(forKey: "dataset") == nil, let preferred = user.defaultDataset {
             dataset = preferred
         }
+        tab = .scan
         session = .signedIn(user)
+        if welcome {
+            let first = user.displayName.split(separator: " ").first.map(String.init) ?? user.displayName
+            scan.greet("Welcome back, \(first) · \(dataset.title)")
+        }
         await refreshAll()
         scan.loadPending()
     }

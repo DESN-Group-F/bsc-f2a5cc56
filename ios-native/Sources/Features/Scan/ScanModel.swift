@@ -42,7 +42,7 @@ final class ScanModel {
     }
 
     struct Notice: Equatable {
-        enum Kind: Equatable { case duplicate, refused, info }
+        enum Kind: Equatable { case duplicate, refused, info, greeting }
         let kind: Kind
         let text: String
         var actionTitle: String? = nil
@@ -101,6 +101,12 @@ final class ScanModel {
         returnRoomId = nil
         submissionError = nil
         if phase != .uncertain { phase = .scanning }
+    }
+
+    func greet(_ text: String) {
+        show(.init(kind: .greeting, text: text))
+        setMood(.happy, hold: 0.9)
+        reaction += 1
     }
 
     func scanMore() {
