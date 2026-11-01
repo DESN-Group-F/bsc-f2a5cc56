@@ -41,7 +41,7 @@ final class WriteCenter {
         guard pending.isEmpty else {
             return .notSent("Another request is waiting for confirmation. Try it again first.")
         }
-        guard !app.scan.hasUnsettledWork else {
+        guard app.scan.pendingWrites.isEmpty else {
             return .notSent("Finish the open scan confirmation first.")
         }
         let entry = PendingWrite(id: requestId, accountId: user.id, dataset: app.dataset, kind: kind,

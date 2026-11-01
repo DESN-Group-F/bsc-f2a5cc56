@@ -13,10 +13,13 @@ struct DoneSummary: Equatable {
     let at: String
     let replayed: Bool
     let roomLabel: String?
+    /// Retirement only: "scrapped" or "permanently removed", and the recorded reason.
+    var verb: String? = nil
+    var note: String? = nil
 
     var title: String {
         let n = batteries.count
-        return "\(n) \(n == 1 ? "battery" : "batteries") \(kind.pastTense)"
+        return "\(n) \(n == 1 ? "battery" : "batteries") \(verb ?? kind.pastTense)"
     }
 }
 
@@ -66,6 +69,13 @@ final class ScanModel {
     /// The last tag that wasn't registered, so "Register" can carry its evidence (Demo only).
     private(set) var unregisteredRead: TagRead?
     var returnRoomId: String?
+    /// Retire mode: outcome and optional details, chosen before confirming.
+    var retireKind = "scrapped"
+    var retireReason = ""
+    var retireDestination = ""
+    var confirmPermanent = false
+    /// The lifecycle request sent from this station, while its outcome is unknown.
+    private(set) var retireRequestId: String?
     var showChooser = false
     var submissionError: String?
 
@@ -75,6 +85,12 @@ final class ScanModel {
     private var noticeToken = 0
 
     var hasUnsettledWork: Bool { !pendingWrites.isEmpty || phase == .submitting }
+
+    var retireConfirmTitle: String {
+        let n = items.count
+        let what = n == 1 ? "battery" : "\(n) batteries"
+        return retireKind == "scrapped" ? "Scrap \(what)" : "Remove \(what) permanently"
+    }
     var isEmpty: Bool { items.isEmpty }
 
     /// Ink's colour: green on success, red on refusal, otherwise the action's colour.
@@ -106,6 +122,8 @@ final class ScanModel {
         submissionError = nil
         group = nil
         unregisteredRead = nil
+        retireReason = ""
+        retireDestination = ""
         if phase != .uncertain { phase = .scanning }
     }
 
@@ -116,7 +134,9 @@ final class ScanModel {
     }
 
     func scanMore() {
-        guard pendingWrites.isEmpty else { phase = .uncertain; return }
+        guard pendingWrites.isEmpty, retireRequestId == nil else { phase = .uncertain; return }
+        retireReason = ""
+        retireDestination = ""
         items = []
         source = nil
         sessionId = RequestID.make()
@@ -248,7 +268,12 @@ final class ScanModel {
             refuse("\(battery.id) is \(battery.statusTitle.lowercased())")
             return
         }
-        if items.isEmpty {
+        if mode == .retire {
+            if battery.isInUse {
+                refuse("\(battery.id) is \(holderPhrase(battery, me: app.user?.id)) — return it first")
+                return
+            }
+        } else if items.isEmpty {
             // The first battery decides the action, so nobody has to pick it in advance.
             if mode == .checkout && battery.isInUse {
                 mode = .return
@@ -334,6 +359,10 @@ final class ScanModel {
 
     func confirm() async {
         guard let app, let user = app.user, phase == .scanning, !items.isEmpty, pendingWrites.isEmpty else { return }
+        if mode == .retire {
+            await confirmRetire()
+            return
+        }
         guard !app.writes.hasPending else {
             submissionError = "Another request is waiting for confirmation. Try it again first (Inventory or Me)."
             return
@@ -381,6 +410,83 @@ final class ScanModel {
         pendingWrites = [entry]
         phase = .submitting
         await send(entry, isRetry: false)
+    }
+
+    // MARK: Retiring
+
+    /// Sends the reviewed list as one `lifecycle` write through the shared write center.
+    private func confirmRetire() async {
+        guard let app else { return }
+        guard !app.writes.hasPending else {
+            submissionError = "Another request is waiting for confirmation. Try it again first (Inventory or Me)."
+            return
+        }
+        reader.stop()
+        submissionError = nil
+        let requestId = RequestID.make()
+        let ordered = items.sorted { $0.battery.id < $1.battery.id }
+        let fromTags = source == .nfc
+        let reason = retireReason.jsTrimmed
+        let destination = retireDestination.jsTrimmed
+        let payload = LifecyclePayload(
+            requestId: requestId, kind: retireKind, reason: reason,
+            destination: retireKind == "permanently_removed" && !destination.isEmpty ? destination : nil,
+            source: fromTags ? "native_nfc" : "manual_selection",
+            items: ordered.map { item in
+                LifecycleItem(batteryId: item.battery.id, version: item.battery.version,
+                              tagId: fromTags ? item.tagId : item.battery.tagId,
+                              nfcEvidence: fromTags ? item.evidence : nil)
+            })
+        guard let body = WriteCenter.inventoryBody(app.dataset, action: "lifecycle", payload: payload) else {
+            submissionError = "Couldn't prepare the request."
+            return
+        }
+        retireRequestId = requestId
+        phase = .submitting
+        let n = ordered.count
+        let title = n == 1 ? "Retiring \(ordered[0].battery.id)" : "Retiring \(n) batteries"
+        let outcome = await app.writes.submit(action: "lifecycle", kind: retireKind, title: title,
+                                              batteryIds: ordered.map(\.battery.id), requestId: requestId, body: body)
+        await finishRetire(outcome)
+    }
+
+    func retryRetire() async {
+        guard let app, let id = retireRequestId, let entry = app.writes.entry(id: id), phase != .submitting else { return }
+        phase = .submitting
+        await finishRetire(await app.writes.retry(entry))
+    }
+
+    var retireIsPending: Bool {
+        guard let id = retireRequestId else { return false }
+        return app?.writes.entry(id: id) != nil
+    }
+
+    private func finishRetire(_ outcome: WriteCenter.Outcome) async {
+        guard let app else { return }
+        switch outcome {
+        case .confirmed:
+            let names = Dictionary(uniqueKeysWithValues: items.map { ($0.battery.id, $0.battery.name) })
+            let verb = retireKind == "scrapped" ? "scrapped" : "permanently removed"
+            let reason = retireReason.jsTrimmed
+            phase = .done(DoneSummary(kind: .retire,
+                                      batteries: items.map(\.battery.id).sorted().map { DoneBattery(id: $0, name: names[$0] ?? "Battery") },
+                                      at: Sydney.timestamp(), replayed: false, roomLabel: nil, verb: verb,
+                                      note: reason.isEmpty ? nil : reason))
+            retireRequestId = nil
+            submissionError = nil
+            setMood(.happy, hold: 1.6)
+            reaction += 1
+        case .rejected(let text), .notSent(let text):
+            retireRequestId = nil
+            phase = .scanning
+            submissionError = text
+            refuse(text)
+            await app.inventory.refresh()
+            reviewAgainstLatest()
+        case .uncertain(let text):
+            submissionError = text
+            phase = .uncertain
+        }
     }
 
     func retryPending() async {
@@ -462,7 +568,7 @@ final class ScanModel {
         var dropped: [String] = []
         for item in items {
             guard let latest = app.inventory.battery(id: item.battery.id), latest.isActive,
-                  mode == .checkout ? latest.isInStore : latest.isInUse,
+                  mode == .return ? latest.isInUse : latest.isInStore,
                   source != .nfc || latest.tagId == item.tagId else {
                 dropped.append(item.battery.id)
                 continue

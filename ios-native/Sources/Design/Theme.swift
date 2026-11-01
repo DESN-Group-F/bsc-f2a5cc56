@@ -10,6 +10,8 @@ enum Tone {
     static let success = Color(red: 0.071, green: 0.600, blue: 0.373)    // #12995F
     static let failure = Color(red: 0.878, green: 0.263, blue: 0.290)    // #E0434A
     static let ink = Color(red: 0.07, green: 0.07, blue: 0.09)
+    /// Retiring batteries: a calm graphite, distinct from the red used for refusals.
+    static let retire = Color(red: 0.35, green: 0.38, blue: 0.45)
     /// Ink stays dark in light mode and lifts to a deep slate in dark mode so it never disappears.
     static func adaptiveInk(_ scheme: ColorScheme) -> Color {
         scheme == .dark ? Color(red: 0.27, green: 0.30, blue: 0.40) : ink
@@ -19,13 +21,39 @@ enum Tone {
 enum MovementKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case checkout
     case `return`
+    /// Scrap or permanently remove; sent as a `lifecycle` write, not a movement.
+    case retire
 
     var id: String { rawValue }
-    var title: String { self == .checkout ? "Check out" : "Return" }
-    var tint: Color { self == .checkout ? Tone.checkout : Tone.returning }
-    var onTint: Color { self == .checkout ? .white : Tone.returnInk }
-    var progressTitle: String { self == .checkout ? "Checking out…" : "Returning…" }
-    var pastTense: String { self == .checkout ? "checked out" : "returned" }
+    var title: String {
+        switch self {
+        case .checkout: return "Check out"
+        case .return: return "Return"
+        case .retire: return "Retire"
+        }
+    }
+    var tint: Color {
+        switch self {
+        case .checkout: return Tone.checkout
+        case .return: return Tone.returning
+        case .retire: return Tone.retire
+        }
+    }
+    var onTint: Color { self == .return ? Tone.returnInk : .white }
+    var progressTitle: String {
+        switch self {
+        case .checkout: return "Checking out…"
+        case .return: return "Returning…"
+        case .retire: return "Saving…"
+        }
+    }
+    var pastTense: String {
+        switch self {
+        case .checkout: return "checked out"
+        case .return: return "returned"
+        case .retire: return "retired"
+        }
+    }
 
     func confirmTitle(count: Int) -> String {
         "\(title) \(count) \(count == 1 ? "battery" : "batteries")"

@@ -24,7 +24,7 @@ struct ChooseBatteriesView: View {
                 Section {
                     if candidates.isEmpty {
                         ContentUnavailableView(emptyTitle, systemImage: "battery.0percent",
-                                               description: Text(kind == .checkout ? "Nothing in store matches." : "Nothing is checked out that matches."))
+                                               description: Text(kind == .return ? "Nothing is checked out that matches." : "Nothing in store matches."))
                     }
                     ForEach(candidates) { battery in
                         Button {
@@ -50,7 +50,7 @@ struct ChooseBatteriesView: View {
             }
             .listStyle(.insetGrouped)
             .searchable(text: $search, prompt: "ID, name, model or person")
-            .navigationTitle(kind == .checkout ? "Check out" : "Return")
+            .navigationTitle(kind.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
@@ -75,7 +75,7 @@ struct ChooseBatteriesView: View {
 
     private var candidates: [BatteryRecord] {
         let inList = Set(app.scan.items.map(\.id))
-        return app.inventory.filtered(status: kind == .checkout ? .inStore : .inUse, search: search,
+        return app.inventory.filtered(status: kind == .return ? .inUse : .inStore, search: search,
                                       onlyMine: false, onlyNew: false, accountId: app.user?.id)
             .filter { !inList.contains($0.id) }
     }

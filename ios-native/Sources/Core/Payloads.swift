@@ -147,13 +147,16 @@ struct LifecycleItem: Codable, Equatable, Sendable {
     let batteryId: String
     let version: Int
     let tagId: String?
+    /// Present only for `native_nfc` (Demo): the full evidence of the physical read.
+    var nfcEvidence: NFCEvidence? = nil
 
-    enum CodingKeys: String, CodingKey { case batteryId, version, tagId }
+    enum CodingKeys: String, CodingKey { case batteryId, version, tagId, nfcEvidence }
     func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(batteryId, forKey: .batteryId)
         try c.encode(version, forKey: .version)
         try c.encode(tagId, forKey: .tagId)
+        try c.encodeIfPresent(nfcEvidence, forKey: .nfcEvidence)
     }
 }
 
@@ -182,6 +185,7 @@ struct LifecycleReceiptItem: Decodable, Sendable {
     let version: Int
     let status: String
     let tagId: String?
+    let nfcEvidence: NFCEvidence?
 }
 
 struct LifecycleReceipt: Decodable, Sendable {
@@ -355,7 +359,8 @@ enum ReceiptCheck {
                   r.items.count == p.items.count else { return nil }
             for (item, sentItem) in zip(r.items, p.items) {
                 guard item.batteryId == sentItem.batteryId, item.tagId == sentItem.tagId,
-                      item.version == sentItem.version + 1, item.status == p.kind else { return nil }
+                      item.version == sentItem.version + 1, item.status == p.kind,
+                      item.nfcEvidence == sentItem.nfcEvidence else { return nil }
             }
             let n = p.items.count
             let verb = p.kind == "scrapped" ? "scrapped" : "permanently removed"

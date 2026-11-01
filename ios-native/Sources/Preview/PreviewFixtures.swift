@@ -3,7 +3,7 @@ import Foundation
 /// Screens that can be opened directly with `-uiPreview <name>` for simulator screenshots.
 /// Preview mode never contacts the server and uses only the fictional data below.
 enum PreviewScreen: String, CaseIterable {
-    case signin, scan, scanWelcome, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, scanGroup
+    case signin, scan, scanWelcome, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, scanGroup, scanRetire, scanRetireDone
     case inventory, inventoryFiltered, newArrivals, detail, detailBottom, detailConcern, detailRetired
     case register, registerReview, inspection, retire, group, groupEditor, filter, pendingWrite
     case inbox, me
@@ -57,6 +57,17 @@ enum PreviewFixtures {
             if let group = snapshot.teachingGroups?.first {
                 app.scan.begin(group: group, batteries: group.batteryIds.compactMap { byId[$0] }.filter(\.isInStore), mode: .checkout)
             }
+        case .scanRetire:
+            app.tab = .scan
+            let old = ["BAT-00000009", "BAT-00000002"].compactMap { byId[$0] }
+            app.scan.previewState(items: old, mode: .retire, phase: .scanning)
+            app.scan.retireReason = "Swollen cells"
+        case .scanRetireDone:
+            app.tab = .scan
+            let old = ["BAT-00000009", "BAT-00000002"].compactMap { byId[$0] }
+            app.scan.previewState(items: old, mode: .retire, phase: .done(DoneSummary(
+                kind: .retire, batteries: old.map { DoneBattery(id: $0.id, name: $0.name) }.sorted { $0.id < $1.id },
+                at: Sydney.timestamp(), replayed: false, roomLabel: nil, verb: "scrapped", note: "Swollen cells")))
         case .scanReturn:
             app.tab = .scan
             let mine = ["BAT-00000004", "BAT-00000007"].compactMap { byId[$0] }

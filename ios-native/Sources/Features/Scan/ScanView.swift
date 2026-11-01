@@ -192,10 +192,12 @@ struct ScanView: View {
                 .transition(.opacity)
             } else {
                 VStack(spacing: 6) {
-                    Text(app.dataset.allowsNFCWrites ? "Tap me to scan" : "Pick from the list")
+                    Text(app.dataset.allowsNFCWrites ? (scan.mode == .retire ? "Scan to retire" : "Tap me to scan") : "Pick from the list")
                         .font(.title.weight(.bold))
                     Text(app.dataset.allowsNFCWrites
-                         ? "Hold the top of your iPhone near a battery tag. Keep going — nothing is saved until you confirm."
+                         ? (scan.mode == .retire
+                            ? "Tap me, then hold your iPhone near each battery you're taking out of service. Nothing changes until you confirm."
+                            : "Hold the top of your iPhone near a battery tag. Keep going — nothing is saved until you confirm.")
                          : "Tag scanning is Demo-only for now. Choose batteries, then confirm.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
@@ -272,6 +274,7 @@ struct ScanView: View {
                         Text(error).font(.footnote).foregroundStyle(Tone.failure).multilineTextAlignment(.center)
                     }
                     if scan.mode == .return { ReturnRoomMenu() }
+                    if scan.mode == .retire { RetireOptions() }
                     ConfirmButton()
                 }
                 .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -385,7 +388,7 @@ struct ScanItemCard: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            BatteryGlyph(tint: mode == .checkout ? Tone.checkout : Color(red: 0.54, green: 0.38, blue: 0))
+            BatteryGlyph(tint: mode == .checkout ? Tone.checkout : (mode == .retire ? Tone.retire : Color(red: 0.54, green: 0.38, blue: 0)))
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.battery.name).font(.body.weight(.semibold)).lineLimit(1)
                 HStack(spacing: 6) {
@@ -415,7 +418,7 @@ struct ScanItemCard: View {
     }
 
     private var readyText: String {
-        mode == .checkout ? "In store" : (item.battery.borrowerAccountId == myAccountId ? "Yours" : "Ready")
+        mode == .return ? (item.battery.borrowerAccountId == myAccountId ? "Yours" : "Ready") : "In store"
     }
 }
 
@@ -426,11 +429,16 @@ struct ConfirmButton: View {
         let scan = app.scan
         let submitting = scan.phase == .submitting
         Button {
-            Task { await scan.confirm() }
+            if scan.mode == .retire && scan.retireKind == "permanently_removed" {
+                scan.confirmPermanent = true
+            } else {
+                Task { await scan.confirm() }
+            }
         } label: {
             HStack(spacing: 10) {
                 if submitting { ProgressView().tint(scan.mode.onTint) }
-                Text(submitting ? scan.mode.progressTitle : scan.mode.confirmTitle(count: scan.items.count))
+                Text(submitting ? scan.mode.progressTitle
+                     : (scan.mode == .retire ? scan.retireConfirmTitle : scan.mode.confirmTitle(count: scan.items.count)))
                     .contentTransition(.numericText(value: Double(scan.items.count)))
             }
             .font(.headline)
@@ -443,6 +451,44 @@ struct ConfirmButton: View {
         .glassEffect(.regular.tint(scan.mode.tint).interactive(), in: .capsule)
         .disabled(submitting)
         .sensoryFeedback(.impact(weight: .medium), trigger: submitting) { _, new in new }
+        .confirmationDialog(scan.retireConfirmTitle + "?", isPresented: Bindable(scan).confirmPermanent, titleVisibility: .visible) {
+            Button(scan.retireConfirmTitle, role: .destructive) { Task { await scan.confirm() } }
+        } message: {
+            Text("They leave the inventory for good. Their history stays, but this can't be undone in the app.")
+        }
+    }
+}
+
+/// Retire mode: choose scrap or permanent removal, with an optional reason.
+struct RetireOptions: View {
+    @Environment(AppModel.self) private var app
+
+    var body: some View {
+        @Bindable var scan = app.scan
+        VStack(spacing: 8) {
+            Picker("Outcome", selection: $scan.retireKind) {
+                Text("Scrap").tag("scrapped")
+                Text("Remove permanently").tag("permanently_removed")
+            }
+            .pickerStyle(.segmented)
+            TextField(scan.retireKind == "scrapped" ? "Reason (optional), e.g. swollen cells" : "Reason (optional)",
+                      text: $scan.retireReason)
+                .padding(.horizontal, 14)
+                .frame(height: 42)
+                .glassEffect(.regular, in: .rect(cornerRadius: 16))
+            if scan.retireKind == "permanently_removed" {
+                TextField("Destination (optional), e.g. recycling bin", text: $scan.retireDestination)
+                    .padding(.horizontal, 14)
+                    .frame(height: 42)
+                    .glassEffect(.regular, in: .rect(cornerRadius: 16))
+            }
+            Text(scan.retireKind == "scrapped"
+                 ? "Scrapped batteries stay in the records and can be recovered later."
+                 : "Permanently removed batteries leave the inventory for good.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .disabled(scan.phase != .scanning)
     }
 }
 
@@ -482,10 +528,11 @@ struct UncertainCard: View {
     var body: some View {
         let scan = app.scan
         let entry = scan.pendingWrites.first
+        let retiring = entry == nil && scan.retireIsPending
         VStack(alignment: .leading, spacing: 10) {
             Label("Not confirmed yet", systemImage: "exclamationmark.arrow.triangle.2.circlepath")
                 .font(.headline)
-            Text(description(entry))
+            Text(retiring ? retireDescription(scan.items.count) : description(entry))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -493,7 +540,9 @@ struct UncertainCard: View {
                 Text(error).font(.footnote).foregroundStyle(.secondary)
             }
             Button {
-                Task { await scan.retryPending() }
+                Task {
+                    if retiring { await scan.retryRetire() } else { await scan.retryPending() }
+                }
             } label: {
                 HStack {
                     if scan.phase == .submitting { ProgressView() }
@@ -509,6 +558,10 @@ struct UncertainCard: View {
         }
         .padding(18)
         .glassEffect(.regular, in: .rect(cornerRadius: 26))
+    }
+
+    private func retireDescription(_ n: Int) -> String {
+        "Retiring \(n) \(n == 1 ? "battery" : "batteries") may or may not have reached the server. Trying again sends the exact same request, so it can't happen twice."
     }
 
     private func description(_ entry: PendingMovement?) -> String {
@@ -556,6 +609,12 @@ struct DoneSummaryView: View {
     }
 
     private var subtitle: String {
+        if summary.kind == .retire {
+            let base = summary.verb == "scrapped"
+                ? "Out of service, still in the records. Recover from a battery's page if needed."
+                : "They've left the inventory. Their history is kept."
+            return summary.note.map { "\($0) · " + base } ?? base
+        }
         if summary.kind == .checkout { return "They're now listed as with you." }
         if let room = summary.roomLabel { return "Placed back in \(room)." }
         return "They're back in store."
