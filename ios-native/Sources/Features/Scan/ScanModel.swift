@@ -103,10 +103,19 @@ final class ScanModel {
     }
 
     var readerPrompt: String {
-        items.isEmpty
+        if mode == .register {
+            let n = intakeEntries.filter { $0.status == .draft }.count
+            return n == 0 ? "Hold the top of your iPhone near a new battery's tag."
+                : "\(n) new in your batch. Hold near the next one. Tap Cancel to review — your batch stays."
+        }
+        return items.isEmpty
             ? "Hold the top of your iPhone near a battery tag."
             : "\(items.count) in your list. Hold near the next battery. Tap Cancel to review — your list stays."
     }
+
+    /// Whether the station currently shows a list for the selected action.
+    var hasList: Bool { mode == .register ? !intakeEntries.isEmpty : !items.isEmpty }
+    var listCount: Int { mode == .register ? intakeEntries.count : items.count }
 
     // MARK: Lifecycle
 
@@ -148,6 +157,7 @@ final class ScanModel {
 
     func setMode(_ newMode: MovementKind) {
         guard phase == .scanning, newMode != mode else { return }
+        // A batch intake is saved on the phone, so it can wait while other actions are used.
         if !items.isEmpty {
             show(.init(kind: .info, text: "Clear the list to switch to \(newMode.title)."))
             return
@@ -161,6 +171,11 @@ final class ScanModel {
     func tapInk() {
         guard let app, phase == .scanning else { return }
         if readerActive { return }
+        if mode == .register && !(app.dataset.allowsNFCWrites && NFCReader.isAvailable) {
+            // Without tag scanning, registration is one battery at a time with the form.
+            app.registration = RegistrationRequest()
+            return
+        }
         guard app.dataset.allowsNFCWrites else {
             show(.init(kind: .info, text: "Tag scanning is Demo-only for now. Pick batteries from the list."))
             showChooser = true
@@ -197,6 +212,11 @@ final class ScanModel {
 
     private func accept(_ read: TagRead) async {
         guard let app else { return }
+        if mode == .register {
+            addIntake(read)
+            reader.prompt = readerPrompt
+            return
+        }
         var battery = app.inventory.battery(tagId: read.tagId)
         if battery == nil {
             // Maybe registered moments ago on another device.
@@ -253,6 +273,12 @@ final class ScanModel {
     /// Opens registration for the tag that just failed lookup.
     func registerUnregisteredTag() {
         guard let app else { return }
+        if let read = unregisteredRead, app.dataset.allowsNFCWrites, items.isEmpty, phase == .scanning {
+            // Start (or add to) a batch intake with the tag that was just read.
+            mode = .register
+            addIntake(read)
+            return
+        }
         app.registration = RegistrationRequest(tagRead: app.dataset.allowsNFCWrites ? unregisteredRead : nil)
     }
 
@@ -358,6 +384,10 @@ final class ScanModel {
     // MARK: Confirming
 
     func confirm() async {
+        if mode == .register {
+            await confirmIntake()
+            return
+        }
         guard let app, let user = app.user, phase == .scanning, !items.isEmpty, pendingWrites.isEmpty else { return }
         if mode == .retire {
             await confirmRetire()
@@ -410,6 +440,253 @@ final class ScanModel {
         pendingWrites = [entry]
         phase = .submitting
         await send(entry, isRetry: false)
+    }
+
+    // MARK: Batch intake (Register)
+
+    private(set) var intakeEntries: [IntakeEntry] = []
+    private(set) var intakeDetails = RegistrationDetails()
+    private var intakeSessionId = RequestID.make()
+    private var intakeSessionDetails: RegistrationDetails?
+    private var intakeOwner: (account: String, dataset: Dataset)?
+    var showBatchDetails = false
+
+    var intakeDraftCount: Int { intakeEntries.filter { $0.status == .draft || $0.isFailed }.count }
+    var intakeHasUncertain: Bool { intakeEntries.contains { $0.status == .uncertain } }
+    var intakeProblems: [String] {
+        guard let app else { return [] }
+        return intakeDetails.problems(in: app.inventory)
+    }
+
+    private func loadIntake() {
+        guard let app, let user = app.user else { return }
+        intakeOwner = (user.id, app.dataset)
+        if let file = IntakeStore.load(accountId: user.id, dataset: app.dataset) {
+            intakeDetails = file.details
+            intakeSessionId = file.sessionId
+            intakeSessionDetails = file.sessionDetails
+            intakeEntries = file.entries
+        } else {
+            intakeDetails = RegistrationDetails()
+            intakeSessionId = RequestID.make()
+            intakeSessionDetails = nil
+            intakeEntries = []
+        }
+        if intakeDetails.ownerId.isEmpty, let me = app.inventory.staffOwners.first(where: { $0.accountId == user.id }) {
+            intakeDetails.ownerId = me.id
+        }
+    }
+
+    @discardableResult
+    private func saveIntake() -> Bool {
+        guard let app, let user = app.user, app.preview == nil else { return true }
+        guard intakeOwner?.account == user.id, intakeOwner?.dataset == app.dataset else { return false }
+        return IntakeStore.save(IntakeBatchFile(details: intakeDetails, sessionId: intakeSessionId,
+                                                sessionDetails: intakeSessionDetails, entries: intakeEntries),
+                                accountId: user.id, dataset: app.dataset)
+    }
+
+    /// Forgets the in-memory batch (the saved file stays) when the account or inventory changes.
+    func unloadIntake() {
+        intakeOwner = nil
+        intakeEntries = []
+        intakeDetails = RegistrationDetails()
+        intakeSessionDetails = nil
+    }
+
+    func updateIntakeDetails(_ details: RegistrationDetails) {
+        intakeDetails = details
+        saveIntake()
+    }
+
+    /// A successful single registration becomes the starting point for the next one.
+    func rememberDetails(_ details: RegistrationDetails) {
+        guard intakeEntries.isEmpty else { return }
+        intakeDetails = details
+        saveIntake()
+    }
+
+    private func addIntake(_ read: TagRead) {
+        guard let app else { return }
+        if intakeOwner == nil { loadIntake() }
+        if let existing = app.inventory.battery(tagId: read.tagId) {
+            refuse("Already registered as \(existing.id)")
+            return
+        }
+        if intakeEntries.contains(where: { $0.tagId == read.tagId }) {
+            show(.init(kind: .duplicate, text: "Already in the batch · \(read.tagId.replacingOccurrences(of: "nfc:uid:", with: ""))"))
+            setMood(.puzzled, hold: 1.4)
+            Haptics.duplicate()
+            return
+        }
+        guard intakeEntries.count < 100 else {
+            refuse("A batch holds up to 100 tags. Register these first.")
+            return
+        }
+        intakeEntries.insert(IntakeEntry(tagId: read.tagId, evidence: read.evidence(adoptedAt: Sydney.timestamp()),
+                                         requestId: nil, status: .draft), at: 0)
+        guard saveIntake() else {
+            intakeEntries.removeFirst()
+            refuse("Couldn't save the scan on this iPhone. Try again.")
+            return
+        }
+        latestId = intakeEntries[0].uid
+        setMood(.happy, hold: 0.7)
+        reaction += 1
+        Haptics.accepted()
+    }
+
+    func removeIntake(_ entry: IntakeEntry) {
+        guard phase == .scanning, entry.status != .uncertain else { return }
+        intakeEntries.removeAll { $0.id == entry.id }
+        saveIntake()
+        Haptics.tap()
+    }
+
+    /// Settles uncertain entries whose request was resolved elsewhere (for example from the banner).
+    private func reconcileIntake() {
+        guard let app else { return }
+        var changed = false
+        for index in intakeEntries.indices where intakeEntries[index].status == .uncertain {
+            guard let requestId = intakeEntries[index].requestId, app.writes.entry(id: requestId) == nil else { continue }
+            if let battery = app.inventory.battery(tagId: intakeEntries[index].tagId) {
+                intakeEntries[index].status = .registered(battery.id)
+            } else {
+                // Settled without a registration we can see yet. Sending again is safe: a tag can only be registered once.
+                intakeEntries[index].status = .draft
+                intakeEntries[index].requestId = nil
+            }
+            changed = true
+        }
+        if changed { saveIntake() }
+    }
+
+    /// Registers every draft in the batch, one exact request per tag, stopping at the first unknown outcome.
+    private func confirmIntake() async {
+        guard let app, app.user != nil, phase == .scanning || phase == .submitting else { return }
+        reconcileIntake()
+        guard !intakeHasUncertain else { phase = .uncertain; return }
+        let targets = intakeEntries.filter { $0.status == .draft || $0.isFailed }.map(\.id)
+        guard !targets.isEmpty else { finishIntakeBatch(); return }
+        guard app.dataset.allowsNFCWrites else {
+            submissionError = "Batch registration with tags is Demo-only for now."
+            return
+        }
+        guard intakeProblems.isEmpty, let common = intakeDetails.common(in: app.inventory) else {
+            submissionError = "Check the batch details first."
+            showBatchDetails = true
+            return
+        }
+        guard !app.writes.hasPending, pendingWrites.isEmpty else {
+            submissionError = "Another request is waiting for confirmation. Try it again first (Inventory or Me)."
+            return
+        }
+        reader.stop()
+        submissionError = nil
+        if intakeSessionDetails != intakeDetails {
+            intakeSessionId = RequestID.make()
+            intakeSessionDetails = intakeDetails
+        }
+        phase = .submitting
+        for id in targets {
+            guard let index = intakeEntries.firstIndex(where: { $0.id == id }) else { continue }
+            let entry = intakeEntries[index]
+            let requestId = RequestID.make()
+            let payload = NFCIntakePayload(requestId: requestId, sessionId: intakeSessionId, scannedAt: entry.evidence.result.observedAt,
+                                           common: common, firstUseMode: intakeDetails.firstUseMode, source: "native_nfc",
+                                           nfcEvidence: entry.evidence, tagId: entry.tagId)
+            guard let body = WriteCenter.inventoryBody(app.dataset, action: "intake", payload: payload) else { continue }
+            intakeEntries[index].requestId = requestId
+            intakeEntries[index].status = .uncertain
+            saveIntake()
+            let outcome = await app.writes.submit(action: "intake", kind: "register", title: "Registering tag \(entry.uid)",
+                                                  batteryIds: [], requestId: requestId, body: body)
+            guard let current = intakeEntries.firstIndex(where: { $0.id == id }) else { continue }
+            switch outcome {
+            case .confirmed(let result):
+                intakeEntries[current].status = .registered(result.batteryId ?? "")
+                saveIntake()
+            case .rejected(let text):
+                intakeEntries[current].status = .failed(text)
+                saveIntake()
+            case .notSent(let text):
+                intakeEntries[current].status = entry.status
+                intakeEntries[current].requestId = entry.requestId
+                saveIntake()
+                submissionError = text
+                phase = .scanning
+                return
+            case .uncertain(let text):
+                submissionError = text
+                phase = .uncertain
+                Haptics.refused()
+                return
+            }
+        }
+        finishIntakeBatch()
+    }
+
+    func retryIntake() async {
+        guard let app, phase != .submitting else { return }
+        reconcileIntake()
+        guard let index = intakeEntries.firstIndex(where: { $0.status == .uncertain }),
+              let requestId = intakeEntries[index].requestId, let pending = app.writes.entry(id: requestId) else {
+            phase = .scanning
+            if intakeEntries.contains(where: { $0.status == .draft }) { await confirmIntake() } else { finishIntakeBatch() }
+            return
+        }
+        phase = .submitting
+        let outcome = await app.writes.retry(pending)
+        guard let current = intakeEntries.firstIndex(where: { $0.requestId == requestId }) else { return }
+        switch outcome {
+        case .confirmed(let result):
+            intakeEntries[current].status = .registered(result.batteryId ?? "")
+        case .rejected(let text):
+            intakeEntries[current].status = .failed(text)
+        case .notSent(let text), .uncertain(let text):
+            submissionError = text
+            phase = .uncertain
+            return
+        }
+        saveIntake()
+        phase = .scanning
+        // Carry on with the drafts that hadn't been sent yet.
+        if intakeEntries.contains(where: { $0.status == .draft }) { await confirmIntake() } else { finishIntakeBatch() }
+    }
+
+    /// Moves registered tags out of the batch. Rejected ones stay, with their reason, for review.
+    private func finishIntakeBatch() {
+        let registered = intakeEntries.compactMap { entry -> DoneBattery? in
+            if case let .registered(id) = entry.status { return DoneBattery(id: id.isEmpty ? entry.uid : id, name: intakeDetails.name.jsTrimmed) }
+            return nil
+        }
+        intakeEntries.removeAll { if case .registered = $0.status { return true } else { return false } }
+        saveIntake()
+        let failed = intakeEntries.filter(\.isFailed).count
+        if !registered.isEmpty && failed == 0 {
+            phase = .done(DoneSummary(kind: .register, batteries: registered.sorted { $0.id < $1.id }, at: Sydney.timestamp(),
+                                      replayed: false, roomLabel: nil, verb: "registered", note: intakeDetails.specSummary))
+            setMood(.happy, hold: 1.6)
+            reaction += 1
+            Task { await app?.inventory.refresh() }
+        } else {
+            phase = .scanning
+            if failed > 0 {
+                submissionError = registered.isEmpty
+                    ? "\(failed) not registered — see the reasons in the list."
+                    : "\(registered.count) registered. \(failed) not registered — see the reasons in the list."
+                refuse(registered.isEmpty ? "Not registered" : "\(registered.count) registered, \(failed) not")
+            }
+            Task { await app?.inventory.refresh() }
+        }
+    }
+
+    func previewIntake(_ reads: [TagRead], details: RegistrationDetails) {
+        intakeDetails = details
+        intakeEntries = reads.map { IntakeEntry(tagId: $0.tagId, evidence: $0.evidence(adoptedAt: Sydney.timestamp()), requestId: nil, status: .draft) }
+        if intakeEntries.count > 2 { intakeEntries[2].status = .failed("This tag is already registered to another battery.") }
+        mode = .register
+        latestId = intakeEntries.first?.uid
     }
 
     // MARK: Retiring
@@ -499,6 +776,7 @@ final class ScanModel {
         guard let app, let user = app.user else { return }
         pendingWrites = app.pending.all(accountId: user.id, dataset: app.dataset).filter(\.isMovement)
         if !pendingWrites.isEmpty { phase = .uncertain }
+        loadIntake()
     }
 
     private func send(_ entry: PendingMovement, isRetry: Bool) async {

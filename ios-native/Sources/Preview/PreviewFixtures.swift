@@ -4,6 +4,7 @@ import Foundation
 /// Preview mode never contacts the server and uses only the fictional data below.
 enum PreviewScreen: String, CaseIterable {
     case signin, scan, scanWelcome, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, scanGroup, scanRetire, scanRetireDone
+    case scanRegister, scanRegisterEmpty
     case inventory, inventoryFiltered, newArrivals, detail, detailBottom, detailConcern, detailRetired
     case register, registerReview, inspection, retire, group, groupEditor, filter, pendingWrite
     case inbox, me
@@ -57,6 +58,23 @@ enum PreviewFixtures {
             if let group = snapshot.teachingGroups?.first {
                 app.scan.begin(group: group, batteries: group.batteryIds.compactMap { byId[$0] }.filter(\.isInStore), mode: .checkout)
             }
+        case .scanRegister:
+            app.tab = .scan
+            let now = Sydney.timestamp()
+            let reads = ["04A1B2C3D4E5F6", "04A1B2C3D4E5F7", "04A1B2C3D4E5F8"].map { uid in
+                TagRead(tagId: "nfc:uid:\(uid)", attemptId: RequestID.make(), startedAt: now, endedAt: now,
+                        result: NFCReadResult(uidHex: uid, technology: "NFC-A / ISO 14443 / MIFARE Ultralight", ndefStatus: "readWrite",
+                                              capacityBytes: 137, records: [], ndefError: nil, observedAt: now))
+            }
+            var details = RegistrationDetails()
+            if let model = models.first { details.apply(model) }
+            details.ownerId = "staff-\(userId)"
+            app.scan.previewIntake(reads, details: details)
+        case .scanRegisterEmpty:
+            app.tab = .scan
+            var details = RegistrationDetails()
+            details.ownerId = "staff-\(userId)"
+            app.scan.previewIntake([], details: details)
         case .scanRetire:
             app.tab = .scan
             let old = ["BAT-00000009", "BAT-00000002"].compactMap { byId[$0] }

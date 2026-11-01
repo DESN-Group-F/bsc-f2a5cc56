@@ -21,6 +21,8 @@ enum Tone {
 enum MovementKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case checkout
     case `return`
+    /// First-time registration of tagged batteries; sent as `intake` writes (Demo).
+    case register
     /// Scrap or permanently remove; sent as a `lifecycle` write, not a movement.
     case retire
 
@@ -29,6 +31,7 @@ enum MovementKind: String, Codable, CaseIterable, Identifiable, Sendable {
         switch self {
         case .checkout: return "Check out"
         case .return: return "Return"
+        case .register: return "Register"
         case .retire: return "Retire"
         }
     }
@@ -36,6 +39,7 @@ enum MovementKind: String, Codable, CaseIterable, Identifiable, Sendable {
         switch self {
         case .checkout: return Tone.checkout
         case .return: return Tone.returning
+        case .register: return Tone.register
         case .retire: return Tone.retire
         }
     }
@@ -44,6 +48,7 @@ enum MovementKind: String, Codable, CaseIterable, Identifiable, Sendable {
         switch self {
         case .checkout: return "Checking out…"
         case .return: return "Returning…"
+        case .register: return "Registering…"
         case .retire: return "Saving…"
         }
     }
@@ -51,6 +56,7 @@ enum MovementKind: String, Codable, CaseIterable, Identifiable, Sendable {
         switch self {
         case .checkout: return "checked out"
         case .return: return "returned"
+        case .register: return "registered"
         case .retire: return "retired"
         }
     }

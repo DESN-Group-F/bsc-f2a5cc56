@@ -14,7 +14,7 @@ struct ChooseBatteriesView: View {
                 if app.scan.isEmpty {
                     Section {
                         Picker("Action", selection: $kind) {
-                            ForEach(MovementKind.allCases) { Text($0.title).tag($0) }
+                            ForEach(MovementKind.allCases.filter { $0 != .register }) { Text($0.title).tag($0) }
                         }
                         .pickerStyle(.segmented)
                         .listRowBackground(Color.clear)
@@ -65,7 +65,7 @@ struct ChooseBatteriesView: View {
                     .disabled(selected.isEmpty)
                 }
             }
-            .onAppear { kind = app.scan.mode }
+            .onAppear { kind = app.scan.mode == .register ? .checkout : app.scan.mode }
             .onChange(of: kind) { selected = [] }
             .sensoryFeedback(.selection, trigger: selected)
         }

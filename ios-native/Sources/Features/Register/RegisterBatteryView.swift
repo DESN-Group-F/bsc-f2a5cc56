@@ -9,6 +9,7 @@ struct RegistrationRequest: Identifiable {
 /// New battery registration: details → review → confirmed by the server.
 /// Working inventory uses `operator_register` (untagged or a typed tag). In Demo a physically read tag
 /// is registered through `intake` with its full NFC evidence; a read is never relabelled as typed.
+/// Batches of tagged batteries are registered from the Scan station's Register mode.
 struct RegisterBatteryView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
@@ -19,22 +20,9 @@ struct RegisterBatteryView: View {
     private enum Step: Equatable { case form, review, done }
 
     @State private var step: Step = .form
-    @State private var name = "Battery"
-    @State private var chemistry = ""
-    @State private var modelText = ""
-    @State private var capacity: Double?
-    @State private var voltage: Double?
-    @State private var ownerId = ""
-    @State private var roomId: String?
-    @State private var manufactured: String?
-    @State private var firstUseMode = "at_registration"
-    @State private var firstUsed: String?
+    @State private var details = RegistrationDetails()
     @State private var scanned: TagRead?
     @State private var typedTag = ""
-    @State private var chosenModel: BatteryModelChoice?
-    @State private var appliedFields: [String] = []
-    @State private var conflicts: [String] = []
-    @State private var showModels = false
     @State private var requestId: String?
     @State private var working = false
     @State private var message: String?
@@ -42,7 +30,7 @@ struct RegisterBatteryView: View {
     @State private var confirmation: WriteConfirmation?
     @State private var reader = NFCReader()
     @State private var reading = false
-    @State private var formKey = UUID()
+    @State private var prepared = false
 
     private var tint: Color { Tone.register }
 
@@ -59,10 +47,6 @@ struct RegisterBatteryView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbar }
             .interactiveDismissDisabled(isLocked)
-            .sheet(isPresented: $showModels) {
-                ModelPickerView { choice in apply(choice) }
-                    .presentationDetents([.large])
-            }
             .onAppear(perform: prepare)
             .onDisappear { reader.stop() }
             .animation(.snappy, value: step)
@@ -93,50 +77,7 @@ struct RegisterBatteryView: View {
 
     private var form: some View {
         Form {
-            Section {
-                Button { showModels = true } label: {
-                    HStack(spacing: 12) {
-                        Image(systemName: "square.stack.3d.down.right").font(.title3).foregroundStyle(tint)
-                            .frame(width: 34, height: 34).background(tint.opacity(0.12), in: .rect(cornerRadius: 10))
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(chosenModel?.label ?? "Start from a model").font(.body.weight(.semibold)).foregroundStyle(.primary)
-                            Text(chosenModel.map { "\($0.originTitle) · fills the details below" } ?? "Optional · saved, inventory or reference models")
-                                .font(.footnote).foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
-                    }
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                if let chosenModel {
-                    ForEach(chosenModel.warnings ?? [], id: \.self) { warning in
-                        Label(warning, systemImage: "exclamationmark.triangle").font(.footnote).foregroundStyle(.orange)
-                    }
-                    if !conflicts.isEmpty {
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("Kept what you entered for \(conflicts.map(fieldTitle).joined(separator: ", ")).")
-                                .font(.footnote).foregroundStyle(.secondary)
-                            Button("Use the model's values instead") { applyConflicts() }.font(.footnote.weight(.semibold))
-                        }
-                    }
-                    Button("Don't use a model", role: .destructive) {
-                        self.chosenModel = nil
-                        appliedFields = []
-                        conflicts = []
-                    }
-                    .font(.footnote)
-                }
-            }
-
-            Section("Battery") {
-                LabeledField(title: "Name") { TextField("Battery", text: $name).multilineTextAlignment(.trailing) }
-                LabeledField(title: "Chemistry") { TextField("e.g. LiPo", text: $chemistry).multilineTextAlignment(.trailing) }
-                LabeledField(title: "Model") { TextField("e.g. 3S 2200", text: $modelText).multilineTextAlignment(.trailing) }
-                LabeledField(title: "Capacity") { UnitField(unit: "mAh", value: $capacity) }
-                LabeledField(title: "Voltage") { UnitField(unit: "V", value: $voltage) }
-            }
-            .id(formKey)
+            RegistrationDetailsSections(details: $details)
 
             Section {
                 tagRow
@@ -144,40 +85,8 @@ struct RegisterBatteryView: View {
                 Text("Tag")
             } footer: {
                 Text(app.dataset.allowsNFCWrites
-                     ? "Scan the tag stuck on the battery, or leave it untagged."
+                     ? "Scan the tag stuck on the battery, or leave it untagged. For several new batteries, use Register on the Scan tab."
                      : "Tag scanning is Demo-only for now. Type a tag ID only if it's printed on the tag, or leave it untagged.")
-            }
-
-            Section("Responsible & storage") {
-                Picker("Responsible", selection: $ownerId) {
-                    if ownerId.isEmpty { Text("Choose…").tag("") }
-                    ForEach(app.inventory.staffOwners) { person in
-                        Text(person.accountId == app.user?.id ? "\(person.name) (me)" : person.name).tag(person.id)
-                    }
-                }
-                LabeledContent("Building", value: "J18 · Willis Annexe")
-                Picker("Home room", selection: $roomId) {
-                    Text("Not specified").tag(String?.none)
-                    ForEach(app.inventory.registrationRooms) { room in
-                        Text(room.label + ((room.isPlaceholder ?? false) ? " · placeholder" : "")).tag(Optional(room.id))
-                    }
-                }
-            }
-
-            Section {
-                OptionalDayPicker(title: "Manufactured", ymd: $manufactured, latest: Date())
-                Picker("First use", selection: $firstUseMode) {
-                    Text("From registration day").tag("at_registration")
-                    Text("Known date").tag("date")
-                    Text("Unknown").tag("unknown")
-                }
-                if firstUseMode == "date" {
-                    OptionalDayPicker(title: "First used on", ymd: $firstUsed, latest: Date())
-                }
-            } header: {
-                Text("Age")
-            } footer: {
-                Text("Leave the manufacture date blank if it isn't known. Time in service counts from the first-use date.")
             }
 
             if !problems.isEmpty {
@@ -220,16 +129,16 @@ struct RegisterBatteryView: View {
             VStack(spacing: 16) {
                 VStack(spacing: 0) {
                     ReviewRow(title: "Permanent ID", value: "Given by the server after you confirm")
-                    ReviewRow(title: "Name", value: trimmed(name))
-                    ReviewRow(title: "Model", value: trimmed(modelText).isEmpty ? "Not recorded" : trimmed(modelText))
-                    ReviewRow(title: "Chemistry", value: trimmed(chemistry).isEmpty ? "Not recorded" : trimmed(chemistry))
-                    ReviewRow(title: "Capacity", value: capacity.map { Format.capacity($0) } ?? "Not recorded")
-                    ReviewRow(title: "Voltage", value: voltage.map { Format.voltage($0) } ?? "Not recorded")
+                    ReviewRow(title: "Name", value: details.name.jsTrimmed)
+                    ReviewRow(title: "Model", value: details.model.jsTrimmed.isEmpty ? "Not recorded" : details.model.jsTrimmed)
+                    ReviewRow(title: "Chemistry", value: details.chemistry.jsTrimmed.isEmpty ? "Not recorded" : details.chemistry.jsTrimmed)
+                    ReviewRow(title: "Capacity", value: details.capacity.map { Format.capacity($0) } ?? "Not recorded")
+                    ReviewRow(title: "Voltage", value: details.voltage.map { Format.voltage($0) } ?? "Not recorded")
                     ReviewRow(title: "Tag", value: tagSummary)
-                    ReviewRow(title: "Responsible", value: owner?.name ?? "—")
-                    ReviewRow(title: "Home", value: "J18 · " + (room.map { $0.name + (($0.isPlaceholder ?? false) ? " (placeholder)" : "") } ?? "Room not specified"))
-                    ReviewRow(title: "Manufactured", value: manufactured.map { Sydney.longDay($0) } ?? "Not recorded")
-                    ReviewRow(title: "First use", value: firstUseSummary, last: true)
+                    ReviewRow(title: "Responsible", value: details.owner(in: app.inventory)?.name ?? "—")
+                    ReviewRow(title: "Home", value: "J18 · " + (details.room(in: app.inventory).map { $0.name + (($0.isPlaceholder ?? false) ? " (placeholder)" : "") } ?? "Room not specified"))
+                    ReviewRow(title: "Manufactured", value: details.manufactured.map { Sydney.longDay($0) } ?? "Not recorded")
+                    ReviewRow(title: "First use", value: details.firstUseSummary, last: true)
                 }
                 .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20, style: .continuous))
 
@@ -262,7 +171,7 @@ struct RegisterBatteryView: View {
                 .padding(.top, 30)
             VStack(spacing: 6) {
                 Text(confirmation?.title ?? "Registered").font(.title2.weight(.bold))
-                Text("\(trimmed(name)) · \(app.dataset.title)").font(.subheadline).foregroundStyle(.secondary)
+                Text("\(details.name.jsTrimmed) · \(app.dataset.title)").font(.subheadline).foregroundStyle(.secondary)
             }
             VStack(spacing: 8) {
                 if let id = confirmation?.batteryId {
@@ -288,65 +197,39 @@ struct RegisterBatteryView: View {
 
     // MARK: Logic
 
-    private var owner: Person? { app.inventory.staffOwners.first { $0.id == ownerId } }
-    private var room: Room? { roomId.flatMap { id in app.inventory.registrationRooms.first { $0.id == id } } }
-    private var building: Building? { app.inventory.snapshot?.buildings?.first { $0.id == "J18" } }
-
     private var tagValue: String? {
         if let scanned { return scanned.tagId }
-        let typed = trimmed(typedTag)
+        let typed = typedTag.jsTrimmed
         return typed.isEmpty ? nil : typed
     }
 
     private var tagSummary: String {
         if let scanned { return "Scanned · \(scanned.tagId.replacingOccurrences(of: "nfc:uid:", with: ""))" }
-        let typed = trimmed(typedTag)
+        let typed = typedTag.jsTrimmed
         return typed.isEmpty ? "Untagged" : "Typed · \(typed)"
     }
 
-    private var firstUseSummary: String {
-        switch firstUseMode {
-        case "date": return firstUsed.map { Sydney.longDay($0) } ?? "—"
-        case "unknown": return "Unknown"
-        default: return "Registration day"
-        }
-    }
-
     private var problems: [String] {
-        var list: [String] = []
-        let n = trimmed(name)
-        if n.serverLength < 2 || n.serverLength > 120 { list.append("Name needs 2–120 characters.") }
-        if trimmed(chemistry).serverLength > 40 { list.append("Chemistry is limited to 40 characters.") }
-        if trimmed(modelText).serverLength > 120 { list.append("Model is limited to 120 characters.") }
-        if let c = capacity, !(c > 0 && c <= 1_000_000) { list.append("Capacity must be above 0 mAh.") }
-        if let v = voltage, !(v > 0 && v <= 1000) { list.append("Voltage must be between 0 and 1000 V.") }
-        if owner == nil { list.append("Choose who is responsible.") }
-        if building == nil { list.append("J18 isn't available yet. Pull to refresh Inventory and try again.") }
+        var list = details.problems(in: app.inventory)
         if let tag = tagValue {
             if tag.serverLength > 128 { list.append("Tag ID is limited to 128 characters.") }
             if let existing = app.inventory.battery(tagId: tag) { list.append("That tag is already registered to \(existing.id).") }
         }
-        if firstUseMode == "date" && firstUsed == nil { list.append("Pick the first-use date, or choose another first-use option.") }
-        if let m = manufactured, let f = firstUseMode == "date" ? firstUsed : nil, f < m {
-            list.append("First use can't be before manufacture.")
-        }
-        let today = Sydney.ymd()
-        if let m = manufactured, m > today { list.append("The manufacture date can't be in the future.") }
-        if firstUseMode == "date", let f = firstUsed, f > today { list.append("The first-use date can't be in the future.") }
         if app.inventory.snapshot?.capabilities?.operatorRegistration != 1 && scanned == nil {
             list.append("This server hasn't confirmed registration from the app.")
         }
         return list
     }
 
-    private func trimmed(_ s: String) -> String { s.jsTrimmed }
-
     private func prepare() {
-        if ownerId.isEmpty, let me = app.inventory.staffOwners.first(where: { $0.accountId == app.user?.id }) { ownerId = me.id }
+        guard !prepared else { return }
+        prepared = true
+        details = app.scan.intakeDetails
+        if details.ownerId.isEmpty, let me = app.inventory.staffOwners.first(where: { $0.accountId == app.user?.id }) { details.ownerId = me.id }
         if scanned == nil, let read = request.tagRead, app.dataset.allowsNFCWrites { scanned = read }
-        if previewReview, app.preview != nil, step == .form, let model = PreviewFixtures.models.first {
-            apply(model)
-            manufactured = "2025-06-02"
+        if previewReview, app.preview != nil, let model = PreviewFixtures.models.first {
+            details.apply(model)
+            details.manufactured = "2025-06-02"
             step = .review
         }
     }
@@ -386,67 +269,15 @@ struct RegisterBatteryView: View {
         }
     }
 
-    private func apply(_ choice: BatteryModelChoice) {
-        chosenModel = choice
-        var applied: [String] = []
-        var conflicting: [String] = []
-        func take(_ field: String, model value: String, current: inout String, isDefault: Bool) {
-            guard !value.isEmpty else { return }
-            if trimmed(current).isEmpty || isDefault || trimmed(current) == value { current = value; applied.append(field) }
-            else { conflicting.append(field) }
-        }
-        func takeNumber(_ field: String, model value: Double?, current: inout Double?) {
-            guard let value else { return }
-            if current == nil || current == value { current = value; applied.append(field) } else { conflicting.append(field) }
-        }
-        take("name", model: choice.name, current: &name, isDefault: trimmed(name) == "Battery")
-        take("model", model: choice.model, current: &modelText, isDefault: false)
-        take("chemistry", model: choice.chemistry, current: &chemistry, isDefault: false)
-        takeNumber("capacityMah", model: choice.capacityMah, current: &capacity)
-        takeNumber("voltage", model: choice.voltage, current: &voltage)
-        appliedFields = applied
-        conflicts = conflicting
-        formKey = UUID()
-    }
-
-    private func applyConflicts() {
-        guard let choice = chosenModel else { return }
-        for field in conflicts {
-            switch field {
-            case "name": name = choice.name
-            case "model": modelText = choice.model
-            case "chemistry": chemistry = choice.chemistry
-            case "capacityMah": capacity = choice.capacityMah
-            case "voltage": voltage = choice.voltage
-            default: break
-            }
-            if !appliedFields.contains(field) { appliedFields.append(field) }
-        }
-        conflicts = []
-        formKey = UUID()
-    }
-
-    private func fieldTitle(_ field: String) -> String {
-        switch field {
-        case "capacityMah": return "capacity"
-        default: return field
-        }
-    }
-
     private func submit() async {
-        guard !working, problems.isEmpty, app.user != nil, let owner, let ownerAccount = owner.accountId, let building else { return }
+        guard !working, problems.isEmpty, app.user != nil, let owner = details.owner(in: app.inventory),
+              let ownerAccount = owner.accountId, let building = app.inventory.snapshot?.buildings?.first(where: { $0.id == "J18" }),
+              let common = details.common(in: app.inventory) else { return }
         working = true
         defer { working = false }
         message = nil
         let newRequest = RequestID.make()
         let session = RequestID.make()
-        let selection = chosenModel.map {
-            ModelSelectionRef(origin: $0.origin, id: $0.id, contentHash: $0.contentHash, confirmed: true, appliedFields: appliedFields)
-        }
-        let common = RegistrationCommon(name: trimmed(name), chemistry: trimmed(chemistry), model: trimmed(modelText),
-                                        capacityMah: capacity, voltage: voltage, ownerId: owner.id, homeBuildingId: "J18",
-                                        homeRoomId: room?.id, manufacturedOn: manufactured,
-                                        firstUsedOn: firstUseMode == "date" ? firstUsed : nil, modelSelection: selection)
         let body: Data?
         let action: String
         if let scanned, app.dataset.allowsNFCWrites {
@@ -454,18 +285,18 @@ struct RegisterBatteryView: View {
             let evidence = scanned.evidence(adoptedAt: Sydney.timestamp())
             body = WriteCenter.inventoryBody(app.dataset, action: action, payload: NFCIntakePayload(
                 requestId: newRequest, sessionId: session, scannedAt: scanned.result.observedAt, common: common,
-                firstUseMode: firstUseMode, source: "native_nfc", nfcEvidence: evidence, tagId: scanned.tagId))
+                firstUseMode: details.firstUseMode, source: "native_nfc", nfcEvidence: evidence, tagId: scanned.tagId))
         } else {
             action = "operator_register"
             let bindings = DirectoryBindings(ownerVersion: owner.version, ownerAccountId: ownerAccount,
-                                             buildingVersion: building.version, roomVersion: room?.version)
+                                             buildingVersion: building.version, roomVersion: details.room(in: app.inventory)?.version)
             body = WriteCenter.inventoryBody(app.dataset, action: action, payload: OperatorRegistrationPayload(
                 requestId: newRequest, sessionId: session, source: "operator-entered-registration",
-                tagId: scanned == nil ? tagValue : nil, directoryBindings: bindings, common: common, firstUseMode: firstUseMode))
+                tagId: scanned == nil ? tagValue : nil, directoryBindings: bindings, common: common, firstUseMode: details.firstUseMode))
         }
         guard let body else { message = "Couldn't prepare the request."; messageIsError = true; return }
         requestId = newRequest
-        let outcome = await app.writes.submit(action: action, kind: "register", title: "Registering \(trimmed(name))",
+        let outcome = await app.writes.submit(action: action, kind: "register", title: "Registering \(details.name.jsTrimmed)",
                                               batteryIds: [], requestId: newRequest, body: body)
         await handle(outcome)
     }
@@ -476,6 +307,7 @@ struct RegisterBatteryView: View {
             confirmation = result
             message = nil
             step = .done
+            app.scan.rememberDetails(details)
         case .rejected(let text), .notSent(let text):
             requestId = nil
             message = text

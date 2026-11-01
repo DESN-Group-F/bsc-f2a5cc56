@@ -334,7 +334,7 @@ struct BatteryDetail: Decodable, Sendable {
 }
 
 /// A model choice from `GET /api/battery-models`: saved, derived from inventory, or the reference catalogue.
-struct BatteryModelChoice: Decodable, Identifiable, Hashable, Sendable {
+struct BatteryModelChoice: Codable, Identifiable, Hashable, Sendable {
     let id: String
     let origin: String
     let label: String

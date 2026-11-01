@@ -33,9 +33,13 @@ final class AppModel {
         UserDefaults.standard.set(newValue.rawValue, forKey: "dataset")
         inventory.reset()
         scan.reset()
+        scan.unloadIntake()
         inbox.reset()
         writes.load()
-        Task { await refreshAll() }
+        Task {
+            await refreshAll()
+            scan.loadPending()
+        }
     }
 
     /// True while a request is unresolved anywhere; switching inventory or signing out waits for it.
@@ -104,14 +108,15 @@ final class AppModel {
             scan.greet("Welcome back, \(first) · \(dataset.title)")
         }
         await refreshAll()
-        scan.loadPending()
         writes.load()
+        scan.loadPending()
     }
 
     func signOut() async {
         await service.signOut()
         inventory.reset()
         scan.reset()
+        scan.unloadIntake()
         inbox.reset()
         writes.reset()
         registration = nil

@@ -11,7 +11,7 @@ struct ScanView: View {
 
     private var scan: ScanModel { app.scan }
     private var isDone: Bool { if case .done = scan.phase { return true } else { return false } }
-    private var hasList: Bool { !scan.items.isEmpty && !isDone }
+    private var hasList: Bool { scan.hasList && !isDone }
     private var stageSpring: Animation { .spring(response: 0.55, dampingFraction: 0.82) }
 
     var body: some View {
@@ -23,6 +23,12 @@ struct ScanView: View {
             modePicker
                 .padding(.horizontal, 16)
                 .padding(.top, 14)
+            if scan.mode == .register && !isDone {
+                BatchDetailsCard()
+                    .padding(.horizontal, 16)
+                    .padding(.top, 10)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
             stage
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -30,12 +36,17 @@ struct ScanView: View {
         .coordinateSpace(.named("scan"))
         .safeAreaInset(edge: .bottom, spacing: 0) { dock.padding(.horizontal, 16).padding(.bottom, 8) }
         .animation(stageSpring, value: scan.items.count)
+        .animation(stageSpring, value: scan.intakeEntries.count)
+        .animation(stageSpring, value: scan.mode)
         .animation(stageSpring, value: scan.phase)
         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: scan.notice)
         .sheet(isPresented: $scan.showChooser) {
             ChooseBatteriesView()
                 .presentationDetents([.medium, .large])
                 .presentationBackground(.regularMaterial)
+        }
+        .sheet(isPresented: $scan.showBatchDetails) {
+            BatchDetailsSheet()
         }
     }
 
@@ -90,11 +101,11 @@ struct ScanView: View {
                 Button {
                     scan.setMode(kind)
                 } label: {
-                    HStack(spacing: 8) {
-                        Circle().fill(kind.tint).frame(width: 8, height: 8)
-                        Text(kind.title)
+                    HStack(spacing: 5) {
+                        Circle().fill(kind.tint).frame(width: 7, height: 7)
+                        Text(kind.title).lineLimit(1).minimumScaleFactor(0.8)
                     }
-                    .font(.subheadline.weight(.semibold))
+                    .font(.footnote.weight(.semibold))
                     .foregroundStyle(scan.mode == kind ? Color.primary : Color.secondary)
                     .frame(maxWidth: .infinity)
                     .frame(height: 38)
@@ -176,9 +187,9 @@ struct ScanView: View {
             } else if hasList {
                 VStack(spacing: 4) {
                     HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text("\(scan.items.count) \(scan.items.count == 1 ? "battery" : "batteries")")
+                        Text(countTitle)
                             .font(.title3.weight(.bold))
-                            .contentTransition(.numericText(value: Double(scan.items.count)))
+                            .contentTransition(.numericText(value: Double(scan.listCount)))
                         if let latest = scan.latestId {
                             Text("Added \(latest)").font(.subheadline).foregroundStyle(.secondary)
                         }
@@ -192,13 +203,9 @@ struct ScanView: View {
                 .transition(.opacity)
             } else {
                 VStack(spacing: 6) {
-                    Text(app.dataset.allowsNFCWrites ? (scan.mode == .retire ? "Scan to retire" : "Tap me to scan") : "Pick from the list")
+                    Text(emptyTitle)
                         .font(.title.weight(.bold))
-                    Text(app.dataset.allowsNFCWrites
-                         ? (scan.mode == .retire
-                            ? "Tap me, then hold your iPhone near each battery you're taking out of service. Nothing changes until you confirm."
-                            : "Hold the top of your iPhone near a battery tag. Keep going — nothing is saved until you confirm.")
-                         : "Tag scanning is Demo-only for now. Choose batteries, then confirm.")
+                    Text(emptyMessage)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -212,8 +219,11 @@ struct ScanView: View {
 
     private var alternatives: some View {
         HStack(spacing: 10) {
-            Button { scan.showChooser = true } label: {
-                Label("Choose from list", systemImage: "list.bullet")
+            Button {
+                if scan.mode == .register { app.registration = RegistrationRequest() } else { scan.showChooser = true }
+            } label: {
+                Label(scan.mode == .register ? "One battery with the form" : "Choose from list",
+                      systemImage: scan.mode == .register ? "square.and.pencil" : "list.bullet")
                     .font(.subheadline.weight(.semibold))
                     .padding(.horizontal, 16)
                     .frame(height: 40)
@@ -223,7 +233,60 @@ struct ScanView: View {
         }
     }
 
+    private var emptyTitle: String {
+        let nfc = app.dataset.allowsNFCWrites
+        switch scan.mode {
+        case .register: return nfc ? "Scan new batteries" : "Register a battery"
+        case .retire: return nfc ? "Scan to retire" : "Pick from the list"
+        default: return nfc ? "Tap me to scan" : "Pick from the list"
+        }
+    }
+
+    private var emptyMessage: String {
+        let nfc = app.dataset.allowsNFCWrites
+        switch scan.mode {
+        case .register:
+            return nfc ? "Set the batch details above, tap me, then hold your iPhone near each new tag. Nothing is registered until you confirm."
+                : "Tag scanning is Demo-only for now. Tap me to register one battery at a time with the form."
+        case .retire:
+            return nfc ? "Tap me, then hold your iPhone near each battery you're taking out of service. Nothing changes until you confirm."
+                : "Tag scanning is Demo-only for now. Choose batteries, then confirm."
+        default:
+            return nfc ? "Hold the top of your iPhone near a battery tag. Keep going — nothing is saved until you confirm."
+                : "Tag scanning is Demo-only for now. Choose batteries, then confirm."
+        }
+    }
+
+    private var countTitle: String {
+        let n = scan.listCount
+        if scan.mode == .register { return "\(n) new \(n == 1 ? "tag" : "tags")" }
+        return "\(n) \(n == 1 ? "battery" : "batteries")"
+    }
+
+    @ViewBuilder
     private var itemList: some View {
+        if scan.mode == .register {
+            ScrollView {
+                LazyVStack(spacing: 8) {
+                    ForEach(scan.intakeEntries) { entry in
+                        IntakeEntryCard(entry: entry, name: scan.intakeDetails.name.jsTrimmed) {
+                            withAnimation(stageSpring) { scan.removeIntake(entry) }
+                        }
+                        .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .opacity),
+                                                removal: .scale(scale: 0.9).combined(with: .opacity)))
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 14)
+                .padding(.bottom, 24)
+            }
+            .scrollIndicators(.hidden)
+        } else {
+            movementList
+        }
+    }
+
+    private var movementList: some View {
         ScrollView {
             LazyVStack(spacing: 8) {
                 ForEach(scan.items) { item in
@@ -425,6 +488,17 @@ struct ScanItemCard: View {
 struct ConfirmButton: View {
     @Environment(AppModel.self) private var app
 
+    private var title: String {
+        let scan = app.scan
+        switch scan.mode {
+        case .retire: return scan.retireConfirmTitle
+        case .register:
+            let n = scan.intakeDraftCount
+            return n == 0 ? "Nothing to register" : "Register \(n) \(n == 1 ? "battery" : "batteries")"
+        default: return scan.mode.confirmTitle(count: scan.items.count)
+        }
+    }
+
     var body: some View {
         let scan = app.scan
         let submitting = scan.phase == .submitting
@@ -437,8 +511,7 @@ struct ConfirmButton: View {
         } label: {
             HStack(spacing: 10) {
                 if submitting { ProgressView().tint(scan.mode.onTint) }
-                Text(submitting ? scan.mode.progressTitle
-                     : (scan.mode == .retire ? scan.retireConfirmTitle : scan.mode.confirmTitle(count: scan.items.count)))
+                Text(submitting ? scan.mode.progressTitle : title)
                     .contentTransition(.numericText(value: Double(scan.items.count)))
             }
             .font(.headline)
@@ -449,7 +522,7 @@ struct ConfirmButton: View {
         }
         .buttonStyle(.plain)
         .glassEffect(.regular.tint(scan.mode.tint).interactive(), in: .capsule)
-        .disabled(submitting)
+        .disabled(submitting || (scan.mode == .register && scan.intakeDraftCount == 0))
         .sensoryFeedback(.impact(weight: .medium), trigger: submitting) { _, new in new }
         .confirmationDialog(scan.retireConfirmTitle + "?", isPresented: Bindable(scan).confirmPermanent, titleVisibility: .visible) {
             Button(scan.retireConfirmTitle, role: .destructive) { Task { await scan.confirm() } }
@@ -528,11 +601,13 @@ struct UncertainCard: View {
     var body: some View {
         let scan = app.scan
         let entry = scan.pendingWrites.first
-        let retiring = entry == nil && scan.retireIsPending
+        let registering = entry == nil && scan.intakeHasUncertain
+        let retiring = entry == nil && !registering && scan.retireIsPending
         VStack(alignment: .leading, spacing: 10) {
             Label("Not confirmed yet", systemImage: "exclamationmark.arrow.triangle.2.circlepath")
                 .font(.headline)
-            Text(retiring ? retireDescription(scan.items.count) : description(entry))
+            Text(registering ? "Registering a scanned tag may or may not have reached the server. Trying again sends the exact same request, so it can't be registered twice. The rest of the batch waits."
+                 : (retiring ? retireDescription(scan.items.count) : description(entry)))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
@@ -541,7 +616,9 @@ struct UncertainCard: View {
             }
             Button {
                 Task {
-                    if retiring { await scan.retryRetire() } else { await scan.retryPending() }
+                    if registering { await scan.retryIntake() }
+                    else if retiring { await scan.retryRetire() }
+                    else { await scan.retryPending() }
                 }
             } label: {
                 HStack {
@@ -609,6 +686,9 @@ struct DoneSummaryView: View {
     }
 
     private var subtitle: String {
+        if summary.kind == .register {
+            return (summary.note.map { "\($0) · " } ?? "") + "Each has its own permanent ID and is in store."
+        }
         if summary.kind == .retire {
             let base = summary.verb == "scrapped"
                 ? "Out of service, still in the records. Recover from a battery's page if needed."
@@ -629,6 +709,102 @@ extension View {
             glassEffect(.regular.interactive(), in: .capsule)
         } else {
             self
+        }
+    }
+}
+
+
+/// The shared details for a batch intake, with a quick way to change them.
+struct BatchDetailsCard: View {
+    @Environment(AppModel.self) private var app
+
+    var body: some View {
+        let scan = app.scan
+        let details = scan.intakeDetails
+        let problems = scan.intakeProblems
+        Button { scan.showBatchDetails = true } label: {
+            HStack(spacing: 12) {
+                Image(systemName: problems.isEmpty ? "square.stack.3d.down.right" : "exclamationmark.circle")
+                    .font(.headline)
+                    .foregroundStyle(problems.isEmpty ? Tone.register : .orange)
+                    .frame(width: 34, height: 34)
+                    .background((problems.isEmpty ? Tone.register : Color.orange).opacity(0.13), in: .rect(cornerRadius: 10))
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(details.specSummary).font(.subheadline.weight(.semibold)).lineLimit(1)
+                    Text(problems.first ?? subtitle(details)).font(.caption).foregroundStyle(problems.isEmpty ? Color.secondary : Color.orange).lineLimit(1)
+                }
+                Spacer(minLength: 4)
+                Text("Edit").font(.footnote.weight(.semibold)).foregroundStyle(Tone.register)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .glassEffect(.regular.interactive(), in: .rect(cornerRadius: 18))
+        .disabled(scan.phase != .scanning)
+        .accessibilityLabel("Batch details: \(details.specSummary). Edit")
+    }
+
+    private func subtitle(_ details: RegistrationDetails) -> String {
+        let owner = details.owner(in: app.inventory)?.name ?? "No owner"
+        let room = details.room(in: app.inventory)?.name ?? "room not specified"
+        return "\(owner) · J18 \(room)"
+    }
+}
+
+struct IntakeEntryCard: View {
+    let entry: IntakeEntry
+    let name: String
+    var onRemove: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            BatteryGlyph(tint: Tone.register)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.body.weight(.semibold)).lineLimit(1)
+                Text("Tag \(entry.uid)").font(.monoSmall).foregroundStyle(.secondary).lineLimit(1)
+                if case let .failed(reason) = entry.status {
+                    Text(reason).font(.caption).foregroundStyle(Tone.failure).lineLimit(2)
+                }
+            }
+            Spacer(minLength: 4)
+            statusIcon
+            if entry.status != .uncertain {
+                Button(action: onRemove) {
+                    Image(systemName: "xmark").font(.footnote.weight(.bold)).foregroundStyle(.secondary)
+                        .frame(width: 34, height: 34)
+                        .contentShape(Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Remove tag \(entry.uid) from the batch")
+            }
+        }
+        .padding(.leading, 12)
+        .padding(.trailing, 6)
+        .padding(.vertical, 10)
+        .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20, style: .continuous))
+        .shadow(color: .black.opacity(0.04), radius: 2, y: 1)
+    }
+
+    private var title: String {
+        if case let .registered(id) = entry.status { return "\(id) · \(name)" }
+        return name.isEmpty ? "New battery" : name
+    }
+
+    @ViewBuilder
+    private var statusIcon: some View {
+        switch entry.status {
+        case .draft:
+            Text("New").font(.caption2.weight(.bold)).foregroundStyle(Tone.register)
+                .padding(.horizontal, 7).padding(.vertical, 3)
+                .background(Tone.register.opacity(0.12), in: .capsule)
+        case .registered:
+            Image(systemName: "checkmark.circle.fill").font(.title3).foregroundStyle(Tone.success)
+        case .failed:
+            Image(systemName: "exclamationmark.circle.fill").font(.title3).foregroundStyle(Tone.failure)
+        case .uncertain:
+            Image(systemName: "questionmark.circle.fill").font(.title3).foregroundStyle(.orange)
         }
     }
 }

@@ -1,18 +1,25 @@
-"""Render the flat 2D app icon: a solid blue ink drop with white eyes on a light ground (1024x1024, no alpha)."""
-import math, sys
+"""Render the app icons: a white ink character on brand blue (light), blue on deep navy (dark),
+and a grayscale version for iOS tinted icons. 1024x1024, no alpha.
+Usage: python3 render_icon.py <output-directory>"""
+import math, os, sys
 from PIL import Image, ImageDraw
 
 S = 1024
 SS = 4
 W = S * SS
+BLUE = (29, 99, 237)      # Tone.checkout, the brand blue
+NAVY = (14, 21, 40)
+WHITE = (255, 255, 255)
 
-def blob_points(cx, cy, r, n=8, steps=800):
+
+def blob(cx, cy, r, n=8, steps=1600):
+    """The ink character's outline: a soft, slightly asymmetric drop (same shape rules as InkView)."""
     pts = []
     for i in range(n):
         th = i / n * 2 * math.pi - math.pi / 2
-        wobble = 0.03 * math.sin(i * 1.7) + 0.02 * math.sin(i * 2.9)
-        bulge = 0.075 * max(0, math.cos(th + 0.8))
-        settle = -0.035 * max(0, math.sin(th))
+        wobble = 0.018 * math.sin(i * 1.7) + 0.012 * math.sin(i * 2.9)
+        bulge = 0.06 * max(0, math.cos(th + 0.8))
+        settle = -0.03 * max(0, math.sin(th))
         rr = r * (1 + wobble + bulge + settle)
         pts.append((cx + math.cos(th) * rr, cy + math.sin(th) * rr))
     out = []
@@ -27,19 +34,26 @@ def blob_points(cx, cy, r, n=8, steps=800):
             out.append((x, y))
     return out
 
-ground = (242, 244, 248)
-ink = (29, 99, 237)
-img = Image.new("RGB", (W, W), ground)
-d = ImageDraw.Draw(img)
-cx, cy, r = W * 0.5, W * 0.53, W * 0.31
-d.polygon(blob_points(cx, cy, r), fill=ink)
-for (a, dist, s) in [(-0.92, 1.20, 0.09), (-0.52, 1.36, 0.048), (2.35, 1.17, 0.058)]:
-    x = cx + math.cos(a) * r * dist; y = cy + math.sin(a) * r * dist; rad = r * s
-    d.ellipse([x - rad, y - rad, x + rad, y + rad], fill=ink)
-ex, ey = cx + r * 0.17, cy + r * 0.02
-for dx in (-r * 0.16, r * 0.16):
-    rx, ry = r * 0.11, r * 0.155
-    d.ellipse([ex + dx - rx, ey - ry, ex + dx + rx, ey + ry], fill=(255, 255, 255))
-img = img.resize((S, S), Image.LANCZOS)
-img.save(sys.argv[1], "PNG")
-print("ok", img.size, img.mode)
+
+def render(bg, body, eye):
+    img = Image.new("RGB", (W, W), bg)
+    d = ImageDraw.Draw(img)
+    cx, cy, r = W * 0.5, W * 0.525, W * 0.29
+    d.polygon(blob(cx, cy, r), fill=body)
+    # One droplet, upper right: enough character without clutter.
+    a, dist, s = -0.95, 1.25, 0.095
+    x, y, rad = cx + math.cos(a) * r * dist, cy + math.sin(a) * r * dist, r * s
+    d.ellipse([x - rad, y - rad, x + rad, y + rad], fill=body)
+    # Eyes, glancing slightly right, sized to stay readable at small icon sizes.
+    ex, ey = cx + r * 0.14, cy
+    for dx in (-r * 0.2, r * 0.2):
+        rx, ry = r * 0.13, r * 0.185
+        d.ellipse([ex + dx - rx, ey - ry, ex + dx + rx, ey + ry], fill=eye)
+    return img.resize((S, S), Image.LANCZOS)
+
+
+out = sys.argv[1]
+render(BLUE, WHITE, BLUE).save(os.path.join(out, "AppIcon-1024.png"), "PNG")
+render(NAVY, BLUE, WHITE).save(os.path.join(out, "AppIcon-1024-dark.png"), "PNG")
+render((0, 0, 0), (235, 235, 235), (0, 0, 0)).convert("L").convert("RGB").save(os.path.join(out, "AppIcon-1024-tinted.png"), "PNG")
+print("ok")
