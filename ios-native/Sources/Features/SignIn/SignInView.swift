@@ -9,6 +9,7 @@ struct SignInView: View {
     @State private var reaction = 0
     @State private var mood: InkMood = .idle
     @FocusState private var focus: Field?
+    @Environment(\.colorScheme) private var colorScheme
 
     enum Field { case username, password }
 
@@ -18,7 +19,7 @@ struct SignInView: View {
             Circle().fill(Tone.checkout.opacity(0.16)).frame(width: 420).blur(radius: 70).offset(y: -220).ignoresSafeArea()
             ScrollView {
                 VStack(spacing: 28) {
-                    InkView(tint: mood == .surprised ? Tone.failure : Tone.ink, mood: mood, reaction: reaction,
+                    InkView(tint: mood == .surprised ? Tone.failure : Tone.adaptiveInk(colorScheme), mood: mood, reaction: reaction,
                             gaze: focus == nil ? nil : CGPoint(x: 0, y: 0.9))
                         .frame(width: 150, height: 150)
                         .padding(.top, 70)

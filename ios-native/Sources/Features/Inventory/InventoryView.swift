@@ -58,7 +58,7 @@ struct InventoryView: View {
             }
             .navigationTitle("Inventory")
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) { DatasetMenu() }
+                ToolbarItem(placement: .topBarLeading) { DatasetMenu(glass: false) }
             }
             .searchable(text: $search, prompt: "ID, name, model or person")
             .refreshable { await app.inventory.refresh() }
@@ -141,10 +141,12 @@ struct BatteryRow: View {
                             .accessibilityLabel("Newly registered")
                     }
                 }
-                Text("\(battery.id) · \(battery.specLine)")
-                    .font(.monoSmall)
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    Text(battery.id).font(.monoSmall)
+                    Text(battery.specLine).font(.footnote)
+                }
+                .foregroundStyle(.secondary)
+                .lineLimit(1)
             }
             Spacer(minLength: 8)
             StatusPill(battery: battery, myAccountId: myAccountId)

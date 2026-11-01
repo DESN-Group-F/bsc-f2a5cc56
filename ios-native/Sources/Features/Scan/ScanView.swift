@@ -15,18 +15,17 @@ struct ScanView: View {
 
     var body: some View {
         @Bindable var scan = app.scan
-        ZStack(alignment: .top) {
-            backdrop
-            VStack(spacing: 0) {
-                header
-                    .padding(.horizontal, 16)
-                    .padding(.top, 4)
-                modePicker
-                    .padding(.horizontal, 16)
-                    .padding(.top, 14)
-                stage
-            }
+        VStack(spacing: 0) {
+            header
+                .padding(.horizontal, 16)
+                .padding(.top, 4)
+            modePicker
+                .padding(.horizontal, 16)
+                .padding(.top, 14)
+            stage
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .background { backdrop }
         .coordinateSpace(.named("scan"))
         .safeAreaInset(edge: .bottom, spacing: 0) { dock.padding(.horizontal, 16).padding(.bottom, 8) }
         .animation(stageSpring, value: scan.items.count)
@@ -42,16 +41,18 @@ struct ScanView: View {
     // MARK: Backdrop
 
     private var backdrop: some View {
-        ZStack {
-            Color(.systemGroupedBackground)
-            Circle()
-                .fill(scan.tint.opacity(0.22))
-                .frame(width: 440, height: 440)
-                .blur(radius: 70)
-                .offset(y: hasList ? -180 : (isDone ? -40 : -60))
-                .animation(.easeInOut(duration: 0.5), value: scan.tint)
-        }
-        .ignoresSafeArea()
+        Color(.systemGroupedBackground)
+            .overlay(alignment: .top) {
+                Circle()
+                    .fill(scan.tint.opacity(0.22))
+                    .frame(width: 440, height: 440)
+                    .blur(radius: 70)
+                    .offset(y: hasList ? -120 : (isDone ? 20 : 0))
+                    .animation(.easeInOut(duration: 0.5), value: scan.tint)
+                    .allowsHitTesting(false)
+            }
+            .clipped()
+            .ignoresSafeArea()
         .contentShape(Rectangle())
         .onTapGesture(coordinateSpace: .named("scan")) { location in look(at: location) }
     }
@@ -302,6 +303,8 @@ struct ListeningRings: View {
 
 struct DatasetMenu: View {
     @Environment(AppModel.self) private var app
+    /// Toolbars already supply glass; use false there.
+    var glass = true
 
     var body: some View {
         Menu {
@@ -318,9 +321,9 @@ struct DatasetMenu: View {
                 Image(systemName: "chevron.down").font(.caption.weight(.bold))
             }
             .foregroundStyle(.primary)
-            .padding(.horizontal, 14)
+            .padding(.horizontal, glass ? 14 : 4)
             .frame(height: 38)
-            .glassEffect(.regular.interactive(), in: .capsule)
+            .interactiveGlass(glass)
         }
         .accessibilityLabel("Inventory: \(app.dataset.title)")
     }
@@ -543,5 +546,17 @@ struct DoneSummaryView: View {
         if summary.kind == .checkout { return "They're now listed as with you." }
         if let room = summary.roomLabel { return "Placed back in \(room)." }
         return "They're back in store."
+    }
+}
+
+extension View {
+    /// Interactive capsule glass, or nothing when the container already provides it.
+    @ViewBuilder
+    func interactiveGlass(_ enabled: Bool) -> some View {
+        if enabled {
+            glassEffect(.regular.interactive(), in: .capsule)
+        } else {
+            self
+        }
     }
 }

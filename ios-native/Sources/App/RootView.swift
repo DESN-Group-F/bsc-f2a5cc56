@@ -64,15 +64,16 @@ struct MainTabs: View {
                 MeView()
             }
         }
-        .tint(.primary)
     }
 }
 
 struct LaunchView: View {
+    @Environment(\.colorScheme) private var colorScheme
+
     var body: some View {
         ZStack {
             Color(.systemGroupedBackground).ignoresSafeArea()
-            InkView(tint: Tone.ink)
+            InkView(tint: Tone.adaptiveInk(colorScheme))
                 .frame(width: 140, height: 140)
         }
     }

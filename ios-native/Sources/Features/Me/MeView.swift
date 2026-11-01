@@ -3,6 +3,7 @@ import SwiftUI
 struct MeView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.colorScheme) private var colorScheme
     @State private var haptics = Haptics.enabled
     @State private var confirmSignOut = false
 
@@ -14,7 +15,7 @@ struct MeView: View {
             List {
                 Section {
                     HStack(spacing: 16) {
-                        InkView(tint: Tone.ink, animated: scenePhase == .active, shadow: false)
+                        InkView(tint: Tone.adaptiveInk(colorScheme), animated: scenePhase == .active, shadow: false)
                             .frame(width: 64, height: 64)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(me?.displayName ?? "").font(.title2.weight(.bold))
@@ -43,13 +44,18 @@ struct MeView: View {
                                     Text(battery.id).font(.monoSmall).foregroundStyle(.secondary)
                                 }
                                 Spacer()
-                                Button("Return") {
+                                Button {
                                     app.scan.begin(with: battery)
                                     app.tab = .scan
+                                } label: {
+                                    Text("Return")
+                                        .font(.subheadline.weight(.bold))
+                                        .foregroundStyle(Tone.returnInk)
+                                        .padding(.horizontal, 14)
+                                        .frame(height: 32)
+                                        .background(Tone.returning, in: .capsule)
                                 }
-                                .buttonStyle(.bordered)
-                                .tint(Tone.returning)
-                                .foregroundStyle(Tone.returnInk)
+                                .buttonStyle(.borderless)
                             }
                         }
                     }

@@ -10,6 +10,10 @@ enum Tone {
     static let success = Color(red: 0.071, green: 0.600, blue: 0.373)    // #12995F
     static let failure = Color(red: 0.878, green: 0.263, blue: 0.290)    // #E0434A
     static let ink = Color(red: 0.07, green: 0.07, blue: 0.09)
+    /// Ink stays dark in light mode and lifts to a deep slate in dark mode so it never disappears.
+    static func adaptiveInk(_ scheme: ColorScheme) -> Color {
+        scheme == .dark ? Color(red: 0.27, green: 0.30, blue: 0.40) : ink
+    }
 }
 
 enum MovementKind: String, Codable, CaseIterable, Identifiable, Sendable {

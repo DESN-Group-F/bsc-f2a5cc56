@@ -53,12 +53,16 @@ struct TaskRow: View {
                 if let body = message.body, !body.isEmpty {
                     Text(body).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
                 }
-                Button("Mark done", action: onDone)
-                    .font(.subheadline.weight(.semibold))
-                    .buttonStyle(.borderedProminent)
-                    .tint(.primary)
-                    .controlSize(.small)
-                    .padding(.top, 4)
+                Button(action: onDone) {
+                    Text("Mark done")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(Color(.systemBackground))
+                        .padding(.horizontal, 14)
+                        .frame(height: 32)
+                        .background(Color.primary, in: .capsule)
+                }
+                .buttonStyle(.borderless)
+                .padding(.top, 4)
             }
         }
         .padding(.vertical, 4)
