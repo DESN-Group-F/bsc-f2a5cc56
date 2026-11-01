@@ -1,0 +1,105 @@
+# Native iOS client. All workflows are started manually.
+workflows:
+  ios-native-check:
+    name: iOS native · compile and screenshots
+    instance_type: mac_mini_m2
+    max_build_duration: 30
+    environment:
+      xcode: 26.6
+    scripts:
+      - name: Generate the Xcode project
+        script: |
+          set -euo pipefail
+          brew install xcodegen >/dev/null
+          cd ios-native
+          mkdir -p Support
+          xcodegen generate
+      - name: Compile for the simulator
+        script: |
+          cd ios-native
+          set -o pipefail
+          xcodebuild -project BatteryInventory.xcodeproj -scheme BatteryInventory -configuration Debug \
+            -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO build > build.log 2>&1 || true
+          grep -E "error:|warning: .*(deprecated|unavailable)" build.log | sort -u > diagnostics.txt || true
+          tail -5 build.log
+          echo "errors: $(grep -c 'error:' diagnostics.txt || true)"
+      - name: Capture preview screens
+        script: |
+          set -euo pipefail
+          cd ios-native
+          APP=build/Build/Products/Debug-iphonesimulator/BatteryInventory.app
+          if [ ! -d "$APP" ]; then echo "Build failed; see diagnostics.txt"; exit 1; fi
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json, sys
+          devices = json.load(sys.stdin)["devices"]
+          phones = [d for runtime, items in devices.items() if "iOS" in runtime for d in items if d["name"].startswith("iPhone")]
+          preferred = [d for d in phones if d["name"].endswith("Pro") or d["name"] in ("iPhone 17", "iPhone 16")]
+          print((preferred or phones)[-1]["udid"])')
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
+          xcrun simctl install "$UDID" "$APP"
+          mkdir -p screenshots
+          for appearance in light dark; do
+            xcrun simctl ui "$UDID" appearance "$appearance"
+            for screen in signin scan scanList scanDuplicate scanReturn scanDone scanUncertain inventory detail inbox me; do
+              xcrun simctl launch --terminate-running-process "$UDID" com.batteryinventory.mobile -uiPreview "$screen" >/dev/null
+              sleep 4
+              xcrun simctl io "$UDID" screenshot "screenshots/${appearance}-${screen}.png" >/dev/null
+            done
+          done
+          ls screenshots
+    artifacts:
+      - ios-native/build.log
+      - ios-native/diagnostics.txt
+      - ios-native/screenshots/*.png
+
+  ios-native-testflight:
+    name: iOS native · TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 45
+    integrations:
+      app_store_connect: battery-inventory
+    environment:
+      xcode: 26.6
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.batteryinventory.mobile
+    scripts:
+      - name: Generate the Xcode project
+        script: |
+          set -euo pipefail
+          brew install xcodegen >/dev/null
+          cd ios-native
+          mkdir -p Support
+          xcodegen generate
+      - name: Apply signing profiles
+        script: |
+          set -euo pipefail
+          cd ios-native
+          xcode-project use-profiles --project BatteryInventory.xcodeproj
+      - name: Build number above the last upload (14)
+        script: |
+          set -euo pipefail
+          cd ios-native
+          : "${PROJECT_BUILD_NUMBER:?A Codemagic project build number is required}"
+          NUMBER=$((PROJECT_BUILD_NUMBER + 1))
+          if (( NUMBER <= 14 )); then NUMBER=$((NUMBER + 14)); fi
+          echo "Build number: $NUMBER"
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NUMBER" Support/Info.plist
+      - name: Build the signed package
+        script: |
+          set -euo pipefail
+          cd ios-native
+          xcode-project build-ipa --project BatteryInventory.xcodeproj --scheme BatteryInventory \
+            --archive-directory build/xcarchive --ipa-directory build/ipa
+    artifacts:
+      - ios-native/build/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - ios-native/build/xcarchive/**/*.dSYM
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false
+        submit_to_app_store: false
