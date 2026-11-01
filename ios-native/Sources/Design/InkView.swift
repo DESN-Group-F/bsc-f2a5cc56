@@ -10,7 +10,7 @@ enum InkMood: Equatable, Sendable {
     case surprised   // refused tag: wide eyes, red
 }
 
-/// The app's character: a liquid ink drop with volume, light and white eyes.
+/// The app's character: a flat 2D ink drop with white eyes.
 /// Rendered every frame with Canvas; decorative motion pauses when `animated` is false.
 struct InkView: View {
     var tint: Color
@@ -100,17 +100,7 @@ private struct InkCanvas: View, Animatable {
         let center = CGPoint(x: size.width * 0.5, y: size.height * 0.53)
         let t = time
 
-        let base = color
-        let light = base.mixed(with: RGBA(r: 1, g: 1, b: 1, a: 1), 0.22).color
-        let dark = base.mixed(with: RGBA(r: 0, g: 0, b: 0, a: 1), 0.28).color
-        let mid = base.color
-
-        if shadow {
-            var s = gc
-            s.addFilter(.blur(radius: radius * 0.16))
-            let rect = CGRect(x: center.x - radius * 0.72, y: center.y + radius * 0.92, width: radius * 1.44, height: radius * 0.22)
-            s.fill(Path(ellipseIn: rect), with: .color(dark.opacity(0.32)))
-        }
+        let fill = GraphicsContext.Shading.color(color.color)
 
         let tilt: Double = mood == .puzzled ? -0.10 : 0
         if tilt != 0 {
@@ -119,40 +109,11 @@ private struct InkCanvas: View, Animatable {
             gc.translateBy(x: -center.x, y: -center.y)
         }
 
-        let body = blobPath(center: center, radius: radius, t: t)
-        let shading = GraphicsContext.Shading.linearGradient(
-            Gradient(colors: [light, mid, dark]),
-            startPoint: CGPoint(x: center.x - radius, y: center.y - radius),
-            endPoint: CGPoint(x: center.x + radius * 0.9, y: center.y + radius * 1.1))
-
-        // Droplets drift around the drop like loose ink.
+        // Flat 2D ink: one solid colour, no highlights or shading.
         for drop in droplets(center: center, radius: radius, t: t) {
-            gc.fill(Path(ellipseIn: drop), with: shading)
+            gc.fill(Path(ellipseIn: drop), with: fill)
         }
-
-        gc.fill(body, with: shading)
-
-        // Inner shadow along the rim gives the drop thickness.
-        do {
-            var rim = gc
-            rim.clip(to: body)
-            rim.addFilter(.blur(radius: radius * 0.10))
-            rim.stroke(body, with: .color(dark.opacity(0.55)), lineWidth: radius * 0.20)
-        }
-
-        // Soft sheen and a crisp specular glint, like a lit wet surface.
-        do {
-            var sheen = gc
-            sheen.clip(to: body)
-            sheen.addFilter(.blur(radius: radius * 0.09))
-            sheen.translateBy(x: center.x - radius * 0.36, y: center.y - radius * 0.48)
-            sheen.rotate(by: .radians(-0.45))
-            sheen.fill(Path(ellipseIn: CGRect(x: -radius * 0.32, y: -radius * 0.15, width: radius * 0.64, height: radius * 0.30)),
-                       with: .color(.white.opacity(0.42)))
-        }
-        gc.fill(Path(ellipseIn: CGRect(x: center.x - radius * 0.60, y: center.y - radius * 0.56,
-                                       width: radius * 0.10, height: radius * 0.10)),
-                with: .color(.white.opacity(0.75)))
+        gc.fill(blobPath(center: center, radius: radius, t: t), with: fill)
 
         drawEyes(&gc, center: center, radius: radius, t: t)
         drawMarks(&gc, center: center, radius: radius)
