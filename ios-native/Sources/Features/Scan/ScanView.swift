@@ -167,19 +167,26 @@ struct ScanView: View {
         ZStack {
             if let notice = scan.notice {
                 NoticeCapsule(notice: notice) {
-                    if notice.actionTitle == "Register" { app.tab = .inventory }
+                    if notice.actionTitle == "Register" { scan.registerUnregisteredTag() }
                 }
                 .id(notice.id)
                 .transition(.scale(scale: 0.9).combined(with: .opacity))
             } else if isDone {
                 EmptyView()
             } else if hasList {
-                HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text("\(scan.items.count) \(scan.items.count == 1 ? "battery" : "batteries")")
-                        .font(.title3.weight(.bold))
-                        .contentTransition(.numericText(value: Double(scan.items.count)))
-                    if let latest = scan.latestId {
-                        Text("Added \(latest)").font(.subheadline).foregroundStyle(.secondary)
+                VStack(spacing: 4) {
+                    HStack(alignment: .firstTextBaseline, spacing: 8) {
+                        Text("\(scan.items.count) \(scan.items.count == 1 ? "battery" : "batteries")")
+                            .font(.title3.weight(.bold))
+                            .contentTransition(.numericText(value: Double(scan.items.count)))
+                        if let latest = scan.latestId {
+                            Text("Added \(latest)").font(.subheadline).foregroundStyle(.secondary)
+                        }
+                    }
+                    if let group = scan.group {
+                        Label(group.name, systemImage: "person.3.fill")
+                            .font(.footnote.weight(.semibold))
+                            .foregroundStyle(.secondary)
                     }
                 }
                 .transition(.opacity)

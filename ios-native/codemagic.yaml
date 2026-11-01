@@ -41,9 +41,12 @@ workflows:
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
           xcrun simctl install "$UDID" "$APP"
           mkdir -p screenshots
+          LIGHT="signin scan scanList scanGroup scanUncertain inventory inventoryFiltered newArrivals detail detailConcern detailRetired register registerReview inspection retire group groupEditor filter pendingWrite inbox me"
+          DARK="scan inventory detailConcern register inspection me"
           for appearance in light dark; do
             xcrun simctl ui "$UDID" appearance "$appearance"
-            for screen in signin scan scanWelcome scanList scanDuplicate scanReturn scanDone scanUncertain inventory detail inbox me; do
+            if [ "$appearance" = light ]; then SCREENS="$LIGHT"; else SCREENS="$DARK"; fi
+            for screen in $SCREENS; do
               xcrun simctl launch --terminate-running-process "$UDID" com.batteryinventory.mobile -uiPreview "$screen" >/dev/null
               sleep 4
               xcrun simctl io "$UDID" screenshot "screenshots/${appearance}-${screen}.png" >/dev/null
@@ -56,7 +59,7 @@ workflows:
           cd ios-native/screenshots
           mkdir -p review
           for f in *.png; do
-            sips -s format jpeg -s formatOptions 72 --resampleWidth 590 "$f" --out "review/${f%.png}.jpg" >/dev/null
+            sips -s format jpeg -s formatOptions 72 --resampleWidth 520 "$f" --out "review/${f%.png}.jpg" >/dev/null
             echo "@@IMG ${f%.png}"
             base64 -i "review/${f%.png}.jpg" | tr -d '\n'
             echo

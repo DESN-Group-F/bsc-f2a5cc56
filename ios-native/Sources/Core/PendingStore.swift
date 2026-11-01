@@ -2,16 +2,25 @@ import Foundation
 
 /// A business write whose exact bytes were saved before sending.
 /// It stays here until a verified receipt or a final rejection settles it.
-struct PendingMovement: Codable, Identifiable, Sendable {
+/// Files written by earlier builds (movements only) decode with `action == nil`.
+struct PendingWrite: Codable, Identifiable, Sendable {
     let id: String            // requestId
     let accountId: String
     let dataset: Dataset
-    let kind: String          // "checkout" | "return"
+    let kind: String          // movement: "checkout" | "return"; otherwise the action's own kind
     let batteryIds: [String]
     let body: Data            // exact request body; never rebuilt
     let createdAt: Date
     var attempts: Int
+    var action: String? = nil     // nil or "movement" for scan-station movements
+    var endpoint: String? = nil   // nil means /api/inventory
+    var title: String? = nil      // shown while the outcome is unknown
+
+    var isMovement: Bool { (action ?? "movement") == "movement" }
+    var path: String { endpoint ?? "/api/inventory" }
 }
+
+typealias PendingMovement = PendingWrite
 
 /// Durable, file-protected storage for unresolved writes. One file per request.
 final class PendingStore: @unchecked Sendable {
@@ -26,7 +35,7 @@ final class PendingStore: @unchecked Sendable {
     }
 
     /// Saves and reads back. Callers must not send when this throws.
-    func save(_ pending: PendingMovement) throws {
+    func save(_ pending: PendingWrite) throws {
         lock.lock(); defer { lock.unlock() }
         let url = file(for: pending.id)
         let data = try JSONEncoder().encode(pending)
@@ -40,12 +49,12 @@ final class PendingStore: @unchecked Sendable {
         try? FileManager.default.removeItem(at: file(for: id))
     }
 
-    func all(accountId: String, dataset: Dataset) -> [PendingMovement] {
+    func all(accountId: String, dataset: Dataset) -> [PendingWrite] {
         lock.lock(); defer { lock.unlock() }
         let urls = (try? FileManager.default.contentsOfDirectory(at: directory, includingPropertiesForKeys: nil)) ?? []
         return urls.compactMap { url in
             guard let data = try? Data(contentsOf: url) else { return nil }
-            return try? JSONDecoder().decode(PendingMovement.self, from: data)
+            return try? JSONDecoder().decode(PendingWrite.self, from: data)
         }
         .filter { $0.accountId == accountId && $0.dataset == dataset }
         .sorted { $0.createdAt < $1.createdAt }
@@ -77,6 +86,24 @@ enum Sydney {
     }
 
     static func timestamp(_ date: Date = Date()) -> String { iso.string(from: date) }
+
+    /// Sydney calendar date "YYYY-MM-DD" of an instant.
+    static func ymd(_ date: Date = Date()) -> String { ymdFormatter.string(from: date) }
+    static func dateFromYMD(_ ymd: String?) -> Date? { ymd.flatMap { ymdFormatter.date(from: $0) } }
+    private static let ymdFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        f.calendar = Calendar(identifier: .gregorian)
+        f.timeZone = zone
+        f.dateFormat = "yyyy-MM-dd"
+        return f
+    }()
+
+    /// "3 Mar 2025" for a calendar date.
+    static func longDay(_ ymd: String?) -> String {
+        guard let d = dateFromYMD(ymd) else { return "—" }
+        return dayMonthYear.string(from: d)
+    }
 
     private static func formatter(_ format: String) -> DateFormatter {
         let f = DateFormatter()

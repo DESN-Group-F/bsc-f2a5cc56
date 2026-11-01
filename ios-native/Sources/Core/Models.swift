@@ -35,9 +35,20 @@ struct SignInResponse: Decodable {
     let user: StaffUser
 }
 
+/// The latest inspection (or concern) summarised in the snapshot.
+struct InspectionBrief: Codable, Equatable, Sendable {
+    let id: String
+    let kind: String
+    let outcome: String?
+    let performedAt: String
+    let inspectorName: String?
+}
+
 struct InspectionPreview: Codable, Equatable, Sendable {
     let validRecords: Int?
     let concernRecords: Int?
+    let latest: InspectionBrief?
+    let latestConcern: InspectionBrief?
 }
 
 struct BatteryRecord: Codable, Identifiable, Equatable, Hashable, Sendable {
@@ -50,6 +61,9 @@ struct BatteryRecord: Codable, Identifiable, Equatable, Hashable, Sendable {
     let capacityMah: Double?
     let voltage: Double?
     let lifecycleStatus: String?
+    let lifecycleAt: String?
+    let lifecycleReason: String?
+    let lifecycleDestination: String?
     let manufacturedOn: String?
     let firstUsedOn: String?
     let registeredAt: String?
@@ -63,29 +77,40 @@ struct BatteryRecord: Codable, Identifiable, Equatable, Hashable, Sendable {
     let homeRoomNumber: String?
     let homeRoomIsPlaceholder: Bool?
     let loanId: String?
+    let borrowerId: String?
     let borrowerName: String?
     let borrowerAccountId: String?
+    let borrowerKind: String?
     let checkedOutAt: String?
     let lastCheckedOutAt: String?
     let observedRoom: String?
+    let observedRoomId: String?
+    let observedBuilding: String?
+    let observationRoomSnapshot: String?
     let observedAt: String?
+    let observationSource: String?
+    let chargedAt: String?
+    let chargeDurationMinutes: Double?
+    let inspectionPreview: InspectionPreview?
 
     static func == (lhs: BatteryRecord, rhs: BatteryRecord) -> Bool {
         lhs.id == rhs.id && lhs.version == rhs.version && lhs.loanId == rhs.loanId && lhs.lifecycleStatus == rhs.lifecycleStatus
+            && lhs.inspectionPreview == rhs.inspectionPreview && lhs.chargedAt == rhs.chargedAt && lhs.observedAt == rhs.observedAt
     }
     func hash(into hasher: inout Hasher) { hasher.combine(id) }
 
     var isActive: Bool { (lifecycleStatus ?? "active") == "active" }
     var isInUse: Bool { isActive && loanId != nil }
     var isInStore: Bool { isActive && loanId == nil }
+    var isScrapped: Bool { lifecycleStatus == "scrapped" }
 
-    /// "LiPo · 3S · 2200 mAh" style summary built only from recorded values.
+    /// "LiPo · 3S · 2200 mAh · 11.1 V" built only from recorded values.
     var specLine: String {
         var parts: [String] = []
         if let c = chemistry, !c.isEmpty { parts.append(c) }
         if let m = model, !m.isEmpty, m != chemistry { parts.append(m) }
-        if let cap = capacityMah { parts.append("\(Int(cap.rounded())) mAh") }
-        if let v = voltage { parts.append(String(format: v.rounded() == v ? "%.0f V" : "%.1f V", v)) }
+        if let cap = capacityMah { parts.append(Format.capacity(cap)) }
+        if let v = voltage { parts.append(Format.voltage(v)) }
         return parts.isEmpty ? "Specs not recorded" : parts.joined(separator: " · ")
     }
 
@@ -105,9 +130,37 @@ struct BatteryRecord: Codable, Identifiable, Equatable, Hashable, Sendable {
         default: return loanId == nil ? "In store" : "In use"
         }
     }
+
+    /// The most recent valid inspection found a concern that no later inspection superseded.
+    var hasOpenConcern: Bool {
+        guard let concern = inspectionPreview?.latestConcern else { return false }
+        return inspectionPreview?.latest?.id == concern.id
+    }
 }
 
-struct Person: Codable, Identifiable, Sendable {
+/// Number formatting shared by lists, detail and forms.
+enum Format {
+    static func capacity(_ mah: Double) -> String { "\(number(mah)) mAh" }
+    static func voltage(_ v: Double) -> String { "\(number(v)) V" }
+    static func number(_ value: Double) -> String {
+        if value.rounded() == value && abs(value) < 1e12 { return String(Int(value)) }
+        var text = String(format: "%.3f", value)
+        while text.hasSuffix("0") { text.removeLast() }
+        if text.hasSuffix(".") { text.removeLast() }
+        return text
+    }
+    /// "3 h 20 min", "45 min", "2 days 4 h".
+    static func duration(seconds: Double) -> String {
+        let minutes = Int((seconds / 60).rounded())
+        if minutes < 60 { return "\(max(minutes, 0)) min" }
+        let hours = minutes / 60
+        if hours < 48 { return minutes % 60 == 0 ? "\(hours) h" : "\(hours) h \(minutes % 60) min" }
+        let days = hours / 24
+        return hours % 24 == 0 ? "\(days) days" : "\(days) days \(hours % 24) h"
+    }
+}
+
+struct Person: Codable, Identifiable, Hashable, Sendable {
     let id: String
     let version: Int
     let name: String
@@ -146,12 +199,16 @@ struct StaffDirectoryEntry: Codable, Identifiable, Sendable {
     let active: Bool?
 }
 
-struct TeachingGroup: Codable, Identifiable, Sendable {
+struct TeachingGroup: Codable, Identifiable, Hashable, Sendable {
     let id: String
     let name: String
     let notes: String?
     let batteryIds: [String]
     let version: Int
+    let ownerAccountId: String?
+    let state: String?
+    let createdAt: String?
+    let updatedAt: String?
 }
 
 struct NewArrivalItem: Codable, Sendable {
@@ -169,9 +226,16 @@ struct NewArrivals: Codable, Sendable {
     let items: [NewArrivalItem]?
 }
 
+struct InventoryCapabilities: Codable, Sendable {
+    let operatorRegistration: Int?
+    let demoIntake: Int?
+    let batteryModels: Int?
+}
+
 struct InventorySnapshot: Codable, Sendable {
     let dataset: Dataset
     let user: StaffUser
+    let capabilities: InventoryCapabilities?
     let batteries: [BatteryRecord]
     let people: [Person]?
     let buildings: [Building]?
@@ -192,11 +256,13 @@ struct AuditEvent: Decodable, Identifiable, Sendable {
 struct LoanRecord: Decodable, Identifiable, Sendable {
     let id: String
     let borrowerName: String?
+    let borrowerAccountId: String?
     let checkedOutAt: String
     let returnedAt: String?
     let cancelledAt: String?
     let checkoutActorName: String?
     let returnActorName: String?
+    let correctionReason: String?
 }
 
 struct InspectionRecord: Decodable, Identifiable, Sendable {
@@ -204,21 +270,98 @@ struct InspectionRecord: Decodable, Identifiable, Sendable {
     let kind: String
     let outcome: String
     let performedAt: String
+    let recordedAt: String?
     let inspectorName: String?
+    let method: String?
+    let notes: String?
+    let reference: String?
+    let capacityMah: Double?
     let voidedAt: String?
+    let voidReason: String?
 }
 
 struct UsageSummary: Decodable, Sendable {
     let totalCheckouts: Int?
-    let totalCheckedOutSeconds: Int?
+    let completedCheckouts: Int?
+    let activeCheckouts: Int?
+    /// Fractional seconds from the server; null when a recorded duration is invalid.
+    let totalCheckedOutSeconds: Double?
+}
+
+struct InspectionSummary: Decodable, Sendable {
+    let totalRecords: Int?
+    let validRecords: Int?
+}
+
+struct RegistrationInfo: Decodable, Sendable {
+    let at: String
+    let actorName: String?
+}
+
+struct MovementSummary: Decodable, Sendable {
+    let activeLoan: LoanRecord?
+    let latestReturn: LoanRecord?
+    let registration: RegistrationInfo?
+}
+
+struct ChargeRecord: Decodable, Identifiable, Sendable {
+    let id: String
+    let completedAt: String
+    let percentage: Double?
+    let durationMinutes: Double?
+    let actorName: String?
+}
+
+struct ObservationRecord: Decodable, Identifiable, Sendable {
+    let id: String
+    let roomName: String?
+    let roomBuilding: String?
+    let roomSnapshot: String?
+    let observedAt: String
+    let source: String?
 }
 
 struct BatteryDetail: Decodable, Sendable {
     let battery: BatteryRecord
     let usageSummary: UsageSummary?
     let inspections: [InspectionRecord]?
+    let inspectionSummary: InspectionSummary?
+    let movementSummary: MovementSummary?
     let loans: [LoanRecord]?
+    let charges: [ChargeRecord]?
+    let observations: [ObservationRecord]?
     let events: [AuditEvent]?
+}
+
+/// A model choice from `GET /api/battery-models`: saved, derived from inventory, or the reference catalogue.
+struct BatteryModelChoice: Decodable, Identifiable, Hashable, Sendable {
+    let id: String
+    let origin: String
+    let label: String
+    let brand: String?
+    let variant: String?
+    let name: String
+    let model: String
+    let chemistry: String
+    let capacityMah: Double?
+    let voltage: Double?
+    let capacityBasis: String?
+    let verificationStatus: String?
+    let notes: String?
+    let warnings: [String]?
+    let contentHash: String
+
+    var originTitle: String {
+        switch origin {
+        case "saved": return "Saved model"
+        case "inventory": return "Already in inventory"
+        default: return "Reference"
+        }
+    }
+}
+
+struct BatteryModelsResponse: Decodable, Sendable {
+    let models: [BatteryModelChoice]
 }
 
 struct TaskCycle: Decodable, Sendable {
@@ -262,6 +405,17 @@ struct MovementReceipt: Codable, Sendable {
     let requestId: String
     let borrowerAccountId: String?
     let replayed: Bool?
+    let teachingGroup: GroupEvidence?
+}
+
+/// Teaching group evidence attached to a group-scoped operation's receipt.
+struct GroupEvidence: Codable, Sendable {
+    let id: String
+    let version: Int
+    let name: String
+    let ownerAccountId: String
+    let operationId: String
+    let batteryIds: [String]
 }
 
 struct ReadReceipt: Decodable, Sendable {

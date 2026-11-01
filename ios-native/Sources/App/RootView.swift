@@ -20,13 +20,17 @@ struct RootView: View {
 
     var body: some View {
         ZStack {
-            switch app.session {
-            case .checking:
-                LaunchView().transition(.opacity)
-            case .signedOut:
-                SignInView().transition(.opacity)
-            case .signedIn:
-                MainTabs().transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 1.03)), removal: .opacity))
+            if let screen = app.preview, screen.isStandalone {
+                PreviewStandalone(screen: screen)
+            } else {
+                switch app.session {
+                case .checking:
+                    LaunchView().transition(.opacity)
+                case .signedOut:
+                    SignInView().transition(.opacity)
+                case .signedIn:
+                    MainTabs().transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 1.03)), removal: .opacity))
+                }
             }
         }
         .environment(\.heroNamespace, hero)
@@ -39,7 +43,8 @@ struct RootView: View {
             guard scenePhase == .active else { return }
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(20))
-                guard !Task.isCancelled, app.scan.phase == .scanning, !app.scan.readerActive else { continue }
+                app.inventory.clockTick += 1
+                guard !Task.isCancelled, app.scan.phase == .scanning, !app.scan.readerActive, app.registration == nil else { continue }
                 await app.inventory.refresh()
             }
         }
@@ -66,6 +71,9 @@ struct MainTabs: View {
                 MeView()
             }
         }
+        .sheet(item: $app.registration) { request in
+            RegisterBatteryView(request: request)
+        }
     }
 }
 
@@ -86,6 +94,32 @@ struct LaunchView: View {
         }
         .onAppear {
             withAnimation(.spring(response: 0.5, dampingFraction: 0.62)) { dropped = true }
+        }
+    }
+}
+
+/// Write screens shown on their own for simulator screenshots (preview mode only).
+struct PreviewStandalone: View {
+    @Environment(AppModel.self) private var app
+    let screen: PreviewScreen
+    @State private var filter = InventoryFilter()
+
+    var body: some View {
+        switch screen {
+        case .register:
+            RegisterBatteryView(request: RegistrationRequest())
+        case .registerReview:
+            RegisterBatteryView(request: RegistrationRequest(), previewReview: true)
+        case .inspection:
+            if let battery = app.inventory.battery(id: "BAT-00000012") { InspectionSheet(battery: battery) }
+        case .retire:
+            RetireSheet(batteryIds: ["BAT-00000009", "BAT-00000010"])
+        case .groupEditor:
+            GroupEditorSheet(group: app.inventory.groups.first)
+        case .filter:
+            InventoryFilterSheet(filter: $filter)
+        default:
+            EmptyView()
         }
     }
 }

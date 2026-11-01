@@ -21,23 +21,30 @@ final class AppModel {
     var tab: AppTab = .scan
     /// A battery the Inventory tab should open next (deep link from other tabs or previews).
     var pendingDetailId: String?
+    /// Registration sheet request, from Inventory or an unregistered tag on the scan station.
+    var registration: RegistrationRequest?
     private(set) var dataset: Dataset = .demo
 
     /// Switching inventory clears what was loaded for the previous one.
     func select(_ newValue: Dataset) {
         guard newValue != dataset else { return }
-        guard !scan.hasUnsettledWork else { return }
+        guard !scan.hasUnsettledWork, !writes.hasPending else { return }
         dataset = newValue
         UserDefaults.standard.set(newValue.rawValue, forKey: "dataset")
         inventory.reset()
         scan.reset()
         inbox.reset()
+        writes.load()
         Task { await refreshAll() }
     }
+
+    /// True while a request is unresolved anywhere; switching inventory or signing out waits for it.
+    var hasUnsettledWork: Bool { scan.hasUnsettledWork || writes.hasPending }
 
     let inventory: InventoryModel
     let scan: ScanModel
     let inbox: InboxModel
+    let writes: WriteCenter
 
     var user: StaffUser? {
         if case let .signedIn(user) = session { return user }
@@ -50,10 +57,12 @@ final class AppModel {
         inventory = InventoryModel()
         scan = ScanModel()
         inbox = InboxModel()
+        writes = WriteCenter()
         if let raw = UserDefaults.standard.string(forKey: "dataset"), let saved = Dataset(rawValue: raw) { dataset = saved }
         inventory.app = self
         scan.app = self
         inbox.app = self
+        writes.app = self
         if let preview { PreviewFixtures.apply(preview, to: self) }
     }
 
@@ -96,6 +105,7 @@ final class AppModel {
         }
         await refreshAll()
         scan.loadPending()
+        writes.load()
     }
 
     func signOut() async {
@@ -103,6 +113,8 @@ final class AppModel {
         inventory.reset()
         scan.reset()
         inbox.reset()
+        writes.reset()
+        registration = nil
         session = .signedOut
         tab = .scan
     }
@@ -140,14 +152,22 @@ enum StatusFilter: String, CaseIterable, Identifiable {
 @Observable
 final class InventoryModel {
     weak var app: AppModel?
-    var snapshot: InventorySnapshot?
+    var snapshot: InventorySnapshot? {
+        didSet { receivedUptime = ProcessInfo.processInfo.systemUptime }
+    }
     var loading = false
     var lastError: String?
     var lastRefreshed: Date?
     private var demoInitialized = false
+    private var receivedUptime: TimeInterval = 0
+    /// Ticks so 48-hour labels expire without a refresh.
+    var clockTick = 0
 
     var batteries: [BatteryRecord] { snapshot?.batteries ?? [] }
     var active: [BatteryRecord] { batteries.filter(\.isActive) }
+    var groups: [TeachingGroup] {
+        (snapshot?.teachingGroups ?? []).filter { ($0.state ?? "active") == "active" && ($0.ownerAccountId == nil || $0.ownerAccountId == app?.user?.id) }
+    }
 
     func reset() {
         snapshot = nil
@@ -187,33 +207,66 @@ final class InventoryModel {
         active.filter { $0.ownerAccountId == accountId }
     }
 
-    var newArrivalIds: Set<String> { Set((snapshot?.newArrivals?.items ?? []).map(\.batteryId)) }
-    var unreadArrivals: Int { snapshot?.newArrivals?.unreadCount ?? 0 }
+    // MARK: New arrivals
+
+    /// Arrivals still inside the 48-hour window, judged by server time advanced with a monotonic clock.
+    var recentArrivals: [NewArrivalItem] {
+        _ = clockTick
+        guard let arrivals = snapshot?.newArrivals, let serverNow = Sydney.date(arrivals.serverNow) else { return [] }
+        let now = serverNow.addingTimeInterval(max(0, ProcessInfo.processInfo.systemUptime - receivedUptime))
+        let activeIds = Set(active.map(\.id))
+        return (arrivals.items ?? []).filter { item in
+            guard let registered = Sydney.date(item.registeredAt), activeIds.contains(item.batteryId) else { return false }
+            return registered <= now && now.timeIntervalSince(registered) < 48 * 3600
+        }
+    }
+    var newArrivalIds: Set<String> { Set(recentArrivals.map(\.batteryId)) }
+    var unreadArrivalIds: Set<String> { Set(recentArrivals.filter(\.isUnread).map(\.batteryId)) }
+    var unreadArrivals: Int { recentArrivals.filter(\.isUnread).count }
+
+    /// Explicit user action only: acknowledges the cursor of the snapshot on screen, never "latest".
+    func acknowledgeArrivals() async {
+        guard let app, app.preview == nil, let cursor = snapshot?.newArrivals?.throughSequence,
+              cursor > (snapshot?.newArrivals?.acknowledgedThroughSequence ?? 0) else { return }
+        do {
+            try await app.service.acknowledgeArrivals(app.dataset, throughSequence: cursor)
+            await refresh()
+        } catch {
+            app.handle(error)
+        }
+    }
+
+    // MARK: Queries
+
+    func filtered(status: StatusFilter, search: String, filter: InventoryFilter, accountId: String?) -> [BatteryRecord] {
+        InventoryQuery.apply(batteries, filter: filter, status: status, search: search, viewer: accountId,
+                             groups: groups, arrivalIds: newArrivalIds)
+    }
+
+    /// Simple active-only query used by pickers.
+    func filtered(status: StatusFilter, search: String, onlyMine: Bool, onlyNew: Bool, accountId: String?) -> [BatteryRecord] {
+        var filter = InventoryFilter()
+        filter.newArrivalsOnly = onlyNew
+        let list = filtered(status: status, search: search, filter: filter, accountId: accountId)
+        guard onlyMine else { return list }
+        return list.filter { ($0.borrowerAccountId == accountId && $0.isInUse) || $0.ownerAccountId == accountId }
+    }
 
     func rooms(eligibleFor dataset: Dataset) -> [Room] {
         (snapshot?.rooms ?? []).filter { $0.eligibleForReturn(in: dataset) }
     }
 
-    func filtered(status: StatusFilter, search: String, onlyMine: Bool, onlyNew: Bool, accountId: String?) -> [BatteryRecord] {
-        let query = search.trimmingCharacters(in: .whitespaces).lowercased()
-        let arrivals = newArrivalIds
-        return active.filter { b in
-            switch status {
-            case .all: break
-            case .inStore: if !b.isInStore { return false }
-            case .inUse: if !b.isInUse { return false }
-            }
-            if onlyMine && !(b.borrowerAccountId == accountId && b.isInUse) && b.ownerAccountId != accountId { return false }
-            if onlyNew && !arrivals.contains(b.id) { return false }
-            guard !query.isEmpty else { return true }
-            let fields = [b.id, b.name, b.chemistry, b.model, b.tagId, b.ownerName, b.borrowerName, b.homeBuildingId, b.homeRoomName, b.homeRoomNumber]
-            return fields.contains { ($0 ?? "").lowercased().contains(query) }
-        }
-        .sorted { a, b in
-            let na = arrivals.contains(a.id), nb = arrivals.contains(b.id)
-            if na != nb { return na }
-            return a.id.compare(b.id, options: .numeric) == .orderedDescending
-        }
+    /// Rooms a new battery's registered home may use: selectable J18 rooms.
+    var registrationRooms: [Room] {
+        (snapshot?.rooms ?? []).filter { $0.buildingId == "J18" && ($0.selectable ?? false) }
+    }
+
+    /// Active staff people who can be responsible owners.
+    var staffOwners: [Person] {
+        let activeAccounts = Set((snapshot?.staffDirectory ?? []).filter { $0.active ?? true }.map(\.id))
+        return (snapshot?.people ?? [])
+            .filter { $0.role == "staff" && $0.accountId != nil && activeAccounts.contains($0.accountId!) }
+            .sorted { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
 }
 

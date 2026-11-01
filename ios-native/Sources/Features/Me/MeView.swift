@@ -35,6 +35,14 @@ struct MeView: View {
                     .listRowInsets(EdgeInsets())
                 }
 
+                if app.writes.hasPending {
+                    Section {
+                        PendingWriteBanner()
+                            .listRowBackground(Color.clear)
+                            .listRowInsets(EdgeInsets())
+                    }
+                }
+
                 if !withMe.isEmpty {
                     Section("With me") {
                         ForEach(withMe) { battery in
@@ -61,6 +69,19 @@ struct MeView: View {
                     }
                 }
 
+                Section("Quick actions") {
+                    Button { app.registration = RegistrationRequest() } label: {
+                        Label("Register a new battery", systemImage: "plus.circle")
+                    }
+                    let concerns = app.inventory.active.filter(\.hasOpenConcern)
+                    if !concerns.isEmpty {
+                        Button { app.pendingDetailId = concerns[0].id; app.tab = .inventory } label: {
+                            Label("\(concerns.count) \(concerns.count == 1 ? "battery has" : "batteries have") an inspection concern", systemImage: "exclamationmark.triangle")
+                                .foregroundStyle(Tone.failure)
+                        }
+                    }
+                }
+
                 Section("Settings") {
                     Picker("Inventory", selection: Binding(get: { app.dataset }, set: { app.select($0) })) {
                         ForEach(Dataset.allCases) { Text($0.title).tag($0) }
@@ -81,7 +102,7 @@ struct MeView: View {
             .confirmationDialog("Sign out of Battery Inventory?", isPresented: $confirmSignOut, titleVisibility: .visible) {
                 Button("Sign out", role: .destructive) { Task { await app.signOut() } }
             } message: {
-                if app.scan.hasUnsettledWork {
+                if app.hasUnsettledWork {
                     Text("An unconfirmed request stays on this iPhone and can be retried after you sign in again.")
                 }
             }

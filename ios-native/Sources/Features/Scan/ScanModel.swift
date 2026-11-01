@@ -61,6 +61,10 @@ final class ScanModel {
     private(set) var latestId: String?
     private(set) var readerActive = false
     private(set) var pendingWrites: [PendingMovement] = []
+    /// Set when the list was started from a teaching group; the movement then carries the group reference.
+    private(set) var group: TeachingGroup?
+    /// The last tag that wasn't registered, so "Register" can carry its evidence (Demo only).
+    private(set) var unregisteredRead: TagRead?
     var returnRoomId: String?
     var showChooser = false
     var submissionError: String?
@@ -100,6 +104,8 @@ final class ScanModel {
         latestId = nil
         returnRoomId = nil
         submissionError = nil
+        group = nil
+        unregisteredRead = nil
         if phase != .uncertain { phase = .scanning }
     }
 
@@ -115,6 +121,7 @@ final class ScanModel {
         source = nil
         sessionId = RequestID.make()
         latestId = nil
+        group = nil
         mood = .idle
         phase = .scanning
     }
@@ -177,6 +184,7 @@ final class ScanModel {
             battery = app.inventory.battery(tagId: read.tagId)
         }
         guard let battery else {
+            unregisteredRead = read
             refuse("This tag isn't registered", action: "Register")
             return
         }
@@ -201,6 +209,31 @@ final class ScanModel {
         reset()
         mode = battery.isInUse ? .return : .checkout
         add(battery, tagId: battery.tagId, evidence: nil, from: .selection)
+    }
+
+    /// Starts a fresh list from a teaching group's members. The confirm carries the group reference,
+    /// so the server checks membership and records the group in its history.
+    func begin(group: TeachingGroup, batteries: [BatteryRecord], mode newMode: MovementKind) {
+        guard pendingWrites.isEmpty, phase != .submitting, !batteries.isEmpty else { return }
+        reset()
+        mode = newMode
+        for battery in batteries { add(battery, tagId: battery.tagId, evidence: nil, from: .selection) }
+        self.group = group
+        show(.init(kind: .info, text: "\(group.name) · \(items.count) \(items.count == 1 ? "battery" : "batteries")"))
+    }
+
+    /// Starts a fresh list from batteries chosen in Inventory.
+    func begin(list batteries: [BatteryRecord], mode newMode: MovementKind) {
+        guard pendingWrites.isEmpty, phase != .submitting, !batteries.isEmpty else { return }
+        reset()
+        mode = newMode
+        for battery in batteries { add(battery, tagId: battery.tagId, evidence: nil, from: .selection) }
+    }
+
+    /// Opens registration for the tag that just failed lookup.
+    func registerUnregisteredTag() {
+        guard let app else { return }
+        app.registration = RegistrationRequest(tagRead: app.dataset.allowsNFCWrites ? unregisteredRead : nil)
     }
 
     private func add(_ battery: BatteryRecord, tagId: String?, evidence: NFCEvidence?, from newSource: Source) {
@@ -231,6 +264,10 @@ final class ScanModel {
             refuse("\(battery.id) is already in store")
             return
         }
+        if let current = group, !current.batteryIds.contains(battery.id) {
+            group = nil
+            show(.init(kind: .info, text: "\(battery.id) isn't in \(current.name), so this is now an ordinary list"))
+        }
         items.insert(Item(battery: battery, tagId: tagId, evidence: evidence), at: 0)
         source = newSource
         latestId = battery.id
@@ -246,6 +283,7 @@ final class ScanModel {
             source = nil
             sessionId = RequestID.make()
             latestId = nil
+            group = nil
         }
         Haptics.tap()
     }
@@ -257,6 +295,7 @@ final class ScanModel {
         source = nil
         sessionId = RequestID.make()
         latestId = nil
+        group = nil
     }
 
     private func holderPhrase(_ battery: BatteryRecord, me: String?) -> String {
@@ -295,6 +334,10 @@ final class ScanModel {
 
     func confirm() async {
         guard let app, let user = app.user, phase == .scanning, !items.isEmpty, pendingWrites.isEmpty else { return }
+        guard !app.writes.hasPending else {
+            submissionError = "Another request is waiting for confirmation. Try it again first (Inventory or Me)."
+            return
+        }
         reader.stop()
         submissionError = nil
         let requestId = RequestID.make()
@@ -315,9 +358,12 @@ final class ScanModel {
            let match = app.inventory.rooms(eligibleFor: app.dataset).first(where: { $0.id == roomId }) {
             room = RoomReference(roomId: match.id, version: match.version)
         }
-        let payload = MovementPayload(kind: mode.rawValue, requestId: requestId, batteryIds: ids, expectedLoans: loans,
+        var payload = MovementPayload(kind: mode.rawValue, requestId: requestId, batteryIds: ids, expectedLoans: loans,
                                       scan: ScanContext(sessionId: sessionId, source: usedSource.rawValue, bindings: bindings),
                                       returnRoom: room)
+        if let group, ids.allSatisfy({ group.batteryIds.contains($0) }) {
+            payload.teachingGroup = GroupReference(id: group.id, version: group.version)
+        }
         let body: Data
         do {
             body = try JSONEncoder().encode(InventoryWrite(dataset: app.dataset, action: "movement", payload: payload))
@@ -345,7 +391,7 @@ final class ScanModel {
 
     func loadPending() {
         guard let app, let user = app.user else { return }
-        pendingWrites = app.pending.all(accountId: user.id, dataset: app.dataset)
+        pendingWrites = app.pending.all(accountId: user.id, dataset: app.dataset).filter(\.isMovement)
         if !pendingWrites.isEmpty { phase = .uncertain }
     }
 
@@ -361,7 +407,8 @@ final class ScanModel {
                   receipt.kind == entry.kind,
                   Set(receipt.batteryIds) == Set(entry.batteryIds),
                   receipt.count == entry.batteryIds.count,
-                  entry.kind != "checkout" || receipt.borrowerAccountId == entry.accountId else {
+                  entry.kind != "checkout" || receipt.borrowerAccountId == entry.accountId,
+                  Self.groupEvidenceMatches(receipt.teachingGroup, entry: entry) else {
                 markUncertain("The server's receipt didn't match this request. It's kept so you can check it.")
                 return
             }
@@ -388,6 +435,17 @@ final class ScanModel {
         } catch {
             markUncertain("Couldn't confirm with the server.")
         }
+    }
+
+    private struct GroupProbe: Decodable { let teachingGroup: GroupReference? }
+
+    /// A group-scoped movement must come back with matching group evidence; an ordinary one must not have any.
+    static func groupEvidenceMatches(_ evidence: GroupEvidence?, entry: PendingMovement) -> Bool {
+        let sent = (try? JSONDecoder().decode(WriteEnvelope<GroupProbe>.self, from: entry.body))?.payload.teachingGroup
+        guard let sent else { return evidence == nil }
+        guard let evidence else { return false }
+        return evidence.id == sent.id && evidence.version == sent.version && evidence.ownerAccountId == entry.accountId
+            && evidence.operationId == entry.id && evidence.batteryIds.sorted() == entry.batteryIds.sorted()
     }
 
     private func markUncertain(_ message: String) {

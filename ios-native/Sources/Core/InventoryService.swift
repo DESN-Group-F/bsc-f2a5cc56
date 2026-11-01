@@ -76,6 +76,11 @@ struct RoomReference: Encodable, Sendable {
     let version: Int
 }
 
+struct GroupReference: Codable, Equatable, Sendable {
+    let id: String
+    let version: Int
+}
+
 struct MovementPayload: Encodable, Sendable {
     let kind: String
     let requestId: String
@@ -83,6 +88,7 @@ struct MovementPayload: Encodable, Sendable {
     let expectedLoans: [ExpectedLoan]?
     let scan: ScanContext?
     let returnRoom: RoomReference?
+    var teachingGroup: GroupReference? = nil
 }
 
 struct InventoryWrite<Payload: Encodable>: Encodable {
@@ -149,6 +155,18 @@ struct InventoryService: Sendable {
         let data = try await client.post("/api/task-plans", json: Body(dataset: dataset, requestId: requestId,
                                                                         payload: Payload(cycleId: cycleId, expectedVersion: expectedVersion, notes: notes)))
         return try data.decoded(OKEnvelope<TaskCompletionReceipt>.self).result
+    }
+
+    func models(_ dataset: Dataset) async throws -> [BatteryModelChoice] {
+        try await client.get("/api/battery-models", query: [URLQueryItem(name: "dataset", value: dataset.rawValue)])
+            .decoded(BatteryModelsResponse.self).models
+    }
+
+    /// Marks arrivals read up to the cursor the user actually saw. Idempotent; the server keeps the maximum.
+    func acknowledgeArrivals(_ dataset: Dataset, throughSequence: Int) async throws {
+        struct Cursor: Encodable { let throughSequence: Int }
+        _ = try await client.post("/api/inventory", json: InventoryWrite(dataset: dataset, action: "new_arrivals_ack",
+                                                                         payload: Cursor(throughSequence: throughSequence)))
     }
 
     /// Sends exact, previously persisted bytes. Retries must reuse them unchanged.
