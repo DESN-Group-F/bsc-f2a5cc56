@@ -50,6 +50,18 @@ workflows:
             done
           done
           ls screenshots
+      - name: Print preview screens for review
+        script: |
+          set -euo pipefail
+          cd ios-native/screenshots
+          mkdir -p review
+          for f in *.png; do
+            sips -s format jpeg -s formatOptions 72 --resampleWidth 590 "$f" --out "review/${f%.png}.jpg" >/dev/null
+            echo "@@IMG ${f%.png}"
+            base64 -i "review/${f%.png}.jpg" | tr -d '\n'
+            echo
+          done
+          echo "@@END"
     artifacts:
       - ios-native/build.log
       - ios-native/diagnostics.txt
