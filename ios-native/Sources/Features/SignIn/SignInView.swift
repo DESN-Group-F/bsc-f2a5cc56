@@ -21,7 +21,7 @@ struct SignInView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                InkView(tint: inkTint, mood: inkMood, reaction: reaction, gaze: gaze)
+                InkView(tint: inkTint, mood: inkMood, reaction: reaction, gaze: gaze, interactive: true)
                     .frame(width: 150, height: 150)
                     .heroInk(hero)
                     .padding(.top, 64)

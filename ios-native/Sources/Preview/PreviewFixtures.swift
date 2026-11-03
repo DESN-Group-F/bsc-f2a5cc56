@@ -6,7 +6,7 @@ enum PreviewScreen: String, CaseIterable {
     case signin, scan, scanWelcome, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, scanGroup, scanRetire, scanRetireDone
     case scanRegister, scanRegisterEmpty
     case inventory, inventoryFiltered, newArrivals, detail, detailBottom, detailConcern, detailRetired
-    case register, registerReview, inspection, retire, group, groupEditor, filter, pendingWrite
+    case register, registerReview, inspection, retire, group, groupEditor, filter, pendingWrite, inkPlayground, inkMotion
     case inbox, me
 
     static func fromLaunchArguments() -> PreviewScreen? {
@@ -17,7 +17,7 @@ enum PreviewScreen: String, CaseIterable {
     /// Screens shown on their own instead of inside the tab bar.
     var isStandalone: Bool {
         switch self {
-        case .register, .registerReview, .inspection, .retire, .groupEditor, .filter: return true
+        case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion: return true
         default: return false
         }
     }
@@ -118,7 +118,7 @@ enum PreviewFixtures {
             app.writes.previewPending(PendingWrite(id: "preview-write", accountId: userId, dataset: .demo, kind: "scrapped",
                                                    batteryIds: ["BAT-00000002"], body: Data(), createdAt: Date(), attempts: 1,
                                                    action: "lifecycle", title: "Retiring BAT-00000002"))
-        case .register, .registerReview, .inspection, .retire, .groupEditor, .filter:
+        case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion:
             app.tab = .inventory
         case .inbox: app.tab = .inbox
         case .me: app.tab = .me

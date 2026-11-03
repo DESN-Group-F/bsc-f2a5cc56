@@ -41,8 +41,8 @@ workflows:
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
           xcrun simctl install "$UDID" "$APP"
           mkdir -p screenshots
-          LIGHT="signin scan scanList scanGroup scanRegisterEmpty scanRegister scanRetire scanRetireDone scanUncertain inventory inventoryFiltered newArrivals detail detailBottom detailConcern detailRetired register registerReview inspection retire group groupEditor filter pendingWrite inbox me"
-          DARK="scanRegister scanRetire inventory detailConcern me"
+          LIGHT="inkPlayground signin scan scanList scanRegister scanRetireDone me"
+          DARK="inkPlayground scan me"
           for appearance in light dark; do
             xcrun simctl ui "$UDID" appearance "$appearance"
             if [ "$appearance" = light ]; then SCREENS="$LIGHT"; else SCREENS="$DARK"; fi
@@ -52,6 +52,19 @@ workflows:
               xcrun simctl io "$UDID" screenshot "screenshots/${appearance}-${screen}.png" >/dev/null
             done
           done
+          # Motion strip: launch the auto-play demo and capture frames around each reaction.
+          xcrun simctl ui "$UDID" appearance light
+          xcrun simctl launch --terminate-running-process "$UDID" com.batteryinventory.mobile -uiPreview inkMotion >/dev/null
+          sleep 0.9
+          for i in 01 02 03 04 05 06 07 08 09 10 11 12 13 14 15 16; do
+            xcrun simctl io "$UDID" screenshot "screenshots/motion-$i.png" >/dev/null
+            sleep 0.12
+          done
+          sleep 0.4
+          for i in 17 18 19 20 21 22 23 24; do
+            xcrun simctl io "$UDID" screenshot "screenshots/motion-$i.png" >/dev/null
+            sleep 0.15
+          done
           ls screenshots
       - name: Print preview screens for review
         script: |
@@ -59,7 +72,8 @@ workflows:
           cd ios-native/screenshots
           mkdir -p review
           for f in *.png; do
-            sips -s format jpeg -s formatOptions 72 --resampleWidth 520 "$f" --out "review/${f%.png}.jpg" >/dev/null
+            case "$f" in motion-*) W=360 ;; *) W=520 ;; esac
+            sips -s format jpeg -s formatOptions 72 --resampleWidth "$W" "$f" --out "review/${f%.png}.jpg" >/dev/null
             echo "@@IMG ${f%.png}"
             base64 -i "review/${f%.png}.jpg" | tr -d '\n'
             echo

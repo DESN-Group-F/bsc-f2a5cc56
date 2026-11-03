@@ -118,8 +118,55 @@ struct PreviewStandalone: View {
             GroupEditorSheet(group: app.inventory.groups.first)
         case .filter:
             InventoryFilterSheet(filter: $filter)
+        case .inkPlayground:
+            NavigationStack { InkPlaygroundView() }
+        case .inkMotion:
+            InkMotionDemo()
         default:
             EmptyView()
+        }
+    }
+}
+
+/// Preview only: plays Ink's reactions on a fixed schedule so screenshots can capture the motion.
+struct InkMotionDemo: View {
+    @State private var mood: InkMood = .idle
+    @State private var reaction = 0
+    @State private var gaze: CGPoint?
+
+    var body: some View {
+        VStack(spacing: 24) {
+            Text(caption).font(.headline).foregroundStyle(.secondary)
+            InkView(tint: mood == .happy ? Tone.success : (mood == .surprised ? Tone.failure : Tone.checkout),
+                    mood: mood, reaction: reaction, gaze: gaze)
+                .frame(width: 240, height: 240)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(.systemGroupedBackground))
+        .task {
+            // t = 0.0 launch · 1.0 accepted (hop + splash) · 3.0 look left · 3.6 duplicate · 5.4 refused
+            try? await Task.sleep(for: .seconds(1.0))
+            mood = .happy; reaction += 1
+            try? await Task.sleep(for: .seconds(1.2))
+            mood = .idle
+            try? await Task.sleep(for: .seconds(0.8))
+            gaze = CGPoint(x: -0.9, y: 0.2)
+            try? await Task.sleep(for: .seconds(0.6))
+            gaze = nil
+            mood = .puzzled; reaction += 1
+            try? await Task.sleep(for: .seconds(1.8))
+            mood = .surprised; reaction += 1
+            try? await Task.sleep(for: .seconds(1.6))
+            mood = .idle
+        }
+    }
+
+    private var caption: String {
+        switch mood {
+        case .happy: return "Accepted"
+        case .puzzled: return "Duplicate"
+        case .surprised: return "Refused"
+        default: return "Idle"
         }
     }
 }

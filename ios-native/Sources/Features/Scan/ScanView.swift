@@ -135,19 +135,19 @@ struct ScanView: View {
     private var stage: some View {
         let inkSize: CGFloat = isDone ? 150 : (hasList ? 96 : 210)
         VStack(spacing: 0) {
-            Button {
+            InkView(tint: scan.tint, mood: scan.mood, reaction: scan.reaction, gaze: gaze,
+                    animated: scenePhase == .active, interactive: true) {
                 scan.tapInk()
-            } label: {
-                InkView(tint: scan.tint, mood: scan.mood, reaction: scan.reaction, gaze: gaze,
-                        animated: scenePhase == .active)
-                    .frame(width: inkSize, height: inkSize)
-                    .heroInk(hero)
-                    .overlay {
-                        if scan.readerActive { ListeningRings(tint: scan.mode.tint) }
-                    }
             }
-            .buttonStyle(InkPressStyle())
-            .accessibilityLabel(scan.readerActive ? "Reader is open" : "Scan a battery tag")
+            .frame(width: inkSize, height: inkSize)
+            .heroInk(hero)
+            .overlay {
+                if scan.readerActive { ListeningRings(tint: scan.mode.tint).allowsHitTesting(false) }
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityLabel(scan.readerActive ? "Reader is open" : (scan.mode == .register ? "Scan new battery tags" : "Scan a battery tag"))
+            .accessibilityAction { scan.tapInk() }
             .onGeometryChange(for: CGRect.self) { $0.frame(in: .named("scan")) } action: { inkFrame = $0 }
             .padding(.top, hasList ? 18 : (isDone ? 44 : 64))
 

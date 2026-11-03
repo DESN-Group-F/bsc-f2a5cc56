@@ -16,7 +16,7 @@ struct MeView: View {
             List {
                 Section {
                     HStack(spacing: 16) {
-                        InkView(tint: Tone.adaptiveInk(colorScheme), animated: scenePhase == .active, shadow: false)
+                        InkView(tint: Tone.adaptiveInk(colorScheme), animated: scenePhase == .active, shadow: false, interactive: true)
                             .frame(width: 64, height: 64)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(me?.displayName ?? "").font(.title2.weight(.bold))
@@ -95,6 +95,11 @@ struct MeView: View {
                     }
                     Toggle("Haptics", isOn: $haptics)
                         .onChange(of: haptics) { Haptics.enabled = haptics }
+                    NavigationLink {
+                        InkPlaygroundView()
+                    } label: {
+                        Label("Ink playground", systemImage: "drop")
+                    }
                     LabeledContent("Server", value: app.service.client.origin.host ?? "")
                     LabeledContent("Version", value: Bundle.main.versionLabel)
                 }
