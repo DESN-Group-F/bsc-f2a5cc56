@@ -14,6 +14,14 @@ workflows:
           cd ios-native
           mkdir -p Support
           xcodegen generate
+      - name: Install the Metal shader compiler
+        script: |
+          set -uo pipefail
+          for attempt in 1 2 3; do
+            if xcodebuild -downloadComponent MetalToolchain; then break; fi
+            echo "Download attempt $attempt failed; retrying"; sleep 10
+          done
+          xcodebuild -showComponent MetalToolchain || true
       - name: Compile for the simulator
         script: |
           cd ios-native
@@ -111,6 +119,14 @@ workflows:
           cd ios-native
           mkdir -p Support
           xcodegen generate
+      - name: Install the Metal shader compiler
+        script: |
+          set -uo pipefail
+          for attempt in 1 2 3; do
+            if xcodebuild -downloadComponent MetalToolchain; then break; fi
+            echo "Download attempt $attempt failed; retrying"; sleep 10
+          done
+          xcodebuild -showComponent MetalToolchain || true
       - name: Apply signing profiles
         script: |
           set -euo pipefail
