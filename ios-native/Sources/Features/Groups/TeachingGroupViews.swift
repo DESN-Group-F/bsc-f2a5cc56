@@ -7,6 +7,7 @@ struct GroupStrip: View {
     var onCreate: () -> Void
 
     var body: some View {
+        // Fixed-size cards in a horizontal strip: capped like other compact chrome.
         ScrollView(.horizontal) {
             HStack(spacing: 10) {
                 ForEach(app.inventory.groups) { group in

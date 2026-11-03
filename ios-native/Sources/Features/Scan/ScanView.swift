@@ -170,10 +170,15 @@ struct ScanView: View {
                 .rise(app.stageShown, order: 2)
 
             if isDone, case let .done(summary) = scan.phase {
-                DoneSummaryView(summary: summary)
-                    .padding(.horizontal, 16)
-                    .padding(.top, 20)
-                    .transition(.asymmetric(insertion: .scale(scale: 0.96).combined(with: .opacity), removal: .opacity))
+                ScrollView {
+                    DoneSummaryView(summary: summary)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 20)
+                        .padding(.bottom, 16)
+                }
+                .scrollBounceBehavior(.basedOnSize)
+                .scrollIndicators(.hidden)
+                .transition(.asymmetric(insertion: .scale(scale: 0.96).combined(with: .opacity), removal: .opacity))
             } else if hasList {
                 itemList
                     .transition(.opacity)
@@ -198,7 +203,7 @@ struct ScanView: View {
                     Text(countTitle)
                         .font(.title3.weight(.bold))
                         .contentTransition(.numericText(value: Double(scan.listCount)))
-                    if scan.notice == nil, let latest = scan.latestId {
+                    if scan.notice == nil, !typeSize.isAccessibilitySize, let latest = scan.latestId {
                         Text("Added \(latest)").font(.subheadline).foregroundStyle(.secondary)
                             .transition(.opacity)
                     }
@@ -244,12 +249,12 @@ struct ScanView: View {
                 Label(scan.mode == .register ? "One battery with the form" : "Choose from list",
                       systemImage: scan.mode == .register ? "square.and.pencil" : "list.bullet")
                     .font(.subheadline.weight(.semibold))
-                    .padding(.horizontal, 16)
-                    .frame(height: 40)
+                    .padding(.horizontal, 6)
             }
-            .buttonStyle(.plain)
-            .glassEffect(.regular.interactive(), in: .capsule)
+            .secondaryButton()
+            .controlSize(.regular)
         }
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
 
     private var emptyTitle: String {
@@ -426,10 +431,11 @@ struct DatasetMenu: View {
             }
             .foregroundStyle(.primary)
             .padding(.horizontal, glass ? 14 : 4)
-            .frame(height: 38)
+            .frame(minHeight: 38)
             .interactiveGlass(glass)
         }
         .tint(.primary)
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .accessibilityLabel("Inventory: \(app.dataset.title)")
     }
 }
@@ -444,11 +450,13 @@ struct NoticeCapsule: View {
             Image(systemName: icon)
             Text(notice.text).lineLimit(2)
             if let title = notice.actionTitle {
-                Button(title, action: action)
-                    .font(.footnote.weight(.bold))
-                    .buttonStyle(.borderedProminent)
-                    .tint(Tone.failure)
-                    .controlSize(.small)
+                Button(action: action) {
+                    Text(title).font(.footnote.weight(.bold)).foregroundStyle(.white)
+                }
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
+                .tint(Tone.failure)
+                .controlSize(.small)
                 Button(action: onDismiss) {
                     Image(systemName: "xmark").font(.caption.weight(.bold)).foregroundStyle(.secondary)
                         .frame(width: 28, height: 28)
@@ -490,7 +498,7 @@ struct ScanItemCard: View {
         HStack(spacing: 12) {
             BatteryGlyph(tint: mode == .checkout ? Tone.checkout : (mode == .retire ? Tone.retire : Tone.returnGlyph))
             VStack(alignment: .leading, spacing: 2) {
-                Text(item.battery.name).font(.body.weight(.semibold)).lineLimit(1)
+                Text(item.battery.name).font(.body.weight(.semibold)).lineLimit(2)
                 HStack(spacing: 6) {
                     Text(item.battery.id).font(.monoSmall).fixedSize()
                     Text(item.battery.specLine).font(.footnote).lineLimit(1)
@@ -515,6 +523,7 @@ struct ScanItemCard: View {
         .padding(.vertical, 5)
         .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.04), radius: 2, y: 1)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(item.battery.name), \(item.battery.id), \(readyText)")
         .accessibilityAction(named: "Remove from the list", onRemove)

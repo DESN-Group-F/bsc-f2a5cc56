@@ -9,6 +9,7 @@ struct BatteryDetailView: View {
     @State private var loadError: String?
     @State private var sheet: DetailSheet?
     @State private var showAllHistory = false
+    @State private var headerHidden = false
 
     private enum DetailSheet: String, Identifiable {
         case inspect, retire, recover, group
@@ -101,8 +102,11 @@ struct BatteryDetailView: View {
             }
         }
         .defaultScrollAnchor(app.preview == .detailBottom ? .bottom : .top)
+        .onScrollGeometryChange(for: Bool.self) { $0.contentOffset.y + $0.contentInsets.top > 70 } action: { _, hidden in
+            withAnimation(.easeInOut(duration: 0.18)) { headerHidden = hidden }
+        }
         .background(Color(.systemGroupedBackground))
-        .navigationTitle(battery?.name ?? batteryId)
+        .navigationTitle(headerHidden ? (battery?.name ?? batteryId) : "")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
