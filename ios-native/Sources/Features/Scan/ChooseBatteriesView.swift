@@ -33,7 +33,7 @@ struct ChooseBatteriesView: View {
                             HStack(spacing: 12) {
                                 Image(systemName: selected.contains(battery.id) ? "checkmark.circle.fill" : "circle")
                                     .font(.title3)
-                                    .foregroundStyle(selected.contains(battery.id) ? kind.tint : Color.secondary.opacity(0.5))
+                                    .foregroundStyle(selected.contains(battery.id) ? (kind == .return ? Tone.returnGlyph : kind.tint) : Color.secondary.opacity(0.5))
                                     .contentTransition(.symbolEffect(.replace))
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text(battery.name).font(.body.weight(.semibold))
@@ -45,6 +45,7 @@ struct ChooseBatteriesView: View {
                             .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
+                        .accessibilityAddTraits(selected.contains(battery.id) ? .isSelected : [])
                     }
                 }
             }

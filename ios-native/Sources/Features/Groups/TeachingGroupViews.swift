@@ -48,7 +48,7 @@ struct GroupCard: View {
             Spacer(minLength: 0)
             Text(group.name).font(.subheadline.weight(.bold)).lineLimit(2).multilineTextAlignment(.leading)
             HStack(spacing: 6) {
-                Text("\(group.batteryIds.count)").fontWeight(.semibold)
+                Text("\(group.batteryIds.count) \(group.batteryIds.count == 1 ? "battery" : "batteries")").fontWeight(.semibold)
                 Text(out > 0 ? "· \(out) out" : "· \(inStore) in store")
             }
             .font(.caption)

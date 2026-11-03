@@ -3,7 +3,9 @@ import SwiftUI
 struct ScanView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.scenePhase) private var scenePhase
-    @Environment(\.heroNamespace) private var hero
+    /// False only while the app opens from sign-in, so the stage can rise in around the arriving Ink.
+    @State private var entered = true
+    @Environment(\.dynamicTypeSize) private var typeSize
     @Namespace private var segment
     @State private var gaze: CGPoint?
     @State private var gazeToken = 0
@@ -20,9 +22,11 @@ struct ScanView: View {
             header
                 .padding(.horizontal, 16)
                 .padding(.top, 4)
+                .rise(entered, order: 0)
             modePicker
                 .padding(.horizontal, 16)
                 .padding(.top, 14)
+                .rise(entered, order: 1)
             if scan.mode == .register && !isDone {
                 BatchDetailsCard()
                     .padding(.horizontal, 16)
@@ -49,6 +53,11 @@ struct ScanView: View {
             BatchDetailsSheet()
         }
         .task { await scan.reconcileUncertain() }
+        .onAppear {
+            guard app.travel != nil else { return }
+            entered = false
+            withAnimation(.spring(response: 0.55, dampingFraction: 0.86).delay(0.12)) { entered = true }
+        }
         .onChange(of: app.writes.pending.count) { Task { await scan.reconcileUncertain() } }
     }
 
@@ -110,7 +119,7 @@ struct ScanView: View {
                     .font(.footnote.weight(.semibold))
                     .foregroundStyle(scan.mode == kind ? Color.primary : Color.secondary)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 38)
+                    .frame(height: 44)
                     .background {
                         if scan.mode == kind {
                             Capsule()
@@ -125,8 +134,9 @@ struct ScanView: View {
                 .accessibilityAddTraits(scan.mode == kind ? .isSelected : [])
             }
         }
-        .padding(4)
+        .padding(3)
         .glassEffect(.regular, in: .capsule)
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .animation(.spring(response: 0.38, dampingFraction: 0.78), value: scan.mode)
         .disabled(scan.phase == .submitting || scan.phase == .uncertain)
     }
@@ -135,7 +145,7 @@ struct ScanView: View {
 
     @ViewBuilder
     private var stage: some View {
-        let inkSize: CGFloat = isDone ? 150 : (hasList ? 96 : 210)
+        let inkSize: CGFloat = isDone ? 150 : (hasList ? 96 : (typeSize.isAccessibilitySize ? 150 : 210))
         VStack(spacing: 0) {
             // The tag sheet makes the scene inactive while Ink is still visible above it, so only
             // pause in the background or on another tab. Ink is drawn at one size and scaled, so
@@ -147,7 +157,8 @@ struct ScanView: View {
             .frame(width: 210, height: 210)
             .scaleEffect(inkSize / 210)
             .frame(width: inkSize, height: inkSize)
-            .heroInk(hero)
+            .inkAnchor(.scan, in: app)
+            .opacity(app.travel == nil ? 1 : 0)
             .overlay {
                 if scan.readerActive { ListeningRings(tint: scan.mode.tint).allowsHitTesting(false) }
             }
@@ -159,8 +170,10 @@ struct ScanView: View {
             .padding(.top, hasList ? 18 : (isDone ? 44 : 64))
 
             statusSlot
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .padding(.horizontal, 24)
                 .padding(.top, hasList ? 10 : 22)
+                .rise(entered, order: 2)
 
             if isDone, case let .done(summary) = scan.phase {
                 DoneSummaryView(summary: summary)
@@ -173,6 +186,7 @@ struct ScanView: View {
             } else {
                 alternatives
                     .padding(.top, 26)
+                    .rise(entered, order: 3)
                     .transition(.opacity)
             }
             Spacer(minLength: 0)
@@ -331,11 +345,10 @@ struct ScanView: View {
         case .done:
             VStack(spacing: 4) {
                 Button { scan.scanMore() } label: {
-                    Text("Scan more").font(.headline).frame(maxWidth: .infinity).frame(height: 54)
+                    Text("Scan more").font(.headline).foregroundStyle(scan.mode.onTint)
+                        .frame(maxWidth: .infinity, minHeight: 40)
                 }
-                .buttonStyle(.plain)
-                .foregroundStyle(Color(.systemBackground))
-                .background(Color.primary, in: .capsule)
+                .primaryButton(scan.mode.tint)
                 Button { app.tab = .inventory } label: {
                     Text("View in Inventory").font(.body.weight(.semibold)).frame(maxWidth: .infinity).frame(height: 44)
                 }
@@ -372,8 +385,17 @@ struct InkPressStyle: ButtonStyle {
 struct ListeningRings: View {
     let tint: Color
     @State private var expand = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
+        if reduceMotion {
+            Circle().stroke(tint.opacity(0.45), lineWidth: 2).scaleEffect(1.15).allowsHitTesting(false)
+        } else {
+            pulsing
+        }
+    }
+
+    private var pulsing: some View {
         ZStack {
             ForEach(0..<2, id: \.self) { i in
                 Circle()
@@ -398,7 +420,8 @@ struct DatasetMenu: View {
             Picker("Inventory", selection: Binding(get: { app.dataset }, set: { app.select($0) })) {
                 ForEach(Dataset.allCases) { Text($0.title).tag($0) }
             }
-            if app.scan.hasUnsettledWork {
+            .disabled(app.hasUnsettledWork)
+            if app.hasUnsettledWork {
                 Text("Finish the open confirmation before switching.")
             }
         } label: {
@@ -471,7 +494,7 @@ struct ScanItemCard: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            BatteryGlyph(tint: mode == .checkout ? Tone.checkout : (mode == .retire ? Tone.retire : Color(red: 0.54, green: 0.38, blue: 0)))
+            BatteryGlyph(tint: mode == .checkout ? Tone.checkout : (mode == .retire ? Tone.retire : Tone.returnGlyph))
             VStack(alignment: .leading, spacing: 2) {
                 Text(item.battery.name).font(.body.weight(.semibold)).lineLimit(1)
                 HStack(spacing: 6) {
@@ -487,17 +510,20 @@ struct ScanItemCard: View {
                 .accessibilityLabel(readyText)
             Button(action: onRemove) {
                 Image(systemName: "xmark").font(.footnote.weight(.bold)).foregroundStyle(.secondary)
-                    .frame(width: 34, height: 34)
-                    .contentShape(Circle())
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Remove \(item.battery.id) from the list")
         }
         .padding(.leading, 12)
-        .padding(.trailing, 6)
-        .padding(.vertical, 10)
+        .padding(.trailing, 2)
+        .padding(.vertical, 5)
         .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.04), radius: 2, y: 1)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(item.battery.name), \(item.battery.id), \(readyText)")
+        .accessibilityAction(named: "Remove from the list", onRemove)
     }
 
     private var readyText: String {
@@ -544,12 +570,9 @@ struct ConfirmButton: View {
             }
             .font(.headline)
             .foregroundStyle(scan.mode.onTint)
-            .frame(maxWidth: .infinity)
-            .frame(height: 56)
-            .contentShape(Capsule())
+            .frame(maxWidth: .infinity, minHeight: 42)
         }
-        .buttonStyle(.plain)
-        .glassEffect(.regular.tint(scan.mode.tint).interactive(), in: .capsule)
+        .primaryButton(scan.mode.tint)
         .disabled(submitting || (scan.mode == .register && scan.intakeDraftCount == 0))
         .onChange(of: submitting) { _, new in if new { Haptics.press() } }
         .confirmationDialog(scan.retireConfirmTitle + "?", isPresented: Bindable(scan).confirmPermanent, titleVisibility: .visible) {
@@ -654,11 +677,9 @@ struct UncertainCard: View {
                     Text(scan.phase == .submitting ? "Checking…" : "Try again")
                 }
                 .font(.headline)
-                .frame(maxWidth: .infinity)
-                .frame(height: 50)
+                .frame(maxWidth: .infinity, minHeight: 36)
             }
-            .buttonStyle(.plain)
-            .glassEffect(.regular.tint(Color.primary.opacity(0.08)).interactive(), in: .capsule)
+            .secondaryButton()
             .disabled(scan.phase == .submitting || app.user == nil)
         }
         .padding(18)
@@ -803,18 +824,21 @@ struct IntakeEntryCard: View {
             if entry.status != .uncertain {
                 Button(action: onRemove) {
                     Image(systemName: "xmark").font(.footnote.weight(.bold)).foregroundStyle(.secondary)
-                        .frame(width: 34, height: 34)
-                        .contentShape(Circle())
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Remove tag \(entry.uid) from the batch")
             }
         }
         .padding(.leading, 12)
-        .padding(.trailing, 6)
-        .padding(.vertical, 10)
+        .padding(.trailing, 2)
+        .padding(.vertical, 5)
+        .frame(minHeight: 58)
         .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20, style: .continuous))
         .shadow(color: .black.opacity(0.04), radius: 2, y: 1)
+        .accessibilityElement(children: .combine)
+        .accessibilityAction(named: "Remove from the batch") { if entry.status != .uncertain { onRemove() } }
     }
 
     private var title: String {
@@ -840,5 +864,27 @@ struct IntakeEntryCard: View {
                 Image(systemName: "questionmark.circle.fill").font(.title3).foregroundStyle(.orange)
             }
         }
+    }
+}
+
+extension View {
+    /// Staggered rise-in used when a screen arrives (sign-in, the scan stage after sign-in).
+    /// The delay lives in the animation, so callers only flip `shown`.
+    func rise(_ shown: Bool, order: Int) -> some View {
+        modifier(RiseIn(shown: shown, order: order))
+    }
+}
+
+private struct RiseIn: ViewModifier {
+    let shown: Bool
+    let order: Int
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func body(content: Content) -> some View {
+        content
+            .opacity(shown ? 1 : 0)
+            .offset(y: shown || reduceMotion ? 0 : 16)
+            .animation(reduceMotion ? .easeOut(duration: 0.2)
+                       : .spring(response: 0.55, dampingFraction: 0.86).delay(0.07 * Double(order) + 0.1), value: shown)
     }
 }

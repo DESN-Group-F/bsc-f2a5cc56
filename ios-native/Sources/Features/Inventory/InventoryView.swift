@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 enum InventoryRoute: Hashable {
     case battery(String)
@@ -7,7 +8,7 @@ enum InventoryRoute: Hashable {
 
 struct InventoryView: View {
     @Environment(AppModel.self) private var app
-    @Namespace private var zoom
+    @State private var inspecting: BatteryRecord?
     @State private var status: StatusFilter = .all
     @State private var search = ""
     @State private var filter = InventoryFilter()
@@ -23,6 +24,15 @@ struct InventoryView: View {
     }
 
     var body: some View {
+        // One filter-and-sort pass per update; the status counts and the visible rows come from it.
+        let matching = app.inventory.filtered(status: .all, search: search, filter: filter, accountId: app.user?.id)
+        let rows = Self.narrow(matching, to: status)
+        let counts: [StatusFilter: Int] = [.all: matching.count,
+                                           .inStore: matching.filter(\.isInStore).count,
+                                           .inUse: matching.filter(\.isInUse).count]
+        let newIds = app.inventory.newArrivalIds
+        let unreadIds = app.inventory.unreadArrivalIds
+        let canStartScan = app.scan.isEmpty && !app.hasUnsettledWork && app.scan.phase != .submitting
         NavigationStack(path: $path) {
             List {
                 if app.writes.hasPending {
@@ -46,7 +56,7 @@ struct InventoryView: View {
                 Section {
                     Picker("Status", selection: $status) {
                         ForEach(StatusFilter.allCases) { item in
-                            Text("\(item.title) \(count(item))").tag(item)
+                            Text("\(item.title) \(counts[item] ?? 0)").tag(item)
                         }
                     }
                     .pickerStyle(.segmented)
@@ -85,39 +95,102 @@ struct InventoryView: View {
                                     Image(systemName: selection.contains(battery.id) ? "checkmark.circle.fill" : "circle")
                                         .font(.title3)
                                         .foregroundStyle(selection.contains(battery.id) ? Tone.checkout : Color.secondary.opacity(0.5))
-                                    BatteryRow(battery: battery, isNew: isNew(battery), isUnread: isUnread(battery), myAccountId: app.user?.id)
+                                    BatteryRow(battery: battery, isNew: newIds.contains(battery.id),
+                                               isUnread: unreadIds.contains(battery.id), myAccountId: app.user?.id)
                                 }
                                 .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
+                            .accessibilityAddTraits(selection.contains(battery.id) ? .isSelected : [])
                         } else {
                             NavigationLink(value: InventoryRoute.battery(battery.id)) {
-                                BatteryRow(battery: battery, isNew: isNew(battery), isUnread: isUnread(battery), myAccountId: app.user?.id)
+                                BatteryRow(battery: battery, isNew: newIds.contains(battery.id),
+                                           isUnread: unreadIds.contains(battery.id), myAccountId: app.user?.id)
                             }
-                            .matchedTransitionSource(id: battery.id, in: zoom)
+                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                if battery.isActive && canStartScan {
+                                    Button { startScan(with: battery) } label: {
+                                        Label(battery.isInUse ? "Return" : "Check out",
+                                              systemImage: battery.isInUse ? "arrow.down.to.line" : "arrow.up.right")
+                                    }
+                                    .tint(battery.isInUse ? Tone.returning : Tone.checkout)
+                                }
+                            }
+                            .swipeActions(edge: .trailing) {
+                                if battery.isActive {
+                                    Button { addToGroup(battery) } label: { Label("Group", systemImage: "person.3") }
+                                        .tint(.indigo)
+                                }
+                            }
+                            .contextMenu {
+                                if battery.isActive {
+                                    Button { startScan(with: battery) } label: {
+                                        Label(battery.isInUse ? "Return" : "Check out",
+                                              systemImage: battery.isInUse ? "arrow.down.to.line" : "arrow.up.right")
+                                    }
+                                    .disabled(!canStartScan)
+                                    Button { inspecting = battery } label: { Label("Record inspection", systemImage: "checklist") }
+                                    Button { addToGroup(battery) } label: { Label("Add to group", systemImage: "person.3") }
+                                }
+                                Button { UIPasteboard.general.string = battery.id } label: { Label("Copy ID", systemImage: "doc.on.doc") }
+                            }
                         }
                     }
                 } header: {
                     if !rows.isEmpty { Text("\(rows.count) \(rows.count == 1 ? "battery" : "batteries")") }
                 } footer: {
-                    if let refreshed = app.inventory.lastRefreshed {
-                        Text("Updated \(refreshed.formatted(date: .omitted, time: .shortened))")
-                    } else if let error = app.inventory.lastError {
-                        Text(error)
+                    if app.inventory.snapshot != nil, let refreshed = app.inventory.lastRefreshed {
+                        let time = refreshed.formatted(date: .omitted, time: .shortened)
+                        if app.inventory.lastError != nil {
+                            Label("Couldn't refresh · showing \(time)", systemImage: "wifi.exclamationmark")
+                        } else if app.inventory.isSavedCopy {
+                            Text(app.inventory.loading ? "Saved copy from \(time) · updating…" : "Saved copy from \(time)")
+                        } else {
+                            Text("Updated \(time)")
+                        }
                     }
                 }
             }
             .listStyle(.insetGrouped)
             .overlay {
-                if rows.isEmpty && app.inventory.snapshot != nil {
+                if app.inventory.snapshot == nil {
+                    if let error = app.inventory.lastError, !app.inventory.loading {
+                        ContentUnavailableView {
+                            Label("Couldn't load the inventory", systemImage: "wifi.exclamationmark")
+                        } description: {
+                            Text(error)
+                        } actions: {
+                            Button("Try again") { Task { await app.inventory.refresh() } }
+                                .secondaryButton()
+                        }
+                    } else {
+                        ProgressView()
+                    }
+                } else if rows.isEmpty {
                     if !search.isEmpty {
                         ContentUnavailableView.search(text: search)
+                    } else if app.inventory.active.isEmpty && filter == InventoryFilter() && status == .all {
+                        ContentUnavailableView {
+                            Label("No batteries yet", systemImage: "battery.0percent")
+                        } description: {
+                            Text("Register the first battery to start the inventory.")
+                        } actions: {
+                            Button("Register a battery") { app.registration = RegistrationRequest() }
+                                .primaryButton(Tone.register)
+                        }
                     } else {
-                        ContentUnavailableView("No batteries match", systemImage: "line.3.horizontal.decrease.circle",
-                                               description: Text("Change or clear the filters."))
+                        ContentUnavailableView {
+                            Label("No batteries match", systemImage: "line.3.horizontal.decrease.circle")
+                        } description: {
+                            Text("Nothing fits these filters.")
+                        } actions: {
+                            Button("Clear filters") {
+                                filter = InventoryFilter()
+                                status = .all
+                            }
+                            .secondaryButton()
+                        }
                     }
-                } else if app.inventory.snapshot == nil && app.inventory.loading {
-                    ProgressView()
                 }
             }
             .navigationTitle(selecting ? (selection.isEmpty ? "Select batteries" : "\(selection.count) selected") : "Inventory")
@@ -128,7 +201,6 @@ struct InventoryView: View {
                 switch route {
                 case .battery(let id):
                     BatteryDetailView(batteryId: id)
-                        .navigationTransition(.zoom(sourceID: id, in: zoom))
                 case .group(let id):
                     GroupDetailView(groupId: id)
                 }
@@ -143,7 +215,10 @@ struct InventoryView: View {
             .sheet(isPresented: $creatingGroup) {
                 GroupEditorSheet(group: nil)
             }
-            .sheet(item: $action) { which in
+            .sheet(item: $inspecting) { battery in
+                InspectionSheet(battery: battery)
+            }
+            .sheet(item: $action, onDismiss: { if !selecting { selection = [] } }) { which in
                 switch which {
                 case .retire:
                     RetireSheet(batteryIds: selection) { endSelection() }
@@ -175,19 +250,24 @@ struct InventoryView: View {
                 DatasetMenu(glass: false)
             }
         }
-        ToolbarItem(placement: .topBarTrailing) {
+        ToolbarItemGroup(placement: .topBarTrailing) {
             if selecting {
-                Button(selection.count == rows.count && !rows.isEmpty ? "Select none" : "Select all") {
-                    if selection.count == rows.count { selection = [] } else { selection = Array(rows.prefix(100).map(\.id)) }
+                let visible = rows
+                let limit = min(visible.count, 100)
+                Button(!selection.isEmpty && selection.count >= limit ? "Select none"
+                       : (visible.count > 100 ? "Select first 100" : "Select all")) {
+                    if !selection.isEmpty && selection.count >= limit { selection = [] } else { selection = Array(visible.prefix(100).map(\.id)) }
                 }
             } else {
+                Button("Select") { selecting = true }
+                    .disabled(app.inventory.snapshot == nil)
                 Menu {
                     Button { app.registration = RegistrationRequest() } label: { Label("Register a new battery", systemImage: "plus.circle") }
                     Button { creatingGroup = true } label: { Label("New teaching group", systemImage: "person.3") }
-                    Button { selecting = true } label: { Label("Select batteries", systemImage: "checkmark.circle") }
                 } label: {
                     Image(systemName: "plus")
                 }
+                .accessibilityLabel("Add")
                 .disabled(app.user == nil)
             }
         }
@@ -210,35 +290,26 @@ struct InventoryView: View {
                 Label(allInUse ? "Return" : "Check out", systemImage: allInUse ? "arrow.down.to.line" : "arrow.up.right")
                     .font(.subheadline.weight(.semibold))
                     .frame(maxWidth: .infinity)
-                    .frame(height: 46)
             }
-            .buttonStyle(.plain)
-            .glassEffect(.regular.interactive(), in: .capsule)
+            .secondaryButton()
             .disabled(!(allInStore || allInUse))
-            .opacity(allInStore || allInUse ? 1 : 0.45)
 
             Button { action = .group } label: {
                 Label("Group", systemImage: "person.3")
                     .font(.subheadline.weight(.semibold))
                     .frame(maxWidth: .infinity)
-                    .frame(height: 46)
             }
-            .buttonStyle(.plain)
-            .glassEffect(.regular.interactive(), in: .capsule)
+            .secondaryButton()
             .disabled(chosen.isEmpty || chosen.count > 100)
-            .opacity(chosen.isEmpty ? 0.45 : 1)
 
             Button { action = .retire } label: {
                 Label("Retire", systemImage: "archivebox")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Tone.failure)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 46)
             }
-            .buttonStyle(.plain)
-            .glassEffect(.regular.interactive(), in: .capsule)
+            .secondaryButton()
             .disabled(chosen.isEmpty || chosen.count > 100 || app.writes.hasPending)
-            .opacity(chosen.isEmpty ? 0.45 : 1)
         }
     }
 
@@ -296,13 +367,24 @@ struct InventoryView: View {
         app.inventory.filtered(status: status, search: search, filter: filter, accountId: app.user?.id)
     }
 
-    private func isNew(_ battery: BatteryRecord) -> Bool { app.inventory.newArrivalIds.contains(battery.id) }
-    private func isUnread(_ battery: BatteryRecord) -> Bool { app.inventory.unreadArrivalIds.contains(battery.id) }
+    static func narrow(_ batteries: [BatteryRecord], to status: StatusFilter) -> [BatteryRecord] {
+        switch status {
+        case .all: return batteries
+        case .inStore: return batteries.filter(\.isInStore)
+        case .inUse: return batteries.filter(\.isInUse)
+        }
+    }
 
-    private func count(_ item: StatusFilter) -> Int {
-        var base = filter
-        base.newArrivalsOnly = filter.newArrivalsOnly
-        return app.inventory.filtered(status: item, search: search, filter: base, accountId: app.user?.id).count
+    /// Swipe or menu shortcut into the reviewed scan flow (one battery, one confirm on Scan).
+    private func startScan(with battery: BatteryRecord) {
+        app.scan.begin(with: battery)
+        app.tab = .scan
+        Haptics.tap()
+    }
+
+    private func addToGroup(_ battery: BatteryRecord) {
+        selection = [battery.id]
+        action = .group
     }
 }
 
@@ -333,8 +415,10 @@ struct ChipButton: View {
             .font(.subheadline.weight(.semibold))
             .foregroundStyle(isOn ? Color(.systemBackground) : Color.primary)
             .padding(.horizontal, 14)
-            .frame(height: 34)
+            .frame(minHeight: 34)
             .background(isOn ? Color.primary : Color(.secondarySystemGroupedBackground), in: .capsule)
+            .padding(.vertical, 5)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(isOn ? .isSelected : [])
@@ -346,9 +430,13 @@ struct BatteryRow: View {
     let isNew: Bool
     var isUnread: Bool = false
     let myAccountId: String?
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        HStack(spacing: 12) {
+        // At accessibility text sizes the status moves under the name instead of squeezing it.
+        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
+                                                  : AnyLayout(HStackLayout(spacing: 12))
+        layout {
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 6) {
                     Text(battery.name).font(.body.weight(.semibold)).lineLimit(1)
@@ -376,9 +464,9 @@ struct BatteryRow: View {
                     Text(battery.specLine).font(.footnote)
                 }
                 .foregroundStyle(.secondary)
-                .lineLimit(1)
+                .lineLimit(typeSize.isAccessibilitySize ? 3 : 1)
             }
-            Spacer(minLength: 8)
+            if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
             StatusPill(battery: battery, myAccountId: myAccountId)
         }
         .padding(.vertical, 2)

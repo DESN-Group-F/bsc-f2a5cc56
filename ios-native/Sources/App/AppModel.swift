@@ -1,5 +1,6 @@
 import Observation
 import SwiftUI
+import UIKit
 
 enum AppTab: Hashable { case scan, inventory, inbox, me }
 
@@ -7,6 +8,18 @@ enum SessionState: Equatable {
     case checking
     case signedOut
     case signedIn(StaffUser)
+}
+
+/// Where a screen's Ink sits, so one Ink can travel from sign-in to the scan stage.
+enum InkStage: Hashable { case signIn, scan }
+
+/// The Ink that travels between screens. Its frame is in window coordinates.
+struct InkTravel: Equatable {
+    var frame: CGRect
+    /// Ink is drawn at its starting size and scaled, so the simulation never sees a half-animated layout.
+    var baseSide: CGFloat
+    /// False while it still wears the sign-in success green; true once it heads for the stage.
+    var departed = false
 }
 
 /// Root state. Owns the service, the signed-in user and the selected inventory.
@@ -24,6 +37,13 @@ final class AppModel {
     /// Registration sheet request, from Inventory or an unregistered tag on the scan station.
     var registration: RegistrationRequest?
     private(set) var dataset: Dataset = .demo
+    /// Shown on the launch screen when the session couldn't be checked (offline, server down).
+    private(set) var launchError: String?
+    /// Window-space frames of each screen's Ink, reported by the screens themselves.
+    var inkAnchors: [InkStage: CGRect] = [:]
+    /// Non-nil while the travelling Ink is on screen (sign-in → Scan).
+    var travel: InkTravel?
+    private var lastSignedInId: String?
 
     /// Switching inventory clears what was loaded for the previous one.
     func select(_ newValue: Dataset) {
@@ -32,6 +52,10 @@ final class AppModel {
         dataset = newValue
         UserDefaults.standard.set(newValue.rawValue, forKey: "dataset")
         inventory.reset()
+        if let user, let saved = SessionCache.snapshot(accountId: user.id, dataset: newValue) {
+            // Show the saved copy of the other inventory at once; the refresh replaces it.
+            inventory.restore(saved.0, savedAt: saved.1)
+        }
         scan.reset()
         scan.unloadIntake()
         inbox.reset()
@@ -67,53 +91,134 @@ final class AppModel {
         scan.app = self
         inbox.app = self
         writes.app = self
-        if let preview { PreviewFixtures.apply(preview, to: self) }
+        if let preview {
+            PreviewFixtures.apply(preview, to: self)
+        } else if service.client.hasSession, let user = SessionCache.user() {
+            // Signed in last time: open straight onto Scan with what was saved, then confirm with the server.
+            // The first frame after the system launch screen is the app itself — no splash, no wait.
+            session = .signedIn(user)
+            lastSignedInId = user.id
+            if let saved = SessionCache.snapshot(accountId: user.id, dataset: dataset) {
+                inventory.restore(saved.0, savedAt: saved.1)
+            }
+        }
     }
 
     // MARK: Session
 
     func start() async {
         guard preview == nil else { return }
-        let launched = Date()
-        // Let Ink's drop-in finish (about half a second) instead of flashing the next screen.
-        func settle() async {
-            let remaining = 0.55 - Date().timeIntervalSince(launched)
-            if remaining > 0 { try? await Task.sleep(for: .seconds(remaining)) }
+        if let user {
+            await resume(user)
+            return
         }
-        guard service.client.hasSession else { await settle(); session = .signedOut; return }
+        await checkSession()
+    }
+
+    /// Opened from the saved session: local work comes back at once, then the server confirms.
+    private func resume(_ cached: StaffUser) async {
+        writes.load()
+        scan.loadPending()
         do {
             let response = try await service.session()
-            await settle()
-            if let user = response.user { await signedIn(user, welcome: false) } else { session = .signedOut }
+            guard let current = response.user else { endSession(); return }
+            if current.id != cached.id { endSession(); return }
+            SessionCache.saveUser(current)
+            session = .signedIn(current)
+            await refreshAll()
+        } catch let failure as APIFailure where failure.kind == .unauthorized {
+            endSession()
         } catch {
-            await settle()
-            session = .signedOut
+            // Offline or the server is down: stay signed in with the saved copy. Nothing is sent
+            // until the server answers, so this never risks a write.
+            inventory.lastError = "Can't reach the server. Showing the copy saved on this iPhone."
         }
     }
 
-    func signIn(username: String, password: String) async throws {
-        let user = try await service.signIn(username: username, password: password)
-        Haptics.confirmed()
-        await signedIn(user, welcome: true)
+    /// No saved session to open: check with the server while Ink waits on the launch screen.
+    func checkSession() async {
+        launchError = nil
+        session = .checking
+        guard service.client.hasSession else { session = .signedOut; return }
+        do {
+            let response = try await service.session()
+            if let user = response.user { await signedIn(user, greet: false) } else { endSession() }
+        } catch let failure as APIFailure where failure.kind == .unauthorized {
+            endSession()
+        } catch {
+            // Don't sign anyone out because the network dropped; offer to try again.
+            launchError = "Can't reach the server. Check your connection and try again."
+        }
     }
 
-    private func signedIn(_ user: StaffUser, welcome: Bool) async {
+    /// Checks the credentials. The caller plays the success moment, then calls `enter`.
+    func signIn(username: String, password: String) async throws -> StaffUser {
+        let user = try await service.signIn(username: username, password: password)
+        Haptics.confirmed()
+        return user
+    }
+
+    /// Opens the app after sign-in. Ink travels from the sign-in header to the scan stage while
+    /// the inventory loads; the two never wait for each other.
+    func enter(_ user: StaffUser, inkFrame: CGRect?) async {
+        let animate = inkFrame != nil && !UIAccessibility.isReduceMotionEnabled
+        if animate, let inkFrame {
+            inkAnchors[.scan] = nil
+            travel = InkTravel(frame: inkFrame, baseSide: max(inkFrame.width, 1))
+        }
+        Task { await signedIn(user, greet: !animate) }
+        guard animate else { return }
+        // Wait (briefly) for Scan to lay out and report where its Ink sits.
+        for _ in 0..<30 where inkAnchors[.scan] == nil {
+            try? await Task.sleep(for: .milliseconds(16))
+        }
+        guard let target = inkAnchors[.scan] else { travel = nil; greet(user); return }
+        travel?.departed = true
+        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) { travel?.frame = target }
+        try? await Task.sleep(for: .seconds(0.58))
+        withAnimation(.easeOut(duration: 0.14)) { travel = nil }
+        greet(user)
+    }
+
+    private func greet(_ user: StaffUser) {
+        let first = user.displayName.split(separator: " ").first.map(String.init) ?? user.displayName
+        scan.greet("Welcome back, \(first) · \(dataset.title)")
+    }
+
+    private func signedIn(_ user: StaffUser, greet shouldGreet: Bool) async {
         if UserDefaults.standard.string(forKey: "dataset") == nil, let preferred = user.defaultDataset {
             dataset = preferred
         }
-        tab = .scan
-        session = .signedIn(user)
-        if welcome {
-            let first = user.displayName.split(separator: " ").first.map(String.init) ?? user.displayName
-            scan.greet("Welcome back, \(first) · \(dataset.title)")
+        if let previous = lastSignedInId, previous != user.id {
+            // Someone else signs in on this phone: nothing of the previous person's stays on screen.
+            inventory.reset()
+            scan.reset()
+            scan.unloadIntake()
+            inbox.reset()
+            writes.reset()
         }
-        await refreshAll()
+        lastSignedInId = user.id
+        SessionCache.saveUser(user)
+        tab = .scan
+        launchError = nil
+        session = .signedIn(user)
+        if shouldGreet { greet(user) }
         writes.load()
         scan.loadPending()
+        await refreshAll()
+    }
+
+    /// The server says this session is over. Saved read copies go; pending writes stay on disk
+    /// for the same account, as before.
+    private func endSession() {
+        SessionCache.clear()
+        session = .signedOut
     }
 
     func signOut() async {
         await service.signOut()
+        SessionCache.clear()
+        inkAnchors = [:]
         inventory.reset()
         scan.reset()
         scan.unloadIntake()
@@ -127,7 +232,7 @@ final class AppModel {
     /// Any 401 ends the local session; pending writes stay on disk for the same account.
     func handle(_ error: Error) {
         if let failure = error as? APIFailure, failure.kind == .unauthorized {
-            session = .signedOut
+            endSession()
         }
     }
 
@@ -163,6 +268,14 @@ final class InventoryModel {
     var loading = false
     var lastError: String?
     var lastRefreshed: Date?
+    /// True while the list on screen is the copy saved at the last launch, not yet refreshed.
+    private(set) var isSavedCopy = false
+
+    func restore(_ saved: InventorySnapshot, savedAt: Date) {
+        snapshot = saved
+        lastRefreshed = savedAt
+        isSavedCopy = true
+    }
     private var demoInitialized = false
     private var receivedUptime: TimeInterval = 0
     /// Ticks so 48-hour labels expire without a refresh.
@@ -178,6 +291,7 @@ final class InventoryModel {
         snapshot = nil
         lastError = nil
         lastRefreshed = nil
+        isSavedCopy = false
     }
 
     @ObservationIgnored private let gate = RefreshGate()
@@ -205,6 +319,8 @@ final class InventoryModel {
             snapshot = snap
             lastRefreshed = Date()
             lastError = nil
+            isSavedCopy = false
+            SessionCache.save(snap)
         } catch {
             lastError = (error as? APIFailure)?.message ?? "Couldn't refresh."
             app.handle(error)
@@ -294,11 +410,13 @@ final class InboxModel {
     var unreadCount = 0
     var loading = false
     var lastError: String?
+    /// True once a load has succeeded for this inventory, so "empty" is never shown while unknown.
+    private(set) var loaded = false
 
     var tasks: [InboxMessage] { messages.filter(\.isOpenTask) }
     var others: [InboxMessage] { messages.filter { !$0.isOpenTask } }
 
-    func reset() { messages = []; unreadCount = 0; lastError = nil }
+    func reset() { messages = []; unreadCount = 0; lastError = nil; loaded = false }
 
     @ObservationIgnored private let gate = RefreshGate()
 
@@ -319,6 +437,7 @@ final class InboxModel {
             messages = response.messages.sorted { $0.createdAt > $1.createdAt }
             unreadCount = response.unreadCount ?? messages.filter(\.isUnread).count
             lastError = nil
+            loaded = true
         } catch {
             lastError = (error as? APIFailure)?.message
             app.handle(error)

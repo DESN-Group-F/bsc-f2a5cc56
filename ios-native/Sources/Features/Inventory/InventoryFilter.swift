@@ -155,6 +155,9 @@ enum InventoryQuery {
         let members = f.groupId.flatMap { id in groups.first { $0.id == id } }.map { Set($0.batteryIds) }
         if f.groupId != nil && members == nil { return [] }
         let query = search.trimmingCharacters(in: .whitespaces).lowercased()
+        let ageActive = f.ageMode != .any || f.ageMinDays != nil || f.ageMaxDays != nil
+        let checkoutActive = f.checkoutMode != .any || f.checkoutFrom != nil || f.checkoutTo != nil
+        let chargeActive = f.chargeMode != .any || f.chargeFrom != nil || f.chargeTo != nil
         let result = batteries.filter { b in
             if let members, !members.contains(b.id) { return false }
             switch f.scope {
@@ -199,9 +202,10 @@ enum InventoryQuery {
             } else if let m = f.model, (b.model ?? "") != m { return false }
             if !range(b.capacityMah, f.capacityMode, f.capacityMin, f.capacityMax) { return false }
             if !range(b.voltage, f.voltageMode, f.voltageMin, f.voltageMax) { return false }
-            if !range(ageInDays(b.manufacturedOn, today).map { Double($0) }, f.ageMode, f.ageMinDays.map { Double($0) }, f.ageMaxDays.map { Double($0) }) { return false }
-            if !dateRange(Sydney.date(b.lastCheckedOutAt).map { Sydney.ymd($0) }, f.checkoutMode, f.checkoutFrom, f.checkoutTo) { return false }
-            if !dateRange(Sydney.date(b.chargedAt).map { Sydney.ymd($0) }, f.chargeMode, f.chargeFrom, f.chargeTo) { return false }
+            // Date criteria parse timestamps, so they only run when the filter actually asks for them.
+            if ageActive, !range(ageInDays(b.manufacturedOn, today).map { Double($0) }, f.ageMode, f.ageMinDays.map { Double($0) }, f.ageMaxDays.map { Double($0) }) { return false }
+            if checkoutActive, !dateRange(Sydney.date(b.lastCheckedOutAt).map { Sydney.ymd($0) }, f.checkoutMode, f.checkoutFrom, f.checkoutTo) { return false }
+            if chargeActive, !dateRange(Sydney.date(b.chargedAt).map { Sydney.ymd($0) }, f.chargeMode, f.chargeFrom, f.chargeTo) { return false }
             if !query.isEmpty {
                 let text = [b.id, b.name, b.chemistry, b.model, b.tagId, b.ownerName, b.borrowerName, b.homeBuildingId, b.homeBuildingName,
                             b.homeRoomNumber, b.homeRoomName, b.lifecycleReason, b.lifecycleDestination]
@@ -397,7 +401,7 @@ struct InventoryFilterSheet: View {
                 }
 
                 Section {
-                    Button("Clear filters", role: .destructive) {
+                    Button("Clear filters") {
                         withAnimation { draft.clearCriteria(keepGroup: fixedGroup) }
                     }
                     .disabled(draft == cleared)

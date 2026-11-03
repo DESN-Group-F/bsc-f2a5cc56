@@ -50,9 +50,13 @@ struct MeView: View {
                     Section("With me") {
                         ForEach(withMe) { battery in
                             HStack {
-                                VStack(alignment: .leading) {
-                                    Text(battery.name).font(.body.weight(.semibold))
-                                    Text(battery.id).font(.monoSmall).foregroundStyle(.secondary)
+                                NavigationLink {
+                                    BatteryDetailView(batteryId: battery.id)
+                                } label: {
+                                    VStack(alignment: .leading) {
+                                        Text(battery.name).font(.body.weight(.semibold))
+                                        Text(battery.id).font(.monoSmall).foregroundStyle(.secondary)
+                                    }
                                 }
                                 Spacer()
                                 Button {
@@ -62,11 +66,12 @@ struct MeView: View {
                                     Text("Return")
                                         .font(.subheadline.weight(.bold))
                                         .foregroundStyle(Tone.returnInk)
-                                        .padding(.horizontal, 14)
-                                        .frame(height: 32)
-                                        .background(Tone.returning, in: .capsule)
+                                        .padding(.horizontal, 4)
                                 }
-                                .buttonStyle(.borderless)
+                                .buttonStyle(.borderedProminent)
+                                .buttonBorderShape(.capsule)
+                                .tint(Tone.returning)
+                                .accessibilityLabel("Return \(battery.id)")
                             }
                         }
                     }
@@ -89,10 +94,11 @@ struct MeView: View {
                     }
                 }
 
-                Section("Settings") {
+                Section {
                     Picker("Inventory", selection: Binding(get: { app.dataset }, set: { app.select($0) })) {
                         ForEach(Dataset.allCases) { Text($0.title).tag($0) }
                     }
+                    .disabled(app.hasUnsettledWork)
                     Toggle("Haptics", isOn: $haptics)
                         .onChange(of: haptics) { Haptics.enabled = haptics }
                     NavigationLink {
@@ -102,6 +108,12 @@ struct MeView: View {
                     }
                     LabeledContent("Server", value: app.service.client.origin.host ?? "")
                     LabeledContent("Version", value: Bundle.main.versionLabel)
+                } header: {
+                    Text("Settings")
+                } footer: {
+                    if app.hasUnsettledWork {
+                        Text("Switching inventory waits until the unconfirmed request is settled.")
+                    }
                 }
 
                 Section {
@@ -125,7 +137,7 @@ struct MeView: View {
     private func oldest(_ batteries: [BatteryRecord]) -> String {
         let dates = batteries.compactMap { Sydney.date($0.checkedOutAt) }
         guard let first = dates.min() else { return "—" }
-        return Sydney.friendly(Sydney.timestamp(first)).replacingOccurrences(of: "Today, ", with: "since ")
+        return "since " + Sydney.shortTime(Sydney.timestamp(first))
     }
 }
 
@@ -162,10 +174,10 @@ struct StatTile: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("\(value)").font(.system(size: 40, weight: .bold, design: .rounded))
+            Text("\(value)").font(.system(.largeTitle, design: .rounded).weight(.bold))
                 .contentTransition(.numericText(value: Double(value)))
             Text(title).font(.subheadline.weight(.semibold))
-            Text(detail).font(.caption).opacity(0.8).lineLimit(1)
+            Text(detail).font(.caption.weight(.medium)).opacity(0.92).lineLimit(2)
         }
         .foregroundStyle(filled ? Color.white : Color.primary)
         .frame(maxWidth: .infinity, alignment: .leading)

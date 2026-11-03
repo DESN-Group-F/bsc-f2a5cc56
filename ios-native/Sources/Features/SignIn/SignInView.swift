@@ -1,11 +1,11 @@
 import SwiftUI
 
 /// Sign-in. Ink reads along while you type your username, closes its eyes for the password,
-/// and carries you into the app when the server accepts you.
+/// hops green when the server accepts you, then travels to the scan stage as the form sinks away.
 struct SignInView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.heroNamespace) private var hero
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var username = ""
     @State private var password = ""
     @State private var working = false
@@ -13,6 +13,8 @@ struct SignInView: View {
     @State private var reaction = 0
     @State private var mood: InkMood = .idle
     @State private var appeared = false
+    @State private var accepted = false
+    @State private var inkFrame: CGRect?
     @State private var shake = 0
     @FocusState private var focus: Field?
 
@@ -23,7 +25,9 @@ struct SignInView: View {
             VStack(spacing: 0) {
                 InkView(tint: inkTint, mood: inkMood, reaction: reaction, gaze: gaze, interactive: true)
                     .frame(width: 150, height: 150)
-                    .heroInk(hero)
+                    .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { inkFrame = $0 }
+                    .scaleEffect(appeared || reduceMotion ? 1 : 0.4)
+                    .opacity(app.travel == nil && appeared ? 1 : 0)
                     .padding(.top, 64)
                     .animation(.spring(response: 0.35, dampingFraction: 0.7), value: focus)
 
@@ -32,7 +36,7 @@ struct SignInView: View {
                     Text("Sign in with your staff account.").font(.subheadline).foregroundStyle(.secondary)
                 }
                 .padding(.top, 26)
-                .rise(appeared, order: 0)
+                .rise(appeared && !accepted, order: 0)
 
                 VStack(spacing: 0) {
                     TextField("Username", text: $username)
@@ -64,7 +68,7 @@ struct SignInView: View {
                     }
                 }
                 .padding(.top, 30)
-                .rise(appeared, order: 1)
+                .rise(appeared && !accepted, order: 1)
 
                 if let error {
                     Text(error)
@@ -77,27 +81,29 @@ struct SignInView: View {
 
                 Button(action: submit) {
                     HStack(spacing: 10) {
-                        if working { ProgressView().tint(.white) }
-                        Text(working ? "Signing in…" : "Sign in")
+                        if accepted {
+                            Image(systemName: "checkmark").fontWeight(.bold).transition(.scale.combined(with: .opacity))
+                        } else if working {
+                            ProgressView().tint(.white)
+                        }
+                        Text(accepted ? "Signed in" : (working ? "Signing in…" : "Sign in"))
                     }
                     .font(.headline)
                     .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: 56)
-                    .contentShape(Capsule())
+                    .frame(maxWidth: .infinity, minHeight: 42)
                 }
-                .buttonStyle(.plain)
-                .glassEffect(.regular.tint(canSubmit ? Tone.checkout : Tone.checkout.opacity(0.45)).interactive(), in: .capsule)
-                .disabled(!canSubmit)
+                .primaryButton(accepted ? Tone.success : Tone.checkout)
+                .disabled(!accepted && (username.isEmpty || password.isEmpty))
+                .animation(.snappy, value: accepted)
                 .animation(.easeOut(duration: 0.2), value: canSubmit)
                 .padding(.top, 22)
-                .rise(appeared, order: 2)
+                .rise(appeared && !accepted, order: 2)
 
                 Text(app.service.client.origin.host ?? "")
                     .font(.caption)
                     .foregroundStyle(.tertiary)
                     .padding(.top, 18)
-                    .rise(appeared, order: 3)
+                    .rise(appeared && !accepted, order: 3)
             }
             .padding(.horizontal, 24)
             .animation(.snappy, value: error)
@@ -118,7 +124,8 @@ struct SignInView: View {
                 .ignoresSafeArea()
         }
         .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.85).delay(0.12)) { appeared = true }
+            // Ink drops in, then the content rises beneath it.
+            withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .spring(response: 0.5, dampingFraction: 0.62)) { appeared = true }
         }
     }
 
@@ -127,6 +134,7 @@ struct SignInView: View {
     private var canSubmit: Bool { !working && !username.isEmpty && !password.isEmpty }
 
     private var inkTint: Color {
+        if accepted { return Tone.success }
         switch mood {
         case .surprised: return Tone.failure
         case .happy: return Tone.success
@@ -154,15 +162,22 @@ struct SignInView: View {
         error = nil
         Task {
             do {
-                try await app.signIn(username: username, password: password)
+                let user = try await app.signIn(username: username, password: password)
                 password = ""
+                // The success beat: Ink hops green and the button confirms, then the form sinks
+                // away while Ink travels to the scan stage.
+                accepted = true
+                mood = .happy
+                reaction += 1
+                if !reduceMotion { try? await Task.sleep(for: .seconds(0.38)) }
+                await app.enter(user, inkFrame: inkFrame)
             } catch let failure as APIFailure {
                 working = false
                 error = failure.status == 401 ? "That username and password don't match." :
                     failure.status == 429 ? "Too many attempts. Wait a few minutes and try again." : failure.message
                 mood = .surprised
                 reaction += 1
-                shake += 1
+                if !reduceMotion { shake += 1 }
                 Haptics.refused()
                 try? await Task.sleep(for: .seconds(1.4))
                 mood = .idle
@@ -171,15 +186,5 @@ struct SignInView: View {
                 self.error = "Couldn't sign in. Try again."
             }
         }
-    }
-}
-
-private extension View {
-    /// Staggered rise-in used for the sign-in content.
-    func rise(_ appeared: Bool, order: Int) -> some View {
-        self
-            .opacity(appeared ? 1 : 0)
-            .offset(y: appeared ? 0 : 18)
-            .animation(.spring(response: 0.6, dampingFraction: 0.85).delay(0.08 * Double(order) + 0.12), value: appeared)
     }
 }

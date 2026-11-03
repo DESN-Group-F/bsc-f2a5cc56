@@ -6,6 +6,8 @@ enum Tone {
     static let checkout = Color(red: 0.114, green: 0.388, blue: 0.929)   // #1D63ED
     static let returning = Color(red: 0.941, green: 0.706, blue: 0.161)  // #F0B429, same as web
     static let returnInk = Color(red: 0.247, green: 0.188, blue: 0.047)  // dark text on yellow
+    /// The return colour for small glyphs on white, where the bright yellow lacks contrast.
+    static let returnGlyph = Color(red: 0.54, green: 0.38, blue: 0.0)
     static let register = Color(red: 0.451, green: 0.314, blue: 0.949)   // #7350F2
     static let success = Color(red: 0.071, green: 0.600, blue: 0.373)    // #12995F
     static let failure = Color(red: 0.878, green: 0.263, blue: 0.290)    // #E0434A
@@ -125,12 +127,12 @@ struct StatusPill: View {
     }
 
     private var foreground: Color {
-        if !battery.isActive { return Tone.failure }
+        if !battery.isActive { return Tone.retire }
         return battery.isInUse ? (isMine ? Tone.checkout : .primary) : .secondary
     }
 
     private var background: Color {
-        if !battery.isActive { return Tone.failure.opacity(0.12) }
+        if !battery.isActive { return Tone.retire.opacity(0.14) }
         return battery.isInUse ? Tone.checkout.opacity(isMine ? 0.14 : 0.07) : Color.secondary.opacity(0.12)
     }
 
@@ -153,5 +155,25 @@ struct BatteryGlyph: View {
             .foregroundStyle(tint)
             .frame(width: size, height: size)
             .background(tint.opacity(0.13), in: .rect(cornerRadius: size * 0.3, style: .continuous))
+    }
+}
+
+// MARK: - Buttons
+
+extension View {
+    /// The one primary-action look: tinted Liquid Glass capsule with the system's pressed,
+    /// disabled and contrast behaviour. Labels set their own width and text colour.
+    func primaryButton(_ tint: Color) -> some View {
+        buttonStyle(.glassProminent)
+            .buttonBorderShape(.capsule)
+            .controlSize(.large)
+            .tint(tint)
+    }
+
+    /// Secondary actions next to or below a primary one.
+    func secondaryButton() -> some View {
+        buttonStyle(.glass)
+            .buttonBorderShape(.capsule)
+            .controlSize(.large)
     }
 }

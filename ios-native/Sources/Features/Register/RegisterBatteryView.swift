@@ -19,6 +19,7 @@ struct RegisterBatteryView: View {
 
     private enum Step: Equatable { case form, review, done }
 
+    @State private var doneHop = 0
     @State private var step: Step = .form
     @State private var details = RegistrationDetails()
     @State private var scanned: TagRead?
@@ -166,8 +167,9 @@ struct RegisterBatteryView: View {
 
     private var done: some View {
         VStack(spacing: 18) {
-            InkView(tint: Tone.success, mood: .happy, reaction: 1, shadow: false)
+            InkView(tint: Tone.success, mood: .happy, reaction: doneHop, shadow: false)
                 .frame(width: 120, height: 120)
+                .task { doneHop += 1 }
                 .padding(.top, 30)
             VStack(spacing: 6) {
                 Text(confirmation?.title ?? "Registered").font(.title2.weight(.bold))
@@ -401,12 +403,9 @@ struct ActionButton: View {
             }
             .font(.headline)
             .foregroundStyle(foreground)
-            .frame(maxWidth: .infinity)
-            .frame(height: 54)
-            .contentShape(Capsule())
+            .frame(maxWidth: .infinity, minHeight: 40)
         }
-        .buttonStyle(.plain)
-        .glassEffect(.regular.tint(tint).interactive(), in: .capsule)
+        .primaryButton(tint)
         .disabled(busy)
     }
 }

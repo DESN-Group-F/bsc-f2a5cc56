@@ -66,19 +66,43 @@ struct BatteryDetailView: View {
                     }
                     .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20, style: .continuous))
 
-                    inspections(battery)
-                    history
+                    if detail == nil, let loadError {
+                        // The battery itself is known; only its history didn't load.
+                        HStack(spacing: 12) {
+                            Image(systemName: "wifi.exclamationmark").foregroundStyle(.secondary)
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Couldn't load inspections and history").font(.subheadline.weight(.semibold))
+                                Text(loadError).font(.footnote).foregroundStyle(.secondary)
+                            }
+                            Spacer(minLength: 8)
+                            Button("Retry") { Task { await load() } }
+                                .buttonStyle(.bordered)
+                                .buttonBorderShape(.capsule)
+                        }
+                        .padding(14)
+                        .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20, style: .continuous))
+                    } else {
+                        inspections(battery)
+                        history
+                    }
                 }
                 .padding(16)
             } else if let loadError {
-                ContentUnavailableView("Couldn't load", systemImage: "wifi.exclamationmark", description: Text(loadError))
-                    .padding(.top, 80)
+                ContentUnavailableView {
+                    Label("Couldn't load this battery", systemImage: "wifi.exclamationmark")
+                } description: {
+                    Text(loadError)
+                } actions: {
+                    Button("Try again") { Task { await load() } }.secondaryButton()
+                }
+                .padding(.top, 80)
             } else {
                 ProgressView().padding(.top, 120)
             }
         }
         .defaultScrollAnchor(app.preview == .detailBottom ? .bottom : .top)
         .background(Color(.systemGroupedBackground))
+        .navigationTitle(battery?.name ?? batteryId)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -318,7 +342,7 @@ struct BatteryDetailView: View {
         if !battery.isActive, let at = battery.lifecycleAt {
             let detailText = [nonEmpty(battery.lifecycleReason), nonEmpty(battery.lifecycleDestination).map { "To \($0)" }].compactMap { $0 }.joined(separator: " · ")
             entries.append(TimelineEntry(id: "retired", title: battery.statusTitle, detail: detailText.isEmpty ? nil : detailText,
-                                         at: at, tint: Tone.failure))
+                                         at: at, tint: Tone.retire))
         }
         return entries.sorted { (Sydney.date($0.at) ?? .distantPast) > (Sydney.date($1.at) ?? .distantPast) }
     }
@@ -471,13 +495,13 @@ struct StatusCard: View {
         return battery.isInUse ? "Return" : "Check out"
     }
     private var buttonForeground: Color {
-        if battery.isScrapped { return Tone.failure }
+        if battery.isScrapped { return Tone.retire }
         return battery.isInUse ? Tone.returnInk : Tone.checkout
     }
     private var buttonBackground: Color { battery.isInUse ? Tone.returning : Color.white }
 
     private var background: Color {
-        if !battery.isActive { return Color(red: 0.42, green: 0.42, blue: 0.46) }
+        if !battery.isActive { return Tone.retire }
         return battery.isInUse ? Tone.checkout : Color(red: 0.20, green: 0.22, blue: 0.27)
     }
 
@@ -506,7 +530,7 @@ struct Fact: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(title.uppercased()).font(.caption2.weight(.semibold)).foregroundStyle(.secondary).tracking(0.5)
-            Text(value).font(.headline).lineLimit(1).minimumScaleFactor(0.7)
+            Text(value).font(.headline).lineLimit(2).minimumScaleFactor(0.85)
             if let note { Text(note).font(.caption2).foregroundStyle(.secondary) }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

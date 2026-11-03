@@ -16,7 +16,7 @@ struct BatteryInventoryApp: App {
 struct RootView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.scenePhase) private var scenePhase
-    @Namespace private var hero
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// The tag sheet, Control Center and alerts only make the scene inactive; refresh after real backgrounding.
     @State private var wasInBackground = false
 
@@ -31,12 +31,12 @@ struct RootView: View {
                 case .signedOut:
                     SignInView().transition(.opacity)
                 case .signedIn:
-                    MainTabs().transition(.asymmetric(insertion: .opacity.combined(with: .scale(scale: 1.03)), removal: .opacity))
+                    MainTabs().transition(.opacity)
                 }
             }
         }
-        .environment(\.heroNamespace, hero)
-        .animation(.spring(response: 0.7, dampingFraction: 0.86), value: app.session)
+        .overlay { TravellingInk() }
+        .animation(reduceMotion ? .easeInOut(duration: 0.2) : .spring(response: 0.5, dampingFraction: 0.9), value: app.session)
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { wasInBackground = true }
             if phase == .active && wasInBackground {
@@ -54,6 +54,39 @@ struct RootView: View {
                 await app.inventory.refresh()
             }
         }
+    }
+}
+
+/// The one Ink that moves between screens. Each screen reports where its own Ink sits (window
+/// coordinates); during a hand-over this Ink flies between those places and the screens hide theirs.
+struct TravellingInk: View {
+    @Environment(AppModel.self) private var app
+    @State private var origin: CGPoint = .zero
+
+    var body: some View {
+        ZStack(alignment: .topLeading) {
+            Color.clear
+            if let travel = app.travel {
+                InkView(tint: travel.departed ? app.scan.tint : Tone.success)
+                    .frame(width: travel.baseSide, height: travel.baseSide)
+                    .scaleEffect(travel.frame.width / travel.baseSide)
+                    .position(x: travel.frame.midX - origin.x, y: travel.frame.midY - origin.y)
+                    .transition(.opacity)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .ignoresSafeArea()
+        .onGeometryChange(for: CGPoint.self) { $0.frame(in: .global).origin } action: { origin = $0 }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+}
+
+extension View {
+    /// Reports where this screen's Ink sits so the travelling Ink can land exactly on it.
+    @MainActor
+    func inkAnchor(_ stage: InkStage, in app: AppModel) -> some View {
+        onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { app.inkAnchors[stage] = $0 }
     }
 }
 
@@ -83,23 +116,58 @@ struct MainTabs: View {
     }
 }
 
+/// Only seen when there is no saved session to open (first launch after an update, or the saved
+/// copy is gone) while the server is asked. If the server can't be reached, it says so and offers
+/// to try again rather than signing anyone out.
 struct LaunchView: View {
+    @Environment(AppModel.self) private var app
     @Environment(\.colorScheme) private var colorScheme
-    @Environment(\.heroNamespace) private var hero
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var dropped = false
+    @State private var retrying = false
 
     var body: some View {
         ZStack {
             Color(.systemGroupedBackground).ignoresSafeArea()
-            InkView(tint: Tone.adaptiveInk(colorScheme), reaction: dropped ? 1 : 0)
-                .frame(width: 150, height: 150)
-                .heroInk(hero)
-                .scaleEffect(dropped ? 1 : 0.35)
-                .opacity(dropped ? 1 : 0)
-                .offset(y: dropped ? 0 : -40)
+            VStack(spacing: 22) {
+                InkView(tint: Tone.adaptiveInk(colorScheme), mood: app.launchError == nil ? .idle : .puzzled,
+                        reaction: dropped ? 1 : 0)
+                    .frame(width: 150, height: 150)
+                    .scaleEffect(dropped || reduceMotion ? 1 : 0.35)
+                    .opacity(dropped ? 1 : 0)
+                    .offset(y: dropped || reduceMotion ? 0 : -40)
+                if let error = app.launchError {
+                    VStack(spacing: 14) {
+                        Text(error)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                        Button {
+                            retrying = true
+                            Task {
+                                await app.checkSession()
+                                retrying = false
+                            }
+                        } label: {
+                            HStack(spacing: 8) {
+                                if retrying { ProgressView() }
+                                Text(retrying ? "Trying…" : "Try again")
+                            }
+                            .font(.headline)
+                            .padding(.horizontal, 22)
+                            .frame(height: 48)
+                        }
+                        .buttonStyle(.glass)
+                        .disabled(retrying)
+                    }
+                    .padding(.horizontal, 40)
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+                }
+            }
+            .animation(.snappy, value: app.launchError)
         }
         .onAppear {
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.62)) { dropped = true }
+            withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .spring(response: 0.5, dampingFraction: 0.62)) { dropped = true }
         }
     }
 }

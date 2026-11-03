@@ -12,20 +12,51 @@ struct InboxView: View {
                     Section("To do") {
                         ForEach(app.inbox.tasks) { message in
                             TaskRow(message: message) { completing = message }
+                                .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                    Button { completing = message } label: { Label("Done", systemImage: "checkmark") }
+                                        .tint(Tone.success)
+                                }
                         }
                     }
                 }
-                Section("Messages") {
-                    if app.inbox.others.isEmpty && app.inbox.tasks.isEmpty {
-                        Text("Nothing here yet.").foregroundStyle(.secondary)
-                    }
-                    ForEach(app.inbox.others) { message in
-                        Button { reading = message } label: { MessageRow(message: message) }
-                            .buttonStyle(.plain)
+                if !app.inbox.others.isEmpty {
+                    Section("Messages") {
+                        ForEach(app.inbox.others) { message in
+                            Button { reading = message } label: { MessageRow(message: message) }
+                                .buttonStyle(.plain)
+                                .swipeActions(edge: .leading) {
+                                    if message.isUnread {
+                                        Button { Task { await app.inbox.markRead(message) } } label: {
+                                            Label("Read", systemImage: "envelope.open")
+                                        }
+                                        .tint(Tone.checkout)
+                                    }
+                                }
+                        }
                     }
                 }
             }
             .listStyle(.insetGrouped)
+            .overlay {
+                if app.inbox.messages.isEmpty {
+                    if app.inbox.loading || !app.inbox.loaded {
+                        if let error = app.inbox.lastError, !app.inbox.loading {
+                            ContentUnavailableView {
+                                Label("Couldn't load the inbox", systemImage: "wifi.exclamationmark")
+                            } description: {
+                                Text(error)
+                            } actions: {
+                                Button("Try again") { Task { await app.inbox.refresh() } }.secondaryButton()
+                            }
+                        } else {
+                            ProgressView()
+                        }
+                    } else {
+                        ContentUnavailableView("No messages", systemImage: "tray",
+                                               description: Text("Tasks and notices for this inventory appear here."))
+                    }
+                }
+            }
             .navigationTitle("Inbox")
             .refreshable { await app.inbox.refresh() }
             .sheet(item: $completing) { message in
@@ -56,12 +87,11 @@ struct TaskRow: View {
                 Button(action: onDone) {
                     Text("Mark done")
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(Color(.systemBackground))
-                        .padding(.horizontal, 14)
-                        .frame(height: 32)
-                        .background(Color.primary, in: .capsule)
+                        .padding(.horizontal, 4)
                 }
-                .buttonStyle(.borderless)
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.capsule)
+                .tint(Tone.checkout)
                 .padding(.top, 4)
             }
         }
@@ -74,13 +104,34 @@ struct DateBlock: View {
 
     var body: some View {
         let parts = Sydney.day(ymd)
+        let due = Sydney.due(ymd)
         VStack(spacing: 0) {
-            Text(parts?.isToday == true ? "TODAY" : (parts?.month ?? "—")).font(.caption2.weight(.bold)).tracking(0.6)
+            Text(caption(parts?.month, due)).font(.caption2.weight(.bold)).tracking(0.6)
             Text(parts?.day ?? "").font(.title3.weight(.bold))
         }
-        .foregroundStyle(parts?.isToday == true ? Tone.failure : Color.primary)
+        .foregroundStyle(tint(due))
         .frame(width: 52, height: 56)
-        .background((parts?.isToday == true ? Tone.failure : Color.secondary).opacity(0.12), in: .rect(cornerRadius: 14, style: .continuous))
+        .background((due == nil || due == .upcoming ? Color.secondary : tint(due)).opacity(0.12),
+                    in: .rect(cornerRadius: 14, style: .continuous))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Sydney.dueText(ymd))
+    }
+
+    /// Overdue is the strongest state; today gets the accent; later dates stay neutral.
+    private func tint(_ due: Sydney.Due?) -> Color {
+        switch due {
+        case .overdue: return Tone.failure
+        case .today: return Tone.checkout
+        default: return .primary
+        }
+    }
+
+    private func caption(_ month: String?, _ due: Sydney.Due?) -> String {
+        switch due {
+        case .overdue: return "LATE"
+        case .today: return "TODAY"
+        default: return month ?? "—"
+        }
     }
 }
 
@@ -106,20 +157,25 @@ struct MessageRow: View {
 }
 
 struct MessageDetail: View {
+    @Environment(\.dismiss) private var dismiss
     let message: InboxMessage
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 12) {
+                    Text(message.title).font(.title2.weight(.bold))
                     Text(Sydney.friendly(message.createdAt)).font(.footnote).foregroundStyle(.secondary)
                     Text(message.body ?? "").font(.body)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(20)
             }
-            .navigationTitle(message.title)
+            .navigationTitle("Message")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } }
+            }
         }
     }
 }
@@ -138,7 +194,10 @@ struct CompleteTaskSheet: View {
             Form {
                 Section {
                     Text(message.cycle?.title ?? message.title).font(.headline)
-                    if let due = message.dueOn { Text("Due \(due)").foregroundStyle(.secondary) }
+                    if let due = message.dueOn {
+                        Text(Sydney.dueText(due))
+                            .foregroundStyle(Sydney.due(due).map { if case .overdue = $0 { return Tone.failure } else { return Color.secondary } } ?? .secondary)
+                    }
                 }
                 Section("Notes (optional)") {
                     TextField("What did you find?", text: $notes, axis: .vertical).lineLimit(3...6)

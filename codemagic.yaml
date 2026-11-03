@@ -57,8 +57,8 @@ workflows:
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
           xcrun simctl install "$UDID" "$APP"
           mkdir -p screenshots
-          LIGHT="scan scanList scanDuplicate scanUnregistered scanRegister scanDone scanUncertain me"
-          DARK="scan scanUnregistered scanDone"
+          LIGHT="signin scan scanList scanUnregistered scanRegister scanDone scanUncertain inventory detail retire inbox me"
+          DARK="scan scanUnregistered inventory detail"
           for appearance in light dark; do
             xcrun simctl ui "$UDID" appearance "$appearance"
             if [ "$appearance" = light ]; then SCREENS="$LIGHT"; else SCREENS="$DARK"; fi
@@ -68,6 +68,15 @@ workflows:
               xcrun simctl io "$UDID" screenshot "screenshots/${appearance}-${screen}.png" >/dev/null
             done
           done
+          # Largest accessibility text size: layouts must reflow, not clip.
+          xcrun simctl ui "$UDID" appearance light
+          xcrun simctl ui "$UDID" content_size accessibility-extra-large || true
+          for screen in scan scanList inventory; do
+            xcrun simctl launch --terminate-running-process "$UDID" com.batteryinventory.mobile -uiPreview "$screen" >/dev/null
+            sleep 4
+            xcrun simctl io "$UDID" screenshot "screenshots/ax-${screen}.png" >/dev/null
+          done
+          xcrun simctl ui "$UDID" content_size large || true
           # Motion strip: launch the auto-play demo and capture frames around each reaction.
           xcrun simctl ui "$UDID" appearance light
           xcrun simctl launch --terminate-running-process "$UDID" com.batteryinventory.mobile -uiPreview inkMotion >/dev/null

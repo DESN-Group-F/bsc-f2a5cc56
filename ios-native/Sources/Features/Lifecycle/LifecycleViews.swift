@@ -18,6 +18,7 @@ struct RetireSheet: View {
     @State private var message: String?
     @State private var isError = false
     @State private var confirmation: WriteConfirmation?
+    @State private var confirmPermanent = false
 
     var body: some View {
         NavigationStack {
@@ -82,11 +83,17 @@ struct RetireSheet: View {
                                 Task { handle(await app.writes.retry(entry)) }
                             }
                         } else {
-                            ActionButton(title: working ? "Saving…" : confirmTitle, tint: Tone.failure, busy: working) {
-                                Task { await submit() }
+                            ActionButton(title: working ? "Saving…" : confirmTitle,
+                                         tint: kind == "scrapped" ? Tone.retire : Tone.failure, busy: working) {
+                                // Same rule as the scan station: permanent removal asks once more.
+                                if kind == "permanently_removed" { confirmPermanent = true } else { Task { await submit() } }
                             }
                             .disabled(!blockers.isEmpty)
-                            .opacity(blockers.isEmpty ? 1 : 0.5)
+                            .confirmationDialog(confirmTitle + "?", isPresented: $confirmPermanent, titleVisibility: .visible) {
+                                Button(confirmTitle, role: .destructive) { Task { await submit() } }
+                            } message: {
+                                Text("They leave the inventory for good. Their history stays, but this can't be undone in the app.")
+                            }
                         }
                     } footer: {
                         if !blockers.isEmpty { Text(blockers.joined(separator: " ")) }
@@ -99,15 +106,14 @@ struct RetireSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: confirmation == nil ? .cancellationAction : .confirmationAction) {
-                    Button(confirmation == nil ? "Cancel" : "Done") {
-                        if confirmation != nil { onFinished?() }
-                        dismiss()
-                    }
-                    .disabled(isLocked)
+                    Button(confirmation == nil ? "Cancel" : "Done") { dismiss() }
+                        .disabled(isLocked)
                 }
             }
             .interactiveDismissDisabled(isLocked)
         }
+        // However the sheet closes (Done or a swipe down), a confirmed result ends the selection.
+        .onDisappear { if confirmation != nil { onFinished?() } }
     }
 
     private var batteries: [BatteryRecord] { batteryIds.compactMap { app.inventory.battery(id: $0) } }
@@ -342,7 +348,6 @@ struct InspectionSheet: View {
                                 Task { await submit() }
                             }
                             .disabled(!problems.isEmpty)
-                            .opacity(problems.isEmpty ? 1 : 0.5)
                         }
                     } footer: {
                         if !problems.isEmpty { Text(problems.joined(separator: " ")) }

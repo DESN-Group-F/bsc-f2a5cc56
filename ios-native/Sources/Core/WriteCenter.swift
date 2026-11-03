@@ -172,10 +172,9 @@ struct PendingWriteBanner: View {
                     }
                     .font(.subheadline.weight(.bold))
                     .frame(maxWidth: .infinity)
-                    .frame(height: 40)
                 }
-                .buttonStyle(.plain)
-                .glassEffect(.regular.tint(Color.primary.opacity(0.06)).interactive(), in: .capsule)
+                .buttonStyle(.glass)
+                .buttonBorderShape(.capsule)
                 .disabled(sending)
             }
             .padding(14)

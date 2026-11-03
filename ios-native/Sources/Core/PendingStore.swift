@@ -105,11 +105,17 @@ enum Sydney {
         return dayMonthYear.string(from: d)
     }
 
+    /// Formatters are expensive to make; each format is built once and reused.
+    nonisolated(unsafe) private static var formatters: [String: DateFormatter] = [:]
+    private static let formattersLock = NSLock()
     private static func formatter(_ format: String) -> DateFormatter {
+        formattersLock.lock(); defer { formattersLock.unlock() }
+        if let cached = formatters[format] { return cached }
         let f = DateFormatter()
         f.locale = Locale(identifier: "en_AU")
         f.timeZone = zone
         f.dateFormat = format
+        formatters[format] = f
         return f
     }
     private static let time = formatter("HH:mm")
@@ -147,6 +153,27 @@ enum Sydney {
         let month = formatter("MMM").string(from: d).uppercased()
         let day = formatter("d").string(from: d)
         return (month, day, calendar.isDateInToday(d))
+    }
+
+    enum Due: Equatable { case overdue(days: Int), today, upcoming }
+
+    /// Where a due date stands relative to today in Sydney.
+    static func due(_ ymd: String?) -> Due? {
+        guard let days = days(since: ymd) else { return nil }
+        if days > 0 { return .overdue(days: days) }
+        return days == 0 ? .today : .upcoming
+    }
+
+    /// "Overdue · 2 days", "Due today", "Due Wed 4 Nov".
+    static func dueText(_ ymd: String?) -> String {
+        switch due(ymd) {
+        case .overdue(let n): return "Overdue · \(n) \(n == 1 ? "day" : "days")"
+        case .today: return "Due today"
+        case .upcoming:
+            guard let d = dateFromYMD(ymd) else { return "" }
+            return "Due " + formatter("EEE d MMM").string(from: d)
+        case nil: return ""
+        }
     }
 
     static func days(since string: String?) -> Int? {
