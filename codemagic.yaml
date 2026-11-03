@@ -91,16 +91,63 @@ workflows:
             sleep 0.15
           done
           ls screenshots
-      - name: Print preview screens for review
+      - name: Print screens 1 for review
         script: |
-          set -euo pipefail
+          set -uo pipefail
           cd ios-native/screenshots
           mkdir -p review
-          for f in *.png; do
-            case "$f" in motion-*) W=360 ;; *) W=520 ;; esac
-            sips -s format jpeg -s formatOptions 72 --resampleWidth "$W" "$f" --out "review/${f%.png}.jpg" >/dev/null
-            echo "@@IMG ${f%.png}"
-            base64 -i "review/${f%.png}.jpg" | tr -d '\n'
+          for name in light-signin light-scan light-scanList light-scanUnregistered light-scanRegister light-scanDone; do
+            f="$name.png"
+            [ -f "$f" ] || { echo "missing $f"; continue; }
+            case "$name" in motion-*) W=360 ;; *) W=520 ;; esac
+            sips -s format jpeg -s formatOptions 72 --resampleWidth "$W" "$f" --out "review/$name.jpg" >/dev/null
+            echo "@@IMG $name"
+            base64 -i "review/$name.jpg" | tr -d '\n'
+            echo
+          done
+          echo "@@END"
+      - name: Print screens 2 for review
+        script: |
+          set -uo pipefail
+          cd ios-native/screenshots
+          mkdir -p review
+          for name in light-scanUncertain light-inventory light-detail light-retire light-inbox light-me; do
+            f="$name.png"
+            [ -f "$f" ] || { echo "missing $f"; continue; }
+            case "$name" in motion-*) W=360 ;; *) W=520 ;; esac
+            sips -s format jpeg -s formatOptions 72 --resampleWidth "$W" "$f" --out "review/$name.jpg" >/dev/null
+            echo "@@IMG $name"
+            base64 -i "review/$name.jpg" | tr -d '\n'
+            echo
+          done
+          echo "@@END"
+      - name: Print screens 3 for review
+        script: |
+          set -uo pipefail
+          cd ios-native/screenshots
+          mkdir -p review
+          for name in dark-scan dark-scanUnregistered dark-inventory dark-detail ax-scan ax-scanList ax-inventory; do
+            f="$name.png"
+            [ -f "$f" ] || { echo "missing $f"; continue; }
+            case "$name" in motion-*) W=360 ;; *) W=520 ;; esac
+            sips -s format jpeg -s formatOptions 72 --resampleWidth "$W" "$f" --out "review/$name.jpg" >/dev/null
+            echo "@@IMG $name"
+            base64 -i "review/$name.jpg" | tr -d '\n'
+            echo
+          done
+          echo "@@END"
+      - name: Print motion for review
+        script: |
+          set -uo pipefail
+          cd ios-native/screenshots
+          mkdir -p review
+          for name in motion-01 motion-03 motion-05 motion-07 motion-09 motion-11 motion-13 motion-15 motion-17 motion-19 motion-21 motion-23; do
+            f="$name.png"
+            [ -f "$f" ] || { echo "missing $f"; continue; }
+            case "$name" in motion-*) W=360 ;; *) W=520 ;; esac
+            sips -s format jpeg -s formatOptions 72 --resampleWidth "$W" "$f" --out "review/$name.jpg" >/dev/null
+            echo "@@IMG $name"
+            base64 -i "review/$name.jpg" | tr -d '\n'
             echo
           done
           echo "@@END"
