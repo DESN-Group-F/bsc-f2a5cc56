@@ -57,8 +57,8 @@ workflows:
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
           xcrun simctl install "$UDID" "$APP"
           mkdir -p screenshots
-          LIGHT="signin scan scanList scanUnregistered scanRegister scanDone scanUncertain inventory detail retire inbox me"
-          DARK="scan scanUnregistered inventory detail"
+          LIGHT="signin scan scanList scanUnregistered scanRegister scanDone scanRetire scanUncertain inventory detail newModel me"
+          DARK="scan scanRetire inventory newModel"
           for appearance in light dark; do
             xcrun simctl ui "$UDID" appearance "$appearance"
             if [ "$appearance" = light ]; then SCREENS="$LIGHT"; else SCREENS="$DARK"; fi
@@ -96,7 +96,7 @@ workflows:
           set -uo pipefail
           cd ios-native/screenshots
           mkdir -p review
-          for name in light-signin light-scan light-scanList light-scanUnregistered light-scanRegister light-scanDone; do
+          for name in light-signin light-scan light-scanList light-scanUnregistered light-scanRegister light-scanRetire; do
             f="$name.png"
             [ -f "$f" ] || { echo "missing $f"; continue; }
             case "$name" in motion-*) W=360 ;; *) W=520 ;; esac
@@ -111,7 +111,7 @@ workflows:
           set -uo pipefail
           cd ios-native/screenshots
           mkdir -p review
-          for name in light-scanUncertain light-inventory light-detail light-retire light-inbox light-me; do
+          for name in light-scanDone light-scanUncertain light-inventory light-detail light-newModel light-me; do
             f="$name.png"
             [ -f "$f" ] || { echo "missing $f"; continue; }
             case "$name" in motion-*) W=360 ;; *) W=520 ;; esac
@@ -126,7 +126,7 @@ workflows:
           set -uo pipefail
           cd ios-native/screenshots
           mkdir -p review
-          for name in dark-scan dark-scanUnregistered dark-inventory dark-detail ax-scan ax-scanList ax-inventory; do
+          for name in dark-scan dark-scanRetire dark-inventory dark-newModel ax-scan ax-scanList ax-inventory; do
             f="$name.png"
             [ -f "$f" ] || { echo "missing $f"; continue; }
             case "$name" in motion-*) W=360 ;; *) W=520 ;; esac

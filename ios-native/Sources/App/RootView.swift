@@ -197,6 +197,15 @@ struct PreviewStandalone: View {
             NavigationStack { InkPlaygroundView() }
         case .inkMotion:
             InkMotionDemo()
+        case .newModel:
+            NewModelSheet(prefill: {
+                var details = RegistrationDetails()
+                details.model = "R-Line 1550 4S"
+                details.chemistry = "LiPo"
+                details.capacity = 1550
+                details.voltage = 14.8
+                return details
+            }()) { _ in }
         default:
             EmptyView()
         }
