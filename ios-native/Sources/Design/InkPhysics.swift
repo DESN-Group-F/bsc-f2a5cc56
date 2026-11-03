@@ -437,7 +437,8 @@ final class InkSimulation {
 
     private func eyes(R: Double) -> [InkFrame.EyeShape] {
         let now = time ?? 0
-        var rx = 0.088, ry = 0.125
+        // Larger eyes, set a little lower: the same face as the app icon.
+        var rx = 0.1, ry = 0.142
         switch mood {
         case .puzzled: ry *= 0.42
         case .surprised: rx *= 1.3; ry *= 1.3
@@ -456,12 +457,12 @@ final class InkSimulation {
         let stretch = min(speed * 0.06, 0.35)
         let angle = speed > 0.01 ? atan2(gazeV.y, gazeV.x) : 0
         let open = mood == .surprised ? 1 : openness(now: now)
-        let anchor = SIMD2(0.17 + gaze.x * 0.11, 0.02 + gaze.y * 0.10)
+        let anchor = SIMD2(0.15 + gaze.x * 0.11, 0.07 + gaze.y * 0.10)
         // Follow the local bulge of the outline in the eyes' direction.
         let ea = atan2(anchor.y, anchor.x)
         let idx = (Int(((ea + .pi / 2) / (2 * .pi) * Double(n)).rounded()) % n + n) % n
         let local = 1 + u[idx] * 0.6
-        let spacing = 0.27 * (1 + (squash - 1) * 0.5)
+        let spacing = 0.29 * (1 + (squash - 1) * 0.5)
         return [-1.0, 1.0].map { side in
             let p = SIMD2(anchor.x * local + side * spacing / 2, anchor.y * local)
             return InkFrame.EyeShape(center: CGPoint(x: p.x * R, y: p.y * R),
