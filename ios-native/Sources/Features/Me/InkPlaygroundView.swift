@@ -37,7 +37,7 @@ struct InkPlaygroundView: View {
     var body: some View {
         List {
             Section {
-                InkView(tint: tint, mood: mood, reaction: reaction, animated: scenePhase == .active, interactive: true) {
+                InkView(tint: tint, mood: mood, reaction: reaction, animated: scenePhase != .background, interactive: true) {
                     reaction += 1
                 }
                 .frame(width: 210, height: 210)

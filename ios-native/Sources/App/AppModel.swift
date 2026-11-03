@@ -180,8 +180,17 @@ final class InventoryModel {
         lastRefreshed = nil
     }
 
+    @ObservationIgnored private let gate = RefreshGate()
+
+    /// A refresh asked for while one is on the wire waits for a fresh one instead of being dropped,
+    /// so a just-registered tag or a just-switched inventory is never judged on stale data.
     func refresh() async {
-        guard let app, app.preview == nil, !loading else { return }
+        guard let app, app.preview == nil else { return }
+        await gate.run { [weak self] in await self?.load() }
+    }
+
+    private func load() async {
+        guard let app else { return }
         let dataset = app.dataset
         loading = true
         defer { loading = false }
@@ -291,12 +300,22 @@ final class InboxModel {
 
     func reset() { messages = []; unreadCount = 0; lastError = nil }
 
+    @ObservationIgnored private let gate = RefreshGate()
+
     func refresh() async {
-        guard let app, app.preview == nil, !loading else { return }
+        guard let app, app.preview == nil else { return }
+        await gate.run { [weak self] in await self?.load() }
+    }
+
+    private func load() async {
+        guard let app else { return }
+        let dataset = app.dataset
         loading = true
         defer { loading = false }
         do {
-            let response = try await app.service.messages(app.dataset)
+            let response = try await app.service.messages(dataset)
+            // Never show another inventory's messages after a switch.
+            guard dataset == app.dataset else { return }
             messages = response.messages.sorted { $0.createdAt > $1.createdAt }
             unreadCount = response.unreadCount ?? messages.filter(\.isUnread).count
             lastError = nil
@@ -321,5 +340,41 @@ final class InboxModel {
                                                notes: notes, requestId: requestId)
         Haptics.confirmed()
         await refresh()
+    }
+}
+
+// MARK: - Refresh coalescing
+
+/// Runs one refresh at a time. Callers that arrive while one is running share a single follow-up,
+/// which starts after the current one ends and so reflects anything that changed meanwhile.
+@MainActor
+final class RefreshGate {
+    private var current: Task<Void, Never>?
+    private var followUp: Task<Void, Never>?
+
+    func run(_ work: @escaping @MainActor () async -> Void) async {
+        guard let running = current else {
+            await begin(work).value
+            return
+        }
+        if followUp == nil {
+            followUp = Task { @MainActor [weak self] in
+                await running.value
+                guard let self else { return }
+                self.followUp = nil
+                await self.begin(work).value
+            }
+        }
+        await followUp?.value
+    }
+
+    private func begin(_ work: @escaping @MainActor () async -> Void) -> Task<Void, Never> {
+        let task = Task { @MainActor in await work() }
+        current = task
+        Task { @MainActor [weak self] in
+            await task.value
+            if self?.current == task { self?.current = nil }
+        }
+        return task
     }
 }

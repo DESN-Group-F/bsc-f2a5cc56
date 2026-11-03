@@ -16,7 +16,7 @@ struct MeView: View {
             List {
                 Section {
                     HStack(spacing: 16) {
-                        InkView(tint: Tone.adaptiveInk(colorScheme), animated: scenePhase == .active, shadow: false, interactive: true)
+                        InkView(tint: Tone.adaptiveInk(colorScheme), animated: scenePhase != .background && app.tab == .me, shadow: false, interactive: true)
                             .frame(width: 64, height: 64)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(me?.displayName ?? "").font(.title2.weight(.bold))

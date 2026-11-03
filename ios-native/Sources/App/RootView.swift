@@ -17,6 +17,8 @@ struct RootView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.scenePhase) private var scenePhase
     @Namespace private var hero
+    /// The tag sheet, Control Center and alerts only make the scene inactive; refresh after real backgrounding.
+    @State private var wasInBackground = false
 
     var body: some View {
         ZStack {
@@ -36,7 +38,11 @@ struct RootView: View {
         .environment(\.heroNamespace, hero)
         .animation(.spring(response: 0.7, dampingFraction: 0.86), value: app.session)
         .onChange(of: scenePhase) { _, phase in
-            if phase == .active { Task { await app.refreshAll() } }
+            if phase == .background { wasInBackground = true }
+            if phase == .active && wasInBackground {
+                wasInBackground = false
+                Task { await app.refreshAll() }
+            }
         }
         .task(id: scenePhase) {
             // Gentle background refresh while the app is open.

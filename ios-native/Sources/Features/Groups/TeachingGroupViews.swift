@@ -265,7 +265,7 @@ struct GroupEditorSheet: View {
                 }
             }
             .interactiveDismissDisabled(isLocked)
-            .sensoryFeedback(.selection, trigger: members)
+            .onChange(of: members) { Haptics.tap() }
             .onAppear {
                 guard !loaded else { return }
                 loaded = true

@@ -79,11 +79,24 @@ enum Haptics {
         set { UserDefaults.standard.set(newValue, forKey: "hapticsEnabled") }
     }
 
-    static func accepted() { guard enabled else { return }; UIImpactFeedbackGenerator(style: .medium).impactOccurred(intensity: 0.9) }
-    static func duplicate() { guard enabled else { return }; UIImpactFeedbackGenerator(style: .soft).impactOccurred(intensity: 0.6) }
-    static func refused() { guard enabled else { return }; UINotificationFeedbackGenerator().notificationOccurred(.error) }
-    static func confirmed() { guard enabled else { return }; UINotificationFeedbackGenerator().notificationOccurred(.success) }
-    static func tap() { guard enabled else { return }; UISelectionFeedbackGenerator().selectionChanged() }
+    // Kept alive and prepared so the first buzz lands with the event, not tens of milliseconds later.
+    private static let medium = UIImpactFeedbackGenerator(style: .medium)
+    private static let soft = UIImpactFeedbackGenerator(style: .soft)
+    private static let notice = UINotificationFeedbackGenerator()
+    private static let selection = UISelectionFeedbackGenerator()
+
+    /// Call just before a moment that will need feedback, e.g. when the tag reader opens.
+    static func prepare() {
+        guard enabled else { return }
+        medium.prepare(); soft.prepare(); notice.prepare(); selection.prepare()
+    }
+
+    static func accepted() { guard enabled else { return }; medium.impactOccurred(intensity: 0.9); medium.prepare() }
+    static func duplicate() { guard enabled else { return }; soft.impactOccurred(intensity: 0.6); soft.prepare() }
+    static func refused() { guard enabled else { return }; notice.notificationOccurred(.error); notice.prepare() }
+    static func confirmed() { guard enabled else { return }; notice.notificationOccurred(.success) }
+    static func tap() { guard enabled else { return }; selection.selectionChanged(); selection.prepare() }
+    static func press() { guard enabled else { return }; medium.impactOccurred(intensity: 0.6) }
 }
 
 /// A quiet status pill used in lists and headers.

@@ -36,7 +36,26 @@ final class NFCReader: NSObject, NFCTagReaderSessionDelegate {
 
     /// The line shown inside the system sheet. Updated as the list grows.
     var prompt: String = "Hold the top of your iPhone near a battery tag." {
-        didSet { session?.alertMessage = prompt }
+        didSet { if !flashing { session?.alertMessage = prompt } }
+    }
+    private var flashing = false
+    private var flashToken = 0
+
+    /// Shows an outcome (duplicate, refusal, switch) in the system sheet, then goes back to the prompt.
+    /// The sheet covers the app, so this is the only place the user can read what just happened.
+    func flash(_ text: String, seconds: Double = 1.6) {
+        guard let session else { return }
+        flashToken += 1
+        let token = flashToken
+        flashing = true
+        session.alertMessage = text
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) { [weak self] in
+            MainActor.assumeIsolated {
+                guard let self, token == self.flashToken else { return }
+                self.flashing = false
+                if self.session === session { session.alertMessage = self.prompt }
+            }
+        }
     }
 
     func start(onEvent: @escaping (ReaderEvent) -> Void) {
@@ -75,6 +94,7 @@ final class NFCReader: NSObject, NFCTagReaderSessionDelegate {
             self.session = nil
             self.isRunning = false
             self.reading = false
+            self.flashing = false
             self.waitingForRemoval = nil
             let handler = self.onEvent
             self.onEvent = nil
@@ -179,7 +199,7 @@ final class NFCReader: NSObject, NFCTagReaderSessionDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
             MainActor.assumeIsolated {
                 guard let self, self.session === session else { return }
-                session.alertMessage = self.prompt
+                if !self.flashing { session.alertMessage = self.prompt }
                 session.restartPolling()
             }
         }

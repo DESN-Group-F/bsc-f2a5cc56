@@ -1,5 +1,6 @@
 import Observation
 import SwiftUI
+import UIKit
 
 /// Summary of a server-confirmed movement, shown on the done screen.
 struct DoneBattery: Identifiable, Equatable {
@@ -49,7 +50,11 @@ final class ScanModel {
         let kind: Kind
         let text: String
         var actionTitle: String? = nil
+        /// What the system tag sheet says, when it differs from the on-screen text.
+        var sheetText: String? = nil
         let id = UUID()
+        /// A notice with an action stays until the next scan or until it's used.
+        var isSticky: Bool { actionTitle != nil }
     }
 
     weak var app: AppModel?
@@ -106,12 +111,15 @@ final class ScanModel {
         if mode == .register {
             let n = intakeEntries.filter { $0.status == .draft }.count
             return n == 0 ? "Hold the top of your iPhone near a new battery's tag."
-                : "\(n) new in your batch. Hold near the next one. Tap Cancel to review — your batch stays."
+                : "\(n) new in your batch. Hold near the next one, or tap Cancel to review — your batch stays."
         }
-        return items.isEmpty
-            ? "Hold the top of your iPhone near a battery tag."
-            : "\(items.count) in your list. Hold near the next battery. Tap Cancel to review — your list stays."
+        guard !items.isEmpty else { return "Hold the top of your iPhone near a battery tag." }
+        let added = latestId.map { "\($0) added · " } ?? ""
+        return "\(added)\(items.count) to \(mode.title.lowercased()). Hold near the next one, or tap Cancel to review — your list stays."
     }
+
+    /// Batch registration progress while the requests go out one by one.
+    private(set) var intakeProgress: (sent: Int, total: Int)?
 
     /// Whether the station currently shows a list for the selected action.
     var hasList: Bool { mode == .register ? !intakeEntries.isEmpty : !items.isEmpty }
@@ -144,6 +152,7 @@ final class ScanModel {
 
     func scanMore() {
         guard pendingWrites.isEmpty, retireRequestId == nil else { phase = .uncertain; return }
+        notice = nil
         retireReason = ""
         retireDestination = ""
         items = []
@@ -156,6 +165,8 @@ final class ScanModel {
     }
 
     func setMode(_ newMode: MovementKind) {
+        // From the done screen, picking an action simply starts the next round.
+        if case .done = phase { scanMore() }
         guard phase == .scanning, newMode != mode else { return }
         // A batch intake is saved on the phone, so it can wait while other actions are used.
         if !items.isEmpty {
@@ -169,6 +180,8 @@ final class ScanModel {
     // MARK: Reading tags
 
     func tapInk() {
+        // The station stays open after a confirmed result: tapping Ink starts the next round.
+        if case .done = phase { scanMore() }
         guard let app, phase == .scanning else { return }
         if readerActive { return }
         if mode == .register && !(app.dataset.allowsNFCWrites && NFCReader.isAvailable) {
@@ -192,6 +205,7 @@ final class ScanModel {
         }
         readerActive = true
         setMood(.listening, hold: nil)
+        Haptics.prepare()
         reader.prompt = readerPrompt
         reader.start { [weak self] event in
             Task { @MainActor in self?.handle(event) }
@@ -225,7 +239,8 @@ final class ScanModel {
         }
         guard let battery else {
             unregisteredRead = read
-            refuse("This tag isn't registered", action: "Register")
+            refuse("This tag isn't registered", action: "Register",
+                   sheet: "This tag isn't registered. Tap Cancel, then Register to add it.")
             return
         }
         let evidence = read.evidence(adoptedAt: Sydney.timestamp())
@@ -320,6 +335,7 @@ final class ScanModel {
             show(.init(kind: .info, text: "\(battery.id) isn't in \(current.name), so this is now an ordinary list"))
         }
         items.insert(Item(battery: battery, tagId: tagId, evidence: evidence), at: 0)
+        if notice?.isSticky == true { notice = nil }
         source = newSource
         latestId = battery.id
         setMood(.happy, hold: 0.7)
@@ -354,8 +370,8 @@ final class ScanModel {
         return "with \(StatusPill.shortName(battery.borrowerName))"
     }
 
-    private func refuse(_ text: String, action: String? = nil) {
-        show(.init(kind: .refused, text: text, actionTitle: action))
+    private func refuse(_ text: String, action: String? = nil, sheet: String? = nil) {
+        show(.init(kind: .refused, text: text, actionTitle: action, sheetText: sheet))
         setMood(.surprised, hold: 1.4)
         Haptics.refused()
     }
@@ -364,10 +380,25 @@ final class ScanModel {
         notice = newNotice
         noticeToken += 1
         let token = noticeToken
+        // The system sheet hides the app while scanning, so the outcome goes there too.
+        if readerActive, newNotice.kind != .greeting {
+            reader.flash(newNotice.sheetText ?? newNotice.text)
+        }
+        let voiceOver = UIAccessibility.isVoiceOverRunning
+        if voiceOver, !readerActive {
+            UIAccessibility.post(notification: .announcement, argument: newNotice.text)
+        }
+        guard !newNotice.isSticky else { return }
+        let seconds = voiceOver ? 4.5 : 2.6
         Task { @MainActor in
-            try? await Task.sleep(for: .seconds(2.4))
+            try? await Task.sleep(for: .seconds(seconds))
             if token == self.noticeToken { self.notice = nil }
         }
+    }
+
+    func dismissNotice() {
+        notice = nil
+        noticeToken += 1
     }
 
     private func setMood(_ newMood: InkMood, hold: Double?) {
@@ -531,6 +562,7 @@ final class ScanModel {
             return
         }
         latestId = intakeEntries[0].uid
+        if notice?.isSticky == true { notice = nil }
         setMood(.happy, hold: 0.7)
         reaction += 1
         Haptics.accepted()
@@ -588,7 +620,10 @@ final class ScanModel {
             intakeSessionDetails = intakeDetails
         }
         phase = .submitting
-        for id in targets {
+        intakeProgress = (0, targets.count)
+        defer { intakeProgress = nil }
+        for (offset, id) in targets.enumerated() {
+            intakeProgress = (offset, targets.count)
             guard let index = intakeEntries.firstIndex(where: { $0.id == id }) else { continue }
             let entry = intakeEntries[index]
             let requestId = RequestID.make()
@@ -764,6 +799,27 @@ final class ScanModel {
             submissionError = text
             phase = .uncertain
         }
+    }
+
+    /// "Not confirmed yet" is only true while something is actually unresolved. A request can be settled
+    /// elsewhere (the banner in Inventory or Me), so this brings the station back instead of leaving it stuck.
+    func reconcileUncertain() async {
+        guard let app, phase == .uncertain else { return }
+        reconcileIntake()
+        guard pendingWrites.isEmpty, !intakeHasUncertain else { return }
+        if let id = retireRequestId {
+            guard app.writes.entry(id: id) == nil else { return }
+            retireRequestId = nil
+            submissionError = nil
+            phase = .scanning
+            await app.inventory.refresh()
+            reviewAgainstLatest()
+            show(.init(kind: .info, text: items.isEmpty ? "Settled from the banner. The list is up to date."
+                                                         : "Settled from the banner. Check the list before confirming."))
+            return
+        }
+        submissionError = nil
+        phase = .scanning
     }
 
     func retryPending() async {

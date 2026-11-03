@@ -48,6 +48,8 @@ struct ScanView: View {
         .sheet(isPresented: $scan.showBatchDetails) {
             BatchDetailsSheet()
         }
+        .task { await scan.reconcileUncertain() }
+        .onChange(of: app.writes.pending.count) { Task { await scan.reconcileUncertain() } }
     }
 
     // MARK: Backdrop
@@ -88,7 +90,7 @@ struct ScanView: View {
         HStack {
             DatasetMenu()
             Spacer()
-            if app.inventory.loading {
+            if app.inventory.loading && app.inventory.snapshot == nil {
                 ProgressView().controlSize(.small)
                     .frame(width: 40, height: 40)
             }
@@ -126,7 +128,7 @@ struct ScanView: View {
         .padding(4)
         .glassEffect(.regular, in: .capsule)
         .animation(.spring(response: 0.38, dampingFraction: 0.78), value: scan.mode)
-        .disabled(scan.phase != .scanning)
+        .disabled(scan.phase == .submitting || scan.phase == .uncertain)
     }
 
     // MARK: Stage
@@ -135,10 +137,15 @@ struct ScanView: View {
     private var stage: some View {
         let inkSize: CGFloat = isDone ? 150 : (hasList ? 96 : 210)
         VStack(spacing: 0) {
+            // The tag sheet makes the scene inactive while Ink is still visible above it, so only
+            // pause in the background or on another tab. Ink is drawn at one size and scaled, so
+            // the shader never sees a half-animated frame while the stage resizes.
             InkView(tint: scan.tint, mood: scan.mood, reaction: scan.reaction, gaze: gaze,
-                    animated: scenePhase == .active, interactive: true) {
+                    animated: scenePhase != .background && app.tab == .scan, interactive: true) {
                 scan.tapInk()
             }
+            .frame(width: 210, height: 210)
+            .scaleEffect(inkSize / 210)
             .frame(width: inkSize, height: inkSize)
             .heroInk(hero)
             .overlay {
@@ -175,43 +182,47 @@ struct ScanView: View {
 
     @ViewBuilder
     private var statusSlot: some View {
-        ZStack {
-            if let notice = scan.notice {
-                NoticeCapsule(notice: notice) {
-                    if notice.actionTitle == "Register" { scan.registerUnregisteredTag() }
-                }
-                .id(notice.id)
-                .transition(.scale(scale: 0.9).combined(with: .opacity))
-            } else if isDone {
+        VStack(spacing: 8) {
+            if isDone {
                 EmptyView()
             } else if hasList {
-                VStack(spacing: 4) {
-                    HStack(alignment: .firstTextBaseline, spacing: 8) {
-                        Text(countTitle)
-                            .font(.title3.weight(.bold))
-                            .contentTransition(.numericText(value: Double(scan.listCount)))
-                        if let latest = scan.latestId {
-                            Text("Added \(latest)").font(.subheadline).foregroundStyle(.secondary)
-                        }
-                    }
-                    if let group = scan.group {
-                        Label(group.name, systemImage: "person.3.fill")
-                            .font(.footnote.weight(.semibold))
-                            .foregroundStyle(.secondary)
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Text(countTitle)
+                        .font(.title3.weight(.bold))
+                        .contentTransition(.numericText(value: Double(scan.listCount)))
+                    if scan.notice == nil, let latest = scan.latestId {
+                        Text("Added \(latest)").font(.subheadline).foregroundStyle(.secondary)
+                            .transition(.opacity)
                     }
                 }
-                .transition(.opacity)
+                if scan.notice == nil, let group = scan.group {
+                    Label(group.name, systemImage: "person.3.fill")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
             } else {
-                VStack(spacing: 6) {
-                    Text(emptyTitle)
-                        .font(.title.weight(.bold))
+                Text(emptyTitle)
+                    .font(.title.weight(.bold))
+                if scan.notice == nil {
                     Text(emptyMessage)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
+                        .transition(.opacity)
                 }
-                .transition(.opacity)
+            }
+            if let notice = scan.notice {
+                NoticeCapsule(notice: notice) {
+                    if notice.actionTitle == "Register" {
+                        scan.dismissNotice()
+                        scan.registerUnregisteredTag()
+                    }
+                } onDismiss: {
+                    scan.dismissNotice()
+                }
+                .id(notice.id)
+                .transition(.scale(scale: 0.92).combined(with: .opacity))
             }
         }
         .frame(minHeight: 32)
@@ -269,7 +280,8 @@ struct ScanView: View {
             ScrollView {
                 LazyVStack(spacing: 8) {
                     ForEach(scan.intakeEntries) { entry in
-                        IntakeEntryCard(entry: entry, name: scan.intakeDetails.name.jsTrimmed) {
+                        IntakeEntryCard(entry: entry, name: scan.intakeDetails.name.jsTrimmed,
+                                        sending: scan.phase == .submitting) {
                             withAnimation(stageSpring) { scan.removeIntake(entry) }
                         }
                         .transition(.asymmetric(insertion: .move(edge: .top).combined(with: .opacity),
@@ -408,6 +420,7 @@ struct DatasetMenu: View {
 struct NoticeCapsule: View {
     let notice: ScanModel.Notice
     var action: () -> Void
+    var onDismiss: () -> Void = {}
 
     var body: some View {
         HStack(spacing: 8) {
@@ -419,6 +432,13 @@ struct NoticeCapsule: View {
                     .buttonStyle(.borderedProminent)
                     .tint(Tone.failure)
                     .controlSize(.small)
+                Button(action: onDismiss) {
+                    Image(systemName: "xmark").font(.caption.weight(.bold)).foregroundStyle(.secondary)
+                        .frame(width: 28, height: 28)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Dismiss")
             }
         }
         .font(.subheadline.weight(.semibold))
@@ -499,6 +519,14 @@ struct ConfirmButton: View {
         }
     }
 
+    private var progressTitle: String {
+        let scan = app.scan
+        if scan.mode == .register, let progress = scan.intakeProgress, progress.total > 1 {
+            return "Registering \(progress.sent + 1) of \(progress.total)…"
+        }
+        return scan.mode.progressTitle
+    }
+
     var body: some View {
         let scan = app.scan
         let submitting = scan.phase == .submitting
@@ -511,7 +539,7 @@ struct ConfirmButton: View {
         } label: {
             HStack(spacing: 10) {
                 if submitting { ProgressView().tint(scan.mode.onTint) }
-                Text(submitting ? scan.mode.progressTitle : title)
+                Text(submitting ? progressTitle : title)
                     .contentTransition(.numericText(value: Double(scan.items.count)))
             }
             .font(.headline)
@@ -523,7 +551,7 @@ struct ConfirmButton: View {
         .buttonStyle(.plain)
         .glassEffect(.regular.tint(scan.mode.tint).interactive(), in: .capsule)
         .disabled(submitting || (scan.mode == .register && scan.intakeDraftCount == 0))
-        .sensoryFeedback(.impact(weight: .medium), trigger: submitting) { _, new in new }
+        .onChange(of: submitting) { _, new in if new { Haptics.press() } }
         .confirmationDialog(scan.retireConfirmTitle + "?", isPresented: Bindable(scan).confirmPermanent, titleVisibility: .visible) {
             Button(scan.retireConfirmTitle, role: .destructive) { Task { await scan.confirm() } }
         } message: {
@@ -756,6 +784,8 @@ struct BatchDetailsCard: View {
 struct IntakeEntryCard: View {
     let entry: IntakeEntry
     let name: String
+    /// While the batch is going out, the tag in flight shows progress rather than a question mark.
+    var sending = false
     var onRemove: () -> Void
 
     var body: some View {
@@ -804,7 +834,11 @@ struct IntakeEntryCard: View {
         case .failed:
             Image(systemName: "exclamationmark.circle.fill").font(.title3).foregroundStyle(Tone.failure)
         case .uncertain:
-            Image(systemName: "questionmark.circle.fill").font(.title3).foregroundStyle(.orange)
+            if sending {
+                ProgressView().controlSize(.small).frame(width: 24, height: 24)
+            } else {
+                Image(systemName: "questionmark.circle.fill").font(.title3).foregroundStyle(.orange)
+            }
         }
     }
 }

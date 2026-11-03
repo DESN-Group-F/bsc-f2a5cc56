@@ -4,7 +4,7 @@ import Foundation
 /// Preview mode never contacts the server and uses only the fictional data below.
 enum PreviewScreen: String, CaseIterable {
     case signin, scan, scanWelcome, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, scanGroup, scanRetire, scanRetireDone
-    case scanRegister, scanRegisterEmpty
+    case scanRegister, scanRegisterEmpty, scanUnregistered
     case inventory, inventoryFiltered, newArrivals, detail, detailBottom, detailConcern, detailRetired
     case register, registerReview, inspection, retire, group, groupEditor, filter, pendingWrite, inkPlayground, inkMotion
     case inbox, me
@@ -53,6 +53,10 @@ enum PreviewFixtures {
             app.tab = .scan
             app.scan.previewState(items: inStore, mode: .checkout, phase: .scanning)
             app.scan.previewNotice(.init(kind: .duplicate, text: "Already in the list · BAT-00000009"), mood: .puzzled)
+        case .scanUnregistered:
+            app.tab = .scan
+            app.scan.previewState(items: Array(inStore.prefix(2)), mode: .checkout, phase: .scanning)
+            app.scan.previewNotice(.init(kind: .refused, text: "This tag isn't registered", actionTitle: "Register"), mood: .surprised)
         case .scanGroup:
             app.tab = .scan
             if let group = snapshot.teachingGroups?.first {

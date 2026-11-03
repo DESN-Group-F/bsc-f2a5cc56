@@ -57,8 +57,8 @@ workflows:
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
           xcrun simctl install "$UDID" "$APP"
           mkdir -p screenshots
-          LIGHT="inkPlayground signin scan scanList scanRegister scanRetireDone me"
-          DARK="inkPlayground scan me"
+          LIGHT="scan scanList scanDuplicate scanUnregistered scanRegister scanDone scanUncertain me"
+          DARK="scan scanUnregistered scanDone"
           for appearance in light dark; do
             xcrun simctl ui "$UDID" appearance "$appearance"
             if [ "$appearance" = light ]; then SCREENS="$LIGHT"; else SCREENS="$DARK"; fi

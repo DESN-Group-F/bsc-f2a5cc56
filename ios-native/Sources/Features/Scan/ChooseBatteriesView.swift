@@ -67,7 +67,7 @@ struct ChooseBatteriesView: View {
             }
             .onAppear { kind = app.scan.mode == .register ? .checkout : app.scan.mode }
             .onChange(of: kind) { selected = [] }
-            .sensoryFeedback(.selection, trigger: selected)
+            .onChange(of: selected) { Haptics.tap() }
         }
     }
 
