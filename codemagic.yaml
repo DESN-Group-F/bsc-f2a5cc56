@@ -23,7 +23,15 @@ workflows:
             CODE_SIGNING_ALLOWED=NO build > build.log 2>&1 || true
           grep -E "error:|warning: .*(deprecated|unavailable)" build.log | sort -u > diagnostics.txt || true
           tail -5 build.log
-          echo "errors: $(grep -c 'error:' diagnostics.txt || true)"
+          ERRORS=$(grep -c 'error:' diagnostics.txt || true)
+          echo "errors: $ERRORS"
+          if [ "$ERRORS" != "0" ]; then
+            echo "---- diagnostics ----"
+            head -60 diagnostics.txt
+            echo "---- context ----"
+            grep -n -B3 -A12 -E "error:|Undefined symbols|ld: " build.log | head -200
+            exit 1
+          fi
       - name: Capture preview screens
         script: |
           set -euo pipefail
