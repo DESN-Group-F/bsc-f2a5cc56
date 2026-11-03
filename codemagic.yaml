@@ -70,7 +70,7 @@ workflows:
           done
           # Largest accessibility text size: layouts must reflow, not clip.
           xcrun simctl ui "$UDID" appearance light
-          xcrun simctl ui "$UDID" content_size accessibility-extra-large || true
+          xcrun simctl ui "$UDID" content_size accessibility-extra-extra-extra-large
           for screen in scan scanList inventory; do
             xcrun simctl launch --terminate-running-process "$UDID" com.batteryinventory.mobile -uiPreview "$screen" >/dev/null
             sleep 4

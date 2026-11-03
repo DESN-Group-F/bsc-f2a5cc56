@@ -32,7 +32,8 @@ struct InventoryView: View {
                                            .inUse: matching.filter(\.isInUse).count]
         let newIds = app.inventory.newArrivalIds
         let unreadIds = app.inventory.unreadArrivalIds
-        let canStartScan = app.scan.isEmpty && !app.hasUnsettledWork && app.scan.phase != .submitting
+        let scanIsFree: Bool = { if case .done = app.scan.phase { return true }; return app.scan.isEmpty }()
+        let canStartScan = scanIsFree && !app.hasUnsettledWork && app.scan.phase != .submitting
         NavigationStack(path: $path) {
             List {
                 if app.writes.hasPending {
@@ -140,7 +141,8 @@ struct InventoryView: View {
                     if !rows.isEmpty { Text("\(rows.count) \(rows.count == 1 ? "battery" : "batteries")") }
                 } footer: {
                     if app.inventory.snapshot != nil, let refreshed = app.inventory.lastRefreshed {
-                        let time = refreshed.formatted(date: .omitted, time: .shortened)
+                        let time = refreshed.formatted(date: Calendar.current.isDateInToday(refreshed) ? .omitted : .abbreviated,
+                                                       time: .shortened)
                         if app.inventory.lastError != nil {
                             Label("Couldn't refresh · showing \(time)", systemImage: "wifi.exclamationmark")
                         } else if app.inventory.isSavedCopy {

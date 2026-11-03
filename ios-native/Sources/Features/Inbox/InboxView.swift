@@ -180,6 +180,11 @@ struct MessageDetail: View {
     }
 }
 
+private func isOverdue(_ ymd: String?) -> Bool {
+    if case .overdue = Sydney.due(ymd) { return true }
+    return false
+}
+
 struct CompleteTaskSheet: View {
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
@@ -196,7 +201,7 @@ struct CompleteTaskSheet: View {
                     Text(message.cycle?.title ?? message.title).font(.headline)
                     if let due = message.dueOn {
                         Text(Sydney.dueText(due))
-                            .foregroundStyle(Sydney.due(due).map { if case .overdue = $0 { return Tone.failure } else { return Color.secondary } } ?? .secondary)
+                            .foregroundStyle(isOverdue(due) ? Tone.failure : Color.secondary)
                     }
                 }
                 Section("Notes (optional)") {

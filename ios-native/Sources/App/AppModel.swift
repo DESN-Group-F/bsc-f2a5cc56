@@ -101,8 +101,14 @@ final class AppModel {
             if let saved = SessionCache.snapshot(accountId: user.id, dataset: dataset) {
                 inventory.restore(saved.0, savedAt: saved.1)
             }
+        } else if !service.client.hasSession {
+            // The session ended while the app was closed: nothing saved for it stays on the phone.
+            SessionCache.clear()
         }
     }
+
+    /// False only while the scan stage waits to rise in around the Ink arriving from sign-in.
+    var stageShown = true
 
     // MARK: Session
 
@@ -121,31 +127,43 @@ final class AppModel {
         scan.loadPending()
         do {
             let response = try await service.session()
+            // A sign-out tapped while this was in flight wins.
+            guard case .signedIn(let shown) = session, shown.id == cached.id else { return }
             guard let current = response.user else { endSession(); return }
-            if current.id != cached.id { endSession(); return }
+            if current.id != cached.id {
+                // The server knows someone else: take its word and start clean for them.
+                await signedIn(current, greet: false)
+                return
+            }
             SessionCache.saveUser(current)
             session = .signedIn(current)
             await refreshAll()
         } catch let failure as APIFailure where failure.kind == .unauthorized {
+            guard user?.id == cached.id else { return }
             endSession()
         } catch {
-            // Offline or the server is down: stay signed in with the saved copy. Nothing is sent
-            // until the server answers, so this never risks a write.
-            inventory.lastError = "Can't reach the server. Showing the copy saved on this iPhone."
+            // Offline or the server is down: stay signed in. Reads show the saved copy if there is one;
+            // writes still go through the exact-request rules and are refused or retried by the server.
+            guard user?.id == cached.id else { return }
+            await refreshAll()
+            if inventory.snapshot != nil {
+                inventory.lastError = "Can't reach the server. Showing the copy saved on this iPhone."
+            }
         }
     }
 
     /// No saved session to open: check with the server while Ink waits on the launch screen.
     func checkSession() async {
-        launchError = nil
         session = .checking
-        guard service.client.hasSession else { session = .signedOut; return }
+        guard service.client.hasSession else { endSession(); return }
         do {
             let response = try await service.session()
+            guard session == .checking else { return }
             if let user = response.user { await signedIn(user, greet: false) } else { endSession() }
         } catch let failure as APIFailure where failure.kind == .unauthorized {
             endSession()
         } catch {
+            guard session == .checking else { return }
             // Don't sign anyone out because the network dropped; offer to try again.
             launchError = "Can't reach the server. Check your connection and try again."
         }
@@ -154,6 +172,9 @@ final class AppModel {
     /// Checks the credentials. The caller plays the success moment, then calls `enter`.
     func signIn(username: String, password: String) async throws -> StaffUser {
         let user = try await service.signIn(username: username, password: password)
+        // Pair the new token with this person straight away; nothing saved for anyone else survives.
+        if SessionCache.user()?.id != user.id { SessionCache.clear() }
+        SessionCache.saveUser(user)
         Haptics.confirmed()
         return user
     }
@@ -164,6 +185,7 @@ final class AppModel {
         let animate = inkFrame != nil && !UIAccessibility.isReduceMotionEnabled
         if animate, let inkFrame {
             inkAnchors[.scan] = nil
+            stageShown = false
             travel = InkTravel(frame: inkFrame, baseSide: max(inkFrame.width, 1))
         }
         Task { await signedIn(user, greet: !animate) }
@@ -172,8 +194,9 @@ final class AppModel {
         for _ in 0..<30 where inkAnchors[.scan] == nil {
             try? await Task.sleep(for: .milliseconds(16))
         }
-        guard let target = inkAnchors[.scan] else { travel = nil; greet(user); return }
+        guard let target = inkAnchors[.scan] else { travel = nil; stageShown = true; greet(user); return }
         travel?.departed = true
+        stageShown = true
         withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) { travel?.frame = target }
         try? await Task.sleep(for: .seconds(0.58))
         withAnimation(.easeOut(duration: 0.14)) { travel = nil }
@@ -188,11 +211,13 @@ final class AppModel {
     private func signedIn(_ user: StaffUser, greet shouldGreet: Bool) async {
         if UserDefaults.standard.string(forKey: "dataset") == nil, let preferred = user.defaultDataset {
             dataset = preferred
+            // Remember it, so the next launch (which opens from the saved session) uses it too.
+            UserDefaults.standard.set(preferred.rawValue, forKey: "dataset")
         }
         if let previous = lastSignedInId, previous != user.id {
             // Someone else signs in on this phone: nothing of the previous person's stays on screen.
             inventory.reset()
-            scan.reset()
+            scan.resetForNewAccount()
             scan.unloadIntake()
             inbox.reset()
             writes.reset()
@@ -273,6 +298,8 @@ final class InventoryModel {
 
     func restore(_ saved: InventorySnapshot, savedAt: Date) {
         snapshot = saved
+        // Age the saved server clock by how long the copy has been sitting, so 48-hour labels stay honest.
+        receivedUptime = ProcessInfo.processInfo.systemUptime - max(0, Date().timeIntervalSince(savedAt))
         lastRefreshed = savedAt
         isSavedCopy = true
     }
@@ -294,7 +321,7 @@ final class InventoryModel {
         isSavedCopy = false
     }
 
-    @ObservationIgnored private let gate = RefreshGate()
+    private let gate = RefreshGate()
 
     /// A refresh asked for while one is on the wire waits for a fresh one instead of being dropped,
     /// so a just-registered tag or a just-switched inventory is never judged on stale data.
@@ -304,7 +331,7 @@ final class InventoryModel {
     }
 
     private func load() async {
-        guard let app else { return }
+        guard let app, app.user != nil else { return }
         let dataset = app.dataset
         loading = true
         defer { loading = false }
@@ -320,7 +347,7 @@ final class InventoryModel {
             lastRefreshed = Date()
             lastError = nil
             isSavedCopy = false
-            SessionCache.save(snap)
+            if case .signedIn = app.session { SessionCache.save(snap) }
         } catch {
             lastError = (error as? APIFailure)?.message ?? "Couldn't refresh."
             app.handle(error)
@@ -418,7 +445,7 @@ final class InboxModel {
 
     func reset() { messages = []; unreadCount = 0; lastError = nil; loaded = false }
 
-    @ObservationIgnored private let gate = RefreshGate()
+    private let gate = RefreshGate()
 
     func refresh() async {
         guard let app, app.preview == nil else { return }
@@ -426,14 +453,14 @@ final class InboxModel {
     }
 
     private func load() async {
-        guard let app else { return }
+        guard let app, let viewer = app.user?.id else { return }
         let dataset = app.dataset
         loading = true
         defer { loading = false }
         do {
             let response = try await app.service.messages(dataset)
-            // Never show another inventory's messages after a switch.
-            guard dataset == app.dataset else { return }
+            // Never show another inventory's or another person's messages.
+            guard dataset == app.dataset, viewer == app.user?.id else { return }
             messages = response.messages.sorted { $0.createdAt > $1.createdAt }
             unreadCount = response.unreadCount ?? messages.filter(\.isUnread).count
             lastError = nil
@@ -464,36 +491,28 @@ final class InboxModel {
 
 // MARK: - Refresh coalescing
 
-/// Runs one refresh at a time. Callers that arrive while one is running share a single follow-up,
-/// which starts after the current one ends and so reflects anything that changed meanwhile.
+/// Runs one refresh at a time. Callers that arrive while one is running are answered by one more
+/// pass that starts after it, so they always see data fetched after they asked.
 @MainActor
 final class RefreshGate {
-    private var current: Task<Void, Never>?
-    private var followUp: Task<Void, Never>?
+    private var running = false
+    private var again = false
+    private var waiting: [CheckedContinuation<Void, Never>] = []
 
     func run(_ work: @escaping @MainActor () async -> Void) async {
-        guard let running = current else {
-            await begin(work).value
+        if running {
+            again = true
+            await withCheckedContinuation { waiting.append($0) }
             return
         }
-        if followUp == nil {
-            followUp = Task { @MainActor [weak self] in
-                await running.value
-                guard let self else { return }
-                self.followUp = nil
-                await self.begin(work).value
-            }
-        }
-        await followUp?.value
-    }
-
-    private func begin(_ work: @escaping @MainActor () async -> Void) -> Task<Void, Never> {
-        let task = Task { @MainActor in await work() }
-        current = task
-        Task { @MainActor [weak self] in
-            await task.value
-            if self?.current == task { self?.current = nil }
-        }
-        return task
+        running = true
+        repeat {
+            again = false
+            await work()
+        } while again
+        running = false
+        let done = waiting
+        waiting = []
+        done.forEach { $0.resume() }
     }
 }

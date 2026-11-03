@@ -30,19 +30,35 @@ enum SessionCache {
 
     // MARK: Snapshot
 
+    /// Saves and clears run in order on one queue; a save that was asked for before a clear is dropped.
+    private static let queue = DispatchQueue(label: "SessionCache", qos: .utility)
+    private static let lock = NSLock()
+    nonisolated(unsafe) private static var generation = 0
+
+    private static func currentGeneration() -> Int {
+        lock.lock(); defer { lock.unlock() }
+        return generation
+    }
+
     /// Saves off the main thread; a failed save only means the next launch loads from the server.
     static func save(_ snapshot: InventorySnapshot) {
         let url = file(accountId: snapshot.user.id, dataset: snapshot.dataset)
         let folder = directory
-        Task.detached(priority: .utility) {
-            guard let data = try? JSONEncoder().encode(snapshot) else { return }
+        let asked = currentGeneration()
+        queue.async {
+            guard asked == currentGeneration(), let data = try? JSONEncoder().encode(snapshot) else { return }
+            // Nothing changed since the last save: keep the file, only record that it is current.
+            if let existing = try? Data(contentsOf: url), existing == data {
+                try? FileManager.default.setAttributes([.modificationDate: Date()], ofItemAtPath: url.path)
+                return
+            }
             try? FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true,
-                                                     attributes: [.protectionKey: FileProtectionType.completeUntilFirstUserAuthentication])
-            try? data.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
-            var target = url
+                                                     attributes: [.protectionKey: FileProtectionType.complete])
+            var excluded = folder
             var values = URLResourceValues()
             values.isExcludedFromBackup = true
-            try? target.setResourceValues(values)
+            try? excluded.setResourceValues(values)
+            try? data.write(to: url, options: [.atomic, .completeFileProtection])
         }
     }
 
@@ -58,6 +74,10 @@ enum SessionCache {
 
     static func clear() {
         UserDefaults.standard.removeObject(forKey: userKey)
-        try? FileManager.default.removeItem(at: directory)
+        lock.lock(); generation += 1; lock.unlock()
+        let folder = directory
+        // Remove now, and again behind any save already queued.
+        try? FileManager.default.removeItem(at: folder)
+        queue.async { try? FileManager.default.removeItem(at: folder) }
     }
 }

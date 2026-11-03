@@ -3,8 +3,6 @@ import SwiftUI
 struct ScanView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.scenePhase) private var scenePhase
-    /// False only while the app opens from sign-in, so the stage can rise in around the arriving Ink.
-    @State private var entered = true
     @Environment(\.dynamicTypeSize) private var typeSize
     @Namespace private var segment
     @State private var gaze: CGPoint?
@@ -22,11 +20,11 @@ struct ScanView: View {
             header
                 .padding(.horizontal, 16)
                 .padding(.top, 4)
-                .rise(entered, order: 0)
+                .rise(app.stageShown, order: 0)
             modePicker
                 .padding(.horizontal, 16)
                 .padding(.top, 14)
-                .rise(entered, order: 1)
+                .rise(app.stageShown, order: 1)
             if scan.mode == .register && !isDone {
                 BatchDetailsCard()
                     .padding(.horizontal, 16)
@@ -53,11 +51,7 @@ struct ScanView: View {
             BatchDetailsSheet()
         }
         .task { await scan.reconcileUncertain() }
-        .onAppear {
-            guard app.travel != nil else { return }
-            entered = false
-            withAnimation(.spring(response: 0.55, dampingFraction: 0.86).delay(0.12)) { entered = true }
-        }
+
         .onChange(of: app.writes.pending.count) { Task { await scan.reconcileUncertain() } }
     }
 
@@ -173,7 +167,7 @@ struct ScanView: View {
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .padding(.horizontal, 24)
                 .padding(.top, hasList ? 10 : 22)
-                .rise(entered, order: 2)
+                .rise(app.stageShown, order: 2)
 
             if isDone, case let .done(summary) = scan.phase {
                 DoneSummaryView(summary: summary)
@@ -186,7 +180,7 @@ struct ScanView: View {
             } else {
                 alternatives
                     .padding(.top, 26)
-                    .rise(entered, order: 3)
+                    .rise(app.stageShown, order: 3)
                     .transition(.opacity)
             }
             Spacer(minLength: 0)

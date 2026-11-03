@@ -50,7 +50,8 @@ struct RootView: View {
             while !Task.isCancelled {
                 try? await Task.sleep(for: .seconds(20))
                 app.inventory.clockTick += 1
-                guard !Task.isCancelled, app.scan.phase == .scanning, !app.scan.readerActive, app.registration == nil else { continue }
+                guard !Task.isCancelled, app.user != nil, app.scan.phase == .scanning, !app.scan.readerActive,
+                      app.registration == nil else { continue }
                 await app.inventory.refresh()
             }
         }
@@ -67,7 +68,7 @@ struct TravellingInk: View {
         ZStack(alignment: .topLeading) {
             Color.clear
             if let travel = app.travel {
-                InkView(tint: travel.departed ? app.scan.tint : Tone.success)
+                InkView(tint: travel.departed ? app.scan.tint : Tone.success, mood: travel.departed ? .idle : .happy)
                     .frame(width: travel.baseSide, height: travel.baseSide)
                     .scaleEffect(travel.frame.width / travel.baseSide)
                     .position(x: travel.frame.midX - origin.x, y: travel.frame.midY - origin.y)

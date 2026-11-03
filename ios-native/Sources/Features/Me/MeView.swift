@@ -50,15 +50,19 @@ struct MeView: View {
                     Section("With me") {
                         ForEach(withMe) { battery in
                             HStack {
-                                NavigationLink {
-                                    BatteryDetailView(batteryId: battery.id)
+                                Button {
+                                    app.pendingDetailId = battery.id
+                                    app.tab = .inventory
                                 } label: {
                                     VStack(alignment: .leading) {
                                         Text(battery.name).font(.body.weight(.semibold))
                                         Text(battery.id).font(.monoSmall).foregroundStyle(.secondary)
                                     }
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .contentShape(Rectangle())
                                 }
-                                Spacer()
+                                .buttonStyle(.plain)
+                                .accessibilityHint("Opens the battery's details")
                                 Button {
                                     app.scan.begin(with: battery)
                                     app.tab = .scan

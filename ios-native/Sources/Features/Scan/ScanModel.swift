@@ -144,6 +144,15 @@ final class ScanModel {
         if phase != .uncertain { phase = .scanning }
     }
 
+    /// A different person signed in: drop the previous person's station state entirely.
+    /// Their unresolved requests stay on disk under their account and come back when they sign in.
+    func resetForNewAccount() {
+        reset()
+        retireRequestId = nil
+        pendingWrites = []
+        phase = .scanning
+    }
+
     func greet(_ text: String) {
         show(.init(kind: .greeting, text: text))
         setMood(.happy, hold: 0.9)
@@ -260,6 +269,7 @@ final class ScanModel {
 
     /// Starts a fresh list with one battery, e.g. from its detail page.
     func begin(with battery: BatteryRecord) {
+        if case .done = phase { scanMore() }
         guard pendingWrites.isEmpty, phase != .submitting else { return }
         reset()
         mode = battery.isInUse ? .return : .checkout
@@ -269,6 +279,7 @@ final class ScanModel {
     /// Starts a fresh list from a teaching group's members. The confirm carries the group reference,
     /// so the server checks membership and records the group in its history.
     func begin(group: TeachingGroup, batteries: [BatteryRecord], mode newMode: MovementKind) {
+        if case .done = phase { scanMore() }
         guard pendingWrites.isEmpty, phase != .submitting, !batteries.isEmpty else { return }
         reset()
         mode = newMode
@@ -279,6 +290,7 @@ final class ScanModel {
 
     /// Starts a fresh list from batteries chosen in Inventory.
     func begin(list batteries: [BatteryRecord], mode newMode: MovementKind) {
+        if case .done = phase { scanMore() }
         guard pendingWrites.isEmpty, phase != .submitting, !batteries.isEmpty else { return }
         reset()
         mode = newMode
@@ -579,8 +591,11 @@ final class ScanModel {
     private func reconcileIntake() {
         guard let app else { return }
         var changed = false
+        let onDisk = Set(app.user.map { app.pending.all(accountId: $0.id, dataset: app.dataset).map(\.id) } ?? [])
         for index in intakeEntries.indices where intakeEntries[index].status == .uncertain {
-            guard let requestId = intakeEntries[index].requestId, app.writes.entry(id: requestId) == nil else { continue }
+            // Settled only when the exact request is gone from memory and from the phone's storage.
+            guard let requestId = intakeEntries[index].requestId, app.writes.entry(id: requestId) == nil,
+                  !onDisk.contains(requestId) else { continue }
             if let battery = app.inventory.battery(tagId: intakeEntries[index].tagId) {
                 intakeEntries[index].status = .registered(battery.id)
             } else {
