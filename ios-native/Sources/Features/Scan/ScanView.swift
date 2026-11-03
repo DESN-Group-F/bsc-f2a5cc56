@@ -36,7 +36,10 @@ struct ScanView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background { backdrop }
         .coordinateSpace(.named("scan"))
-        .safeAreaInset(edge: .bottom, spacing: 0) { dock.padding(.horizontal, 16).padding(.bottom, 8) }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            dock.padding(.horizontal, 16).padding(.bottom, 8)
+                .background(alignment: .top) { dockBackdrop }
+        }
         .animation(stageSpring, value: scan.items.count)
         .animation(stageSpring, value: scan.intakeEntries.count)
         .animation(stageSpring, value: scan.mode)
@@ -50,9 +53,54 @@ struct ScanView: View {
         .sheet(isPresented: $scan.showBatchDetails) {
             BatchDetailsSheet()
         }
+        .confirmationDialog(switchTitle, isPresented: Binding(get: { scan.modeSwitch != nil }, set: { if !$0 { scan.modeSwitch = nil } }),
+                            titleVisibility: .visible, presenting: scan.modeSwitch) { kind in
+            let fit = scan.carryCount(to: kind)
+            if fit > 0 {
+                Button(fit == scan.items.count ? "Move \(fit) to \(kind.title)" : "Move the \(fit) that fit to \(kind.title)") {
+                    withAnimation(stageSpring) { scan.switchMode(to: kind, keepingList: true) }
+                }
+            }
+            Button("Clear the list and switch", role: .destructive) {
+                withAnimation(stageSpring) { scan.switchMode(to: kind, keepingList: false) }
+            }
+        } message: { kind in
+            Text(switchMessage(kind))
+        }
         .task { await scan.reconcileUncertain() }
 
         .onChange(of: app.writes.pending.count) { Task { await scan.reconcileUncertain() } }
+    }
+
+    private var switchTitle: String {
+        guard let kind = scan.modeSwitch else { return "" }
+        return "Switch to \(kind.title)?"
+    }
+
+    private func switchMessage(_ kind: MovementKind) -> String {
+        let n = scan.items.count, fit = scan.carryCount(to: kind)
+        let list = "\(n) \(n == 1 ? "battery is" : "batteries are") in the list."
+        if fit == 0 {
+            switch kind {
+            case .retire: return list + " Batteries on loan have to be returned before they can be retired."
+            case .return: return list + " None of them is out, so there's nothing to return."
+            default: return list + " None of them is in store."
+            }
+        }
+        return fit == n ? list + " Nothing is sent until you confirm." : list + " \(fit) can move to \(kind.title); the rest can't."
+    }
+
+    /// A solid fade behind the dock, so list rows scrolling underneath never show through its controls.
+    @ViewBuilder
+    private var dockBackdrop: some View {
+        if hasList || isDone || scan.phase == .uncertain {
+            LinearGradient(stops: [.init(color: Color(.systemGroupedBackground).opacity(0), location: 0),
+                                   .init(color: Color(.systemGroupedBackground), location: 0.22)],
+                           startPoint: .top, endPoint: .bottom)
+                .padding(.top, -28)
+                .ignoresSafeArea(edges: .bottom)
+                .allowsHitTesting(false)
+        }
     }
 
     // MARK: Backdrop
@@ -306,6 +354,7 @@ struct ScanView: View {
                 .padding(.bottom, 24)
             }
             .scrollIndicators(.hidden)
+            .mask(TopFadeMask())
         } else {
             movementList
         }
@@ -332,6 +381,7 @@ struct ScanView: View {
             .padding(.bottom, 24)
         }
         .scrollIndicators(.hidden)
+        .mask(TopFadeMask())
     }
 
     // MARK: Dock
@@ -371,6 +421,16 @@ struct ScanView: View {
 }
 
 // MARK: - Pieces
+
+/// Rows fade in under the count line instead of being cut by a hard edge.
+struct TopFadeMask: View {
+    var body: some View {
+        VStack(spacing: 0) {
+            LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom).frame(height: 14)
+            Color.black
+        }
+    }
+}
 
 struct InkPressStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
@@ -501,7 +561,9 @@ struct ScanItemCard: View {
                 Text(item.battery.name).font(.body.weight(.semibold)).lineLimit(2)
                 HStack(spacing: 6) {
                     Text(item.battery.id).font(.monoSmall).fixedSize()
-                    Text(item.battery.specLine).font(.footnote).lineLimit(1)
+                    if item.battery.hasSpecs {
+                        Text(item.battery.specLine).font(.footnote).lineLimit(1)
+                    }
                 }
                 .foregroundStyle(.secondary)
             }
@@ -586,36 +648,99 @@ struct ConfirmButton: View {
     }
 }
 
-/// Retire mode: choose scrap or permanent removal, with an optional reason.
+/// Retire mode: one compact row (outcome and reason) so the list keeps its room; details open in a small sheet.
 struct RetireOptions: View {
     @Environment(AppModel.self) private var app
+    @State private var editing = false
 
     var body: some View {
         @Bindable var scan = app.scan
-        VStack(spacing: 8) {
-            Picker("Outcome", selection: $scan.retireKind) {
-                Text("Scrap").tag("scrapped")
-                Text("Remove permanently").tag("permanently_removed")
+        HStack(spacing: 8) {
+            Menu {
+                Picker("Outcome", selection: $scan.retireKind) {
+                    Label("Scrap", systemImage: "archivebox").tag("scrapped")
+                    Label("Remove permanently", systemImage: "trash").tag("permanently_removed")
+                }
+            } label: {
+                HStack(spacing: 6) {
+                    Text(scan.retireKind == "scrapped" ? "Scrap" : "Remove permanently").fontWeight(.semibold)
+                    Image(systemName: "chevron.up.chevron.down").font(.caption)
+                }
+                .padding(.horizontal, 16)
+                .frame(minHeight: 44)
             }
-            .pickerStyle(.segmented)
-            TextField(scan.retireKind == "scrapped" ? "Reason (optional), e.g. swollen cells" : "Reason (optional)",
-                      text: $scan.retireReason)
-                .padding(.horizontal, 14)
-                .frame(height: 42)
-                .glassEffect(.regular, in: .rect(cornerRadius: 16))
-            if scan.retireKind == "permanently_removed" {
-                TextField("Destination (optional), e.g. recycling bin", text: $scan.retireDestination)
-                    .padding(.horizontal, 14)
-                    .frame(height: 42)
-                    .glassEffect(.regular, in: .rect(cornerRadius: 16))
+            .tint(.primary)
+            .glassEffect(.regular.interactive(), in: .capsule)
+
+            Button { editing = true } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "text.bubble").foregroundStyle(.secondary)
+                    Text(reasonLabel(scan)).lineLimit(1)
+                        .foregroundStyle(scan.retireReason.jsTrimmed.isEmpty ? Color.secondary : Color.primary)
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal, 16)
+                .frame(maxWidth: .infinity, minHeight: 44)
+                .contentShape(Capsule())
             }
-            Text(scan.retireKind == "scrapped"
-                 ? "Scrapped batteries stay in the records and can be recovered later."
-                 : "Permanently removed batteries leave the inventory for good.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+            .buttonStyle(.plain)
+            .glassEffect(.regular.interactive(), in: .capsule)
+            .accessibilityLabel(scan.retireReason.jsTrimmed.isEmpty ? "Add a reason" : "Reason: \(scan.retireReason)")
         }
+        .font(.subheadline)
         .disabled(scan.phase != .scanning)
+        .sheet(isPresented: $editing) {
+            RetireDetailsSheet()
+                .presentationDetents([.medium])
+        }
+    }
+
+    private func reasonLabel(_ scan: ScanModel) -> String {
+        let reason = scan.retireReason.jsTrimmed
+        return reason.isEmpty ? "Add a reason (optional)" : reason
+    }
+}
+
+/// Outcome, reason and destination for a retire list.
+struct RetireDetailsSheet: View {
+    @Environment(AppModel.self) private var app
+    @Environment(\.dismiss) private var dismiss
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        @Bindable var scan = app.scan
+        NavigationStack {
+            Form {
+                Section {
+                    Picker("Outcome", selection: $scan.retireKind) {
+                        Text("Scrap").tag("scrapped")
+                        Text("Remove permanently").tag("permanently_removed")
+                    }
+                    .pickerStyle(.segmented)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                } footer: {
+                    Text(scan.retireKind == "scrapped"
+                         ? "Scrapped batteries stay in the records and can be recovered later."
+                         : "Permanently removed batteries leave the inventory for good. Their history is kept.")
+                }
+                Section("Reason (optional)") {
+                    TextField(scan.retireKind == "scrapped" ? "e.g. swollen cells" : "e.g. end of life",
+                              text: $scan.retireReason, axis: .vertical)
+                        .lineLimit(1...4)
+                        .focused($focused)
+                    if scan.retireKind == "permanently_removed" {
+                        TextField("Destination (optional), e.g. recycling bin", text: $scan.retireDestination)
+                    }
+                }
+            }
+            .navigationTitle("Retire details")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() }.fontWeight(.semibold) }
+            }
+            .onAppear { focused = scan.retireReason.isEmpty }
+        }
     }
 }
 

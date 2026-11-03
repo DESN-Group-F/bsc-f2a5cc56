@@ -177,13 +177,57 @@ final class ScanModel {
         // From the done screen, picking an action simply starts the next round.
         if case .done = phase { scanMore() }
         guard phase == .scanning, newMode != mode else { return }
-        // A batch intake is saved on the phone, so it can wait while other actions are used.
-        if !items.isEmpty {
-            show(.init(kind: .info, text: "Clear the list to switch to \(newMode.title)."))
+        // A list in progress: ask what to do with it instead of refusing (a batch intake is saved
+        // separately, so switching to or from Register never touches it).
+        if !items.isEmpty && newMode != .register {
+            modeSwitch = newMode
             return
         }
         mode = newMode
         Haptics.tap()
+    }
+
+    /// The action the user picked while a list was in progress; drives the switch dialog.
+    var modeSwitch: MovementKind?
+
+    /// Whether a battery already in the list can go straight into another action.
+    func fits(_ battery: BatteryRecord, _ kind: MovementKind) -> Bool {
+        guard battery.isActive else { return false }
+        switch kind {
+        case .checkout: return battery.isInStore
+        case .return: return battery.isInUse
+        case .retire: return !battery.isInUse
+        case .register: return false
+        }
+    }
+
+    func carryCount(to kind: MovementKind) -> Int { items.filter { fits($0.battery, kind) }.count }
+
+    /// Switches action, keeping the batteries that fit the new one (and their tag evidence).
+    /// Nothing is sent: the moved list is reviewed and confirmed on the new action as usual.
+    func switchMode(to kind: MovementKind, keepingList keep: Bool) {
+        modeSwitch = nil
+        guard phase == .scanning else { return }
+        let before = items.count
+        if keep {
+            items = items.filter { fits($0.battery, kind) }
+        } else {
+            items = []
+            sessionId = RequestID.make()
+        }
+        // A teaching-group reference and return room belong to the old action.
+        group = nil
+        returnRoomId = nil
+        retireReason = ""
+        retireDestination = ""
+        latestId = items.first?.id
+        if items.isEmpty { source = nil }
+        mode = kind
+        Haptics.tap()
+        let dropped = before - items.count
+        if keep && dropped > 0 {
+            show(.init(kind: .info, text: "\(items.count) moved to \(kind.title) · \(dropped) didn't fit and were left out"))
+        }
     }
 
     // MARK: Reading tags

@@ -298,6 +298,51 @@ struct TeachingGroupWrite: Encodable {
     let payload: TeachingGroupRequest
 }
 
+// MARK: - Reusable battery models
+
+/// A new saved model (template) for this inventory. `id` is also the request ID, so resending the
+/// same bytes replays the original save. Strict on the server: no other keys.
+struct NewModelPayload: Codable, Equatable, Sendable {
+    let id: String
+    let brand: String
+    let model: String
+    let variant: String
+    let name: String
+    let chemistry: String
+    let capacityMah: Double?
+    let voltage: Double?
+    let notes: String
+
+    enum CodingKeys: String, CodingKey { case id, brand, model, variant, name, chemistry, capacityMah, voltage, notes }
+
+    func encode(to encoder: Encoder) throws {
+        var c = encoder.container(keyedBy: CodingKeys.self)
+        try c.encode(id, forKey: .id)
+        try c.encode(brand, forKey: .brand)
+        try c.encode(model, forKey: .model)
+        try c.encode(variant, forKey: .variant)
+        try c.encode(name, forKey: .name)
+        try c.encode(chemistry, forKey: .chemistry)
+        try c.encode(capacityMah, forKey: .capacityMah)   // explicit null when unknown
+        try c.encode(voltage, forKey: .voltage)
+        try c.encode(notes, forKey: .notes)
+    }
+}
+
+/// `POST /api/battery-models` body on the hosted release: `{dataset, payload}` only.
+struct ModelWrite: Encodable {
+    let dataset: Dataset
+    let payload: NewModelPayload
+}
+
+struct ModelCreateReceipt: Decodable, Sendable {
+    let model: BatteryModelChoice
+    let requestId: String
+    let actorAccountId: String
+    let dataset: Dataset
+    let replayed: Bool
+}
+
 struct TeachingGroupReceipt: Decodable, Sendable {
     let requestId: String
     let actorAccountId: String
@@ -320,6 +365,7 @@ struct WriteConfirmation: Sendable {
     let title: String
     var batteryId: String? = nil
     var group: TeachingGroup? = nil
+    var model: BatteryModelChoice? = nil
     var replayed = false
 }
 
@@ -404,6 +450,19 @@ enum ReceiptCheck {
             default: title = "“\(g.name)” saved"
             }
             return WriteConfirmation(title: title, group: g, replayed: r.replayed)
+
+        case "battery_model":
+            // Same checks as the web's verifyModelCreateReceipt: identity, account, inventory, and every field as sent.
+            guard let sent = try? decoder.decode(WriteEnvelope<NewModelPayload>.self, from: entry.body),
+                  let r = try? decoder.decode(OKEnvelope<ModelCreateReceipt>.self, from: response).result else { return nil }
+            let p = sent.payload, m = r.model
+            guard r.requestId == p.id, r.actorAccountId == entry.accountId, r.dataset == entry.dataset,
+                  m.origin == "saved", m.id == p.id,
+                  m.contentHash.range(of: "^[a-f0-9]{64}$", options: .regularExpression) != nil,
+                  (m.brand ?? "") == p.brand, m.model == p.model, (m.variant ?? "") == p.variant, m.name == p.name,
+                  m.chemistry == p.chemistry, m.capacityMah == p.capacityMah, m.voltage == p.voltage,
+                  (m.notes ?? "") == p.notes else { return nil }
+            return WriteConfirmation(title: "“\(m.label)” saved as a model", model: m, replayed: r.replayed)
 
         default:
             return nil

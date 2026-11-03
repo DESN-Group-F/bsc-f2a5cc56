@@ -415,7 +415,10 @@ struct ActionButton: View {
 struct ModelPickerView: View {
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
+    /// What's already typed, used to start a new model.
+    var prefill = RegistrationDetails()
     var onPick: (BatteryModelChoice) -> Void
+    @State private var creating = false
     @State private var models: [BatteryModelChoice] = []
     @State private var search = ""
     @State private var loading = true
@@ -426,6 +429,19 @@ struct ModelPickerView: View {
             List {
                 if let error {
                     Text(error).foregroundStyle(.secondary)
+                }
+                if !loading {
+                    Section {
+                        Button { creating = true } label: {
+                            Label(search.isEmpty ? "New model…" : "New model “\(search.trimmingCharacters(in: .whitespaces))”…",
+                                  systemImage: "plus.circle.fill")
+                                .font(.body.weight(.semibold))
+                                .foregroundStyle(Tone.register)
+                        }
+                        .disabled(app.writes.hasPending)
+                    } footer: {
+                        Text("Not listed? Save its details once and reuse them for every battery of that model.")
+                    }
                 }
                 ForEach(groups) { group in
                     Section(group.title) {
@@ -457,7 +473,21 @@ struct ModelPickerView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } } }
             .task { await load() }
+            .sheet(isPresented: $creating) {
+                NewModelSheet(prefill: newModelPrefill) { saved in
+                    onPick(saved)
+                    dismiss()
+                }
+            }
         }
+    }
+
+    /// A search that found nothing becomes the new model's name.
+    private var newModelPrefill: RegistrationDetails {
+        var details = prefill
+        let typed = search.trimmingCharacters(in: .whitespaces)
+        if !typed.isEmpty && details.model.jsTrimmed.isEmpty { details.model = typed }
+        return details
     }
 
     private struct ModelGroup: Identifiable {

@@ -129,6 +129,7 @@ struct RegistrationDetailsSections: View {
     @Environment(AppModel.self) private var app
     @Binding var details: RegistrationDetails
     @State private var showModels = false
+    @State private var creatingModel = false
     @State private var formKey = UUID()
 
     private var tint: Color { Tone.register }
@@ -167,14 +168,27 @@ struct RegistrationDetailsSections: View {
                 }
                 Button("Don't use a model", role: .destructive) { details.clearModel() }
                     .font(.footnote)
+            } else if !details.model.jsTrimmed.isEmpty {
+                // A model that isn't saved yet: one tap keeps it for the next batch.
+                Button { creatingModel = true } label: {
+                    Label("Save “\(details.model.jsTrimmed)” as a reusable model", systemImage: "plus.square.on.square")
+                        .font(.footnote.weight(.semibold))
+                }
+                .disabled(app.writes.hasPending)
             }
         }
         .sheet(isPresented: $showModels) {
-            ModelPickerView { choice in
+            ModelPickerView(prefill: details) { choice in
                 details.apply(choice)
                 formKey = UUID()
             }
             .presentationDetents([.large])
+        }
+        .sheet(isPresented: $creatingModel) {
+            NewModelSheet(prefill: details) { saved in
+                details.apply(saved)
+                formKey = UUID()
+            }
         }
 
         Section("Battery") {
@@ -258,6 +272,154 @@ struct BatchDetailsSheet: View {
                 loaded = true
                 draft = app.scan.intakeDetails
             }
+        }
+    }
+}
+
+// MARK: - Save a new reusable model
+
+/// Records a model that isn't in the catalogue yet (brand, model, variant and its specifications) so
+/// this inventory can reuse it as a template for later batches. It doesn't register any battery.
+/// Sent through the write centre: exact bytes saved first, receipt verified field by field, same-byte retry.
+struct NewModelSheet: View {
+    @Environment(AppModel.self) private var app
+    @Environment(\.dismiss) private var dismiss
+    var prefill: RegistrationDetails
+    var onSaved: (BatteryModelChoice) -> Void
+
+    @State private var brand = ""
+    @State private var model = ""
+    @State private var variant = ""
+    @State private var name = ""
+    @State private var chemistry = ""
+    @State private var capacity: Double?
+    @State private var voltage: Double?
+    @State private var notes = ""
+    @State private var loaded = false
+    @State private var requestId: String?
+    @State private var working = false
+    @State private var message: String?
+    @State private var isError = false
+
+    private var tint: Color { Tone.register }
+    private var isLocked: Bool { working || (requestId.map { app.writes.entry(id: $0) != nil } ?? false) }
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    Text("Save a model once, then choose it for every battery of that kind. Saving the model doesn't register a battery.")
+                        .font(.footnote).foregroundStyle(.secondary)
+                }
+                Section("Model") {
+                    LabeledField(title: "Brand") { TextField("e.g. Tattu", text: $brand).multilineTextAlignment(.trailing) }
+                    LabeledField(title: "Model") { TextField("Required, e.g. R-Line 1550", text: $model).multilineTextAlignment(.trailing) }
+                    LabeledField(title: "Variant") { TextField("e.g. 4S XT60", text: $variant).multilineTextAlignment(.trailing) }
+                }
+                .disabled(isLocked)
+                Section {
+                    LabeledField(title: "Battery name") { TextField("e.g. Drone pack", text: $name).multilineTextAlignment(.trailing) }
+                    LabeledField(title: "Chemistry") { TextField("e.g. LiPo", text: $chemistry).multilineTextAlignment(.trailing) }
+                    LabeledField(title: "Capacity") { UnitField(unit: "mAh", value: $capacity) }
+                    LabeledField(title: "Voltage") { UnitField(unit: "V", value: $voltage) }
+                } header: {
+                    Text("Fills in for each battery")
+                } footer: {
+                    Text("Use the label's nominal voltage, not the charge limit.")
+                }
+                .disabled(isLocked)
+                Section("Notes (optional)") {
+                    TextField("e.g. Where the label is, how to tell variants apart", text: $notes, axis: .vertical)
+                        .lineLimit(2...4)
+                        .disabled(isLocked)
+                }
+                Section {
+                    WriteStateView(requestId: requestId, message: message, isError: isError)
+                    if let id = requestId, let entry = app.writes.entry(id: id) {
+                        ActionButton(title: app.writes.sending.contains(id) ? "Checking…" : "Try again", tint: tint,
+                                     busy: app.writes.sending.contains(id)) {
+                            Task { handle(await app.writes.retry(entry)) }
+                        }
+                    } else {
+                        ActionButton(title: working ? "Saving…" : "Save model", tint: tint, busy: working) {
+                            Task { await save() }
+                        }
+                        .disabled(!problems.isEmpty)
+                    }
+                } footer: {
+                    if !problems.isEmpty { Text(problems.joined(separator: " ")) }
+                }
+                .listRowBackground(Color.clear)
+                .listRowInsets(EdgeInsets())
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .navigationTitle("New model")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() }.disabled(isLocked) }
+            }
+            .interactiveDismissDisabled(isLocked)
+            .onAppear {
+                guard !loaded else { return }
+                loaded = true
+                // Start from what's already typed for the batch, so a new model is one tap away.
+                model = prefill.model
+                // The default name "Battery" says nothing; the model is a better starting point.
+                name = prefill.name.jsTrimmed == "Battery" && !prefill.model.jsTrimmed.isEmpty ? prefill.model : prefill.name
+                chemistry = prefill.chemistry
+                capacity = prefill.capacity
+                voltage = prefill.voltage
+            }
+        }
+    }
+
+    private var problems: [String] {
+        var list: [String] = []
+        let m = model.jsTrimmed, n = name.jsTrimmed
+        if m.isEmpty { list.append("Enter the model.") } else if m.serverLength > 120 { list.append("The model is limited to 120 characters.") }
+        if n.serverLength < 2 || n.serverLength > 120 { list.append("The battery name needs 2–120 characters.") }
+        if brand.jsTrimmed.serverLength > 80 { list.append("The brand is limited to 80 characters.") }
+        if variant.jsTrimmed.serverLength > 120 { list.append("The variant is limited to 120 characters.") }
+        if chemistry.jsTrimmed.serverLength > 40 { list.append("Chemistry is limited to 40 characters.") }
+        if notes.jsTrimmed.serverLength > 1000 { list.append("Notes are limited to 1000 characters.") }
+        if let c = capacity, !(c > 0 && c <= 1_000_000) { list.append("Capacity must be above 0 mAh.") }
+        if let v = voltage, !(v > 0 && v <= 1000) { list.append("Voltage must be between 0 and 1000 V.") }
+        return list
+    }
+
+    private func save() async {
+        guard problems.isEmpty, !working else { return }
+        working = true
+        defer { working = false }
+        message = nil
+        let id = RequestID.make()
+        let payload = NewModelPayload(id: id, brand: brand.jsTrimmed, model: model.jsTrimmed, variant: variant.jsTrimmed,
+                                      name: name.jsTrimmed, chemistry: chemistry.jsTrimmed, capacityMah: capacity,
+                                      voltage: voltage, notes: notes.jsTrimmed)
+        guard let body = WriteCenter.modelBody(app.dataset, payload: payload) else {
+            message = "Couldn't prepare the request."; isError = true
+            return
+        }
+        requestId = id
+        handle(await app.writes.submit(action: "battery_model", kind: "battery_model", title: "Saving model \(payload.model)",
+                                       batteryIds: [], requestId: id, body: body, endpoint: "/api/battery-models"))
+    }
+
+    private func handle(_ outcome: WriteCenter.Outcome) {
+        switch outcome {
+        case .confirmed(let confirmation):
+            requestId = nil
+            if let saved = confirmation.model {
+                onSaved(saved)
+                dismiss()
+            }
+        case .rejected(let text), .notSent(let text):
+            requestId = nil
+            message = text
+            isError = true
+        case .uncertain(let text):
+            message = text
+            isError = true
         }
     }
 }

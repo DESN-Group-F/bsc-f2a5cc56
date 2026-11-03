@@ -112,6 +112,8 @@ final class WriteCenter {
         switch entry.action {
         case "lifecycle", "retired_asset", "teaching_group": return status == 400 || status == 422
         case "intake": return status == 400 || status == 404 || status == 422 || status == 501
+        // As the web model picker: these statuses mean the saved-model request was not stored.
+        case "battery_model": return status == 400 || status == 404 || status == 409 || status == 422
         default: return false
         }
     }
@@ -130,6 +132,10 @@ final class WriteCenter {
 
     static func groupBody(_ dataset: Dataset, payload: TeachingGroupRequest) -> Data? {
         try? JSONEncoder().encode(TeachingGroupWrite(dataset: dataset, payload: payload))
+    }
+
+    static func modelBody(_ dataset: Dataset, payload: NewModelPayload) -> Data? {
+        try? JSONEncoder().encode(ModelWrite(dataset: dataset, payload: payload))
     }
 
     // MARK: Preview support
