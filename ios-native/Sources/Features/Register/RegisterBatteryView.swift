@@ -486,7 +486,7 @@ struct ModelPickerView: View {
     private var newModelPrefill: RegistrationDetails {
         var details = prefill
         let typed = search.trimmingCharacters(in: .whitespaces)
-        if !typed.isEmpty && details.model.jsTrimmed.isEmpty { details.model = typed }
+        if !typed.isEmpty { details.model = typed }
         return details
     }
 

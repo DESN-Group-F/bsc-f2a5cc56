@@ -104,11 +104,12 @@ struct BatteryRecord: Codable, Identifiable, Equatable, Hashable, Sendable {
     var isInStore: Bool { isActive && loanId == nil }
     var isScrapped: Bool { lifecycleStatus == "scrapped" }
 
-    /// "LiPo · 3S · 2200 mAh · 11.1 V" built only from recorded values.
+    /// True when at least one specification is recorded.
     var hasSpecs: Bool {
         !(chemistry ?? "").isEmpty || !(model ?? "").isEmpty || capacityMah != nil || voltage != nil
     }
 
+    /// "LiPo · 3S · 2200 mAh · 11.1 V" built only from recorded values.
     var specLine: String {
         var parts: [String] = []
         if let c = chemistry, !c.isEmpty { parts.append(c) }

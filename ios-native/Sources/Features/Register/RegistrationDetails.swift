@@ -295,11 +295,22 @@ struct NewModelSheet: View {
     @State private var capacity: Double?
     @State private var voltage: Double?
     @State private var notes = ""
-    @State private var loaded = false
     @State private var requestId: String?
     @State private var working = false
     @State private var message: String?
     @State private var isError = false
+
+    /// Starts from what's already typed for the batch, so a new model is one tap away.
+    init(prefill: RegistrationDetails, onSaved: @escaping (BatteryModelChoice) -> Void) {
+        self.prefill = prefill
+        self.onSaved = onSaved
+        _model = State(initialValue: prefill.model)
+        // The default name "Battery" says nothing; the model is a better starting point.
+        _name = State(initialValue: prefill.name.jsTrimmed == "Battery" && !prefill.model.jsTrimmed.isEmpty ? prefill.model : prefill.name)
+        _chemistry = State(initialValue: prefill.chemistry)
+        _capacity = State(initialValue: prefill.capacity)
+        _voltage = State(initialValue: prefill.voltage)
+    }
 
     private var tint: Color { Tone.register }
     private var isLocked: Bool { working || (requestId.map { app.writes.entry(id: $0) != nil } ?? false) }
@@ -359,17 +370,6 @@ struct NewModelSheet: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() }.disabled(isLocked) }
             }
             .interactiveDismissDisabled(isLocked)
-            .onAppear {
-                guard !loaded else { return }
-                loaded = true
-                // Start from what's already typed for the batch, so a new model is one tap away.
-                model = prefill.model
-                // The default name "Battery" says nothing; the model is a better starting point.
-                name = prefill.name.jsTrimmed == "Battery" && !prefill.model.jsTrimmed.isEmpty ? prefill.model : prefill.name
-                chemistry = prefill.chemistry
-                capacity = prefill.capacity
-                voltage = prefill.voltage
-            }
         }
     }
 

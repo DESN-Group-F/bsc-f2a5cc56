@@ -179,7 +179,7 @@ final class ScanModel {
         guard phase == .scanning, newMode != mode else { return }
         // A list in progress: ask what to do with it instead of refusing (a batch intake is saved
         // separately, so switching to or from Register never touches it).
-        if !items.isEmpty && newMode != .register {
+        if !items.isEmpty {
             modeSwitch = newMode
             return
         }
@@ -191,7 +191,9 @@ final class ScanModel {
     var modeSwitch: MovementKind?
 
     /// Whether a battery already in the list can go straight into another action.
-    func fits(_ battery: BatteryRecord, _ kind: MovementKind) -> Bool {
+    func fits(_ scanned: BatteryRecord, _ kind: MovementKind) -> Bool {
+        // Judge by the latest inventory, not the record as it was when scanned.
+        let battery = latest(scanned)
         guard battery.isActive else { return false }
         switch kind {
         case .checkout: return battery.isInStore
@@ -203,6 +205,8 @@ final class ScanModel {
 
     func carryCount(to kind: MovementKind) -> Int { items.filter { fits($0.battery, kind) }.count }
 
+    private func latest(_ battery: BatteryRecord) -> BatteryRecord { app?.inventory.battery(id: battery.id) ?? battery }
+
     /// Switches action, keeping the batteries that fit the new one (and their tag evidence).
     /// Nothing is sent: the moved list is reviewed and confirmed on the new action as usual.
     func switchMode(to kind: MovementKind, keepingList keep: Bool) {
@@ -211,6 +215,7 @@ final class ScanModel {
         let before = items.count
         if keep {
             items = items.filter { fits($0.battery, kind) }
+                .map { Item(battery: latest($0.battery), tagId: $0.tagId, evidence: $0.evidence) }
         } else {
             items = []
             sessionId = RequestID.make()
@@ -220,7 +225,8 @@ final class ScanModel {
         returnRoomId = nil
         retireReason = ""
         retireDestination = ""
-        latestId = items.first?.id
+        submissionError = nil
+        latestId = nil
         if items.isEmpty { source = nil }
         mode = kind
         Haptics.tap()

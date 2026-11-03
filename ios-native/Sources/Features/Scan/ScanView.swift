@@ -80,6 +80,9 @@ struct ScanView: View {
     private func switchMessage(_ kind: MovementKind) -> String {
         let n = scan.items.count, fit = scan.carryCount(to: kind)
         let list = "\(n) \(n == 1 ? "battery is" : "batteries are") in the list."
+        if kind == .register {
+            return list + " Registering new tags is a separate batch, so the list has to be cleared first."
+        }
         if fit == 0 {
             switch kind {
             case .retire: return list + " Batteries on loan have to be returned before they can be retired."
