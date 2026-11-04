@@ -56,8 +56,10 @@ final class AppModel {
     var registration: RegistrationRequest?
     /// The group checkout sheet, from Scan, a group's page or a scan suggestion.
     var groupFlow: GroupFlow?
-    /// Batteries just looked up by tag, shown as cards when the reader closes.
+    /// Batteries just looked up by tag or label, shown as cards when the reader or camera closes.
     var lookup: LookupPresentation?
+    /// The label camera, for a look-up or for adding to the scan station's list.
+    var labelScan: LabelScanPurpose?
     private(set) var dataset: Dataset = .demo
     /// Shown on the launch screen when the session couldn't be checked (offline, server down).
     private(set) var launchError: String?
@@ -77,6 +79,7 @@ final class AppModel {
         runs.reset()
         groupFlow = nil
         lookup = nil
+        labelScan = nil
         if let user, let saved = SessionCache.snapshot(accountId: user.id, dataset: newValue) {
             // Show the saved copy of the other inventory at once; the refresh replaces it.
             inventory.restore(saved.0, savedAt: saved.1)
@@ -252,6 +255,7 @@ final class AppModel {
             runs.reset()
             groupFlow = nil
             lookup = nil
+            labelScan = nil
         }
         lastSignedInId = user.id
         SessionCache.saveUser(user)
@@ -284,6 +288,7 @@ final class AppModel {
         registration = nil
         groupFlow = nil
         lookup = nil
+        labelScan = nil
         session = .signedOut
         tab = .scan
     }

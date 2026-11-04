@@ -120,6 +120,9 @@ struct MainTabs: View {
         .sheet(item: $app.lookup) { presentation in
             LookupSheet(presentation: presentation)
         }
+        .fullScreenCover(item: $app.labelScan) { purpose in
+            LabelScannerSheet(purpose: purpose)
+        }
     }
 }
 
@@ -207,6 +210,8 @@ struct PreviewStandalone: View {
             GroupFlowSheet(flow: .returnRun(runId: PreviewFixtures.runId))
         case .lookup:
             LookupSheet(presentation: PreviewFixtures.lookupPresentation)
+        case .labelScan:
+            LabelScannerSheet(purpose: .lookUp)
         case .filter:
             InventoryFilterSheet(filter: $filter)
         case .inkPlayground:

@@ -57,8 +57,8 @@ workflows:
           xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
           xcrun simctl install "$UDID" "$APP"
           mkdir -p screenshots
-          LIGHT="scan scanList lookup inventory scanReturn detail"
-          DARK="scan lookup"
+          LIGHT="scan scanList labelScan lookup inventory scanReturn"
+          DARK="scan labelScan"
           for appearance in light dark; do
             xcrun simctl ui "$UDID" appearance "$appearance"
             if [ "$appearance" = light ]; then SCREENS="$LIGHT"; else SCREENS="$DARK"; fi
@@ -71,7 +71,7 @@ workflows:
           # Largest accessibility text size: layouts must reflow, not clip.
           xcrun simctl ui "$UDID" appearance light
           xcrun simctl ui "$UDID" content_size accessibility-extra-extra-extra-large
-          for screen in scan lookup; do
+          for screen in scan labelScan; do
             xcrun simctl launch --terminate-running-process "$UDID" com.batteryinventory.mobile -uiPreview "$screen" >/dev/null
             sleep 4
             xcrun simctl io "$UDID" screenshot "screenshots/ax-${screen}.png" >/dev/null
@@ -96,7 +96,7 @@ workflows:
           set -uo pipefail
           cd ios-native/screenshots
           mkdir -p review
-          for name in light-scan light-scanList light-lookup; do
+          for name in light-scan light-scanList light-labelScan; do
             f="$name.png"
             [ -f "$f" ] || { echo "missing $f"; continue; }
             case "$name" in motion-*) W=360 ;; *) W=520 ;; esac
@@ -111,7 +111,7 @@ workflows:
           set -uo pipefail
           cd ios-native/screenshots
           mkdir -p review
-          for name in light-inventory light-scanReturn light-detail; do
+          for name in light-lookup light-inventory light-scanReturn; do
             f="$name.png"
             [ -f "$f" ] || { echo "missing $f"; continue; }
             case "$name" in motion-*) W=360 ;; *) W=520 ;; esac
@@ -126,7 +126,7 @@ workflows:
           set -uo pipefail
           cd ios-native/screenshots
           mkdir -p review
-          for name in dark-scan dark-lookup ax-scan ax-lookup; do
+          for name in dark-scan dark-labelScan ax-scan ax-labelScan; do
             f="$name.png"
             [ -f "$f" ] || { echo "missing $f"; continue; }
             case "$name" in motion-*) W=360 ;; *) W=520 ;; esac

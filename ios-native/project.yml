@@ -8,7 +8,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.0"
-    MARKETING_VERSION: "1.1.1"
+    MARKETING_VERSION: "1.1.2"
     CURRENT_PROJECT_VERSION: "15"
     ENABLE_USER_SCRIPT_SANDBOXING: YES
 targets:
@@ -24,6 +24,7 @@ targets:
         CFBundleShortVersionString: $(MARKETING_VERSION)
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NFCReaderUsageDescription: Reads battery tags so you can check batteries out, return them and look them up.
+        NSCameraUsageDescription: Scans printed battery labels so you can look batteries up or add them to a list.
         ITSAppUsesNonExemptEncryption: false
         UILaunchScreen:
           UIColorName: LaunchBackground

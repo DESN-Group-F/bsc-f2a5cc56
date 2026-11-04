@@ -1,17 +1,40 @@
 import SwiftUI
 
-/// One tag read while looking up. `batteryId` is nil when the tag isn't registered.
+/// One tag or label read while looking up. `batteryId` is nil when nothing in this inventory matches.
 struct LookupRead: Identifiable {
-    let tagId: String
+    enum Kind {
+        /// An NFC tag, with its read evidence (kept for registering an unknown tag).
+        case tag(TagRead)
+        /// A printed label carrying this battery ID.
+        case label(String)
+    }
+
+    let id: String
     let batteryId: String?
-    let tagRead: TagRead
-    var id: String { tagId }
+    let kind: Kind
+
+    init(tag: TagRead, batteryId: String?) {
+        id = tag.tagId
+        self.batteryId = batteryId
+        kind = .tag(tag)
+    }
+
+    init(label: String, batteryId: String?) {
+        id = "label:" + label
+        self.batteryId = batteryId
+        kind = .label(label)
+    }
+
+    var tagRead: TagRead? { if case .tag(let read) = kind { return read } else { return nil } }
+    var labelId: String? { if case .label(let id) = kind { return id } else { return nil } }
 }
 
-/// The batteries just looked up, newest first.
+/// The batteries just looked up, newest first, and how they were read.
 struct LookupPresentation: Identifiable {
+    enum Origin { case tag, label }
     let id = UUID()
     let reads: [LookupRead]
+    var origin: Origin = .tag
 }
 
 /// Read-only cards for the batteries just scanned with Look up. Nothing here changes anything until
@@ -46,9 +69,11 @@ struct LookupSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Done") { dismiss() } }
-                if app.scan.canLookUp {
+                if presentation.origin == .label || app.scan.canLookUp {
                     ToolbarItem(placement: .confirmationAction) {
-                        Button { scanAgain() } label: { Label("Scan again", systemImage: "wave.3.right") }
+                        Button { scanAgain() } label: {
+                            Label("Scan again", systemImage: presentation.origin == .label ? "qrcode.viewfinder" : "wave.3.right")
+                        }
                     }
                 }
             }
@@ -70,7 +95,7 @@ struct LookupSheet: View {
                     } label: {
                         HStack(spacing: 6) {
                             if battery?.hasOpenConcern == true { Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(Tone.failure) }
-                            Text(read.batteryId ?? "Unregistered").font(.monoSmall)
+                            Text(read.batteryId ?? read.labelId ?? "Unregistered").font(.monoSmall)
                         }
                         .padding(.horizontal, 12)
                         .frame(minHeight: 36)
@@ -87,15 +112,22 @@ struct LookupSheet: View {
 
     private func unregisteredCard(_ read: LookupRead) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Label("This tag isn't registered", systemImage: "questionmark.circle")
-                .font(.headline)
-            Text("Tag \(read.tagId.replacingOccurrences(of: "nfc:uid:", with: ""))")
-                .font(.mono).foregroundStyle(.secondary)
-            Text("No battery in this inventory has this tag. If it's a new battery, register it first.")
-                .font(.subheadline).foregroundStyle(.secondary)
-            if app.dataset.allowsNFCWrites {
+            if let id = read.labelId {
+                Label("No battery \(id) in this inventory", systemImage: "questionmark.circle")
+                    .font(.headline)
+                Text("The label is for this inventory, but no battery here has this ID. It may have been removed.")
+                    .font(.subheadline).foregroundStyle(.secondary)
+            } else {
+                Label("This tag isn't registered", systemImage: "questionmark.circle")
+                    .font(.headline)
+                Text("Tag \(read.id.replacingOccurrences(of: "nfc:uid:", with: ""))")
+                    .font(.mono).foregroundStyle(.secondary)
+                Text("No battery in this inventory has this tag. If it's a new battery, register it first.")
+                    .font(.subheadline).foregroundStyle(.secondary)
+            }
+            if let tagRead = read.tagRead, app.dataset.allowsNFCWrites {
                 Button {
-                    after { app.registration = RegistrationRequest(tagRead: read.tagRead) }
+                    after { app.registration = RegistrationRequest(tagRead: tagRead) }
                 } label: {
                     Text("Register this battery").font(.headline).foregroundStyle(.white).frame(maxWidth: .infinity, minHeight: 40)
                 }
@@ -126,10 +158,11 @@ struct LookupSheet: View {
     }
 
     private func scanAgain() {
+        let origin = presentation.origin
         dismiss()
         Task {
             try? await Task.sleep(for: .milliseconds(450))
-            app.scan.startLookup()
+            if origin == .label { app.labelScan = .lookUp } else { app.scan.startLookup() }
         }
     }
 

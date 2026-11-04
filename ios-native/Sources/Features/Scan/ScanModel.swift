@@ -297,8 +297,8 @@ final class ScanModel {
             await app.inventory.refresh()
             battery = app.inventory.battery(tagId: read.tagId)
         }
-        lookupReads.removeAll { $0.tagId == read.tagId }
-        lookupReads.insert(LookupRead(tagId: read.tagId, batteryId: battery?.id, tagRead: read), at: 0)
+        lookupReads.removeAll { $0.id == read.tagId }
+        lookupReads.insert(LookupRead(tag: read, batteryId: battery?.id), at: 0)
         if let battery {
             reader.flash(Self.lookupLine(battery, me: app.user?.id), seconds: 2.4)
             setMood(.happy, hold: 0.7)
@@ -326,6 +326,45 @@ final class ScanModel {
         } else {
             add(battery, tagId: battery.tagId, evidence: nil, from: .selection)
         }
+    }
+
+    // MARK: Labels (camera)
+
+    enum LabelOutcome {
+        case found(BatteryRecord)
+        /// A label for this inventory whose battery isn't here (for example removed).
+        case unknown(String)
+        case otherInventory(Dataset)
+        case notLabel
+    }
+
+    /// Resolves a scanned code against the latest inventory, refreshing once if the battery isn't known yet.
+    func resolveLabel(_ text: String) async -> LabelOutcome {
+        guard let app, let label = BatteryLabel(text) else { return .notLabel }
+        // Battery IDs repeat across inventories: never look a label up in the other one.
+        guard label.dataset == app.dataset else { return .otherInventory(label.dataset) }
+        if let battery = app.inventory.battery(id: label.batteryId) { return .found(battery) }
+        await app.inventory.refresh()
+        guard label.dataset == app.dataset else { return .otherInventory(label.dataset) }
+        if let battery = app.inventory.battery(id: label.batteryId) { return .found(battery) }
+        return .unknown(label.batteryId)
+    }
+
+    /// The camera in the scan station: the battery joins the list as a hand-picked one, under the usual list
+    /// rules (first battery decides the action; tag-scanned lists don't take hand-picked batteries).
+    func addFromLabel(_ battery: BatteryRecord) -> (added: Bool, text: String) {
+        if case .done = phase { scanMore() }
+        guard phase == .scanning, pendingWrites.isEmpty, retireRequestId == nil else {
+            return (false, "Finish the open confirmation first.")
+        }
+        guard mode != .register else { return (false, "Labels are for registered batteries. Switch to another action.") }
+        if source == .nfc && !items.isEmpty {
+            return (false, "This list came from tag scans. Confirm or clear it before adding by label.")
+        }
+        let before = items.count
+        add(battery, tagId: battery.tagId, evidence: nil, from: .selection)
+        if items.count > before { return (true, "Added · " + Self.lookupLine(battery, me: app?.user?.id)) }
+        return (false, notice?.text ?? "\(battery.id) wasn't added.")
     }
 
     /// What the tag sheet says about a battery: "BAT-00000012 · Drone pack · With J. Chen · concern recorded".

@@ -7,7 +7,7 @@ enum PreviewScreen: String, CaseIterable {
     case scanRegister, scanRegisterEmpty, scanUnregistered
     case inventory, inventoryFiltered, newArrivals, detail, detailBottom, detailConcern, detailRetired
     case register, registerReview, inspection, retire, group, groupEditor, filter, pendingWrite, inkPlayground, inkMotion, newModel
-    case scanReturnGroup, groupsHub, groupCheckout, groupCheckoutFilled, groupCheckoutOpen, groupReturn, lookup
+    case scanReturnGroup, groupsHub, groupCheckout, groupCheckoutFilled, groupCheckoutOpen, groupReturn, lookup, labelScan
     case inbox, me
 
     static func fromLaunchArguments() -> PreviewScreen? {
@@ -19,7 +19,7 @@ enum PreviewScreen: String, CaseIterable {
     var isStandalone: Bool {
         switch self {
         case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
-             .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn, .lookup: return true
+             .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn, .lookup, .labelScan: return true
         default: return false
         }
     }
@@ -139,7 +139,7 @@ enum PreviewFixtures {
                                                    batteryIds: ["BAT-00000002"], body: Data(), createdAt: Date(), attempts: 1,
                                                    action: "lifecycle", title: "Retiring BAT-00000002"))
         case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
-             .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn, .lookup:
+             .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn, .lookup, .labelScan:
             app.tab = .inventory
         case .inbox: app.tab = .inbox
         case .me: app.tab = .me
@@ -240,7 +240,7 @@ enum PreviewFixtures {
             let read = TagRead(tagId: "nfc:uid:\(uid)", attemptId: RequestID.make(), startedAt: now, endedAt: now,
                                result: NFCReadResult(uidHex: uid, technology: "NFC-A / ISO 14443 / MIFARE Ultralight", ndefStatus: "readWrite",
                                                      capacityBytes: 137, records: [], ndefError: nil, observedAt: now))
-            return LookupRead(tagId: read.tagId, batteryId: id, tagRead: read)
+            return LookupRead(tag: read, batteryId: id)
         }
         return LookupPresentation(reads: reads)
     }
