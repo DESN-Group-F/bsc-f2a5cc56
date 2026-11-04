@@ -262,6 +262,11 @@ struct InventoryView: View {
                     if !selection.isEmpty && selection.count >= limit { selection = [] } else { selection = Array(visible.prefix(100).map(\.id)) }
                 }
             } else {
+                if app.scan.canLookUp {
+                    Button { app.scan.startLookup() } label: { Image(systemName: "sensor.tag.radiowaves.forward") }
+                        .accessibilityLabel("Look up by tag")
+                        .disabled(app.scan.readerActive || app.inventory.snapshot == nil)
+                }
                 Button("Select") { selecting = true }
                     .disabled(app.inventory.snapshot == nil)
                 Menu {

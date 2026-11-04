@@ -117,6 +117,9 @@ struct MainTabs: View {
         .sheet(item: $app.groupFlow) { flow in
             GroupFlowSheet(flow: flow)
         }
+        .sheet(item: $app.lookup) { presentation in
+            LookupSheet(presentation: presentation)
+        }
     }
 }
 
@@ -202,6 +205,8 @@ struct PreviewStandalone: View {
             GroupFlowSheet(flow: .checkout(groupId: PreviewFixtures.roboticsId))
         case .groupReturn:
             GroupFlowSheet(flow: .returnRun(runId: PreviewFixtures.runId))
+        case .lookup:
+            LookupSheet(presentation: PreviewFixtures.lookupPresentation)
         case .filter:
             InventoryFilterSheet(filter: $filter)
         case .inkPlayground:

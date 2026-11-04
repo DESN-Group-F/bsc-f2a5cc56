@@ -7,7 +7,7 @@ enum PreviewScreen: String, CaseIterable {
     case scanRegister, scanRegisterEmpty, scanUnregistered
     case inventory, inventoryFiltered, newArrivals, detail, detailBottom, detailConcern, detailRetired
     case register, registerReview, inspection, retire, group, groupEditor, filter, pendingWrite, inkPlayground, inkMotion, newModel
-    case scanReturnGroup, groupsHub, groupCheckout, groupCheckoutFilled, groupCheckoutOpen, groupReturn
+    case scanReturnGroup, groupsHub, groupCheckout, groupCheckoutFilled, groupCheckoutOpen, groupReturn, lookup
     case inbox, me
 
     static func fromLaunchArguments() -> PreviewScreen? {
@@ -19,7 +19,7 @@ enum PreviewScreen: String, CaseIterable {
     var isStandalone: Bool {
         switch self {
         case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
-             .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn: return true
+             .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn, .lookup: return true
         default: return false
         }
     }
@@ -139,7 +139,7 @@ enum PreviewFixtures {
                                                    batteryIds: ["BAT-00000002"], body: Data(), createdAt: Date(), attempts: 1,
                                                    action: "lifecycle", title: "Retiring BAT-00000002"))
         case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
-             .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn:
+             .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn, .lookup:
             app.tab = .inventory
         case .inbox: app.tab = .inbox
         case .me: app.tab = .me
@@ -230,6 +230,19 @@ enum PreviewFixtures {
            "items":[{"batteryId":"BAT-00000015","sequence":15,"registeredAt":"\(earlier)","isUnread":true},
                     {"batteryId":"BAT-00000014","sequence":14,"registeredAt":"\(earlier)","isUnread":true}]}}
         """
+    }
+
+    /// Three tags looked up in one go: a battery with a concern, one out in a group checkout, one in store.
+    static var lookupPresentation: LookupPresentation {
+        let now = Sydney.timestamp()
+        let reads = ["BAT-00000008", "BAT-00000007", "BAT-00000012"].map { id -> LookupRead in
+            let uid = "04\(id.suffix(2))7862A62090"
+            let read = TagRead(tagId: "nfc:uid:\(uid)", attemptId: RequestID.make(), startedAt: now, endedAt: now,
+                               result: NFCReadResult(uidHex: uid, technology: "NFC-A / ISO 14443 / MIFARE Ultralight", ndefStatus: "readWrite",
+                                                     capacityBytes: 137, records: [], ndefError: nil, observedAt: now))
+            return LookupRead(tagId: read.tagId, batteryId: id, tagRead: read)
+        }
+        return LookupPresentation(reads: reads)
     }
 
     /// One open group checkout of "Robotics demo": two still out, one already back.

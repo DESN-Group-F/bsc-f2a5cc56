@@ -338,7 +338,9 @@ struct ScanView: View {
     }
 
     private var alternatives: some View {
-        HStack(spacing: 10) {
+        // At accessibility sizes the two choices stack instead of squeezing.
+        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 10)) : AnyLayout(HStackLayout(spacing: 10))
+        return layout {
             Button {
                 if scan.mode == .register { app.registration = RegistrationRequest() } else { scan.showChooser = true }
             } label: {
@@ -349,6 +351,16 @@ struct ScanView: View {
             }
             .secondaryButton()
             .controlSize(.regular)
+            if scan.mode != .register && scan.canLookUp {
+                Button { scan.startLookup() } label: {
+                    Label("Look up", systemImage: "sensor.tag.radiowaves.forward")
+                        .font(.subheadline.weight(.semibold))
+                        .padding(.horizontal, 6)
+                }
+                .secondaryButton()
+                .controlSize(.regular)
+                .accessibilityHint("Scan tags to see batteries' details. Nothing changes.")
+            }
         }
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }

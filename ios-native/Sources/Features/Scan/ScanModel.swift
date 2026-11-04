@@ -242,6 +242,107 @@ final class ScanModel {
         }
     }
 
+    // MARK: Look up (read only)
+
+    /// Tags read in the current look-up, newest first. Nothing is sent; the reader shows a one-line summary
+    /// per tag and the details open when it closes.
+    private(set) var lookupReads: [LookupRead] = []
+    private(set) var lookingUp = false
+
+    /// Whether this iPhone and inventory can look batteries up by tag (Demo-only, like every tag scan).
+    var canLookUp: Bool {
+        guard let app, app.dataset.allowsNFCWrites else { return false }
+        // Simulator screenshots have no reader; preview mode shows the entry points anyway.
+        return NFCReader.isAvailable || app.preview != nil
+    }
+
+    func startLookup() {
+        guard canLookUp, !readerActive, phase != .submitting else { return }
+        lookupReads = []
+        lookingUp = true
+        readerActive = true
+        setMood(.listening, hold: nil)
+        Haptics.prepare()
+        reader.prompt = lookupPrompt
+        reader.start { [weak self] event in
+            Task { @MainActor in self?.handleLookup(event) }
+        }
+    }
+
+    private var lookupPrompt: String {
+        let n = lookupReads.count
+        return n == 0 ? "Hold near a battery to see its details. Keep going for more."
+            : "\(n) looked up. Hold near the next one, or tap Cancel to see \(n == 1 ? "it" : "them")."
+    }
+
+    private func handleLookup(_ event: ReaderEvent) {
+        switch event {
+        case .read(let read):
+            Task { await lookUp(read) }
+        case .failed(let message):
+            reader.flash(message)
+        case .ended:
+            readerActive = false
+            lookingUp = false
+            if mood == .listening { setMood(.idle, hold: nil) }
+            if !lookupReads.isEmpty { app?.lookup = LookupPresentation(reads: lookupReads) }
+        }
+    }
+
+    private func lookUp(_ read: TagRead) async {
+        guard let app else { return }
+        var battery = app.inventory.battery(tagId: read.tagId)
+        if battery == nil {
+            // Maybe registered moments ago on another device.
+            await app.inventory.refresh()
+            battery = app.inventory.battery(tagId: read.tagId)
+        }
+        lookupReads.removeAll { $0.tagId == read.tagId }
+        lookupReads.insert(LookupRead(tagId: read.tagId, batteryId: battery?.id, tagRead: read), at: 0)
+        if let battery {
+            reader.flash(Self.lookupLine(battery, me: app.user?.id), seconds: 2.4)
+            setMood(.happy, hold: 0.7)
+            Haptics.accepted()
+        } else {
+            reader.flash("This tag isn't registered.", seconds: 2.4)
+            setMood(.surprised, hold: 1.2)
+            Haptics.refused()
+        }
+        reaction += 1
+        reader.prompt = lookupPrompt
+    }
+
+    /// From a look-up card: hand the battery to the station as an ordinary reviewed list, without
+    /// discarding a list already in progress.
+    func takeFromLookup(_ battery: BatteryRecord) {
+        if case .done = phase { scanMore() }
+        guard pendingWrites.isEmpty, phase == .scanning, retireRequestId == nil else { return }
+        guard !items.isEmpty else { begin(with: battery); return }
+        let target: MovementKind = battery.isInUse ? .return : .checkout
+        if source == .nfc {
+            show(.init(kind: .info, text: "This list came from tag scans. Confirm or clear it before adding \(battery.id)."))
+        } else if mode != target {
+            show(.init(kind: .info, text: "The list is for \(mode.title). Confirm or clear it before you \(target.title.lowercased()) \(battery.id)."))
+        } else {
+            add(battery, tagId: battery.tagId, evidence: nil, from: .selection)
+        }
+    }
+
+    /// What the tag sheet says about a battery: "BAT-00000012 · Drone pack · With J. Chen · concern recorded".
+    static func lookupLine(_ battery: BatteryRecord, me: String?) -> String {
+        var parts = [battery.id, battery.name]
+        if !battery.isActive {
+            parts.append(battery.statusTitle)
+        } else if battery.isInUse {
+            parts.append(battery.borrowerAccountId != nil && battery.borrowerAccountId == me ? "With you"
+                         : "With \(StatusPill.shortName(battery.borrowerName))")
+        } else {
+            parts.append("In store")
+        }
+        if battery.hasOpenConcern { parts.append("concern recorded") }
+        return parts.joined(separator: " · ")
+    }
+
     // MARK: Reading tags
 
     func tapInk() {
