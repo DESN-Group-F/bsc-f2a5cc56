@@ -567,6 +567,7 @@ struct NoticeCapsule: View {
             HStack(spacing: 8) {
                 Image(systemName: icon)
                 Text(notice.text).lineLimit(stacked ? 4 : 2)
+                    .fixedSize(horizontal: false, vertical: stacked)
             }
             if let title = notice.actionTitle {
                 HStack(spacing: 8) {

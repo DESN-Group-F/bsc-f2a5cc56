@@ -530,10 +530,12 @@ final class TeachingRunsModel {
     private(set) var runs: [TeachingRun] = []
     private(set) var loaded = false
     var lastError: String?
+    /// Bumped on every successful load, so open reviews can reclassify against the latest runs.
+    private(set) var generation = 0
 
     private let gate = RefreshGate()
 
-    func reset() { runs = []; loaded = false; lastError = nil }
+    func reset() { runs = []; loaded = false; lastError = nil; generation += 1 }
 
     var open: [TeachingRun] { runs.filter(\.isOpen) }
 
@@ -560,6 +562,7 @@ final class TeachingRunsModel {
             runs = list.filter { $0.actorAccountId == viewer && $0.dataset == dataset }
             loaded = true
             lastError = nil
+            generation += 1
         } catch {
             guard dataset == app.dataset, viewer == app.user?.id else { return }
             lastError = (error as? APIFailure)?.message ?? "Couldn't load group checkouts."

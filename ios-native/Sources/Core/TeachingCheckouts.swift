@@ -288,7 +288,8 @@ extension ReceiptCheck {
         case "return":
             guard let p = try? decoder.decode(WriteEnvelope<TeachingReturnPayload>.self, from: entry.body).payload,
                   let returned = r.returnedItems else { return nil }
-            guard r.requestId == p.requestId, run.id == p.runId, returned.count == p.items.count,
+            guard r.requestId == p.requestId, run.id == p.runId, run.actorAccountId == entry.accountId,
+                  returned.count == p.items.count,
                   zip(returned, p.items).allSatisfy({ $0.matches($1) }),
                   let started = Sydney.date(run.createdAt), let at = Sydney.date(r.at), started <= at else { return nil }
             let n = p.items.count

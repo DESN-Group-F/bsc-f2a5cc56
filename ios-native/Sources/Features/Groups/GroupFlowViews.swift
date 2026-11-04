@@ -217,6 +217,9 @@ struct GroupCheckoutView: View {
         }
         // Also when coming back from a return pushed on top: the runs have changed.
         .onAppear { Task { await reload() } }
+        // Records refreshed elsewhere (a poll, a request settled from the banner): reclassify, keeping choices.
+        .onChange(of: app.inventory.lastRefreshed) { if loadedOnce && !locked && !loading && done == nil { rebuild() } }
+        .onChange(of: app.runs.generation) { if loadedOnce && !locked && !loading && done == nil { rebuild() } }
         .navigationDestination(item: $returningRunId) { id in RunReturnView(runId: id) }
         .sheet(item: $picking) { pick in pickerSheet(pick) }
         .confirmationDialog(permanentTitle, isPresented: Binding(get: { permanent != nil }, set: { if !$0 { permanent = nil } }),
@@ -467,7 +470,9 @@ struct GroupCheckoutView: View {
     private func confirmBar(_ plan: GroupCheckoutPlan) -> some View {
         let n = plan.included.count
         let unfilled = plan.unfilled.count
-        let enabled = plan.canSubmit && !locked && loadError == nil && !loading && !app.writes.hasPending
+        // With a checkout of this group still out, checking out again is a deliberate separate checkout.
+        let needsChoice = !app.runs.open(forGroup: plan.group.id).isEmpty && !plan.separate
+        let enabled = plan.canSubmit && !needsChoice && !locked && loadError == nil && !loading && !app.writes.hasPending
         VStack(spacing: 8) {
             if isPending && !isSending {
                 VStack(alignment: .leading, spacing: 6) {
@@ -478,7 +483,12 @@ struct GroupCheckoutView: View {
                     .secondaryButton()
                 }
             } else {
-                if unfilled > 0 {
+                if needsChoice {
+                    Text("Return the checkout still out, or choose Separate checkout above.")
+                        .font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, 4)
+                } else if unfilled > 0 {
                     ViewThatFits(in: .horizontal) {
                         HStack {
                             unfilledHint(unfilled)
@@ -585,6 +595,8 @@ struct GroupCheckoutView: View {
 
     private func rebuild() {
         guard let group, let me = app.user?.id, app.inventory.snapshot != nil else { plan = nil; return }
+        // "Separate" only means something while another checkout of this group is out.
+        if separate && app.runs.open(forGroup: group.id).isEmpty { separate = false }
         plan = GroupCheckoutPlan(group: group, batteries: app.inventory.batteries, runs: app.runs.runs, me: me,
                                  separate: separate, keeping: plan?.group.id == group.id ? plan : nil)
         if app.preview == .groupCheckoutFilled, var filled = plan, !filled.unfilled.isEmpty {
@@ -914,6 +926,16 @@ struct RunReturnView: View {
                     .listRowBackground(Color.clear)
                     .listRowInsets(EdgeInsets())
             }
+            if let loadError {
+                Section {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label("Couldn't refresh this checkout", systemImage: "wifi.exclamationmark").font(.subheadline.weight(.semibold))
+                        Text("\(loadError) Returning reads it again first, so nothing is sent from an old copy.")
+                            .font(.footnote).foregroundStyle(.secondary)
+                        Button("Try again") { Task { await reload() } }.font(.subheadline.weight(.semibold))
+                    }
+                }
+            }
             if !outstanding.isEmpty {
                 Section {
                     ForEach(outstanding) { item in itemRow(item, run: run) }
@@ -1098,7 +1120,11 @@ struct RunReturnView: View {
         }
         // Read the run again: only loans still out on it right now are sent.
         await reload()
-        guard let fresh = run else { return }
+        guard loadError == nil, let fresh = run else {
+            message = "Couldn't read this checkout from the server just now, so nothing was sent. Check your connection and try again."
+            isError = true
+            return
+        }
         let stillOut = fresh.outstanding.filter { chosen.contains($0.id) }
         guard stillOut.count == chosen.count else {
             let gone = chosen.count - stillOut.count
