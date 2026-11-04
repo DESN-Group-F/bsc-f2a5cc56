@@ -1,10 +1,9 @@
 import { after, test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join, posix } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
-import { getRolePermissions } from "../work/qa/permissions.mjs";
 
 // Exercise the actual component handlers with controlled hooks and transport.
 // No browser, physical reader or shared business database is operated here.
@@ -12,12 +11,21 @@ const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "battery-model-ui-"));
 after(() => rm(scratch, { recursive: true, force: true }));
-for (const name of ["battery-models", "client-utils", "battery-age", "location-catalog"]) {
+const compiledLibraries = new Map();
+async function compileLibrary(name) {
+    if (compiledLibraries.has(name)) return compiledLibraries.get(name);
+    const destination = join(scratch, `${name}.mjs`); compiledLibraries.set(name, destination);
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
-    const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
-    await writeFile(join(scratch, `${name}.mjs`), compiled);
+    const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
+    for (const match of output.matchAll(/from "(\.[^"]+)"/g)) await compileLibrary(posix.normalize(posix.join(posix.dirname(name), match[1])));
+    await mkdir(dirname(destination), { recursive: true });
+    await writeFile(destination, output.replace(/from "(\.[^"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`));
+    return destination;
 }
+for (const name of ["battery-models", "client-utils", "battery-age", "location-catalog", "permissions", "client/workflow-storage"]) await compileLibrary(name);
 const [models, client, locations] = await Promise.all(["battery-models", "client-utils", "location-catalog"].map(name => import(pathToFileURL(join(scratch, `${name}.mjs`)))));
+const { getRolePermissions } = await import(pathToFileURL(join(scratch, "permissions.mjs")));
+const workflowStorage = await import(pathToFileURL(join(scratch, "client/workflow-storage.mjs")));
 const ui = Object.fromEntries(["Button", "Checkbox", "Input", "Label", "Textarea", "RecordPicker", "BatteryModelPicker", "Dialog", "DialogContent", "DialogHeader", "DialogTitle", "DialogDescription", "DialogFooter"].map(name => [name, name]));
 Object.assign(ui, { MotionDisclosure: "MotionDisclosure", MotionPresence: "MotionPresence" });
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
@@ -43,7 +51,7 @@ function hooks() {
 async function component(path, exportNames, state, additional = {}) {
     const source = await readFile(new URL(`../${path}`, import.meta.url), "utf8");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
-    const bindings = { getRolePermissions, ...ui, ...models, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03", ...additional }, names = Object.keys(bindings);
+    const bindings = { getRolePermissions, ...ui, ...models, ...client, ...locations, ...workflowStorage, ...state, currentSydneyDate: () => "2026-10-03", ...additional }, names = Object.keys(bindings);
     return new Function(...names, "_jsx", "_jsxs", "_Fragment", `${compiled}\nreturn {${exportNames.join(",")}};`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
 }
 function nodes(node, results = []) { if (Array.isArray(node)) { for (const item of node) nodes(item, results); } else if (node && typeof node === "object") { results.push(node); nodes(node.props?.children, results); } return results; }

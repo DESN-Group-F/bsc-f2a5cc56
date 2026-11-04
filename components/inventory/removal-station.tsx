@@ -62,7 +62,7 @@ export function RemovalStation({ data, write, onChanged, onDetail, paused = fals
         try {
             const raw = sessionStorage.getItem(storageKey), savedDraft = sessionStorage.getItem(draftKey);
             const attempt = recoverLifecycleSession(raw, context.actorAccountId, context.dataset), draft = recoverRemovalDraft(savedDraft, context.actorAccountId, context.dataset);
-            const invalid = !!raw && !attempt || !!savedDraft && !draft;
+            const invalid = raw !== null && !attempt || savedDraft !== null && !draft;
             const base: RemovalDraft = draft && (draft.items.length || !initialIds.length) ? draft : { ...context, source: "manual_selection", kind: "scrapped", reason: "", destination: "", items: [], selectedIds: [], ...(teachingGroup ? { teachingGroup } : {}) };
             if ((!draft || !draft.items.length) && !attempt && initialIds.length) {
                 base.items = initialIds.flatMap(id => { const b = data.batteries.find(b => b.id === id); return b && eligible(b) ? [{ batteryId: b.id, version: b.version, tagId: b.tagId, name: b.name }] : []; });

@@ -11,18 +11,36 @@ import type { InventoryStore } from "./store";
 import { teachingGroupReferenceSchema } from "./teaching-context";
 import { mappingScopeLabel } from "./inventory-mapping";
 import { actionNames } from "./client-utils";
+import { workstationQuerySchema, mappingScopeSchema, queryInventory, emptyFilter, type InventoryQuery } from "./workstation-query";
 type Row = Record<string, unknown>;
 export type ExportDocument = { metadata: Record<string, unknown>; tables: Record<string, Row[]> };
 const sectionIds = exportSections.map(section => section.id) as [ExportSection, ...ExportSection[]];
-const requestSchema = z.object({ dataset: datasetSchema, mode: z.enum(["summary", "detail", "records", "activity"]), activityScope: z.enum(["all", "mine"]).default("all"), activityGroupId: z.string().uuid().nullable().default(null), activityDepth: z.enum(["group_summary", "battery_details"]).default("group_summary"), activityBatteryFilter: inventoryFilterSchema.optional(), activityIds: z.array(z.string().min(1).max(100)).optional(), range: z.enum(["filtered", "page", "selected"]).default("filtered"), batteryIds: z.array(identifier).optional(), filter: inventoryFilterSchema.default({}), teachingGroup: teachingGroupReferenceSchema.optional(), page: z.number().int().nonnegative().default(0), pageSize: z.enum(["10", "25", "50", "100"]).default("25"), batteryId: identifier.optional(), sections: z.array(z.enum(sectionIds)).default(sectionIds), kind: z.enum(["people", "buildings", "rooms", "batteries"]).optional(), search: z.string().max(200).default("") });
+const requestSchema = z.object({ dataset: datasetSchema, mode: z.enum(["summary", "detail", "records", "activity"]), activityScope: z.enum(["all", "mine"]).default("all"), activityGroupId: z.string().uuid().nullable().default(null), activityDepth: z.enum(["group_summary", "battery_details"]).default("group_summary"), activityBatteryFilter: inventoryFilterSchema.optional(), activityIds: z.array(z.string().min(1).max(100)).optional(), range: z.enum(["filtered", "page", "selected"]).default("filtered"), batteryIds: z.array(identifier).optional(), filter: inventoryFilterSchema.default({}), teachingGroup: teachingGroupReferenceSchema.optional(), page: z.number().int().nonnegative().default(0), pageSize: z.enum(["10", "25", "50", "100"]).default("25"), batteryId: identifier.optional(), sections: z.array(z.enum(sectionIds)).default(sectionIds), kind: z.enum(["people", "buildings", "rooms", "batteries"]).optional(), search: z.string().max(200).default(""), workstationQuery: workstationQuerySchema.optional(), workstationRange: z.enum(["filtered", "page", "selected", "single", "all"]).optional(), workstationMappingScope: mappingScopeSchema.optional() });
 const pick = (row: Row, columns: string[]) => Object.fromEntries(columns.map(column => [column, row[column] ?? null]));
 function usageFields(loans: readonly Row[], asOf: Date): Row {
     const summary = summarizeBatteryUsage(loans.map(row => ({ checkedOutAt: row.checked_out_at, returnedAt: row.returned_at, cancelledAt: row.cancelled_at })), asOf);
     return { total_checkouts: summary.totalCheckouts, completed_checkouts: summary.completedCheckouts, active_checkouts: summary.activeCheckouts, total_checked_out_seconds: summary.totalCheckedOutSeconds, usage_as_of_utc: summary.asOf, invalid_duration_count: summary.invalidDurationCount };
 }
 export async function createExport(store: InventoryStore, input: unknown): Promise<ExportDocument> {
-    const exportedAt = new Date(), ageAsOfDate = currentSydneyDate(exportedAt);
+    const document = await buildExport(store, input);
+    return { ...document, metadata: {
+        ...document.metadata,
+        export_contract_version: 1,
+        operator_account_id: store.viewerAccountId,
+        snapshot_id: crypto.randomUUID(),
+        table_record_counts: Object.fromEntries(Object.entries(document.tables).map(([name, rows]) => [name, rows.length])),
+    } };
+}
+async function buildExport(store: InventoryStore, input: unknown): Promise<ExportDocument> {
+    const exportedAt = new Date();
+    let ageAsOfDate = currentSydneyDate(exportedAt);
     const request = requestSchema.parse(input), selectedIds = uniqueIds(request.batteryIds ?? []);
+    if (Boolean(request.workstationQuery) !== Boolean(request.workstationRange) || request.workstationMappingScope && !request.workstationQuery || request.workstationQuery && (
+        !["summary", "detail"].includes(request.mode) || request.teachingGroup ||
+        input && typeof input === "object" && "filter" in input ||
+        request.range !== (["all", "single"].includes(request.workstationRange!) ? "filtered" : request.workstationRange) ||
+        Boolean(request.batteryId) !== (request.workstationRange === "single")
+    )) throw new DomainError(400, "The workstation export query and range do not match this battery download.");
     if (request.teachingGroup && (request.batteryId || !["summary", "detail"].includes(request.mode) || request.filter.groupId !== request.teachingGroup.id))
         throw new DomainError(400, "A teaching-group download must use its matching fixed group view and a summary or detailed batch range.");
     if (request.mode === "records" && request.kind === "batteries" && (!input || typeof input !== "object" || !("filter" in input))) {
@@ -37,6 +55,9 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
         throw new DomainError(400, "Choose the selected-batteries range when supplying battery IDs.");
     }
     const source = await store.exportData(), raw = source.raw;
+    const snapshotReadCompletedAt = new Date().toISOString();
+    const workstationQueryAsOf = source.snapshot.newArrivals?.serverNow ?? snapshotReadCompletedAt;
+    if (request.workstationQuery) ageAsOfDate = currentSydneyDate(new Date(workstationQueryAsOf));
     // Rows committed while the snapshot was being read must not appear to come from the future.
     const usageAsOf = new Date();
     const loansByBatteryKey = new Map<string, Row[]>();
@@ -67,15 +88,43 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
     const personalBase = filterBatteries(all, { personalScope: request.filter.personalScope, lifecycle: "all", mappingRoom: request.filter.mappingRoom, ...(request.teachingGroup ? { groupId: request.teachingGroup.id } : {}) }, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? [], source.snapshot.newArrivals, mappingRooms);
     let matching = request.batteryId ? personalBase.filter(battery => battery.id === request.batteryId) : request.range === "selected" ? personalBase.filter(battery => selected.has(battery.id)) : filterBatteries(all, request.filter, ageAsOfDate, store.viewerAccountId, source.snapshot.teachingGroups ?? [], source.snapshot.newArrivals, mappingRooms);
     matching = sortBatteries(matching, request.filter, ageAsOfDate);
+    let effectiveWorkstationQuery: InventoryQuery | undefined;
+    let workstationPage: number | undefined;
+    if (request.workstationQuery) {
+        const query = request.workstationQuery, range = request.workstationRange!;
+        const ignoresOrdinaryCriteria = ["all", "single", "selected"].includes(range);
+        effectiveWorkstationQuery = ignoresOrdinaryCriteria
+            ? { ...query, filter: { ...emptyFilter, lifecycle: "all" }, status: "all", newArrivalsOnly: false, page: 0 }
+            : query;
+        const result = queryInventory(all, effectiveWorkstationQuery, workstationQueryAsOf, { accountId: store.viewerAccountId, newArrivals: source.snapshot.newArrivals, mappingScope: request.workstationMappingScope, rooms: mappingRooms });
+        if (result.error) throw new DomainError(409, result.error);
+        matching = range === "single" ? result.sorted.filter(battery => battery.id === request.batteryId)
+            : range === "selected" ? result.sorted.filter(battery => selected.has(battery.id)) : result.sorted;
+        workstationPage = result.page;
+    }
     if (request.range === "selected" && matching.length !== selectedIds.length)
         throw new DomainError(409, "One or more selected batteries are no longer available in this inventory, personal view, fixed teaching group or last-observation room scope. Refresh and review your selection. No partial download was prepared.");
     if (request.batteryId && !matching.length) throw new DomainError(404, "Battery not found in this inventory or fixed view. Refresh and review its responsibility, loan and last observation.");
     const matchingCount = matching.length;
     const pageRange = !request.batteryId && request.range === "page";
-    if (pageRange) matching = matching.slice(request.page * Number(request.pageSize), (request.page + 1) * Number(request.pageSize));
+    const exportPage = workstationPage ?? request.page, exportPageSize = request.workstationQuery?.pageSize ?? Number(request.pageSize);
+    if (pageRange) matching = matching.slice(exportPage * exportPageSize, (exportPage + 1) * exportPageSize);
     const metadata = { exported_at_utc: exportedAt.toISOString(), age_as_of_date: ageAsOfDate, age_date_timezone: "Australia/Sydney", dataset: request.dataset, operator: source.snapshot.actor, mode: request.mode, range: request.batteryId ? "single" : request.range, filters: request.range === "selected" ? null : request.filter, selected_battery_ids: request.range === "selected" ? selectedIds : null, selection_filter_context: request.range === "selected" ? request.filter : null, page: pageRange ? request.page + 1 : null, page_size: pageRange ? Number(request.pageSize) : null, matching_batteries: matchingCount, exported_batteries: matching.length, selected_sections: request.mode === "detail" ? request.sections : null, timestamps: "UTC ISO 8601; battery lifecycle dates are YYYY-MM-DD", location_meaning: "Registered storage is the home; observations are dated evidence with their recorded source.", unknown_values: "Null or blank means not recorded; no history is inferred.", consistency: "All inventory and history tables read in one D1 batch." };
+    Object.assign(metadata, { snapshot_read_completed_at_utc: snapshotReadCompletedAt, purged_battery_ids: (source.snapshot.purgedBatteries ?? []).map(record => String(record.id)) });
+    if (request.workstationQuery) Object.assign(metadata, {
+        range: request.workstationRange, workstation_query: request.workstationQuery, workstation_effective_query: effectiveWorkstationQuery,
+        workstation_query_as_of_utc: workstationQueryAsOf,
+        fixed_personal_scope: { kind: request.workstationQuery.personalScope, account_id: store.viewerAccountId },
+        workstation_mapping_scope: request.workstationMappingScope ?? null, mapping_scope_contract_version: 1,
+        filters: request.range === "selected" ? null : { personalScope: request.workstationQuery.personalScope },
+        selection_filter_context: request.range === "selected" ? { personalScope: request.workstationQuery.personalScope } : null,
+        page: pageRange ? exportPage + 1 : null, page_size: pageRange ? exportPageSize : null,
+        sort: { by: request.workstationQuery.sort, direction: request.workstationQuery.direction, missing_values: "last", tie_breaker: "Battery ID ascending" },
+    });
     Object.assign(metadata, { sort: { by: request.filter.sortBy, direction: request.filter.sortDirection, missing_values: "last", tie_breaker: "Battery ID ascending" }, teaching_group: teachingGroup ? { id: teachingGroup.id, name: teachingGroup.name, version: teachingGroup.version } : null });
-    Object.assign(metadata, { fixed_mapping_scope: request.filter.mappingRoom ? { roomId: request.filter.mappingRoom, directoryLabel: mappingScopeLabel(request.filter.mappingRoom, mappingRooms) } : null, mapping_meaning: "Last recorded observation only, not a confirmed present location. Map labels use the current directory; saved evidence labels remain unchanged. Unknown includes missing room identity and observations outside the current J18 map." });
+    if (request.workstationQuery) Object.assign(metadata, { sort: { by: request.workstationQuery.sort, direction: request.workstationQuery.direction, missing_values: "last", tie_breaker: "Battery ID ascending" } });
+    const mappingRoomId = request.workstationMappingScope?.roomId ?? request.filter.mappingRoom;
+    Object.assign(metadata, { fixed_mapping_scope: mappingRoomId ? { roomId: mappingRoomId, directoryLabel: mappingScopeLabel(mappingRoomId, mappingRooms) } : null, mapping_meaning: "Last recorded observation only, not a confirmed present location. Map labels use the current directory; saved evidence labels remain unchanged. Unknown includes missing room identity and observations outside the current J18 map." });
     if (request.filter.newArrivalsOnly) Object.assign(metadata, { new_arrivals_as_of_utc: source.snapshot.newArrivals?.serverNow ?? null, new_arrivals_meaning: "Active batteries first registered within the preceding 48 hours, based on native registration evidence. Viewing a reminder does not end this window." });
     Object.assign(metadata, { fixed_teaching_group_scope: request.teachingGroup ? { ...request.teachingGroup, name: teachingGroup!.name } : null, teaching_group_meaning: request.teachingGroup ? "The reviewed current private group and version bound this download; selected batteries may cross ordinary filters but remain members." : "A teaching-group filter is selection context only for a selected download; selected IDs may cross ordinary filters." });
     Object.assign(metadata, { usage_as_of_utc: usageAsOf.toISOString(), usage_meaning: "Recorded borrowing only, not charge/discharge cycles, battery health or remaining life. Voided checkouts are excluded; open loans run to the borrowing calculation time captured after the inventory snapshot was read. Missing or inconsistent timestamps make the total duration unavailable.", inspection_meaning: "Staff-entered checks and their recorded methods and findings. A saved outcome is not automatic safety certification. Voided records remain as correction evidence." });
@@ -86,6 +135,16 @@ export async function createExport(store: InventoryStore, input: unknown): Promi
         room: currentRooms.get(request.filter.room)?.name ?? null,
         observedRoom: all.find(battery => battery.observedRoomId === request.filter.observedRoom && battery.observationRoomSnapshot === "recorded")?.observedRoom ?? null,
     } });
+    if (request.workstationQuery) {
+        const criteria = request.workstationQuery.filter;
+        Object.assign(metadata, { workstation_filter_labels: {
+            owner: criteria.ownerReference === "account" ? source.snapshot.staffDirectory?.find(person => person.id === criteria.owner)?.displayName ?? null : currentPeople.get(criteria.owner)?.name ?? null,
+            borrower: source.snapshot.staffDirectory?.find(person => person.id === criteria.borrower)?.displayName ?? null,
+            building: currentBuildings.get(criteria.building)?.name ?? null, room: currentRooms.get(criteria.room)?.name ?? null,
+            observedRoom: all.find(battery => battery.observedRoomId === criteria.observedRoom && battery.observationRoomSnapshot === "recorded")?.observedRoom ?? null,
+        } });
+        if (effectiveWorkstationQuery?.newArrivalsOnly && effectiveWorkstationQuery.personalScope === "all") Object.assign(metadata, { new_arrivals_as_of_utc: source.snapshot.newArrivals?.serverNow ?? null, new_arrivals_meaning: "Active batteries first registered within the preceding 48 hours, based on native registration evidence. Viewing a reminder does not end this window." });
+    }
     if (request.mode === "activity") {
         const rows = raw.audit_events.filter(row => request.activityScope === "all" || row.actor_id === store.viewerAccountId).reverse().sort((a,b) => String(b.at).localeCompare(String(a.at)));
         const events = rows.map(row => ({ id: String(row.id), action: String(row.action), batteryId: row.battery_id == null ? null : String(row.battery_id), actorName: String(row.actor_name), at: String(row.at), details: JSON.parse(String(row.details_json)) })) as AuditEvent[];

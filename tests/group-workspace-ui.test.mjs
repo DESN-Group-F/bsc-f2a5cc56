@@ -1,19 +1,30 @@
-import { test } from "node:test";
+import { after, test } from "node:test";
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { dirname, join, posix } from "node:path";
+import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
 import { bindDownloadFeedback } from "./helpers/download-feedback-harness.mjs";
-import { getRolePermissions } from "../work/qa/permissions.mjs";
-import * as groups from "../work/qa/teaching-groups.mjs";
-import * as maintenance from "../work/qa/group-maintenance.mjs";
-import * as activity from "../work/qa/group-activity.mjs";
-import * as query from "../work/qa/inventory-query.mjs";
-import * as client from "../work/qa/client-utils.mjs";
-import * as lifecycle from "../work/qa/battery-lifecycle.mjs";
-import * as rowSelection from "../work/qa/client/row-selection.mjs";
-import * as selectionQuery from "../work/qa/battery-selection-query.mjs";
-import * as locations from "../work/qa/location-catalog.mjs";
-import * as arrivals from "../work/qa/new-arrivals.mjs";
+
+const scratchRoot = new URL("../work/qa/", import.meta.url);
+await mkdir(scratchRoot, { recursive: true });
+const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "group-workspace-ui-"));
+after(() => { assert.ok(scratch.startsWith(fileURLToPath(scratchRoot))); return rm(scratch, { recursive: true, force: true }); });
+const compiledLibraries = new Map();
+async function compileLibrary(name) {
+    if (compiledLibraries.has(name)) return compiledLibraries.get(name);
+    const destination = join(scratch, `${name}.mjs`); compiledLibraries.set(name, destination);
+    const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
+    const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
+    for (const match of output.matchAll(/from "(\.[^"]+)"/g)) await compileLibrary(posix.normalize(posix.join(posix.dirname(name), match[1])));
+    await mkdir(dirname(destination), { recursive: true });
+    await writeFile(destination, output.replace(/from "(\.[^"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`));
+    return destination;
+}
+const libraryNames = ["permissions", "teaching-groups", "group-maintenance", "group-activity", "inventory-query", "client-utils", "battery-lifecycle", "client/row-selection", "battery-selection-query", "location-catalog", "new-arrivals", "client/workflow-storage"];
+for (const name of libraryNames) await compileLibrary(name);
+const [permissions, groups, maintenance, activity, query, client, lifecycle, rowSelection, selectionQuery, locations, arrivals, workflowStorage] = await Promise.all(libraryNames.map(name => import(pathToFileURL(join(scratch, `${name}.mjs`)))));
+const { getRolePermissions } = permissions;
 
 // Actual component functions and public handlers, with inert UI/transport boundaries.
 // These tests do not operate a browser or verify React DOM integration or visual layout.
@@ -21,7 +32,7 @@ const jsx=(type,props,key)=>({type,props:props??{},key});
 const ui=Object.fromEntries(["LogIn","LogOut","ArrowLeft","Battery","Package","Plus","Download","Upload","Pencil","Settings2","ClipboardList","Copy","Button","Input","Textarea","Label","Checkbox","Select","SelectTrigger","SelectValue","SelectContent","SelectItem","Dialog","DialogContent","DialogHeader","DialogTitle","DialogDescription","DialogFooter","Table","TableHeader","TableBody","TableRow","TableHead","TableCell","Skeleton","Tabs","TabsList","TabsTrigger","InventoryTable","TeachingGroupsPanel","InventoryFilterPanel","AppliedFilters","ActivityExportDialog","RecordPicker","BatteryFilterControls"].map(name=>[name,name]));
 Object.assign(ui, { TeachingCheckoutRuns: "TeachingCheckoutRuns", RefreshStatus: "RefreshStatus", LoadingState: "LoadingState", DownloadAction: "Button", MotionPresence: "MotionPresence", MotionDisclosure: "MotionDisclosure", ReviewQueueSurface: "ReviewQueueSurface", transitionWorkspace: update => update(), ChevronDown: "ChevronDown", AlertTriangle: "AlertTriangle", styles: new Proxy({}, { get: (_, name) => String(name) }) });
 function hooks(){const state=[],effects=[];let pointer=0,ep=0,pending=[];return {reset(){pointer=0;ep=0;pending=[];},useState(initial){const i=pointer++;if(!(i in state))state[i]=typeof initial==="function"?initial():initial;return [state[i],value=>{state[i]=typeof value==="function"?value(state[i]):value;}];},useRef(initial){const i=pointer++;if(!(i in state))state[i]={current:initial};return state[i];},useEffect(callback,deps){const i=ep++,prior=effects[i];if(!prior||!deps||deps.some((v,k)=>!Object.is(v,prior.deps?.[k])))pending.push(()=>{prior?.cleanup?.();effects[i]={deps,cleanup:callback()};});},commit(){pending.forEach(fn=>fn());},unmount(){effects.forEach(e=>e?.cleanup?.());}};}
-async function mount(file,exportName,props,extra={}){const state=hooks(),source=ts.transpileModule(await readFile(file,"utf8"),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX}}).outputText.replace(/^import .*;\r?\n/gm,"").replace(/^export /gm,"");const bindings={getRolePermissions,...ui,...groups,...maintenance,...activity,...query,...client,...lifecycle,...locations,...selectionQuery,...rowSelection,...arrivals,...state,useDownloadFeedback:bindDownloadFeedback(state),dismissOverlay:(_surface,close)=>close(),currentSydneyDate:()=>"2026-10-03",...extra,window:{addEventListener(){},removeEventListener(){},matchMedia:()=>({matches:false,addEventListener(){},removeEventListener(){}}),...(extra.window??{})}},names=Object.keys(bindings),component=new Function(...names,"_jsx","_jsxs","_Fragment",`${source}\nreturn ${exportName};`)(...names.map(n=>bindings[n]),jsx,jsx,"Fragment");return {props,render(){state.reset();const tree=component(props);state.commit();return tree;},unmount:state.unmount};}
+async function mount(file,exportName,props,extra={}){const state=hooks(),source=ts.transpileModule(await readFile(file,"utf8"),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext,jsx:ts.JsxEmit.ReactJSX}}).outputText.replace(/^import .*;\r?\n/gm,"").replace(/^export /gm,"");const bindings={getRolePermissions,...ui,...groups,...maintenance,...activity,...query,...client,...lifecycle,...locations,...selectionQuery,...rowSelection,...arrivals,...state,acknowledgeWorkflowStorage: options => workflowStorage.acknowledgeWorkflowStorage({ ...options, storage: extra.sessionStorage ?? globalThis.sessionStorage }),useDownloadFeedback:bindDownloadFeedback(state),dismissOverlay:(_surface,close)=>close(),currentSydneyDate:()=>"2026-10-03",...extra,window:{addEventListener(){},removeEventListener(){},matchMedia:()=>({matches:false,addEventListener(){},removeEventListener(){}}),...(extra.window??{})}},names=Object.keys(bindings),component=new Function(...names,"_jsx","_jsxs","_Fragment",`${source}\nreturn ${exportName};`)(...names.map(n=>bindings[n]),jsx,jsx,"Fragment");return {props,render(){state.reset();const tree=component(props);state.commit();return tree;},unmount:state.unmount};}
 function nodes(tree,result=[]){if(Array.isArray(tree))tree.forEach(child=>nodes(child,result));else if(tree&&typeof tree==="object"){result.push(tree);nodes(tree.props?.children,result);}return result;}
 function text(tree){return typeof tree==="string"||typeof tree==="number"?String(tree):Array.isArray(tree)?tree.map(text).join(""):tree&&typeof tree==="object"?text(tree.props?.children):"";}
 const button=(tree,label)=>nodes(tree).find(n=>n.type==="Button"&&text(n)===label);

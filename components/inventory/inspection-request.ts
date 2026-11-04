@@ -1,5 +1,6 @@
 import { inspectionSchema, inspectionVoidSchema, inspectionReceiptSchema, type InspectionInput, type InspectionVoidInput } from "@/lib/battery-inspections";
 import type { Dataset } from "@/lib/domain";
+import { acknowledgeWorkflowStorage } from "@/lib/client/workflow-storage";
 
 export type InspectionAttempt = {
     accountId: string;
@@ -11,10 +12,10 @@ export function inspectionStorageKey(accountId: string, dataset: Dataset, batter
     return `battery-inspection-request:${encodeURIComponent(accountId)}:${dataset}:${encodeURIComponent(batteryId)}`;
 }
 
-export function readInspectionAttempt(accountId: string, dataset: Dataset, batteryId: string): { input: InspectionAttempt | null; error: string } {
+export function readInspectionAttempt(accountId: string, dataset: Dataset, batteryId: string, storage: Pick<Storage,"getItem"> = sessionStorage): { input: InspectionAttempt | null; error: string } {
     try {
-        const raw = sessionStorage.getItem(inspectionStorageKey(accountId, dataset, batteryId));
-        if (!raw) return { input: null, error: "" };
+        const raw = storage.getItem(inspectionStorageKey(accountId, dataset, batteryId));
+        if (raw === null) return { input: null, error: "" };
         const saved = JSON.parse(raw) as InspectionAttempt;
         if (!saved || saved.accountId !== accountId || saved.dataset !== dataset || saved.batteryId !== batteryId || !["inspection", "inspection_void"].includes(saved.action)) throw new Error("Invalid request identity");
         const parsed = (saved.action === "inspection" ? inspectionSchema : inspectionVoidSchema).safeParse(saved.payload);
@@ -42,6 +43,13 @@ export function clearInspectionAttempt(input: InspectionAttempt) {
     const key = inspectionStorageKey(input.accountId, input.dataset, input.batteryId);
     sessionStorage.removeItem(key);
     if (sessionStorage.getItem(key)) throw new Error("The confirmed request could not be cleared. Retry the original request to verify its outcome.");
+}
+
+export async function acknowledgeInspectionAttempt(input: InspectionAttempt) {
+    const saved = readInspectionAttempt(input.accountId,input.dataset,input.batteryId);
+    if(saved.error||!saved.input||JSON.stringify(saved.input)!==JSON.stringify(input)) throw new Error(saved.error||"The original inspection request changed. It remains unresolved.");
+    const key=inspectionStorageKey(input.accountId,input.dataset,input.batteryId);
+    await acknowledgeWorkflowStorage({remove:[key],expected:{[key]:JSON.stringify(saved.input)}});
 }
 
 export function inspectionFinallyRejected(error: unknown) {

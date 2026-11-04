@@ -103,12 +103,14 @@ export class AccountStore {
         return this.user(value.id);
     }
     async changePassword(input: unknown, actor: StaffUser) {
-        const value = z.object({ currentPassword: z.string().min(1).max(128), newPassword: password }).parse(input), row = await this.row(actor.id);
+        const value = z.object({ currentPassword: z.string().min(1).max(128), newPassword: password, expectedVersion: z.number().int().positive().optional() }).parse(input), row = await this.row(actor.id);
+        const expectedVersion = value.expectedVersion ?? actor.version;
+        if (expectedVersion !== actor.version) throw new DomainError(409, "The account changed. Review the latest account before changing the password.", "record_conflict");
         if (!constantEqual(await passwordHash(value.currentPassword, String(row.password_salt), Number(row.hash_iterations)), String(row.password_hash))) throw new DomainError(400, "The current password is incorrect.");
         const salt = randomToken(), hash = await passwordHash(value.newPassword, salt), at = this.clock().toISOString(), guard = this.actorGuard(actor, false);
         await this.commit([
-            this.audit("password_changed", actor, actor.id, { sessionsRevoked: true }, at, `${guard.sql} AND EXISTS(SELECT 1 FROM staff_accounts WHERE id=? AND version=?)`, [...guard.values, actor.id, actor.version]),
-            this.statement("UPDATE staff_accounts SET password_hash=?,password_salt=?,hash_iterations=?,auth_version=auth_version+1,version=version+1,updated_at=? WHERE id=? AND version=?", hash, salt, PASSWORD_ITERATIONS, at, actor.id, actor.version),
+            this.audit("password_changed", actor, actor.id, { sessionsRevoked: true }, at, `${guard.sql} AND EXISTS(SELECT 1 FROM staff_accounts WHERE id=? AND version=?)`, [...guard.values, actor.id, expectedVersion]),
+            this.statement("UPDATE staff_accounts SET password_hash=?,password_salt=?,hash_iterations=?,auth_version=auth_version+1,version=version+1,updated_at=? WHERE id=? AND version=?", hash, salt, PASSWORD_ITERATIONS, at, actor.id, expectedVersion),
             this.statement("DELETE FROM staff_sessions WHERE account_id=?", actor.id),
         ]);
         return { signInRequired: true };

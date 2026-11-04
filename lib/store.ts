@@ -87,6 +87,9 @@ export class InventoryStore {
   exportData() {
     return this.queries.exportData();
   }
+  exportPurgedBatteryIds() {
+    return this.queries.exportPurgedBatteryIds();
+  }
   fullActivity(activityScope: "all" | "mine" = "all") {
     return this.queries.fullActivity(activityScope);
   }

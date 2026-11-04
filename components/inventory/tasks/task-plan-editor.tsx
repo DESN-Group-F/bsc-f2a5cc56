@@ -55,6 +55,7 @@ import {
   type TaskPlansResponse,
   type RequestError,
 } from "@/lib/client/task-api";
+import { acknowledgeWorkflowStorage, type WorkflowStorage } from "@/lib/client/workflow-storage";
 import {
   assignmentNames,
   taskCategoryLabels,
@@ -69,12 +70,14 @@ export function TaskPlanEditor({
   cycles,
   onClose,
   onSaved,
+  phonePresentation = false,
 }: {
   original: TaskPlanRecord | TaskPlan;
   data: InventorySnapshot;
   cycles: TaskCycleRecord[];
   onClose: () => void;
   onSaved: () => Promise<void>;
+  phonePresentation?: boolean;
 }) {
   const { manageTaskPlans } = getRolePermissions(data.user.role);
   const existing = "id" in original ? original : null;
@@ -87,7 +90,7 @@ export function TaskPlanEditor({
       return {
         attempt,
         error:
-          raw && !attempt
+          raw !== null && !attempt
             ? "The saved task creation request cannot be recovered. No new request will replace it; preserve this tab and ask the administrator to investigate."
             : "",
       };
@@ -232,16 +235,33 @@ export function TaskPlanEditor({
     window.addEventListener("beforeunload", protect);
     return () => window.removeEventListener("beforeunload", protect);
   }, [busy, creation?.status]);
-  function persistCreation(next: TaskCreateAttempt | null) {
+  async function persistCreation(next: TaskCreateAttempt | null) {
     try {
+      const storage = sessionStorage as WorkflowStorage;
       if (next) {
-        const raw = sessionStorage.getItem(storageKey);
-        if (raw && !captured.current)
+        const raw = storage.getItem(storageKey);
+        if (raw !== null && !captured.current)
           throw new Error(
             "An unresolved task creation is already saved in this tab. Reopen Periodic tasks to recover it before creating another plan.",
           );
-        sessionStorage.setItem(storageKey, JSON.stringify(next));
-      } else sessionStorage.removeItem(storageKey);
+        if (raw !== null) {
+          const original = recoverTaskCreate(raw, data.user.id, data.dataset);
+          if (!original || JSON.stringify(original.input) !== JSON.stringify(captured.current?.input))
+            throw new Error("The original task creation changed. Preserve and resolve its recovery record before sending anything.");
+        }
+        const preserved = JSON.stringify(next);
+        // Capturing an intention is distinct from acknowledging its saved result.
+        // Keep this exact request available even if its initial durable save fails.
+        captured.current = next;
+        setCreation(next);
+        storage.setItem(storageKey, preserved);
+        await storage.flush?.();
+        if (storage.getItem(storageKey) !== preserved)
+          throw new Error("The exact task creation could not be verified in recovery storage. No request was sent.");
+      } else {
+        if (!captured.current) throw new Error("The original task creation is unavailable. Its acknowledgement is blocked.");
+        await acknowledgeWorkflowStorage({ remove: [storageKey], expected: { [storageKey]: JSON.stringify(captured.current) }, storage });
+      }
       captured.current = next;
       setCreation(next);
       return true;
@@ -256,16 +276,17 @@ export function TaskPlanEditor({
     if (running.current || captured.current || recovery.error) return;
     onClose();
   }
-  function reviewRejectedCreation() {
+  async function reviewRejectedCreation() {
     if (
       running.current ||
-      captured.current?.status !== "rejected" ||
-      !persistCreation(null)
+      captured.current?.status !== "rejected"
     )
       return;
-    setError(
-      "The submitted task creation was rejected. Review its targets and assignments before submitting a new request.",
-    );
+    running.current = true; setBusy(true);
+    try {
+      if (!await persistCreation(null)) return;
+      setError("The submitted task creation was rejected. Review its targets and assignments before submitting a new request.");
+    } finally { running.current = false; setBusy(false); }
   }
   async function sendCreation(
     originalAttempt: TaskCreateAttempt,
@@ -282,7 +303,7 @@ export function TaskPlanEditor({
     };
     let saved = false;
     try {
-      if (!persistCreation(sending)) return;
+      if (!await persistCreation(sending)) return;
       const body = await taskRequest<{ ok: boolean; result: unknown }>(
         "/api/task-plans",
         {
@@ -294,7 +315,7 @@ export function TaskPlanEditor({
       if (body.ok !== true)
         throw new Error("The task creation response could not be verified.");
       verifyTaskCreateReceipt(body.result, sending);
-      if (!persistCreation(null)) return;
+      if (!await persistCreation(null)) return;
       saved = true;
       await onSaved();
     } catch (error) {
@@ -313,7 +334,7 @@ export function TaskPlanEditor({
             ? `Result uncertain. ${(error as Error).message} Retry the original request before editing or closing.`
             : (error as Error).message,
       };
-      if (!persistCreation(failed)) {
+      if (!await persistCreation(failed)) {
         captured.current = failed;
         setCreation(failed);
       }
@@ -478,10 +499,24 @@ export function TaskPlanEditor({
     setConflict(false);
     setError("");
   }
+  const saveHint = creation || recovery.error
+    ? "Resolve the saved request before editing or leaving this form."
+    : draft.state === "active"
+      ? "Active plans generate Messages while the system is in use."
+      : draft.state === "paused"
+        ? "Saving as paused stops new cycles and future reminders."
+        : "A draft saves your progress without generating reminders.";
+  const errorContent = error && (
+    <div className={styles.error}>
+      <p className="form-error" role="alert">{error}</p>
+      {conflict && existing && <><p className="field-hint">Your draft is preserved. Load and review the latest saved task before replacing this draft.</p><Button type="button" variant="outline" onClick={loadLatest} disabled={locked}>Load latest saved task</Button></>}
+    </div>
+  );
   return (
     <Dialog open onOpenChange={(open) => !open && close()}>
       <DialogContent
         className={`record-dialog ${styles.dialog}`}
+        data-phone-plan-presentation={phonePresentation ? "phone" : undefined}
         showCloseButton={!busy && !creation && !recovery.error}
         onEscapeKeyDown={(event) => {
           if (running.current || captured.current || recovery.error)
@@ -497,8 +532,9 @@ export function TaskPlanEditor({
             {existing ? "Edit recurring task" : "Create recurring task"}
           </DialogTitle>
           <DialogDescription>
-            {taskCategoryLabels[draft.category]}. Open any section in any order.
+            {phonePresentation ? `${taskCategoryLabels[draft.category]} · ${creation ? "Original request retained" : draft.state === "draft" ? "Draft" : draft.state === "active" ? "Active plan" : "Paused plan"}` : <>{taskCategoryLabels[draft.category]}. Open any section in any order.
             Save a draft with a title, then complete and review the activation requirements when ready.
+            </>}
           </DialogDescription>
         </DialogHeader>
         <form
@@ -511,7 +547,8 @@ export function TaskPlanEditor({
           }}
         >
           <div className={styles.body}>
-          <p className={styles.formGuide}>
+          {phonePresentation && <>{errorContent}<div className="form-field" data-phone-plan-title><Label htmlFor="task-title">Task title <span className={styles.fieldRequirement}>Required to save</span></Label><Input id="task-title" value={draft.title} onChange={event => update({ title: event.target.value })} maxLength={160} minLength={2} required disabled={locked} /></div><details data-phone-plan-help><summary>Saving and activation requirements</summary><p>Open any section in any order. Save a draft with a title, then complete and review the activation requirements when ready.</p><p>Required to save: Title. Required to activate: Instructions, applicability, targets, staff and schedule. Optional: Additional context and email preference.</p><p>A draft can leave activation details blank. Any values you enter must still be valid, and assigned staff accounts must be active before any save. New targets must be registered in this inventory. Existing plans can retain previously selected deleted Battery IDs for review.</p><p>{saveHint}</p></details></>}
+          {!phonePresentation && <><p className={styles.formGuide}>
             <span>Required to save</span> Title · <span>Required to activate</span> Instructions, applicability, targets, staff and schedule · <span>Optional</span> Additional context and email preference
           </p>
           <p className={styles.draftGuide}>
@@ -520,6 +557,7 @@ export function TaskPlanEditor({
             New targets must be registered in this inventory. Existing plans can
             retain previously selected deleted Battery IDs for review.
           </p>
+          </>}
           <section className={styles.section} aria-labelledby="task-instructions-heading">
             <details className={styles.sectionDisclosure} open>
             <summary className={styles.sectionHeading}>
@@ -557,7 +595,7 @@ export function TaskPlanEditor({
                 : "This task type provides suggested target choices. Choose Custom task to use any supported target; your current instructions and schedule are retained."}
             </p>
           </div>
-          <div className="form-field">
+          {!phonePresentation && <div className="form-field">
             <Label htmlFor="task-title">Task title <span className={styles.fieldRequirement}>Required to save</span></Label>
             <Input
               id="task-title"
@@ -568,7 +606,7 @@ export function TaskPlanEditor({
               required
               disabled={locked}
             />
-          </div>
+          </div>}
           <div className="form-field">
             <Label htmlFor="task-description">What must be done <span className={styles.fieldRequirement}>Required to activate</span></Label>
             <Textarea
@@ -1313,38 +1351,7 @@ export function TaskPlanEditor({
           )}
           </div>
           <div className={styles.footer}>
-          {error && (
-            <div className={styles.error}>
-              <p className="form-error" role="alert">
-                {error}
-              </p>
-              {conflict && existing && (
-                <>
-                  <p className="field-hint">
-                    Your draft is preserved. Load and review the latest saved
-                    task before replacing this draft.
-                  </p>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={loadLatest}
-                    disabled={locked}
-                  >
-                    Load latest saved task
-                  </Button>
-                </>
-              )}
-            </div>
-          )}
-          <p className={styles.saveHint}>
-            {creation || recovery.error
-              ? "Resolve the saved request before editing or leaving this form."
-              : draft.state === "active"
-                ? "Active plans generate Messages while the system is in use."
-                : draft.state === "paused"
-                  ? "Saving as paused stops new cycles and future reminders."
-                  : "A draft saves your progress without generating reminders."}
-          </p>
+          {!phonePresentation && <>{errorContent}<p className={styles.saveHint}>{saveHint}</p></>}
           <DialogFooter>
             <Button
               type="button"

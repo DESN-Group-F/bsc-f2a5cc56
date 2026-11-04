@@ -17,6 +17,7 @@ import { shouldToggleSelection } from "@/lib/client/row-selection";
 import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
 import { formatTime, reloadSessionPage } from "@/lib/client-utils";
 import { captureMovementAttempt, movementFailureStatus, movementStorageKey, recoverMovementAttempt, verifyMovementReceipt, type MovementAttempt } from "@/lib/movement-session";
+import { acknowledgeWorkflowStorage } from "@/lib/client/workflow-storage";
 
 
 
@@ -29,7 +30,7 @@ export function MovementDialog({ draft, data, onClose, write }: {
     const [recovery] = useState(() => {
         try {
             const raw = sessionStorage.getItem(storageKey), attempt = recoverMovementAttempt(raw, data.user.id, data.dataset, draft.kind);
-            return { attempt, invalidSaved: !!raw && !attempt, message: raw && !attempt ? "A saved movement request could not be recovered. No new movement will be sent or replace it. Preserve this tab and ask the administrator to investigate the saved request." : "" };
+            return { attempt, invalidSaved: raw !== null && !attempt, message: raw !== null && !attempt ? "A saved movement request could not be recovered. No new movement will be sent or replace it. Preserve this tab and ask the administrator to investigate the saved request." : "" };
         } catch { return { attempt: null, invalidSaved: false, message: "Browser storage is unavailable. No movement can be sent until its exact request can be saved in this tab." }; }
     });
     const [inventory, setInventory] = useState(data), [ids, setIds] = useState(recovery.attempt?.payload.batteryIds ?? draft.ids);
@@ -60,6 +61,8 @@ export function MovementDialog({ draft, data, onClose, write }: {
     }, [busy, attempt?.status, recovery.invalidSaved]);
     function persist(next: MovementAttempt | null) {
         try {
+            const raw=sessionStorage.getItem(storageKey),previous=recoverMovementAttempt(raw,data.user.id,data.dataset,draft.kind);
+            if(raw!==null&&(!previous||!next||JSON.stringify(previous.payload)!==JSON.stringify(next.payload)||JSON.stringify(previous.reviewed)!==JSON.stringify(next.reviewed)))throw new Error("The retained original movement changed. It has not been replaced.");
             if (next) sessionStorage.setItem(storageKey, JSON.stringify(next));
             else sessionStorage.removeItem(storageKey);
             captured.current = next; setAttempt(next);
@@ -71,6 +74,13 @@ export function MovementDialog({ draft, data, onClose, write }: {
         if (running.current || captured.current?.status === "uncertain" || recovery.invalidSaved) return;
         if (captured.current) { setMessage("Review the current records and deliberately discard the rejected request before closing."); return; }
         onClose(inventory !== data ? inventory : undefined);
+    }
+    async function acknowledge() {
+        const raw = sessionStorage.getItem(storageKey);
+        if (raw === null || !captured.current || JSON.stringify(recoverMovementAttempt(raw,data.user.id,data.dataset,draft.kind)) !== JSON.stringify(captured.current)) throw new Error("The original movement request changed or is unavailable. Preserve recovery data before proceeding.");
+        await acknowledgeWorkflowStorage({ remove: [storageKey], expected: { [storageKey]: raw } });
+        captured.current = null; setAttempt(null);
+        window.dispatchEvent(new Event("battery-movement-recovery"));
     }
 
     function addMany(batteries: BatteryRecord[]) {
@@ -110,7 +120,7 @@ export function MovementDialog({ draft, data, onClose, write }: {
             if (!persist(sending)) return;
             const result = await write("movement", sending.payload);
             verifyMovementReceipt(result, sending.payload, data.user.id);
-            if (!persist(null)) return;
+            await acknowledge();
             onClose();
         } catch (error) {
             const status = movementFailureStatus(error, alreadyUncertain), statusCode = (error as { status?: number })?.status;
@@ -137,16 +147,18 @@ export function MovementDialog({ draft, data, onClose, write }: {
         } catch (error) { setMessage((error as Error).message); }
         finally { running.current = false; setBusy(false); }
     }
-    function acceptLatest() {
-        if (!latestReview || running.current || captured.current?.status !== "rejected" || !persist(null)) return;
+    async function acceptLatest() {
+        if (!latestReview || running.current || captured.current?.status !== "rejected") return;
+        try { await acknowledge(); } catch (error) { setMessage((error as Error).message); return; }
         const next = latestReview.changes.flatMap(({ after }) => after && isActiveBattery(after) && (checkout ? !after.loanId : !!after.loanId) ? [after] : []);
         setIds(next.map(b => b.id)); setReviewed(Object.fromEntries(next.map(b => [b.id, b])));
         setInventory(latestReview.inventory); setLatestReview(null);
         setMessage(checkout ? "The latest reviewed batteries are now in your draft. Unavailable or batteries in use were removed. Review the updated list before confirming a new request." : "The reviewed latest loans are now in your draft. Batteries without an active loan were removed. Confirm only after reviewing the updated list.");
         if (!next.length) setAdding(true);
     }
-    function discardRejected() {
-        if (!latestReview || running.current || captured.current?.status !== "rejected" || !persist(null)) return;
+    async function discardRejected() {
+        if (!latestReview || running.current || captured.current?.status !== "rejected") return;
+        try { await acknowledge(); } catch (error) { setMessage((error as Error).message); return; }
         onClose(latestReview.inventory);
     }
     return <Dialog open onOpenChange={open => !open && close()}><DialogContent className="movement-dialog" showCloseButton={!locked} onEscapeKeyDown={event => { if (locked) event.preventDefault(); }} onInteractOutside={event => { if (locked) event.preventDefault(); }}><DialogHeader><DialogTitle>{checkout ? "Check out batteries" : "Return batteries"}</DialogTitle><DialogDescription>{checkout ? "Review your selected batteries and confirm with your own staff account." : "Review each selected loan before confirming. You may receive batteries checked out by another staff member."}</DialogDescription></DialogHeader>

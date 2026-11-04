@@ -6,6 +6,7 @@ import { Dialog as SheetPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
 import { useOverlayFocus } from "@/hooks/use-overlay-focus"
+import { useDialogPresentationTask } from "@/components/ui/dialog"
 
 function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
   return <SheetPrimitive.Root data-slot="sheet" {...props} />
@@ -60,11 +61,13 @@ function SheetContent({
   overlayClassName?: string
 }) {
   const focus = useOverlayFocus(onOpenAutoFocus, onCloseAutoFocus)
+  const presentationTask = useDialogPresentationTask()
   return (
     <SheetPortal>
       <SheetOverlay className={overlayClassName} />
       <SheetPrimitive.Content
         data-slot="sheet-content"
+        data-phone-task={presentationTask}
         className={cn(
           "fixed z-50 flex flex-col gap-4 bg-background shadow-lg transition ease-in-out data-[state=closed]:animate-out data-[state=closed]:duration-300 data-[state=open]:animate-in data-[state=open]:duration-500",
           side === "right" &&

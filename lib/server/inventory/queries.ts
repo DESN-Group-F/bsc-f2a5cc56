@@ -239,6 +239,10 @@ export class InventoryQueries {
     };
   }
 
+  async exportPurgedBatteryIds() {
+    return (await this.database.rows("SELECT id FROM purged_batteries WHERE scope=? ORDER BY id", this.database.scope)).map(row => String(row.id));
+  }
+
   async fullActivity(activityScope: "all" | "mine" = "all") {
     if (activityScope !== "all" && activityScope !== "mine")
       throw new DomainError(400, "Choose all activity or your own activity.");

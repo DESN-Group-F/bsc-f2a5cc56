@@ -1,4 +1,5 @@
 import type { Dataset } from "@/lib/domain";
+import { acknowledgeWorkflowStorage, type WorkflowStorage } from "./workflow-storage";
 
 export type TaskRecordAction = {
   dataset: Dataset;
@@ -23,12 +24,13 @@ export function readTaskRecordAction(
   resource: TaskRecordResource,
   accountId: string,
   dataset: Dataset,
+  storage: WorkflowStorage = sessionStorage,
 ): { input: TaskRecordAction | null; error: string } {
   try {
-    const raw = sessionStorage.getItem(
+    const raw = storage.getItem(
       taskRecordActionStorageKey(resource, accountId, dataset),
     );
-    if (!raw) return { input: null, error: "" };
+    if (raw === null) return { input: null, error: "" };
     const saved = JSON.parse(raw);
     const input = saved?.input;
     if (
@@ -64,6 +66,22 @@ export function readTaskRecordAction(
         "A saved task request could not be recovered or browser storage is unavailable. Removal and restoration are blocked. Preserve this tab and ask an administrator to investigate.",
     };
   }
+}
+
+/** A verified result releases its original record only after durable acknowledgement. */
+export async function acknowledgeTaskRecordAction(
+  resource: TaskRecordResource,
+  accountId: string,
+  input: TaskRecordAction,
+  storage: WorkflowStorage = sessionStorage,
+) {
+  const key = taskRecordActionStorageKey(resource, accountId, input.dataset);
+  const original = storage.getItem(key);
+  const saved = readTaskRecordAction(resource, accountId, input.dataset, storage);
+  if (saved.error) throw new Error(saved.error);
+  if (original === null || !saved.input || JSON.stringify(saved.input) !== JSON.stringify(input))
+    throw new Error("The original task request changed. Its acknowledgement is blocked; retain and retry the captured request.");
+  await acknowledgeWorkflowStorage({ remove: [key], expected: { [key]: original }, storage });
 }
 
 export function saveTaskRecordAction(

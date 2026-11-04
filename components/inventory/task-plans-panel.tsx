@@ -51,7 +51,7 @@ import { taskRequest, type TaskPlansResponse } from "@/lib/client/task-api";
 import {
   readTaskRecordAction,
   saveTaskRecordAction,
-  clearTaskRecordAction,
+  acknowledgeTaskRecordAction,
   verifyTaskRecordActionReceipt,
   taskRecordActionFinallyRejected,
 } from "@/lib/client/task-record-action";
@@ -102,7 +102,7 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
       return {
         attempt,
         error:
-          raw && !attempt
+          raw !== null && !attempt
             ? "A saved task creation request could not be recovered. New task creation is blocked. Preserve this tab and ask the administrator to investigate the saved request."
             : "",
       };
@@ -172,7 +172,7 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
         },
       );
       verifyTaskRecordActionReceipt(response.result, input, data.user.id);
-      clearTaskRecordAction("plans", data.user.id, input);
+      await acknowledgeTaskRecordAction("plans", data.user.id, input);
       setActionRecovery({ input: null, error: "" });
       setNotice(
         input.action === "remove"
@@ -184,7 +184,7 @@ export function TaskPlansPanel({ data, onChanged, onDetail }: TaskPanelProps) {
       setNotice((error as Error).message);
       if (taskRecordActionFinallyRejected(error)) {
         try {
-          clearTaskRecordAction("plans", data.user.id, input);
+          await acknowledgeTaskRecordAction("plans", data.user.id, input);
           setActionRecovery({ input: null, error: "" });
           if (mounted.current) resource.refresh();
         } catch (storageFailure) {

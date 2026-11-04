@@ -5,6 +5,8 @@ import { InventoryStore } from "@/lib/store";
 import { IntakeStore } from "@/lib/intake-store";
 import { MobileRegistrationStore } from "@/lib/server/inventory/mobile-registration";
 import { OperatorRegistrationStore } from "@/lib/server/inventory/operator-registration";
+import { OperatorEditStore } from "@/lib/server/inventory/operator-edit";
+import { OperatorImportStore } from "@/lib/server/inventory/operator-import";
 import { nativeNfcCapability } from "@/lib/native-nfc-capability";
 import { datasetSchema, identifier, DomainError } from "@/lib/domain";
 import { z } from "zod";
@@ -25,6 +27,8 @@ async function context(request: Request, dataset: unknown) {
     intake: new IntakeStore(db, scope, mode, actor),
     mobileRegistration: new MobileRegistrationStore(db, scope, mode, actor),
     operatorRegistration: new OperatorRegistrationStore(db, scope, mode, actor),
+    operatorEdit: new OperatorEditStore(db, scope, mode, actor),
+    operatorImport: new OperatorImportStore(db, scope, mode, actor),
   };
 }
 function fail(error: unknown) {
@@ -53,7 +57,7 @@ export async function GET(request: Request) {
     return json(
       id
         ? await store.detail(identifier.parse(id))
-        : { ...(await store.snapshot()), user: actor, capabilities: { operatorRegistration: 1, nativeNfc: nativeNfcCapability(store.dataset) } },
+        : { ...(await store.snapshot()), user: actor, capabilities: { operatorRegistration: 1, nativeNfc: nativeNfcCapability(store.dataset), editMetadata: 1, csvImport: 1, batteryModels: 1, modelCreate: 1, demoIntake: store.dataset === "demo" ? 1 : 0 } },
     );
   } catch (e) {
     return fail(e);
@@ -76,7 +80,7 @@ export async function POST(request: Request) {
         records: z.array(z.unknown()).optional(),
       })
       .parse(raw);
-    const { store, intake, mobileRegistration, operatorRegistration } = await context(request, body.dataset),
+    const { store, intake, mobileRegistration, operatorRegistration, operatorEdit, operatorImport } = await context(request, body.dataset),
       payload = body.payload;
     let result;
     switch (body.action) {
@@ -97,6 +101,18 @@ export async function POST(request: Request) {
         break;
       case "operator_register":
         result = await operatorRegistration.register(payload);
+        break;
+      case "operator_edit":
+        result = await operatorEdit.edit(payload);
+        break;
+      case "operator_edit_outcome":
+        result = await operatorEdit.lookup(payload);
+        break;
+      case "operator_import":
+        result = await operatorImport.import(payload);
+        break;
+      case "operator_import_outcome":
+        result = await operatorImport.lookup(payload);
         break;
       case "lifecycle":
         result = await store.lifecycle(payload);

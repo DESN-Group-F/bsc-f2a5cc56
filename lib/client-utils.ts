@@ -191,6 +191,9 @@ export function parseCsv(text: string): Record<string, string>[] {
 }
 /** Reload the server-rendered identity after session creation or revocation. */
 export function reloadSessionPage(destination: string) {
+    // An expired session in the management console returns there after signing in again.
+    if (destination === "/signin" && window.location.pathname?.startsWith("/console"))
+        destination = `/signin?return_to=${encodeURIComponent(window.location.pathname + window.location.search)}`;
     window.location.assign(destination);
 }
 export function importPayload(kind: string, rows: Record<string, string>[]) {

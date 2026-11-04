@@ -10,13 +10,13 @@ export function getMappingRooms(rooms: readonly Room[]): Room[] {
 }
 
 /** Use the server's latest observation projection; registered storage and loans do not locate an asset. */
-export function mappingBucket(battery: BatteryRecord, rooms: readonly Room[]): string {
+export function mappingBucket(battery: Pick<BatteryRecord, 'observedAt' | 'observedRoomId'>, rooms: readonly Room[]): string {
   if (!battery.observedAt || !Number.isFinite(Date.parse(battery.observedAt)) || !battery.observedRoomId) return UNKNOWN_MAPPING_ROOM;
   return rooms.some(room => room.id === battery.observedRoomId && isSelectableRoom(room))
     ? battery.observedRoomId : UNKNOWN_MAPPING_ROOM;
 }
 
-export function mappingUnknownReason(battery: BatteryRecord): string {
+export function mappingUnknownReason(battery: Pick<BatteryRecord, 'observedAt' | 'observedRoomId'>): string {
   if (!battery.observedAt) return "No observation recorded";
   if (!Number.isFinite(Date.parse(battery.observedAt)) || !battery.observedRoomId) return "Recorded room identity unavailable";
   return "Last observed room is outside this map";

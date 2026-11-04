@@ -19,7 +19,7 @@ export async function GET(request: Request) {
             if (download === "xlsx") return new Response(Uint8Array.from(await excelBuffer(document)).buffer, { headers: { "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Content-Disposition": "attachment; filename=staff-accounts-report.xlsx", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" } });
             return new Response(summaryCsv(document), { headers: { "Content-Type": "text/csv;charset=utf-8", "Content-Disposition": "attachment; filename=staff-accounts.csv", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" } });
         }
-        return apiJson(new URL(request.url).searchParams.get("scope") === "self" ? { user: actor } : await store.list(actor));
+        return apiJson(new URL(request.url).searchParams.get("scope") === "self" ? { user: actor, capabilities: { passwordVersionGuard: 1 } } : await store.list(actor));
     } catch (error) { return apiError(error); }
 }
 export async function POST(request: Request) {

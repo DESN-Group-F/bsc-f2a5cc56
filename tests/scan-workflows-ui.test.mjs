@@ -2,7 +2,7 @@ import { after, test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { fileURLToPath, pathToFileURL } from "node:url";
-import { join } from "node:path";
+import { dirname, join, posix } from "node:path";
 import ts from "typescript";
 
 // Evaluate the actual component handlers with controlled hooks and transport.
@@ -12,14 +12,21 @@ const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "scan-workflows-ui-"));
 after(() => rm(scratch, { recursive: true, force: true }));
-for (const name of ["teaching-nfc", "teaching-context", "scan-session", "client-utils", "battery-age", "location-catalog", "battery-lifecycle", "domain", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "movement-session"]) {
+const compiledLibraries = new Map();
+async function compileLibrary(name) {
+    if (compiledLibraries.has(name)) return compiledLibraries.get(name);
+    const destination = join(scratch, `${name}.mjs`); compiledLibraries.set(name, destination);
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
-    const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText
-        .replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
-    await writeFile(join(scratch, `${name}.mjs`), output);
+    const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
+    for (const match of output.matchAll(/from "(\.[^"]+)"/g)) await compileLibrary(posix.normalize(posix.join(posix.dirname(name), match[1])));
+    await mkdir(dirname(destination), { recursive: true });
+    await writeFile(destination, output.replace(/from "(\.[^"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`));
+    return destination;
 }
+for (const name of ["teaching-context", "teaching-nfc", "scan-session", "client-utils", "battery-age", "location-catalog", "battery-lifecycle", "domain", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "movement-session", "client/workflow-storage"]) await compileLibrary(name);
 const [scan, client, locations, lifecycle, context] = await Promise.all(["scan-session", "client-utils", "location-catalog", "battery-lifecycle", "teaching-context"].map(name => import(pathToFileURL(join(scratch, `${name}.mjs`)))));
 const movement = await import(pathToFileURL(join(scratch, "movement-session.mjs")));
+const workflowStorage = await import(pathToFileURL(join(scratch, "client/workflow-storage.mjs")));
 const query = await import(pathToFileURL(join(scratch, "inventory-query.mjs")));
 const selectionQuery = await import(pathToFileURL(join(scratch, "battery-selection-query.mjs")));
 const rowSource = await readFile(new URL("../lib/client/row-selection.ts", import.meta.url), "utf8");
@@ -91,7 +98,7 @@ async function submitSelection(station) {
     assert.fail("The manual selection did not settle.");
 }
 function mount(props) {
-    const state = hooks(), bindings = { ...ui, ...query, ...selectionQuery, ...rowSelection, ...scan, ...client, ...locations, ...lifecycle, ...context, ...state }, names = Object.keys(bindings);
+    const state = hooks(), bindings = { ...ui, ...query, ...selectionQuery, ...rowSelection, ...workflowStorage, ...scan, ...client, ...locations, ...lifecycle, ...context, ...state }, names = Object.keys(bindings);
     const ScanStation = new Function(...names, "_jsx", "_jsxs", "_Fragment", `${componentSource}\nreturn ScanStation;`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
     const render = () => { state.reset(); return ScanStation(props); };
     return {
@@ -760,7 +767,7 @@ test("scan selections can join groups, and an explicit group batch records a cap
 }));
 
 function mountMovement(props) {
-    const state = hooks(), bindings = { ...ui, ...query, ...selectionQuery, ...rowSelection, ...movement, ...client, ...lifecycle, ...state }, names = Object.keys(bindings);
+    const state = hooks(), bindings = { ...ui, ...query, ...selectionQuery, ...rowSelection, ...workflowStorage, ...movement, ...client, ...lifecycle, ...state }, names = Object.keys(bindings);
     const Component = new Function(...names, "_jsx", "_jsxs", "_Fragment", `${movementComponentSource}\nreturn MovementDialog;`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
     return { render() { state.reset(); return Component(props); } };
 }

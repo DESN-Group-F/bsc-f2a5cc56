@@ -1,5 +1,6 @@
 "use client";
 
+import { useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,24 +24,41 @@ export function TaskPlanDetails({
   data,
   onClose,
   onDetail,
+  active = true,
 }: {
   plan: TaskPlanRecord;
   data: InventorySnapshot;
   onClose: () => void;
   onDetail?: (batteryId: string) => void;
+  active?: boolean;
 }) {
+  const body = useRef<HTMLDivElement | null>(null), surface = useRef<HTMLDivElement | null>(null);
+  const position = useRef({ body: 0, surface: 0 }), returning = useRef(false);
+  // Stable callback refs restore the scroll position when the dialog content remounts.
+  const attachBody = useCallback((node: HTMLDivElement | null) => { body.current = node; if (node) node.scrollTop = position.current.body; }, []);
+  const attachSurface = useCallback((node: HTMLDivElement | null) => { surface.current = node; if (node) node.scrollTop = position.current.surface; }, []);
+  function openAsset(id: string) {
+    position.current = { body: body.current?.scrollTop ?? position.current.body, surface: surface.current?.scrollTop ?? position.current.surface };
+    returning.current = true;
+    onDetail?.(id);
+  }
   const target = targetSummary(plan, data);
   const interval = `${plan.interval} ${plan.interval === 1 ? plan.unit.slice(0, -1) : plan.unit}`;
   return (
-    <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="record-dialog task-cycle-dialog">
+    <Dialog open={active} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent ref={attachSurface} className="record-dialog task-cycle-dialog" onScroll={event => { if (active) position.current.surface = event.currentTarget.scrollTop; }} onOpenAutoFocus={event => {
+        if (!returning.current) return;
+        event.preventDefault(); surface.current?.focus({ preventScroll: true });
+        if (body.current) body.current.scrollTop = position.current.body;
+        if (surface.current) surface.current.scrollTop = position.current.surface;
+      }}>
         <DialogHeader>
           <DialogTitle>{plan.title}</DialogTitle>
           <DialogDescription>
             Shared plan details · {taskCategoryLabels[plan.category]}
           </DialogDescription>
         </DialogHeader>
-        <div className="task-cycle-body">
+        <div ref={attachBody} className="task-cycle-body" onScroll={event => { if (active) position.current.body = event.currentTarget.scrollTop; }}>
           <div className="task-cycle-summary">
             <p><strong>Status:</strong> {plan.removedAt ? "Removed" : plan.state === "active" ? "Active" : plan.state === "paused" ? "Paused" : "Draft"}</p>
             <p><strong>Target:</strong> {target}</p>
@@ -79,7 +97,7 @@ export function TaskPlanDetails({
               <h3>Selected batteries</h3>
               <div className="mt-3 flex max-h-44 flex-wrap gap-2 overflow-y-auto">
                 {plan.batteryIds.map((id) => onDetail ? (
-                  <Button key={id} variant="outline" size="sm" onClick={() => onDetail(id)}>{id}</Button>
+                  <Button key={id} variant="outline" size="sm" onClick={() => openAsset(id)}>{id}</Button>
                 ) : <span key={id}>{id}</span>)}
               </div>
             </section>

@@ -27,7 +27,8 @@ export async function runIntegrationNativeChecks({ base, cookie, request, signal
   const live = await get("Working advertises explicit native scope exclusion", "/api/inventory?dataset=live");
   for (const [snapshot, enabled] of [[demo, true], [live, false]]) {
     assert.equal(snapshot.capabilities.operatorRegistration, 1);
-    assert.deepEqual(Object.keys(snapshot.capabilities).sort(), ["nativeNfc", "operatorRegistration"]);
+    assert.deepEqual(Object.keys(snapshot.capabilities).sort(), ["batteryModels", "csvImport", "demoIntake", "editMetadata", "modelCreate", "nativeNfc", "operatorRegistration"]);
+    assert.equal(snapshot.capabilities.demoIntake, enabled ? 1 : 0);
     assert.equal(snapshot.capabilities.nativeNfc.version, 1); assert.equal(snapshot.capabilities.nativeNfc.enabled, enabled);
     assert.deepEqual(snapshot.capabilities.nativeNfc.enabledDatasets, ["demo"]);
     assert.equal(snapshot.capabilities.nativeNfc.evidenceSource, "device-reported"); assert.equal(snapshot.capabilities.nativeNfc.physicalAcceptance, false);

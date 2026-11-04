@@ -1,4 +1,5 @@
 import type { ExportDocument } from "./exports";
+import { sortLabels } from "./workstation-query";
 
 type Row = Record<string, unknown>;
 export type HumanReport = {
@@ -172,6 +173,9 @@ function activityRow(row: Row): Row {
 }
 function filterSummary(metadata: Row): string {
     if (metadata.range === "selected" && metadata.mode !== "activity") return "Explicitly selected batteries; ordinary filters do not remove selected records. The personal-view boundary still applies.";
+    if (metadata.workstation_query && metadata.range === "single") return "One explicitly chosen battery; ordinary filters do not remove it. The authenticated personal-view boundary still applies.";
+    if (metadata.workstation_query && metadata.range === "all") return "All asset lifecycles; no ordinary filters. The authenticated personal-view boundary still applies.";
+    if (metadata.workstation_query) return workstationFilterSummary(metadata);
     if (Array.isArray(metadata.selected_activity_ids)) return "Explicitly selected activity operations; search, group and current battery filters do not remove selected records. The authenticated personal activity boundary still applies.";
     const activity = metadata.mode === "activity";
     const filter = activity ? object(metadata.activity_battery_filter) : metadata.mode === "records" && metadata.kind !== "batteries" ? {} : object(metadata.filters), names = object(activity ? metadata.activity_battery_filter_labels : metadata.filter_labels), parts: string[] = [];
@@ -200,6 +204,32 @@ function filterSummary(metadata: Row): string {
     if (group.name) parts.push(`${activity ? "Current battery membership in teaching group" : "Teaching group"}: ${text(group.name)}`);
     if (activity && filter.personalScope === "responsible") parts.push("Current batteries for which I am responsible");
     if (activity && filter.personalScope === "borrowed") parts.push("Current batteries checked out to me");
+    return parts.length ? parts.join("; ") : "No additional filters";
+}
+function workstationFilterSummary(metadata: Row): string {
+    const query = object(metadata.workstation_effective_query ?? metadata.workstation_query), filter = object(query.filter), names = object(metadata.workstation_filter_labels), parts: string[] = [];
+    if (query.status === "store" || query.status === "use") parts.push(`Status: ${query.status === "store" ? "In store" : "In use"}`);
+    const labels: Record<string, string> = { lifecycle: "Lifecycle", building: "Storage building", room: "Storage room", owner: "Responsible owner", borrower: "Current borrower", observedRoom: "Last observed room", chemistry: "Chemistry", model: "Model", search: "Search" };
+    const values: Record<string, string> = { active: "Active assets", scrapped: "Scrapped", permanently_removed: "Permanently removed", __unknown__: "Not recorded", __no_observation__: "No observation recorded", __unavailable_label__: "Recorded address unavailable" };
+    for (const [key, label] of Object.entries(labels)) {
+        const value = filter[key];
+        if (value == null || value === "" || value === "all") continue;
+        const reference = ["building", "room", "owner", "borrower", "observedRoom"].includes(key);
+        const display = values[String(value)] ?? names[key] ?? (reference ? "Saved selection (identifier in evidence appendix)" : text(value));
+        parts.push(`${label}: ${display}`);
+    }
+    if (query.newArrivalsOnly && query.personalScope === "all") parts.push("New arrivals: first registered within the last 48 hours, active assets only");
+    for (const [mode, low, high, label, unit] of [
+        ["capacityMode", "capacityMinMah", "capacityMaxMah", "Capacity", "mAh"],
+        ["voltageMode", "voltageMin", "voltageMax", "Voltage", "V"],
+        ["ageKnown", "minAgeDays", "maxAgeDays", filter.ageKind === "service" ? "Time in service" : "Age since manufacture", "days"],
+        ["checkoutMode", "checkoutFrom", "checkoutTo", "Latest checkout date", "Sydney dates"],
+        ["chargeMode", "chargeFrom", "chargeTo", "Latest charge date", "Sydney dates"],
+    ]) {
+        if (filter[mode] === "unknown") parts.push(`${label}: not recorded`);
+        else if (filter[low] || filter[high]) parts.push(`${label}: ${filter[low] || "no minimum"} to ${filter[high] || "no maximum"} ${unit}`);
+        else if (filter[mode] === "known") parts.push(`${label}: recorded values only`);
+    }
     return parts.length ? parts.join("; ") : "No additional filters";
 }
 /** Human views never mutate or replace the original export document and its complete evidence. */
@@ -255,13 +285,18 @@ export function createHumanReport(document: ExportDocument): HumanReport {
         { label: "Prepared by", value: text(metadata.operator) },
         { label: "Inventory", value: metadata.dataset === "demo" ? "Demonstration inventory (fictional data)" : metadata.dataset === "live" ? "Working inventory" : text(metadata.dataset) },
         { label: "Included records", value: typeof metadata.exported_records === "number" ? metadata.exported_records : typeof metadata.exported_batteries === "number" ? metadata.exported_batteries : Object.values(document.tables)[0]?.length ?? 0 },
-        { label: "Download scope", value: Array.isArray(metadata.selected_activity_ids) ? "Selected operations" : metadata.range === "selected" ? "Selected batteries" : metadata.range === "page" ? `Current page ${text(metadata.page)}` : metadata.range === "single" ? "One battery" : "All matching records across all pages" },
+        { label: "Download scope", value: Array.isArray(metadata.selected_activity_ids) ? "Selected operations" : metadata.range === "selected" ? "Selected batteries" : metadata.range === "page" ? `Current page ${text(metadata.page)}` : metadata.range === "single" ? "One battery" : metadata.range === "all" ? "All inventory records across all pages, within the personal scope" : "All matching records across all pages" },
         { label: "Personal scope", value: metadata.activity_scope === "mine" ? "My recorded operations" : scope === "responsible" ? "Batteries for which I am responsible" : scope === "borrowed" ? "Batteries currently checked out to me" : "Shared inventory records" },
         { label: "Filters", value: filterSummary(metadata) },
         { label: "Dates and times", value: "Display times use Australia/Sydney, including daylight-saving changes. Original UTC timestamps remain in the evidence appendix. Date-only values have no time of day." },
         { label: "Unknown information", value: "Not recorded means no value was saved. It does not mean zero, a passed test or a confirmed location." },
         { label: "Using this workbook", value: "Read the named report sheets for daily work. Evidence sheets preserve original database fields for tracing and technical review; they are not extra tasks to complete." },
     ];
+    if (metadata.workstation_query) {
+        const query = object(metadata.workstation_query), label = sortLabels[String(query.sort) as keyof typeof sortLabels] ?? words(String(query.sort));
+        facts.push({ label: "Sort order", value: `${label}, ${query.direction === "desc" ? "descending" : "ascending"}; unknown values last; Battery ID ascending for ties` });
+        facts.push({ label: "Snapshot consistency", value: "The inventory and every requested history section were read together in one service snapshot. This saved file does not update after later changes." });
+    }
     if (metadata.usage_as_of_utc) facts.push({ label: "Borrowing calculated as of (Sydney)", value: dateText(reportTimestamp(metadata.usage_as_of_utc)) });
     if (metadata.fixed_mapping_scope) facts.push({ label: "Last-observation room scope", value: `${text(object(metadata.fixed_mapping_scope).directoryLabel)}. Applies to every download range, including selected and single batteries. This is recorded evidence, not a confirmed present location.` });
     if (mode === "activity") facts.push({ label: "Activity detail", value: metadata.activity_depth === "battery_details" ? "Recorded operations, original group member evidence and the selected current battery information sections" : "Recorded operation summaries; group member details and current battery sections were not requested" });

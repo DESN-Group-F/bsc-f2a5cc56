@@ -1,7 +1,7 @@
 import { after, test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join, posix } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
 
@@ -11,11 +11,19 @@ const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "retired-ui-"));
 after(() => rm(scratch, { recursive: true, force: true }));
-const names = ["teaching-nfc", "teaching-context", "domain", "battery-age", "location-catalog", "battery-lifecycle", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "client-utils", "permissions", "retired-asset-actions"];
-for (const name of names) {
+const compiledLibraries = new Map();
+async function compileLibrary(name) {
+  if (compiledLibraries.has(name)) return compiledLibraries.get(name);
+  const destination = join(scratch, `${name}.mjs`); compiledLibraries.set(name, destination);
   const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
-  await writeFile(join(scratch, `${name}.mjs`), ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, path) => `from "${path}.mjs"`));
+  const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
+  for (const match of output.matchAll(/from "(\.[^"]+)"/g)) await compileLibrary(posix.normalize(posix.join(posix.dirname(name), match[1])));
+  await mkdir(dirname(destination), { recursive: true });
+  await writeFile(destination, output.replace(/from "(\.[^"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`));
+  return destination;
 }
+const names = ["teaching-context", "teaching-nfc", "domain", "battery-age", "location-catalog", "battery-lifecycle", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "client-utils", "permissions", "retired-asset-actions", "client/workflow-storage"];
+for (const name of names) await compileLibrary(name);
 const libraries = Object.assign({}, ...await Promise.all(names.map(name => import(pathToFileURL(join(scratch, `${name}.mjs`))))));
 const rowSource = await readFile(new URL("../lib/client/row-selection.ts", import.meta.url), "utf8");
 await writeFile(join(scratch, "row-selection.mjs"), ts.transpileModule(rowSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText);
@@ -143,14 +151,23 @@ test("verified outcomes remain confirmed when refresh fails and cannot be submit
 
 test("unavailable recovery storage blocks sending and restoration preserves the original UUID", async () => environment(async ({ entries, failures }) => {
   const view = mount("RetiredAssetActionDialog"); failures.write = true; await receiptButton(view).props.onClick(); assert.equal(view.writes.length, 0); assert.match(text(view.render()), /No request was sent/);
-  assert.equal(button(view.render(), "Cancel").props.disabled, true); failures.write = false; button(view.render(), "Restore request recovery").props.onClick();
+  assert.equal(button(view.render(), "Cancel").props.disabled, true); failures.write = false; await button(view.render(), "Restore request recovery").props.onClick();
   const captured = JSON.parse([...entries.values()][0]); assert.equal(view.writes.length, 0); await receiptButton(view).props.onClick(); assert.deepEqual(view.writes[0].payload, captured.payload); view.unmount();
 }));
 
-test("receipt success survives cleanup failure; recovery cleanup never repeats the business write", async () => environment(async ({ entries, failures }) => {
+test("verified service outcomes remain locked until durable acknowledgement without repeating the business write", async () => environment(async ({ entries, failures }) => {
   const view = mount("RetiredAssetActionDialog"); failures.remove = true; await receiptButton(view).props.onClick();
-  assert.equal(receiptButton(view).props.confirmation.count, 2); assert.equal(entries.size, 1); assert.equal(button(view.render(), "Close review").props.disabled, true);
-  failures.remove = false; button(view.render(), "Restore request recovery").props.onClick(); assert.equal(entries.size, 0); assert.equal(view.writes.length, 1); assert.equal(button(view.render(), "Close review").props.disabled, false); view.unmount();
+  const raw = entries.get(libraries.retiredAssetStorageKey("native-actor", "live"));
+  assert.equal(receiptButton(view).props.confirmation, null);
+  assert.match(text(view.render()), /The service confirmed the outcome, but device recovery is not durably acknowledged/);
+  assert.equal(entries.size, 1); assert.equal(button(view.render(), "Cancel").props.disabled, true);
+  assert.equal(view.writes.length, 1); assert.equal(view.outcomes.length, 0); assert.equal(view.changes.length, 0);
+  await receiptButton(view).props.onClick(); button(view.render(), "Cancel").props.onClick();
+  assert.equal(view.writes.length, 1); assert.equal(view.closes.length, 0); assert.equal(entries.get(libraries.retiredAssetStorageKey("native-actor", "live")), raw);
+  failures.remove = false; await button(view.render(), "Restore request recovery").props.onClick();
+  assert.equal(receiptButton(view).props.confirmation.count, 2); assert.equal(entries.size, 0); assert.equal(view.writes.length, 1);
+  assert.equal(view.outcomes.length, 1); assert.equal(view.outcomes[0].requestId, JSON.parse(raw).payload.requestId); assert.equal(view.changes.length, 1);
+  assert.equal(button(view.render(), "Close review").props.disabled, false); view.unmount();
 }));
 
 test("only terminal rejection releases the preserved request; authorization/transport errors remain unknown", async () => environment(async ({ entries }) => {

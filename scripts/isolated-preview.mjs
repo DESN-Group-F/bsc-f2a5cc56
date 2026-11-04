@@ -13,6 +13,7 @@ import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { setTimeout as delay } from "node:timers/promises";
+import { withOperationDeadline } from "./operation-deadline.mjs";
 
 const projectRoot = fileURLToPath(new URL("../", import.meta.url));
 const wrangler = path.join(
@@ -104,6 +105,7 @@ export async function startIsolatedPreview({
   signal,
   onProgress = () => {},
   credentials: suppliedCredentials,
+  beforeAccountSetup,
 } = {}) {
   const credentials = Object.fromEntries(
     ["admin", "staff"].map((role) => {
@@ -397,26 +399,29 @@ export async function startIsolatedPreview({
     );
     const request = async (pathname, body, cookie) => {
       checkActive();
-      const response = await fetch(base + pathname, {
-        method: body ? "POST" : "GET",
-        redirect: "manual",
-        headers: {
-          ...(body ? { "Content-Type": "application/json" } : {}),
-          ...(cookie ? { Cookie: cookie } : {}),
-        },
-        ...(body ? { body: JSON.stringify(body) } : {}),
-        signal: AbortSignal.any([
-          AbortSignal.timeout(20000),
-          ...(signal ? [signal] : []),
-        ]),
+      return withOperationDeadline(async (requestSignal) => {
+        const response = await fetch(base + pathname, {
+          method: body ? "POST" : "GET",
+          redirect: "manual",
+          headers: {
+            ...(body ? { "Content-Type": "application/json" } : {}),
+            ...(cookie ? { Cookie: cookie } : {}),
+          },
+          ...(body ? { body: JSON.stringify(body) } : {}),
+          signal: requestSignal,
+        });
+        if (!response.ok)
+          throw new Error(
+            `Isolated fixture request ${pathname} returned HTTP ${response.status}. See ${logPath}`,
+          );
+        await response.clone().arrayBuffer();
+        return response;
+      }, {
+        signal, timeoutMs: 20000,
+        message: `Isolated fixture request ${pathname} did not complete within 20 seconds. See ${logPath}`,
       });
-      if (!response.ok)
-        throw new Error(
-          `Isolated fixture request ${pathname} returned HTTP ${response.status}. See ${logPath}`,
-        );
-      await response.clone().arrayBuffer();
-      return response;
     };
+    onProgress("Waiting for the isolated Worker session response.");
     let ready = false;
     const deadline = Date.now() + 60000;
     while (Date.now() < deadline) {
@@ -426,14 +431,17 @@ export async function startIsolatedPreview({
           `The isolated Worker exited before becoming ready. See ${logPath}`,
         );
       try {
-        const response = await fetch(base + "/api/session", {
-          redirect: "manual",
-          signal: AbortSignal.any([
-            AbortSignal.timeout(1000),
-            ...(signal ? [signal] : []),
-          ]),
+        const setupRequired = await withOperationDeadline(async (requestSignal) => {
+          const response = await fetch(base + "/api/session", {
+            redirect: "manual", signal: requestSignal,
+          });
+          const body = await response.json();
+          return response.ok && body.setupRequired === true;
+        }, {
+          signal, timeoutMs: Math.min(5000, Math.max(1, deadline - Date.now())),
+          message: `The isolated Worker session response did not complete. See ${logPath}`,
         });
-        if (response.ok && (await response.json()).setupRequired === true) {
+        if (setupRequired) {
           ready = true;
           break;
         }
@@ -446,6 +454,11 @@ export async function startIsolatedPreview({
       throw new Error(
         `The isolated Worker did not become ready within 60 seconds. See ${logPath}`,
       );
+    // Acceptance checks may inspect the real unconfigured installation before fixtures exist.
+    // The hook receives no installation key or account credentials.
+    await beforeAccountSetup?.({ base });
+    checkActive();
+    onProgress("Creating the isolated administrator fixture.");
     await request("/api/session", {
       action: "setup",
       setupKey,
@@ -457,6 +470,7 @@ export async function startIsolatedPreview({
         defaultDataset: "demo",
       },
     });
+    onProgress("Signing in to configure the isolated staff fixture.");
     const signIn = await request("/api/session", {
       action: "signin",
       payload: credentials.admin,
@@ -466,6 +480,7 @@ export async function startIsolatedPreview({
       throw new Error(
         "The isolated administrator did not receive a session cookie.",
       );
+    onProgress("Creating the isolated staff fixture.");
     await request(
       "/api/accounts",
       {

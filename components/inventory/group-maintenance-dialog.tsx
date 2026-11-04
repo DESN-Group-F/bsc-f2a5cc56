@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { acknowledgeWorkflowStorage } from "@/lib/client/workflow-storage";
 import { Button } from "@/components/ui/button";
 import { MotionDisclosure } from "@/components/ui/workspace-motion";
 import { Input } from "@/components/ui/input";
@@ -18,7 +19,7 @@ import { getRolePermissions } from "@/lib/permissions";
 export function GroupMaintenanceDialog({ data, group, ids, write, onClose, onChanged }: { data: InventorySnapshot; group?: TeachingGroup; ids: string[]; write: WriteAction; onClose: () => void; onChanged: () => Promise<void> }) {
     const [context] = useState(() => ({ accountId: data.user.id, dataset: data.dataset }));
     const key = groupMaintenanceKey(context.accountId, context.dataset);
-    const [recovery] = useState(() => { try { const raw = sessionStorage.getItem(key), attempt = recoverGroupMaintenance(raw, context.accountId, context.dataset); return { attempt, invalid: !!raw && !attempt }; } catch { return { attempt: null, invalid: true }; } });
+    const [recovery] = useState(() => { try { const raw = sessionStorage.getItem(key), attempt = recoverGroupMaintenance(raw, context.accountId, context.dataset); return { attempt, invalid: raw !== null && !attempt }; } catch { return { attempt: null, invalid: true }; } });
     const [attempt, setAttempt] = useState(recovery.attempt), pending = useRef(attempt), running = useRef(false), live = useRef(true);
     const [kind, setKind] = useState<GroupMaintenancePayload["kind"]>("owner"), [ownerId, setOwnerId] = useState(""), [roomId, setRoomId] = useState("__unspecified"), [time, setTime] = useState(""), [duration, setDuration] = useState("");
     const [busy, setBusy] = useState(false), [error, setError] = useState(""), [storageError, setStorageError] = useState("");
@@ -32,7 +33,7 @@ export function GroupMaintenanceDialog({ data, group, ids, write, onClose, onCha
     const locked = busy || !!attempt || !!storageError || recovery.invalid || contextChanged;
     const fieldsLocked = locked || saved || !permitted;
     function preserve(next: GroupMaintenanceAttempt | null) {
-        try { if (next) sessionStorage.setItem(key, JSON.stringify(next)); else sessionStorage.removeItem(key); pending.current = next; setAttempt(next); setStorageError(""); window.dispatchEvent(new Event("battery-group-maintenance-recovery")); return true; }
+        try { const raw=sessionStorage.getItem(key); if(raw!==null&&raw!==JSON.stringify(next))throw new Error("The original group operation changed. It has not been replaced."); if (next) sessionStorage.setItem(key, JSON.stringify(next)); else sessionStorage.removeItem(key); pending.current = next; setAttempt(next); setStorageError(""); window.dispatchEvent(new Event("battery-group-maintenance-recovery")); return true; }
         catch { pending.current = next || pending.current; setAttempt(pending.current); setStorageError("Restore browser storage and retry this exact operation before leaving."); return false; }
     }
     async function save(retry = false) {
@@ -50,14 +51,18 @@ export function GroupMaintenanceDialog({ data, group, ids, write, onClose, onCha
             const receipt = await write("group_maintenance", captured.payload);
             verifyGroupMaintenance(receipt, captured);
             if (!live.current) return;
-            if (!preserve(null)) return;
+            await acknowledgeWorkflowStorage({ remove: [key], expected: { [key]: JSON.stringify(captured) } });
+            pending.current = null; setAttempt(null); setStorageError(""); window.dispatchEvent(new Event("battery-group-maintenance-recovery"));
             setSaved(true);
             try { await onChanged(); } catch { setError("The group operation was saved. The display could not refresh; close this dialog and refresh before another update."); return; }
             onClose();
         } catch (error) {
             if (!live.current) return;
             const rejected = (error as { code?: string }).code === "group_operation_rejected_final";
-            if (rejected && captured) preserve(null);
+            if (rejected && captured) {
+                try { await acknowledgeWorkflowStorage({ remove: [key], expected: { [key]: JSON.stringify(captured) } }); pending.current = null; setAttempt(null); }
+                catch (storageFailure) { setStorageError((storageFailure as Error).message); }
+            }
             setError((error as { issues?: { message: string }[] }).issues?.[0]?.message || (error as Error).message);
         } finally { running.current = false; if (live.current) setBusy(false); }
     }

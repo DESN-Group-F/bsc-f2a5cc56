@@ -1,10 +1,9 @@
 import { after, test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join, posix } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
-import { getRolePermissions } from "../work/qa/permissions.mjs";
 
 // Execute the actual intake component handlers with controlled hooks, receipts
 // and local recovery. No browser, physical reader or shared database is used.
@@ -12,14 +11,23 @@ const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "intake-ui-"));
 after(() => rm(scratch, { recursive: true, force: true }));
-for (const name of ["teaching-nfc", "teaching-context", "battery-models", "battery-age", "domain", "location-catalog", "client-utils", "intake-session", "intake-draft", "battery-lifecycle", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query"]) {
+const compiledLibraries = new Map();
+async function compileLibrary(name) {
+    if (compiledLibraries.has(name)) return compiledLibraries.get(name);
+    const destination = join(scratch, `${name}.mjs`); compiledLibraries.set(name, destination);
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
-    const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
-    await writeFile(join(scratch, `${name}.mjs`), compiled);
+    const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
+    for (const match of output.matchAll(/from "(\.[^"]+)"/g)) await compileLibrary(posix.normalize(posix.join(posix.dirname(name), match[1])));
+    await mkdir(dirname(destination), { recursive: true });
+    await writeFile(destination, output.replace(/from "(\.[^"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`));
+    return destination;
 }
+for (const name of ["teaching-context", "teaching-nfc", "battery-models", "battery-age", "domain", "location-catalog", "client-utils", "intake-session", "intake-draft", "battery-lifecycle", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "permissions", "client/workflow-storage"]) await compileLibrary(name);
 const [intake, models, client, locations, drafts] = await Promise.all(["intake-session", "battery-models", "client-utils", "location-catalog", "intake-draft"].map(name => import(pathToFileURL(join(scratch, `${name}.mjs`)))));
 const query = await import(pathToFileURL(join(scratch, "inventory-query.mjs")));
 const selectionQuery = await import(pathToFileURL(join(scratch, "battery-selection-query.mjs")));
+const { getRolePermissions } = await import(pathToFileURL(join(scratch, "permissions.mjs")));
+const workflowStorage = await import(pathToFileURL(join(scratch, "client/workflow-storage.mjs")));
 const rowSource = await readFile(new URL("../lib/client/row-selection.ts", import.meta.url), "utf8");
 await writeFile(join(scratch, "row-selection.mjs"), ts.transpileModule(rowSource, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText);
 const rowSelection = await import(pathToFileURL(join(scratch, "row-selection.mjs")));
@@ -61,7 +69,7 @@ async function environment(run, seed = []) {
 }
 function mount(overrides = {}) {
     const state = hooks(), writes = [], exits = [];
-    const bindings = { ...query, ...selectionQuery, ...rowSelection, getRolePermissions, ...ui, ...intake, ...drafts, ...models, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
+    const bindings = { ...query, ...selectionQuery, ...rowSelection, ...workflowStorage, getRolePermissions, ...ui, ...intake, ...drafts, ...models, ...client, ...locations, ...state, currentSydneyDate: () => "2026-10-03" }, names = Object.keys(bindings);
     const IntakeStation = new Function(...names, "_jsx", "_jsxs", "_Fragment", `${compiled}\nreturn IntakeStation;`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
     const props = { data: fixture(), onExit: () => exits.push(true), async write(action, payload) { writes.push({ action, payload: structuredClone(payload) }); return receipt(payload, { batteryId: `BAT-${String(writes.length).padStart(8, "0")}` }); }, ...overrides };
     return { props, writes, exits, render() { state.reset(); const tree = IntakeStation(props); state.commit(); return tree; }, unmount: state.unmount };

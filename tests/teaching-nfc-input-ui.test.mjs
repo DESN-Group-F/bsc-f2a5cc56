@@ -62,10 +62,10 @@ test('controlled native read stages a proposal; explicit adoption alone calls th
     view.render(); await Promise.resolve();
     await button(view.render(), 'Read NFC tag').props.onClick();
     assert.equal(chosen.length, 0); assert.equal(adopts, 0); assert.match(text(view.render()), /This read has not selected or borrowed a battery/);
-    await button(view.render(), 'Use identifier as manual alternative input').props.onClick();
+    await button(view.render(), 'Use this NFC read').props.onClick();
     assert.equal(adopts, 1); assert.equal(chosen.length, 1); assert.equal(chosen[0].source.kind, 'native_nfc');
     assert.deepEqual(chosen[0].source.evidence.result, value.result); assert.equal(chosen[0].source.evidence.tagId, chosen[0].tag);
-    assert.equal(button(view.render(), 'Use identifier as manual alternative input'), undefined); assert.ok(busy.includes(true));
+    assert.equal(button(view.render(), 'Use this NFC read'), undefined); assert.ok(busy.includes(true));
     view.unmount();
 });
 
@@ -74,8 +74,8 @@ test('unknown inventory or explicit-source mismatch keeps the proposal and faile
     const bridge = { getAvailability: available, read: async () => value, cancel: async () => {}, adopt: async adopted => ({ ...adopted, adoptedAt: '2026-10-08T05:00:03.000Z' }) };
     const view = mount(bridge, { source: 'native_nfc', onChooseTag: () => { calls++; throw new Error('Controlled unknown tag or source switch required'); } });
     view.render(); await Promise.resolve(); await button(view.render(), 'Read NFC tag').props.onClick();
-    await button(view.render(), 'Use identifier as manual alternative input').props.onClick();
-    assert.equal(calls, 1); assert.match(text(view.render()), /Controlled unknown tag/); assert.ok(button(view.render(), 'Use identifier as manual alternative input'));
+    await button(view.render(), 'Use this NFC read').props.onClick();
+    assert.equal(calls, 1); assert.match(text(view.render()), /Controlled unknown tag/); assert.ok(button(view.render(), 'Use this NFC read'));
     button(view.render(), 'Discard identifier proposal').props.onClick(); assert.equal(calls, 1);
     bridge.read = async () => { throw new Error('Controlled read failure'); };
     await button(view.render(), 'Read NFC tag').props.onClick(); assert.equal(calls, 1); assert.match(text(view.render()), /Controlled read failure/);

@@ -193,7 +193,7 @@ test("removal-record exports keep their captured selected IDs and prevent changi
     assert.equal(range.props.value, "selected");
     assert.equal(range.props.disabled, true);
     assert.deepEqual(options(range), [{ id: "selected", label: "Selected batteries (2)" }]);
-    assert.match(text(initial), /Includes the captured matching removal records only\./);
+    assert.match(text(initial), /Includes the captured selected records only\./);
     assert.match(text(initial), /2 batteries/);
     assert.ok(nodes(initial).some(node => node.type === "fieldset"));
     draft.selectedIds.push("BAT-ADDED-AFTER-DIALOG-OPENED");

@@ -1,7 +1,7 @@
 import { after, test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join, posix } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
 
@@ -11,11 +11,18 @@ const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "removal-ui-"));
 after(() => rm(scratch, { recursive: true, force: true }));
-for (const name of ["teaching-nfc", "teaching-context", "battery-age", "domain", "location-catalog", "client-utils", "lifecycle-session", "removal-draft", "battery-lifecycle", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "permissions", "retired-asset-actions"]) {
+const compiledLibraries = new Map();
+async function compileLibrary(name) {
+    if (compiledLibraries.has(name)) return compiledLibraries.get(name);
+    const destination = join(scratch, `${name}.mjs`); compiledLibraries.set(name, destination);
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
-    const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
-    await writeFile(join(scratch, `${name}.mjs`), compiled);
+    const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
+    for (const match of output.matchAll(/from "(\.[^"]+)"/g)) await compileLibrary(posix.normalize(posix.join(posix.dirname(name), match[1])));
+    await mkdir(dirname(destination), { recursive: true });
+    await writeFile(destination, output.replace(/from "(\.[^"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`));
+    return destination;
 }
+for (const name of ["teaching-context", "teaching-nfc", "battery-age", "domain", "location-catalog", "client-utils", "lifecycle-session", "removal-draft", "battery-lifecycle", "new-arrivals", "inventory-mapping", "inventory-query", "battery-selection-query", "permissions", "retired-asset-actions", "client/workflow-storage"]) await compileLibrary(name);
 const [lifecycle, client, removalDraft] = await Promise.all(["lifecycle-session", "client-utils", "removal-draft"].map(name => import(pathToFileURL(join(scratch, `${name}.mjs`)))));
 const query = await import(pathToFileURL(join(scratch, "inventory-query.mjs")));
 const selectionQuery = await import(pathToFileURL(join(scratch, "battery-selection-query.mjs")));
@@ -24,6 +31,7 @@ await writeFile(join(scratch, "row-selection.mjs"), ts.transpileModule(rowSource
 const rowSelection = await import(pathToFileURL(join(scratch, "row-selection.mjs")));
 const permissions = await import(pathToFileURL(join(scratch, "permissions.mjs")));
 const retiredActions = await import(pathToFileURL(join(scratch, "retired-asset-actions.mjs")));
+const workflowStorage = await import(pathToFileURL(join(scratch, "client/workflow-storage.mjs")));
 const source = await readFile(new URL("../components/inventory/removal-station.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
 const ui = Object.fromEntries(["BatteryFilterControls", "CheckCircle2", "LogOut", "ScanLine", "Trash2", "Button", "Checkbox", "Input", "Label", "Textarea", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow"].map(name => [name, name]));
@@ -64,7 +72,7 @@ async function environment(run, seed = []) {
 }
 function mount(overrides = {}, component = "RemovalStation") {
     const state = hooks(), writes = [], changes = [], details = [], locks = [], downloads = [];
-    const bindings = { ...ui, ...query, ...selectionQuery, ...rowSelection, ...lifecycle, ...client, ...removalDraft, ...permissions, ...retiredActions, ...state }, names = Object.keys(bindings);
+    const bindings = { ...ui, ...query, ...selectionQuery, ...rowSelection, ...lifecycle, ...client, ...removalDraft, ...permissions, ...retiredActions, ...workflowStorage, ...state }, names = Object.keys(bindings);
     const Component = new Function(...names, "_jsx", "_jsxs", "_Fragment", `${compiled}\nreturn ${component};`)(...names.map(name => bindings[name]), jsx, jsx, "Fragment");
     const props = { data: fixture(), onChanged: () => changes.push(true), onDetail: id => details.push(id), onBusyChange: locked => locks.push(locked), onDownload: ids => downloads.push(ids), async write(action, payload) { writes.push({ action, payload: structuredClone(payload) }); return receipt(payload, { dataset: props.data.dataset }); }, ...overrides };
     return { props, writes, changes, details, locks, downloads, render() { state.reset(); const tree = Component(props); state.commit(); return tree; }, unmount: state.unmount };

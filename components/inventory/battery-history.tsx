@@ -17,7 +17,7 @@ import { formatMovementDuration } from "@/lib/battery-movement-summary";
 import { getRolePermissions } from "@/lib/permissions";
 import { inspectionSchema, inspectionVoidSchema, type InspectionRecord } from "@/lib/battery-inspections";
 import type { WriteAction } from "@/lib/client/inventory-contracts";
-import { clearInspectionAttempt, inspectionFinallyRejected, readInspectionAttempt, saveInspectionAttempt, verifyInspectionReceipt, type InspectionAttempt } from "./inspection-request";
+import { acknowledgeInspectionAttempt, inspectionFinallyRejected, readInspectionAttempt, saveInspectionAttempt, verifyInspectionReceipt, type InspectionAttempt } from "./inspection-request";
 import styles from "./battery-history.module.css";
 
 const kindLabels = { visual_check: "Visual check", functional_check: "Functional check", capacity_measurement: "Capacity measurement", other: "Other inspection" };
@@ -25,7 +25,7 @@ const outcomeLabels = { no_concern_observed: "No concern observed", concern_obse
 
 export function BatteryInspectionSummary({ detail, error, onViewEvidence }: { detail: BatteryDetail | null; error: string; onViewEvidence: () => void }) {
     const latest = detail?.inspectionSummary.latest;
-    return <section className={`${styles.section} ${latest?.outcome === "concern_observed" ? styles.concern : ""}`} aria-label="Latest recorded inspection summary">
+    return <section className={`${styles.section} ${latest?.outcome === "concern_observed" ? styles.concern : ""}`} aria-label="Latest recorded inspection summary" data-inspection-outcome={latest?.outcome}>
         <div className={styles.heading}><h3><ClipboardCheck size={17} aria-hidden="true" />Latest recorded inspection</h3><Button variant="ghost" size="sm" onClick={onViewEvidence}>View evidence<ArrowUpRight size={15} aria-hidden="true" /></Button></div>
         {error ? <p role="alert">Inspection evidence could not be loaded. Open Inspections to retry.</p> : !detail ? <><Skeleton className="h-12 w-full" /><span className="sr-only">Loading latest recorded inspection.</span></> : latest ? <><div className={styles.summaryHeading}><strong>{outcomeLabels[latest.outcome]}</strong><span>{kindLabels[latest.kind]}</span></div><p>{formatTime(latest.performedAt)} · {latest.inspectorName}</p>{latest.outcome === "concern_observed" && latest.notes && <p className={styles.concernNotes}>{latest.notes}</p>}</> : <p>{detail.inspectionSummary.totalRecords ? "No current inspection record. Earlier entries marked as entered in error remain in the history." : "No inspection recorded."}</p>}
         <p className={styles.note}>Recorded evidence only. A concern does not automatically change availability; an inspection is not a safety certification.</p>
@@ -147,14 +147,14 @@ function InspectionForm({ draft, pending, battery, data, write, onPending, onClo
         try {
             const result = await write(captured.action, captured.payload);
             verifyInspectionReceipt(result, captured);
-            clearInspectionAttempt(captured);
+            await acknowledgeInspectionAttempt(captured);
             attempt.current = null;
             onPending(null);
             onSaved(captured.action);
         } catch (failure) {
             if (inspectionFinallyRejected(failure)) {
                 try {
-                    clearInspectionAttempt(captured);
+                    await acknowledgeInspectionAttempt(captured);
                     attempt.current = null;
                     onPending(null);
                     setRejected(true);

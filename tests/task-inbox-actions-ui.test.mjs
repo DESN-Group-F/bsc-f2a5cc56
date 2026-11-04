@@ -2,12 +2,14 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import ts from "typescript";
+import { createDurableStorage } from "../mobile/src/platform/durable-storage.mjs";
 import { getRolePermissions } from "../work/qa/permissions.mjs";
 import { createCustomTaskPlan, taskTemplates } from "../work/qa/task-schedule.mjs";
 import { captureTaskCreate, recoverTaskCreate, taskCreateStorageKey } from "../work/qa/task-create-session.mjs";
 
 const sources = await Promise.all(
   [
+    "lib/client/workflow-storage.ts",
     "lib/client/task-record-action.ts",
     "components/inventory/messages-panel.tsx",
     "components/inventory/task-plans-panel.tsx",
@@ -82,6 +84,8 @@ const receipt = (input, accountId = data.user.id) => ({
     removedAt: input.action === "remove" ? "2026-10-03T01:00:00Z" : null,
   },
 });
+
+const nativeDeferred = () => { let resolve; const promise=new Promise(done=>{resolve=done;}); return {promise,resolve}; };
 
 function nodes(node, result = []) {
   if (Array.isArray(node)) {
@@ -197,6 +201,11 @@ function harness(
     useRef(initial) {
       const index = pointer++;
       if (!(index in state)) state[index] = { current: initial };
+      return state[index];
+    },
+    useCallback(callback) {
+      const index = pointer++;
+      if (!(index in state)) state[index] = callback;
       return state[index];
     },
     useEffect(callback, dependencies) {
@@ -980,6 +989,24 @@ test("plan removal and restoration capture reviewed versions and verify exact re
     assert.equal(inputs[0].action, restoring ? "restore" : "remove");
     assert.equal(saved, 1);
   }
+});
+
+test("actual plan removal keeps review and exit protected until delayed native acknowledgement completes", async () => {
+  const gate=nativeDeferred(),key=`battery-task-plans-action:${data.user.id}:${data.dataset}`;let raw=null,saved=0,closed=0;
+  const storage=createDurableStorage({load:async()=>raw,save:async next=>{if(!Object.hasOwn(JSON.parse(next).entries,key))await gate.promise;raw=next;}});await storage.initialize();
+  const inputs=[],h=harness({},async(_url,options)=>{const input=JSON.parse(options.body);inputs.push(input);return receipt(input);},storage),props={original:plan,data,onClose(){closed++;},async onSaved(){saved++;}},render=()=>h.render("TaskPlanRemovalDialog",props);
+  const pending=button(render(),"Remove plan").props.onClick();await new Promise(resolve=>setTimeout(resolve,0));let tree=render();
+  assert.equal(saved,0);assert.equal(button(tree,"Cancel").props.disabled,true);nodes(tree).find(node=>node.type==="Dialog").props.onOpenChange(false);assert.equal(closed,0);assert.equal(inputs.length,1);assert.deepEqual(JSON.parse(storage.getItem(key)).input,inputs[0]);
+  gate.resolve();await pending;tree=render();assert.equal(saved,1);assert.equal(storage.getItem(key),null);assert.equal(button(tree,"Cancel").props.disabled,false);
+});
+
+test("actual plan removal retains immutable original retry and blocked exit after native acknowledgement failure", async () => {
+  const key=`battery-task-plans-action:${data.user.id}:${data.dataset}`;let raw=null,deny=true,saved=0,closed=0;
+  const storage=createDurableStorage({load:async()=>raw,save:async next=>{if(deny&&!Object.hasOwn(JSON.parse(next).entries,key))throw new Error("Controlled task native acknowledgement failure");raw=next;}});await storage.initialize();
+  const inputs=[],h=harness({},async(_url,options)=>{const input=JSON.parse(options.body);inputs.push(input);return receipt(input);},storage),props={original:plan,data,onClose(){closed++;},async onSaved(){saved++;}},render=()=>h.render("TaskPlanRemovalDialog",props);
+  await button(render(),"Remove plan").props.onClick();let tree=render();assert.equal(saved,0);assert.ok(button(tree,"Retry original removal"));assert.equal(button(tree,"Cancel").props.disabled,true);nodes(tree).find(node=>node.type==="Dialog").props.onOpenChange(false);assert.equal(closed,0);
+  const retained=JSON.parse(storage.exportRaw()).current.entries[key];assert.deepEqual(JSON.parse(retained).input,inputs[0]);assert.equal(JSON.parse(raw).entries[key],retained);
+  deny=false;await storage.retryPersistence();await button(render(),"Retry original removal").props.onClick();assert.equal(saved,1);assert.deepEqual(inputs[1],inputs[0]);assert.equal(storage.getItem(key),null);
 });
 
 test("plan conflicts require an explicit review before a new version and request are submitted", async () => {

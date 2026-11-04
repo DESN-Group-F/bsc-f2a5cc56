@@ -12,7 +12,7 @@ import { useLocationRecovery } from "@/hooks/use-location-recovery";
 import { isActiveBattery } from "@/lib/battery-lifecycle";
 import { formatTime, saveDownloadAttachment } from "@/lib/client-utils";
 import { inventoryResponse } from "@/lib/client/inventory-request";
-import { captureLocationAttempt, clearLocationAttempt, locationFailureStatus, locationRequestStorageKey, persistLocationAttempt, verifyLocationReceipt, type LocationAttempt, type LocationReceipt } from "@/lib/client/location-request";
+import { captureLocationAttempt, acknowledgeLocationAttempt, locationFailureStatus, locationRequestStorageKey, persistLocationAttempt, verifyLocationReceipt, type LocationAttempt, type LocationReceipt } from "@/lib/client/location-request";
 import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
 import { roomPickerOptions, SUPPORTED_BUILDING_ID } from "@/lib/location-catalog";
 import { locationBeaconRequestSchema, locationCaptureSchema, type LocationBeacon, type LocationDirectorySnapshot } from "@/lib/location-observations";
@@ -129,7 +129,7 @@ export function LocationToolsPanel({ data, ready, onChanged, onClose }: {
         body = await inventoryResponse<{ result: unknown }>(await fetch("/api/location-observations", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ dataset: sending.dataset, payload: sending.payload }) }));
       }
       const confirmed = verifyLocationReceipt((body as { result: unknown }).result, sending);
-      clearLocationAttempt(sending); remember(null); announceRecovery(); setReceipt(confirmed);
+      await acknowledgeLocationAttempt(sending); remember(null); announceRecovery(); setReceipt(confirmed);
       if (sending.kind === "beacon") setForm(emptyForm());
       else { setBattery(null); setSelectedBeacons([]); }
       try { await Promise.all([loadDirectory(), onChanged()]); setRefreshNeeded(false); }
@@ -165,9 +165,9 @@ export function LocationToolsPanel({ data, ready, onChanged, onClose }: {
     } catch (failure) { setError(messageOf(failure)); }
   }
 
-  function dismissRejected() {
+  async function dismissRejected() {
     if (busyRef.current || attempt?.status !== "rejected") return;
-    try { clearLocationAttempt(attempt); remember(null); setStorageError(""); setError(""); announceRecovery(); void refresh(); }
+    try { await acknowledgeLocationAttempt(attempt); remember(null); setStorageError(""); setError(""); announceRecovery(); void refresh(); }
     catch (failure) { setStorageError(messageOf(failure)); }
   }
 

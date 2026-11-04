@@ -2,6 +2,7 @@ import type { StaffUser } from "./accounts";
 import { rejectPurgedReplay } from "./server/purge-evidence";
 import { DomainError, recordKey, type Dataset } from "./domain";
 import { canonicalModelJson, modelChoiceContentHash, modelSelectionSchema, newBatteryModelSchema, updateBatteryModelSchema, type BatteryModelChoice, type ModelSelection, type NewBatteryModel } from "./battery-models";
+import { modelCreateFingerprint, verifyModelCreateOutcome, type ModelCreateOutcome } from "./model-create";
 
 type Row = Record<string, unknown>;
 type ModelActor = Pick<StaffUser, "id" | "displayName" | "role" | "authVersion">;
@@ -102,6 +103,45 @@ export class BatteryModelStore {
             if (await this.first("SELECT id FROM battery_models WHERE scope=? AND id=?", this.scope, model.id)) throw new DomainError(409, "This model draft identifier is already saved with different details.", "idempotency_conflict");
             if (/constraint|unique|check|foreign key|replacement/i.test(String(error))) throw new DomainError(409, "The model or your account access changed. No new model was saved. Reload and review the records.", "model_conflict");
             throw error;
+        }
+    }
+    private async reviewedCreateOriginal(model: NewBatteryModel): Promise<ModelCreateOutcome> {
+        const identity = { requestId: model.id, actorAccountId: this.actor.id, dataset: this.dataset };
+        const old = await this.first("SELECT kind,fingerprint,result_json FROM operations WHERE id=? AND scope=?", this.key(model.id), this.scope);
+        if (!old) return { state: "missing", ...identity };
+        if (!["battery_model_registered", "battery_model_registered_rejected"].includes(String(old.kind)) || old.fingerprint !== canonicalModelJson({ actorAccountId: this.actor.id, model }))
+            throw new DomainError(409, "This model draft identifier was already used for different changes or by another staff account.", "idempotency_conflict");
+        const result = rejectPurgedReplay(old.result_json, "model_rejected_final");
+        return verifyModelCreateOutcome(old.kind === "battery_model_registered" ? { state: "confirmed", receipt: { ...result, replayed: true } } : result, model, this.actor.id, this.dataset);
+    }
+    async createOutcome(input: unknown): Promise<ModelCreateOutcome> {
+        const model = newBatteryModelSchema.parse(input);
+        await this.requireActor();
+        return this.reviewedCreateOriginal(model);
+    }
+    async createReviewed(input: unknown): Promise<ModelCreateOutcome> {
+        const model = newBatteryModelSchema.parse(input);
+        await this.requireActor();
+        const previous = await this.reviewedCreateOriginal(model);
+        if (previous.state !== "missing") return previous;
+        try {
+            return verifyModelCreateOutcome({ state: "confirmed", receipt: await this.create(model) }, model, this.actor.id, this.dataset);
+        } catch (error) {
+            await this.requireActor();
+            const winner = await this.reviewedCreateOriginal(model);
+            if (winner.state !== "missing") return winner;
+            if (!(error instanceof DomainError) || ![400, 404, 409].includes(error.status) || error.code === "idempotency_conflict") throw error;
+            const outcome: ModelCreateOutcome = { state: "rejected", requestId: model.id, actorAccountId: this.actor.id, dataset: this.dataset, at: this.clock().toISOString(), code: "model_rejected_final", status: error.status as 400 | 404 | 409, error: error.message, fingerprint: await modelCreateFingerprint(model, this.actor.id, this.dataset) };
+            const authorization = this.actorGuard();
+            try {
+                await this.db.batch([this.statement(`INSERT INTO operations(id,scope,kind,fingerprint,result_json,created_at,guard) SELECT ?,?,'battery_model_registered_rejected',?,?,?,CASE WHEN (${authorization.sql}) THEN 1 ELSE 0 END`, this.key(model.id), this.scope, canonicalModelJson({ actorAccountId: this.actor.id, model }), JSON.stringify(outcome), outcome.at, ...authorization.values)]);
+                return outcome;
+            } catch (failure) {
+                await this.requireActor();
+                const winner = await this.reviewedCreateOriginal(model);
+                if (winner.state !== "missing") return winner;
+                throw failure;
+            }
         }
     }
     async update(input: unknown): Promise<ModelCreateResult> {

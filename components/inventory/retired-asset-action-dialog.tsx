@@ -11,6 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
 import type { WriteAction } from "@/lib/client/inventory-contracts";
 import { formatTime } from "@/lib/client-utils";
+import { acknowledgeWorkflowStorage } from "@/lib/client/workflow-storage";
 import { getRolePermissions } from "@/lib/permissions";
 import { captureRetiredAssetAttempt, recoverRetiredAssetAttempt, retiredAssetFailureStatus, retiredAssetStorageKey, verifyRetiredAssetReceipt, type RetiredAssetAttempt, type RetiredAssetPayload, type RetiredAssetReceipt } from "@/lib/retired-asset-actions";
 import styles from "./retired-asset-action-dialog.module.css";
@@ -70,25 +71,28 @@ export function RetiredAssetActionDialog({ data, review, write, onChanged, onClo
   function persist(input: RetiredAssetAttempt) {
     const raw = sessionStorage.getItem(key);
     const previous = recoverRetiredAssetAttempt(raw, context.actorAccountId, context.dataset);
-    if (raw && (!previous || previous.payload.requestId !== input.payload.requestId)) throw new Error("Another preserved retired battery request must be resolved first.");
+    if (raw !== null && (!previous || JSON.stringify(previous) !== JSON.stringify(input))) throw new Error("Another preserved retired battery request must be resolved first.");
     sessionStorage.setItem(key, JSON.stringify(input));
     notifyRecovery();
   }
-  function clear(input: RetiredAssetAttempt) {
+  async function clear(input: RetiredAssetAttempt) {
     const raw = sessionStorage.getItem(key);
     const previous = recoverRetiredAssetAttempt(raw, context.actorAccountId, context.dataset);
-    if (raw && (!previous || previous.payload.requestId !== input.payload.requestId)) throw new Error("The saved recovery request changed. It has not been replaced or removed.");
-    if (previous) sessionStorage.removeItem(key);
+    if (!previous || JSON.stringify(previous) !== JSON.stringify(input)) throw new Error("The saved recovery request changed. It has not been replaced or removed.");
+    await acknowledgeWorkflowStorage({ remove: [key], expected: { [key]: raw } });
     notifyRecovery();
   }
-  function restoreStorage() {
+  async function restoreStorage() {
     const input = captured.current;
     if (!input || busyRef.current || contextChanged) return;
+    busyRef.current = true; setBusy(true);
     try {
-      if (verified.current || rejected) { clear(input); setAttempt(null); }
+      if (verified.current || rejected) { await clear(input); captured.current = null; setAttempt(null); }
       else persist(input);
       setStorageError("");
+      if (verified.current) { setReceipt(verified.current); onVerified?.(verified.current); await onChanged(); }
     } catch (failure) { setStorageError(message(failure)); }
+    finally { busyRef.current = false; if (mounted.current) setBusy(false); }
   }
   async function refreshRecords() {
     if (contextChanged || busyRef.current) return;
@@ -117,24 +121,26 @@ export function RetiredAssetActionDialog({ data, review, write, onChanged, onClo
       const result = await write("retired_asset", original.payload);
       const confirmed = verifyRetiredAssetReceipt(result, original);
       verified.current = confirmed;
+      await clear(original);
+      captured.current = null;
       const sameContext = currentContext.current.actorAccountId === context.actorAccountId && currentContext.current.dataset === context.dataset;
       if (mounted.current && sameContext) {
+        setAttempt(null); setStorageError("");
         setReceipt(confirmed);
         try { onVerified?.(confirmed); }
         catch (failure) { setRefreshError(`The outcome is confirmed. The selection view could not update: ${message(failure)}`); }
       }
-      try { clear(original); if (mounted.current) { setAttempt(null); setStorageError(""); } }
-      catch (failure) { if (mounted.current) setStorageError(`The outcome is confirmed, but browser recovery could not be cleared: ${message(failure)}`); }
       if (mounted.current && sameContext) {
         try { await onChanged(); }
         catch (failure) { if (mounted.current) setRefreshError(`The outcome is confirmed. Current records could not refresh: ${message(failure)}`); }
       }
     } catch (failure) {
       if (mounted.current) {
+        if (verified.current) { setStorageError(`The service confirmed the outcome, but device recovery is not durably acknowledged: ${message(failure)}`); return; }
         setError(message(failure));
         if (retiredAssetFailureStatus(failure) === "rejected") {
           setRejected(true);
-          try { clear(original); setAttempt(null); }
+          try { await clear(original); captured.current = null; setAttempt(null); }
           catch (storageFailure) { setStorageError(`This request was rejected, but browser recovery could not be cleared: ${message(storageFailure)}`); }
         }
       }

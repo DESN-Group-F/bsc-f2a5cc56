@@ -73,10 +73,8 @@ test("a saved group operation takes priority over a movement at every entry poin
 test("a damaged removal draft still blocks a new workflow while a valid empty queue does not", () => {
   const key = removalDraftStorageKey(actor, "demo");
   const saved = storage([[key, "incomplete JSON"]]);
-  assert.deepEqual(nextPendingWorkflow(readWorkflowRecovery(saved, actor)), {
-    type: "removal",
-    pending: { dataset: "demo" },
-  });
+  assert.throws(() => readWorkflowRecovery(saved, actor), /retained.*removal draft.*unreadable/i);
+  assert.equal(saved.values.get(key), "incomplete JSON");
   saved.values.set(
     key,
     JSON.stringify({

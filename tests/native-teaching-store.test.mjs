@@ -12,7 +12,7 @@ const mf = new Miniflare({ modules: true, script: "export default {fetch(){retur
 const db = await mf.getD1Database("DB");
 after(() => mf.dispose());
 const journal = JSON.parse(await readFile("drizzle/meta/_journal.json", "utf8"));
-assert.equal(journal.entries.length, 23);
+assert.equal(journal.entries.length, 25);
 for (const entry of journal.entries) await db.batch((await readFile(`drizzle/${entry.tag}.sql`, "utf8")).split("--> statement-breakpoint").filter(sql => sql.trim()).map(sql => db.prepare(sql)));
 const at = "2026-10-13T04:00:00.000Z", actor = { id: crypto.randomUUID(), name: "Controlled teaching staff", role: "staff", authVersion: 1 };
 await db.prepare("INSERT INTO staff_accounts(id,username,display_name,role,password_hash,password_salt,hash_iterations,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)").bind(actor.id, "native-teaching-staff", actor.name, actor.role, "test-only-no-login", "test-only-no-login", 600000, at, at).run();

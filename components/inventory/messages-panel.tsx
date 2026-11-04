@@ -37,7 +37,7 @@ import {
   captureTaskRecordAction,
   readTaskRecordAction,
   saveTaskRecordAction,
-  clearTaskRecordAction,
+  acknowledgeTaskRecordAction,
   taskRecordActionFinallyRejected,
   verifyTaskRecordActionReceipt,
   type TaskRecordAction,
@@ -181,7 +181,7 @@ export function MessagesPanel({
         body: JSON.stringify(input),
       });
       verifyTaskRecordActionReceipt(body.result, input, data.user.id);
-      clearTaskRecordAction("messages", data.user.id, input);
+      await acknowledgeTaskRecordAction("messages", data.user.id, input);
       setPendingAction(null);
       setNotice(
         input.action === "remove"
@@ -193,7 +193,7 @@ export function MessagesPanel({
       setNotice((error as Error).message);
       if (taskRecordActionFinallyRejected(error)) {
         try {
-          clearTaskRecordAction("messages", data.user.id, input);
+          await acknowledgeTaskRecordAction("messages", data.user.id, input);
           setPendingAction(null);
           if (mounted.current) resource.refresh();
         } catch (storageFailure) {

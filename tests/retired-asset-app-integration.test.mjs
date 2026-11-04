@@ -23,7 +23,7 @@ async function compileLibrary(name) {
   return destination;
 }
 const libraries = {};
-for (const name of ["client/workflow-recovery", "browser-tools", "permissions", "inventory-query", "client/inventory-request", "retired-asset-actions", "intake-session", "lifecycle-session", "client-utils", "battery-selection-query", "client/row-selection", "removal-draft", "movement-session", "group-maintenance", "client/teaching-checkout-request", "client/teaching-checkout-draft", "client/teaching-checkout-download"]) Object.assign(libraries, await import(pathToFileURL(await compileLibrary(name))));
+for (const name of ["client/workflow-recovery", "client/workflow-storage", "browser-tools", "permissions", "inventory-query", "client/inventory-request", "retired-asset-actions", "intake-session", "lifecycle-session", "client-utils", "battery-selection-query", "client/row-selection", "removal-draft", "intake-draft", "movement-session", "group-maintenance", "client/teaching-checkout-request", "client/teaching-checkout-draft", "client/teaching-checkout-download"]) Object.assign(libraries, await import(pathToFileURL(await compileLibrary(name))));
 const ui = {}, sources = {};
 for (const [name, file] of [["InventoryApp", "app/inventory-app.tsx"], ["RemovalHistory", "components/inventory/removal-station.tsx"], ["RetiredAssetActionDialog", "components/inventory/retired-asset-action-dialog.tsx"], ["RecoveryNotices", "components/application/recovery-notices.tsx"], ["useWorkflowRecovery", "hooks/use-workflow-recovery.ts"]]) {
   const source = await readFile(new URL(`../${file}`, import.meta.url), "utf8");
@@ -55,6 +55,13 @@ const button = (view, label) => nodes(view.render()).find(item => ["Button", "Re
 const at = "2026-10-08T04:00:00.000Z", actor = "audit-native-account";
 function battery(id, status = "scrapped") { return { id, name: `Recorded asset ${id}`, chemistry: "LiPo", model: "Recorded model", version: 2, tagId: null, loanId: null, borrowerName: null, checkedOutAt: null, ownerName: "Staff owner", ownerId: "staff-owner", ownerAccountId: actor, capacityMah: null, voltage: null, manufacturedOn: null, firstUsedOn: null, registeredAt: at, lifecycleStatus: status, lifecycleAt: at, lifecycleReason: "Recorded retirement", lifecycleDestination: null, homeBuildingId: "J18", homeBuildingName: "Willis Annexe", homeRoomId: null }; }
 function attempt(dataset = "live") { return libraries.captureRetiredAssetAttempt(actor, dataset, { requestId: crypto.randomUUID(), kind: "recover", items: [{ batteryId: "BAT-SCRAPPED", version: 2, tagId: null }] }); }
+function removalDraft(dataset = "demo") {
+  return libraries.captureRemovalDraft({ actorAccountId: actor, dataset, source: "manual_selection", kind: "scrapped", reason: "Retained review before confirmation", destination: "", items: [{ batteryId: "BAT-ACTIVE", version: 2, tagId: null, name: "Recorded asset BAT-ACTIVE" }], selectedIds: ["BAT-ACTIVE"] });
+}
+function intakeDraft() {
+  const sessionId = crypto.randomUUID(), common = { name: "Retained intake review", model: "REVIEW-MODEL", chemistry: "", capacityMah: null, voltage: null, ownerId: "staff-owner", homeBuildingId: "J18", homeRoomId: null, manufacturedOn: null, firstUsedOn: null };
+  return libraries.captureIntakeDraft({ actorAccountId: actor, dataset: "demo", batch: { sessionId, common, firstUseMode: "at_registration" }, entries: [{ id: crypto.randomUUID(), sessionId, tagId: "DEMO-INTAKE-RETAINED", scannedAt: at, common, firstUseMode: "at_registration", selected: true, error: "" }], attempt: null, attemptEntryId: null, completed: [] });
+}
 function receipt(payload, dataset, overrides = {}) { return { requestId: payload.requestId, actorAccountId: actor, dataset, kind: payload.kind, at, replayed: false, items: payload.items.map(item => ({ batteryId: item.batteryId, version: item.version + 1, status: payload.kind === "recover" ? "active" : "deleted" })), ...overrides }; }
 async function environment(run, seed = []) {
   const descriptors = Object.fromEntries(["sessionStorage", "window", "document", "fetch"].map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)]));
@@ -231,13 +238,10 @@ test("the assets workspace and an opened intake remain escapable after load fail
     node(app, "ApplicationShell").props.onAssets();
     if (openIntake) button(app, "Start demo intake").props.onClick();
     const key = openIntake ? `battery-intake:${actor}:demo` : libraries.removalDraftStorageKey(actor, "demo");
-    const raw = "retained draft while inventory is unavailable";
+    const raw = JSON.stringify(openIntake ? intakeDraft() : removalDraft());
     env.entries.set(key, raw);
     env.hasData = false; env.error = "Inventory could not load";
-    if (openIntake) {
-      const notice = node(app, "RecoveryStorageNotice"); assert.ok(notice); assert.match(notice.props.message, /retained intake draft is unreadable/);
-      notice.props.onExport(); assert.deepEqual(JSON.parse(await env.downloads[0].blob.text()).records, [{ key, raw }]);
-    }
+    assert.equal(node(app, "RecoveryStorageNotice"), undefined);
     assert.equal(node(app, "ApplicationShell").props.locked, true);
     const exit = button(app, "Exit workspace");
     assert.ok(exit); assert.equal(exit.props.disabled, false);
@@ -249,6 +253,29 @@ test("the assets workspace and an opened intake remain escapable after load fail
     assert.equal(env.requests.length, 0);
     app.unmount();
   });
+});
+
+test("corrupt intake or removal drafts block new workflows without replacing the original bytes", async () => {
+  for (const key of [libraries.removalDraftStorageKey(actor, "demo"), `battery-intake:${actor}:demo`]) {
+    const raw = "damaged retained review draft";
+    await environment(async env => {
+      const app = mount("InventoryApp", env, { initialUser: env.user });
+      const notice = node(app, "RecoveryStorageNotice"); assert.ok(notice); assert.match(notice.props.message, /retained (demo removal|intake) draft is unreadable/);
+      notice.props.onExport(); assert.deepEqual(JSON.parse(await env.downloads[0].blob.text()).records, [{ key, raw }]);
+      node(app, "ApplicationShell").props.onScan("checkout");
+      node(app, "ApplicationShell").props.onAssets();
+      node(app, "RecoveryNotices").props.startIntake();
+      assert.equal(node(app, "ScanStation"), undefined);
+      assert.equal(node(app, "RemovalStation"), undefined);
+      assert.equal(node(app, "IntakeStation"), undefined);
+      assert.throws(() => env.tools.get("stage_battery_movement").execute({ kind: "checkout", batteryIds: ["BAT-ACTIVE"] }), /unreadable|unfinished workflow|recovery|current workflow/);
+      assert.equal(env.entries.get(key), raw);
+      assert.deepEqual([...env.entries], [[key, raw]]);
+      assert.equal(env.dataset, "demo");
+      assert.equal(env.requests.length, 0);
+      app.unmount();
+    }, [[key, raw]]);
+  }
 });
 
 test("damaged scan evidence remains exportable through the application banner and blocks fresh browser movement", async () => {
@@ -298,7 +325,7 @@ test("valid exact teaching recovery survives a corrupt standalone draft while ot
 });
 
 test("actual retired dialog can resolve its request alongside another dataset's saved draft without forcing old removal", async () => {
-  const saved = attempt("live"), key = libraries.retiredAssetStorageKey(actor, "live"), other = libraries.removalDraftStorageKey(actor, "demo"), rawOther = "preserved older removal draft";
+  const saved = attempt("live"), key = libraries.retiredAssetStorageKey(actor, "live"), other = libraries.removalDraftStorageKey(actor, "demo"), rawOther = JSON.stringify(removalDraft());
   await environment(async env => {
     const app = mount("InventoryApp", env, { initialUser: env.user }); node(app, "RecoveryNotices").props.resumeRetiredAction({ dataset: "live" });
     const history = mount("RemovalHistory", env, node(app, "RemovalHistory").props); const dialog = mount("RetiredAssetActionDialog", env, node(history, "RetiredAssetActionDialog").props); dialog.render();
@@ -357,7 +384,7 @@ test("direct scan, movement, removal and group recovery notices honor retired pr
   for (const [olderKey, olderRaw, label, category] of [
     [`battery-scan:${actor}:demo:checkout`, scanRaw, "Resume checkout · Demonstration", "scans"],
     [libraries.movementStorageKey(actor, "demo", "checkout"), movementRaw, "Resume saved checkout · Demonstration", "movements"],
-    [libraries.removalDraftStorageKey(actor, "demo"), "preserved older removal evidence", "Resume removal · Demonstration", "removals"],
+    [libraries.removalDraftStorageKey(actor, "demo"), JSON.stringify(removalDraft()), "Resume removal · Demonstration", "removals"],
     [libraries.groupMaintenanceKey(actor, "demo"), "preserved older group request", "Resume group update · demo", "groups"],
   ]) {
     await environment(async env => {

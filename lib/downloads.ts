@@ -12,7 +12,7 @@ export function summaryCsv(document: ExportDocument) {
     const report = createHumanReport(document), sheet = report.sheets[0];
     const records = sheet?.rows ?? [];
     const facts = Object.fromEntries(report.facts.map(fact => [fact.label, fact.value]));
-    const rows = records.map(row => ({ ...row, "Report inventory": facts.Inventory ?? document.metadata.dataset, "Report created (Sydney)": facts["Report created (Sydney)"] ?? "Not recorded", "Report scope": facts["Download scope"] ?? "Not recorded", "Report filters": facts.Filters ?? "No additional filters", "Records in this file": records.length }));
+    const rows = records.map(row => ({ ...row, "Report inventory": facts.Inventory ?? document.metadata.dataset, "Report created (Sydney)": facts["Report created (Sydney)"] ?? "Not recorded", "Report scope": facts["Download scope"] ?? "Not recorded", "Report personal scope": facts["Personal scope"] ?? "Shared inventory records", "Report filters": facts.Filters ?? "No additional filters", "Report order": facts["Sort order"] ?? "See source ordering", "Records in this file": records.length }));
     const fields = [...new Set(rows.flatMap(row => Object.keys(row)))];
     if (!fields.length) fields.push(...(sheet?.columns ?? ["No matching records"]));
     return "\uFEFF" + [fields, ...rows.map(row => fields.map(field => {

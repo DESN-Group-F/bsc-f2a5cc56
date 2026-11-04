@@ -11,7 +11,7 @@ const attemptSchema = z.discriminatedUnion("kind", [
 }));
 export type LocationAttempt = z.infer<typeof attemptSchema>;
 export type LocationReceipt = LocationBeaconReceipt | LocationCaptureReceipt;
-type RecoveryStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
+type RecoveryStorage = Pick<Storage, "getItem" | "setItem" | "removeItem"> & { flush?: () => Promise<void>; transact?: (update: (entries: Record<string,string>) => void) => Promise<void> };
 
 export function locationRequestStorageKey(accountId: string, dataset: Dataset) {
   return `battery-location-request:${accountId}:${dataset}`;
@@ -51,6 +51,18 @@ export function clearLocationAttempt(attempt: LocationAttempt, storage: Recovery
   if (previous && !sameRequest(previous, attempt)) throw new Error("The saved location request changed. It has not been removed.");
   storage.removeItem(key);
   if (storage.getItem(key) !== null) throw new Error("The confirmed result could not be acknowledged in recovery storage. Retry the same request.");
+}
+
+/** Wait for durable acknowledgement before releasing the original captured request. */
+export async function acknowledgeLocationAttempt(attempt: LocationAttempt, storage: RecoveryStorage = localStorage) {
+  const key = locationRequestStorageKey(attempt.actorAccountId, attempt.dataset);
+  if (storage.transact) {
+    await storage.transact(entries => {
+      const original = recoverLocationAttempt(entries[key] ?? null, attempt.actorAccountId, attempt.dataset);
+      if (!original || !sameRequest(original, attempt)) throw new Error("The original location request changed. It has not been acknowledged.");
+      delete entries[key];
+    });
+  } else { clearLocationAttempt(attempt, storage); await storage.flush?.(); }
 }
 
 export function discoverLocationAttempts(actorAccountId: string, storage: Pick<Storage, "getItem"> = localStorage): LocationAttempt[] {

@@ -52,3 +52,7 @@ next-env.d.ts
 /data/battery-catalog/*.sqlite3-*
 /data/battery-catalog/outputs/
 /data/battery-catalog/releases/
+
+# Python bytecode caches.
+__pycache__/
+*.pyc

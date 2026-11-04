@@ -1,7 +1,7 @@
 import { after, test } from "node:test";
 import assert from "node:assert/strict";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
-import { join } from "node:path";
+import { dirname, join, posix } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import ts from "typescript";
 
@@ -11,14 +11,21 @@ const scratchRoot = new URL("../work/qa/", import.meta.url);
 await mkdir(scratchRoot, { recursive: true });
 const scratch = await mkdtemp(join(fileURLToPath(scratchRoot), "inspection-ui-"));
 after(() => rm(scratch, { recursive: true, force: true }));
-const names = ["teaching-nfc", "battery-inspections", "domain", "battery-age", "teaching-context", "client-utils", "location-catalog", "battery-lifecycle", "battery-movement-summary", "permissions"];
-for (const name of names) {
+const compiledLibraries = new Map();
+async function compileLibrary(name) {
+    if (compiledLibraries.has(name)) return compiledLibraries.get(name);
+    const destination = join(scratch, `${name}.mjs`); compiledLibraries.set(name, destination);
     const source = await readFile(new URL(`../lib/${name}.ts`, import.meta.url), "utf8");
-    const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "(\.\/[^\"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`);
-    await writeFile(join(scratch, `${name}.mjs`), output);
+    const output = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText;
+    for (const match of output.matchAll(/from "(\.[^"]+)"/g)) await compileLibrary(posix.normalize(posix.join(posix.dirname(name), match[1])));
+    await mkdir(dirname(destination), { recursive: true });
+    await writeFile(destination, output.replace(/from "(\.[^"]+)"/g, (_, specifier) => `from "${specifier}.mjs"`));
+    return destination;
 }
+const names = ["battery-inspections", "domain", "battery-age", "teaching-context", "teaching-nfc", "client-utils", "location-catalog", "battery-lifecycle", "battery-movement-summary", "permissions", "client/workflow-storage"];
+for (const name of names) await compileLibrary(name);
 const modules = Object.assign({}, ...await Promise.all(names.map(name => import(pathToFileURL(join(scratch, `${name}.mjs`))))));
-const helper = ts.transpileModule(await readFile(new URL("../components/inventory/inspection-request.ts", import.meta.url), "utf8"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "@\/lib\/battery-inspections"/, 'from "./battery-inspections.mjs"');
+const helper = ts.transpileModule(await readFile(new URL("../components/inventory/inspection-request.ts", import.meta.url), "utf8"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext } }).outputText.replace(/from "@\/lib\/([^"]+)"/g, (_, name) => `from "./${name}.mjs"`);
 await writeFile(join(scratch, "inspection-request.mjs"), helper);
 const recovery = await import(pathToFileURL(join(scratch, "inspection-request.mjs")));
 const componentSource = ts.transpileModule(await readFile(new URL("../components/inventory/battery-history.tsx", import.meta.url), "utf8"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");

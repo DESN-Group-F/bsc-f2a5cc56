@@ -26,6 +26,7 @@ export const inventoryFilterSchema = z.object({
     lifecycle: z.enum(["active", "all", "scrapped", "permanently_removed"]).default("active"),
     status: z.enum(["all", "in", "out"]).default("all"), building: z.string().max(64).default("all"), room: z.string().max(64).default("all"), owner: z.string().max(64).default("all"), search: z.string().max(200).default(""),
     observedRoom: z.string().max(64).default("all"),
+    inspection: z.enum(["all", "concern", "none"]).default("all"),
     mappingRoom: z.string().min(1).max(64).nullable().default(null),
     chemistry: z.string().max(40).nullable().default(null), chemistryUnknown: z.boolean().default(false),
     holder: z.string().max(128).default("all"), model: z.string().max(120).nullable().default(null), modelUnknown: z.boolean().default(false),
@@ -127,6 +128,7 @@ export function filterBatteries(batteries: BatteryRecord[], input: InventoryFilt
         && (filter.room === "all" || (filter.room === "__unspecified" ? !battery.homeRoomId : battery.homeRoomId === filter.room))
         && (filter.observedRoom === "all" || (filter.observedRoom === "__not_observed" ? !battery.observedAt : filter.observedRoom === "__unavailable" ? !!battery.observedAt && battery.observationRoomSnapshot !== "recorded" : !!battery.observedAt && battery.observedRoomId === filter.observedRoom))
         && (filter.owner === "all" || battery.ownerId === filter.owner)
+        && (filter.inspection === "all" || (filter.inspection === "concern" ? battery.inspectionPreview?.latest?.outcome === "concern_observed" : !!battery.inspectionPreview && battery.inspectionPreview.validRecords === 0))
         && (filter.chemistryUnknown ? !battery.chemistry.trim() : filter.chemistry === null || battery.chemistry === filter.chemistry)
         && (filter.holder === "all" || !!battery.loanId && (filter.holder === "__legacy" ? battery.borrowerKind === "legacy" : battery.borrowerKind === "staff" && battery.borrowerAccountId === filter.holder))
         && (filter.modelUnknown ? !battery.model.trim() : filter.model === null || battery.model === filter.model)

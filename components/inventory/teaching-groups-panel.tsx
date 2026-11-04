@@ -16,7 +16,7 @@ import { hasRowTextSelection } from "@/lib/client/row-selection";
 import { buildTeachingGroupReplacement, captureTeachingGroupAttempt, recoverTeachingGroupAttempt, teachingGroupStorageKey, teachingGroupFailureStatus, verifyTeachingGroupReceipt, type TeachingGroup, type TeachingGroupAttempt } from "@/lib/teaching-groups";
 
 type Form = { id: string; name: string; notes: string; batteryIds: string[]; expectedVersion?: number };
-export function TeachingGroupsPanel({ data, initialIds = [], initialGroup, initialReplacement, addToExisting = false, onClose, onChanged, onSaved, onFilter, onSelect }: { data: InventorySnapshot; initialIds?: string[]; initialGroup?: TeachingGroup; initialReplacement?: { originalBatteryId: string; replacementBatteryId: string }; addToExisting?: boolean; onClose: () => void; onChanged?: () => Promise<void>; onSaved?: (group: TeachingGroup) => void; onFilter: (group: TeachingGroup) => void; onSelect: (group: TeachingGroup) => void }) {
+export function TeachingGroupsPanel({ data, initialIds = [], initialGroup, initialReplacement, initialCreate = false, addToExisting = false, onClose, onChanged, onSaved, onFilter, onSelect }: { data: InventorySnapshot; initialIds?: string[]; initialGroup?: TeachingGroup; initialReplacement?: { originalBatteryId: string; replacementBatteryId: string }; initialCreate?: boolean; addToExisting?: boolean; onClose: () => void; onChanged?: () => Promise<void>; onSaved?: (group: TeachingGroup) => void; onFilter: (group: TeachingGroup) => void; onSelect: (group: TeachingGroup) => void }) {
     const [context] = useState(() => ({ accountId: data.user.id, dataset: data.dataset }));
     const storageKey = teachingGroupStorageKey(context.accountId, context.dataset);
     const [recovery] = useState(() => {
@@ -28,7 +28,7 @@ export function TeachingGroupsPanel({ data, initialIds = [], initialGroup, initi
     const [attempt, setAttempt] = useState<TeachingGroupAttempt | null>(recovery.attempt), pending = useRef(attempt), running = useRef(false), live = useRef(true);
     const [busy, setBusy] = useState(false), [storageError, setStorageError] = useState(""), [error, setError] = useState(recovery.blocked ? "This tab could not recover its group request. Restore storage access and reopen with the same account and inventory before saving." : "");
     const [replacement] = useState(initialReplacement);
-    const [mode, setMode] = useState<"list" | "edit" | "remove" | "replacement">(attempt ? attempt.payload.action === "remove" ? "remove" : "edit" : initialReplacement ? "replacement" : initialGroup || initialIds.length && !addToExisting ? "edit" : "list");
+    const [mode, setMode] = useState<"list" | "edit" | "remove" | "replacement">(attempt ? attempt.payload.action === "remove" ? "remove" : "edit" : initialReplacement ? "replacement" : initialGroup || initialCreate || initialIds.length && !addToExisting ? "edit" : "list");
     const [form, setForm] = useState<Form>(() => {
         if (attempt) return attempt.payload.action === "remove" ? { id: attempt.payload.id, name: "Saved group", notes: "", batteryIds: [], expectedVersion: attempt.payload.expectedVersion } : { ...attempt.payload, expectedVersion: attempt.payload.action === "update" ? attempt.payload.expectedVersion : undefined };
         if (initialGroup && initialReplacement) {

@@ -19,8 +19,8 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
     try {
-        const body = z.object({ dataset: datasetSchema.default("demo"), payload: z.unknown(), update: z.boolean().optional() }).strict().parse(await requestJson(request));
-        const store = await context(request, body.dataset), result = body.update ? await store.update(body.payload) : await store.create(body.payload);
+        const body = z.object({ dataset: datasetSchema.default("demo"), payload: z.unknown(), update: z.boolean().optional(), action: z.enum(["create_reviewed", "create_outcome"]).optional() }).strict().refine(value => !value.action || value.update === undefined, "Choose either a reviewed create action or a legacy update.").parse(await requestJson(request));
+        const store = await context(request, body.dataset), result = body.action === "create_reviewed" ? await store.createReviewed(body.payload) : body.action === "create_outcome" ? await store.createOutcome(body.payload) : body.update ? await store.update(body.payload) : await store.create(body.payload);
         return apiJson({ ok: true, result });
     } catch (error) { return apiError(error); }
 }

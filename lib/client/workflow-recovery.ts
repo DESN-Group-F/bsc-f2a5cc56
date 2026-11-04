@@ -37,9 +37,9 @@ export function readWorkflowRecovery(
 ): RecoveryState {
   const result = emptyRecoveryState();
   for (const dataset of ["demo", "live"] as const) {
-    if (storage.getItem(retiredAssetStorageKey(accountId, dataset)))
+    if (storage.getItem(retiredAssetStorageKey(accountId, dataset)) !== null)
       result.retiredActions.push({ dataset });
-    if (storage.getItem(groupMaintenanceKey(accountId, dataset)))
+    if (storage.getItem(groupMaintenanceKey(accountId, dataset)) !== null)
       result.groups.push({ dataset });
     const removalAttempt = storage.getItem(
       lifecycleStorageKey(accountId, dataset),
@@ -48,7 +48,8 @@ export function readWorkflowRecovery(
       removalDraftStorageKey(accountId, dataset),
     );
     const removal = recoverRemovalDraft(removalRaw, accountId, dataset);
-    if (removalAttempt || (removalRaw && (!removal || removal.items.length)))
+    if (removalRaw !== null && !removal) throw new Error(`The retained ${dataset} removal draft is unreadable or has a different account context. It has not been replaced.`);
+    if (removalAttempt !== null || (removalRaw !== null && (!removal || removal.items.length)))
       result.removals.push({ dataset });
     for (const kind of ["checkout", "return"] as const) {
       const movementRaw = storage.getItem(movementStorageKey(accountId, dataset, kind));

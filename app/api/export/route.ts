@@ -19,6 +19,11 @@ async function attachmentResponse(document: ExportDocument, input: unknown, data
 export async function GET(request: Request) {
     try {
         const actor = await requestUser(request), url = new URL(request.url);
+        if (url.searchParams.get("authority") === "1") {
+            const dataset = datasetSchema.parse(url.searchParams.get("dataset")), db = getD1Database();
+            const store = new InventoryStore(db, await sharedInventoryScope(db, dataset), dataset, { id: actor.id, name: actor.displayName, role: actor.role, authVersion: actor.authVersion });
+            return apiJson({ exportContractVersion: 1, dataset, actorAccountId: actor.id, purgedBatteryIds: await store.exportPurgedBatteryIds() });
+        }
         const encoded = z.string().min(1).max(15000).parse(url.searchParams.get("request"));
         let input: unknown;
         try { input = JSON.parse(encoded); } catch { return apiJson({ error: "Invalid export request." }, 400); }
@@ -30,7 +35,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
     try {
         const actor = await requestUser(request), formatValue = new URL(request.url).searchParams.get("format"), format = formatValue === null ? null : formatSchema.parse(formatValue);
-        const input = await requestJson(request, 15000), dataset = datasetSchema.parse((input as { dataset?: unknown })?.dataset), db = getD1Database();
+        const input = await requestJson(request, 262144), dataset = datasetSchema.parse((input as { dataset?: unknown })?.dataset), db = getD1Database();
         const store = new InventoryStore(db, await sharedInventoryScope(db, dataset), dataset, { id: actor.id, name: actor.displayName, role: actor.role, authVersion: actor.authVersion });
         const document = await createExport(store, input);
         return format === null ? apiJson(document) : await attachmentResponse(document, input, dataset, format);

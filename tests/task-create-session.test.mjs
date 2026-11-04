@@ -6,6 +6,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import ts from "typescript";
+import { createDurableStorage } from "../mobile/src/platform/durable-storage.mjs";
 import { captureTaskCreate, recoverTaskCreate, taskCreateFailureStatus, taskCreateStorageKey, verifyTaskCreateReceipt } from "../work/qa/task-create-session.mjs";
 import { createCustomTaskPlan, taskCategories, taskTemplates, taskPlanSchema, taskSchedulePreview, taskTargetsByCategory, taskPlanMatchesQuery } from "../work/qa/task-schedule.mjs";
 
@@ -84,7 +85,7 @@ function nodes(node, result = []) {
 }
 function label(node) { return Array.isArray(node) ? node.map(label).join("") : node && typeof node === "object" ? label(node.props?.children) : node == null ? "" : String(node); }
 async function loadEditor(harness) {
-    const files = ["lib/client/task-api.ts", "components/inventory/tasks/task-presentation.ts", "components/inventory/tasks/task-plan-editor.tsx"];
+    const files = ["lib/client/workflow-storage.ts", "lib/client/task-api.ts", "components/inventory/tasks/task-presentation.ts", "components/inventory/tasks/task-plan-editor.tsx"];
     const source = (await Promise.all(files.map(file => readFile(file, "utf8")))).join("\n");
     const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export \{.*\}(?: from "[^"]+")?;\r?\n/gm, "").replace(/\bexport (?=(?:async )?function|const|let|var)/g, "");
     const bindings = { hasRowTextSelection, ...batterySelection, defaultInventoryFilter, styles: new Proxy({}, { get: (_, key) => String(key) }), getRolePermissions, ...harness.hooks, ...harness.ui, captureTaskCreate, recoverTaskCreate, taskCreateFailureStatus, taskCreateStorageKey, verifyTaskCreateReceipt, taskCategories, taskTemplates, taskPlanSchema, taskSchedulePreview, taskTargetsByCategory, taskPlanMatchesQuery,
@@ -133,6 +134,16 @@ test("actual task creation handlers lock a lost-response payload, recover it aft
     await new Promise(resolve => setTimeout(resolve, 0));
     assert.deepEqual(inputs, [captured.input, captured.input]);
     assert.equal(storage.size, 0); assert.equal(saved, 1);
+});
+
+test("actual task creation preserves original input and blocked close through failed native acknowledgement", async context => {
+    let raw=null,deny=true,saved=0,closed=0;const key=taskCreateStorageKey(accountId,"demo"),storage=createDurableStorage({load:async()=>raw,save:async next=>{if(deny&&!Object.hasOwn(JSON.parse(next).entries,key))throw new Error("Controlled task creation acknowledgement failure");raw=next;}});await storage.initialize();
+    const originalStorage=Object.getOwnPropertyDescriptor(globalThis,"sessionStorage");Object.defineProperty(globalThis,"sessionStorage",{configurable:true,value:storage});context.after(()=>{if(originalStorage)Object.defineProperty(globalThis,"sessionStorage",originalStorage);else delete globalThis.sessionStorage;});
+    const inputs=[];context.mock.method(globalThis,"fetch",async(_url,options)=>{const input=JSON.parse(options.body);inputs.push(input);return Response.json({ok:true,result:receipt({accountId,input})});});
+    const h=dialogHarness(),{TaskPlanEditor}=await loadEditor(h),props={original:makePlan(),data:{dataset:"demo",user:{id:accountId,role:"admin"},batteries:[],rooms:[],staffDirectory:[],events:[]},cycles:[],onClose(){closed++;},async onSaved(){saved++;}},render=()=>{h.reset();return TaskPlanEditor(props);};
+    await nodes(render()).find(node=>node.type==="form").props.onSubmit({preventDefault(){}});let tree=render();assert.equal(saved,0);assert.equal(nodes(tree).find(node=>node.type==="Button"&&label(node)==="Cancel").props.disabled,true);nodes(tree).find(node=>node.type==="Dialog").props.onOpenChange(false);assert.equal(closed,0);assert.equal(nodes(tree).find(node=>node.props.id==="task-title").props.disabled,true);
+    const retained=JSON.parse(storage.exportRaw()).current.entries[key];assert.deepEqual(JSON.parse(retained).input,inputs[0]);assert.deepEqual(JSON.parse(JSON.parse(raw).entries[key]).input,inputs[0]);
+    deny=false;await storage.retryPersistence();nodes(render()).find(node=>node.type==="Button"&&label(node)==="Retry original task creation").props.onClick();await new Promise(resolve=>setTimeout(resolve,0));assert.equal(saved,1);assert.deepEqual(inputs[1],inputs[0]);assert.equal(storage.getItem(key),null);
 });
 
 test("visible plan status choices explain incomplete activation and allow a deliberate draft save", async context => {

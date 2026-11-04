@@ -21,7 +21,7 @@ import {
 import {
   captureTaskRecordAction,
   saveTaskRecordAction,
-  clearTaskRecordAction,
+  acknowledgeTaskRecordAction,
   taskRecordActionFinallyRejected,
   verifyTaskRecordActionReceipt,
   type TaskRecordAction,
@@ -72,6 +72,7 @@ export function TaskPlanRemovalDialog({
     }
     setBusy(true);
     setError("");
+    let confirmed = false;
     try {
       const body = await taskRequest<{ result: unknown }>("/api/task-plans", {
         method: "POST",
@@ -79,18 +80,27 @@ export function TaskPlanRemovalDialog({
         body: JSON.stringify(input),
       });
       verifyTaskRecordActionReceipt(body.result, input, data.user.id);
-      clearTaskRecordAction("plans", data.user.id, input);
+      await acknowledgeTaskRecordAction("plans", data.user.id, input);
+      confirmed = true;
+      attempt.current = null;
       setUncertain(false);
       if (mounted.current) await onSaved();
     } catch (error) {
+      if (confirmed) {
+        setError("The plan change was confirmed. Refresh the task list when shared status is available.");
+        return;
+      }
       const status = (error as RequestError).status;
       setError((error as Error).message);
       const rejected = taskRecordActionFinallyRejected(error);
-      setUncertain(!rejected);
-      setConflict(rejected && status === 409);
+      setUncertain(true);
+      setConflict(false);
       if (rejected) {
         try {
-          clearTaskRecordAction("plans", data.user.id, input);
+          await acknowledgeTaskRecordAction("plans", data.user.id, input);
+          attempt.current = null;
+          setUncertain(false);
+          setConflict(status === 409);
         } catch (storageFailure) {
           setUncertain(true);
           setConflict(false);

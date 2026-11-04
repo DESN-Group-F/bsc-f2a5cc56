@@ -1,4 +1,5 @@
 "use client";
+import { acknowledgeWorkflowStorage } from "@/lib/client/workflow-storage";
 
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -27,9 +28,10 @@ export function recoverModelCreate(raw: string | null, actorAccountId: string, d
     try {
         const attempt = JSON.parse(raw) as ModelAttempt;
         if (attempt.dataset !== dataset || attempt.actorAccountId !== actorAccountId) return null;
-        if (attempt.update === true) return { dataset, actorAccountId, update: true, payload: updateBatteryModelSchema.parse(attempt.payload) };
+        if (attempt.update === true) { const parsed = { dataset, actorAccountId, update: true as const, payload: updateBatteryModelSchema.parse(attempt.payload) }; return JSON.stringify(parsed) === JSON.stringify(attempt) ? parsed : null; }
         if (attempt.update !== undefined) return null;
-        return { dataset, actorAccountId, payload: newBatteryModelSchema.parse(attempt.payload) };
+        const parsed = { dataset, actorAccountId, payload: newBatteryModelSchema.parse(attempt.payload) };
+        return JSON.stringify(parsed) === JSON.stringify(attempt) ? parsed : null;
     } catch { return null; }
 }
 export function verifyModelCreateReceipt(body: unknown, attempt: ModelAttempt): BatteryModelChoice {
@@ -77,8 +79,8 @@ export function BatteryModelPicker({ dataset, actorAccountId, canEditModels, val
         try {
             const raw = sessionStorage.getItem(modelCreateStorageKey(actorAccountId, dataset));
             const attempt = recoverModelCreate(raw, actorAccountId, dataset);
-            return { attempt, error: raw && !attempt ? "A saved model request could not be recovered. Preserve this tab and ask the administrator to review its saved request before creating another model." : "" };
-        } catch { return { attempt: null, error: "" }; }
+            return { attempt, error: raw !== null && !attempt ? "A saved model request could not be recovered. Preserve this tab and ask the administrator to review its saved request before creating another model." : "" };
+        } catch { return { attempt: null, error: "Model request recovery is unavailable. Restore device storage before creating another model." }; }
     });
     const [adding, setAdding] = useState(!!recovery.attempt);
     const [editing, setEditing] = useState<{ id: string; expectedVersion: number } | null>(() => recovery.attempt?.update ? { id: recovery.attempt.payload.id, expectedVersion: (recovery.attempt.payload as UpdateBatteryModel).expectedVersion } : null);
@@ -159,22 +161,25 @@ export function BatteryModelPicker({ dataset, actorAccountId, canEditModels, val
                 const fields = { id: editing?.id ?? crypto.randomUUID(), brand: draft.brand || "", model: draft.model || "", variant: draft.variant || "", name: draft.name || "", chemistry: draft.chemistry || "", capacityMah: numberOrNull(draft.capacityMah || "", "Capacity"), voltage: numberOrNull(draft.voltage || "", "Nominal voltage"), notes: draft.notes || "" };
                 const payload = editing ? updateBatteryModelSchema.parse({ ...fields, expectedVersion: editing.expectedVersion, requestId: crypto.randomUUID() }) : newBatteryModelSchema.parse(fields);
                 attempt = { dataset, actorAccountId, payload, ...(editing ? { update: true } : {}) };
-                try { sessionStorage.setItem(modelCreateStorageKey(actorAccountId, dataset), JSON.stringify(attempt)); }
+                try { const key=modelCreateStorageKey(actorAccountId,dataset),raw=sessionStorage.getItem(key);if(raw!==null&&raw!==JSON.stringify(attempt))throw new Error("A different original model request is retained.");sessionStorage.setItem(key, JSON.stringify(attempt)); }
                 catch { throw new Error("This tab could not preserve the model request. No model was submitted. Enable browser storage or continue with manual battery details."); }
                 setPending(attempt);
             }
+            if(sessionStorage.getItem(modelCreateStorageKey(actorAccountId,dataset))!==JSON.stringify(attempt))throw new Error("The original model request changed. No replacement was submitted.");
             const response = await fetch("/api/battery-models", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ dataset: attempt.dataset, payload: attempt.payload, ...(attempt.update ? { update: true } : {}) }) });
             const body = await response.json() as ModelReceipt & { error?: string; code?: string };
             if (!response.ok) {
                 if ([400, 404, 409, 422].includes(response.status)) {
-                    sessionStorage.removeItem(modelCreateStorageKey(actorAccountId, dataset));
+                    const key = modelCreateStorageKey(actorAccountId, dataset);
+                    await acknowledgeWorkflowStorage({ remove: [key], expected: { [key]: JSON.stringify(attempt) } });
                     if (live.current) setPending(null);
                 }
                 if (live.current && attempt.update && body.code === "model_conflict") setEditConflict(true);
                 throw new Error([401, 403].includes(response.status) ? `${body.error || "Account access needs review."} Sign in with the original account, then retry the preserved model request.` : body.error || "The reusable model could not be saved.");
             }
             const model = verifyModelCreateReceipt(body, attempt);
-            sessionStorage.removeItem(modelCreateStorageKey(actorAccountId, dataset));
+            const key = modelCreateStorageKey(actorAccountId, dataset);
+            await acknowledgeWorkflowStorage({ remove: [key], expected: { [key]: JSON.stringify(attempt) } });
             if (!live.current) return;
             setSavedModels(models => [...models.filter(saved => choiceKey(saved) !== choiceKey(model)), model]);
             setPending(null); setAdding(false); setEditing(null); selectModel(choiceKey(model), model.contentHash); setRevision(value => value + 1);
