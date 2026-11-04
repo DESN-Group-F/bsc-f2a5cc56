@@ -546,6 +546,7 @@ struct ListeningRings: View {
 
 struct DatasetMenu: View {
     @Environment(AppModel.self) private var app
+    @Environment(\.dynamicTypeSize) private var typeSize
     /// Toolbars already supply glass; use false there.
     var glass = true
 
@@ -561,7 +562,9 @@ struct DatasetMenu: View {
         } label: {
             HStack(spacing: 6) {
                 Circle().fill(app.dataset == .demo ? Color.purple : Tone.success).frame(width: 8, height: 8)
-                Text(app.dataset.title).font(.subheadline.weight(.semibold))
+                Text(typeSize < .xxLarge ? app.dataset.title : app.dataset.shortTitle)
+                    .font(.subheadline.weight(.semibold))
+                    .lineLimit(1)
                 Image(systemName: "chevron.down").font(.caption.weight(.bold))
             }
             .foregroundStyle(.primary)
@@ -594,6 +597,7 @@ struct LookupMenu: View {
             }
         }
         .disabled(app.scan.readerActive || app.inventory.snapshot == nil)
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .accessibilityLabel("Look up a battery")
     }
 

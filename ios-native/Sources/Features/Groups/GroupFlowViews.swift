@@ -1183,13 +1183,17 @@ struct RunReturnView: View {
 /// The Groups button on Scan, with how many group checkouts are out.
 struct GroupsButton: View {
     @Environment(AppModel.self) private var app
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         let open = app.runs.open.count
         Button { app.groupFlow = .hub } label: {
             HStack(spacing: 6) {
                 Image(systemName: "person.3.fill").font(.footnote)
-                Text("Groups").font(.subheadline.weight(.semibold))
+                // At the largest sizes the header keeps one line: the icon and count say enough.
+                if typeSize < .xxLarge {
+                    Text("Groups").font(.subheadline.weight(.semibold)).lineLimit(1)
+                }
                 if open > 0 {
                     Text("\(open)")
                         .font(.caption.weight(.bold))
