@@ -28,7 +28,8 @@ export function recoverModelCreate(raw: string | null, actorAccountId: string, d
     try {
         const attempt = JSON.parse(raw) as ModelAttempt;
         if (attempt.dataset !== dataset || attempt.actorAccountId !== actorAccountId) return null;
-        if (attempt.update === true) { const parsed = { dataset, actorAccountId, update: true as const, payload: updateBatteryModelSchema.parse(attempt.payload) }; return JSON.stringify(parsed) === JSON.stringify(attempt) ? parsed : null; }
+        // Same key order as saveModel() stores it, so the exact saved request compares equal.
+        if (attempt.update === true) { const parsed = { dataset, actorAccountId, payload: updateBatteryModelSchema.parse(attempt.payload), update: true as const }; return JSON.stringify(parsed) === JSON.stringify(attempt) ? parsed : null; }
         if (attempt.update !== undefined) return null;
         const parsed = { dataset, actorAccountId, payload: newBatteryModelSchema.parse(attempt.payload) };
         return JSON.stringify(parsed) === JSON.stringify(attempt) ? parsed : null;

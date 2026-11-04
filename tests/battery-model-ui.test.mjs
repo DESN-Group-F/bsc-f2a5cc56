@@ -251,6 +251,19 @@ test("saved requests recover only for their native account and inventory, and de
     });
 });
 
+test("a saved model-template update recovers exactly as it was stored", async () => {
+    await environment(() => response({ dataset: "demo", models: [], issues: [] }), async () => {
+        const view = await picker();
+        const payload = { id: "33333333-3333-4333-8333-333333333333", brand: "Test brand", model: "Model A", variant: "2S", name: "Reusable battery name", chemistry: "LiPo", capacityMah: 2200, voltage: 7.4, notes: "", expectedVersion: 3, requestId: "44444444-4444-4444-8444-444444444444" };
+        // The same construction and key order saveModel() uses for an administrator edit.
+        const raw = JSON.stringify({ dataset: "demo", actorAccountId: "native-review-account", payload, ...({ update: true }) });
+        const recovered = view.recoverModelCreate(raw, "native-review-account", "demo");
+        assert.ok(recovered); assert.equal(JSON.stringify(recovered), raw); assert.equal(recovered.update, true);
+        assert.equal(view.recoverModelCreate(raw, "another-account", "demo"), null);
+        assert.equal(view.recoverModelCreate(JSON.stringify({ dataset: "demo", actorAccountId: "native-review-account", payload: { ...payload, expectedVersion: 0 }, update: true }), "native-review-account", "demo"), null);
+    });
+});
+
 test("registration rejects dataset changes under an open draft without replacing the entered asset", async () => {
     const state = hooks(), writes = [], props = { draft: { kind: "battery", initialTagId: "ORIGINAL-TAG" }, data: { dataset: "demo", user: { id: "native-review-account", role: "staff" }, people: [], staffDirectory: [], buildings: [], rooms: [] }, onClose() {}, async write(...args) { writes.push(args); } };
     const { RecordEditor } = await component("components/inventory/record-editor.tsx", ["RecordEditor"], state);

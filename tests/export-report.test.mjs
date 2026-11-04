@@ -108,6 +108,11 @@ test("report guide explains real selection, human filter labels and purpose with
     assert.equal(fact("Personal scope"), "Batteries for which I am responsible");
     assert.match(fact("Using this workbook"), /not extra tasks/);
     assert.match(fact("Dates and times"), /Australia\/Sydney/);
+    for (const [inspection, wording] of [["concern", /Inspection: latest valid record states a concern/], ["none", /Inspection: no valid record/]]) {
+        const filtered = createHumanReport({ ...source, metadata: { ...source.metadata, filters: { ...source.metadata.filters, inspection } } });
+        assert.match(filtered.facts.find(item => item.label === "Filters").value, wording);
+    }
+    assert.doesNotMatch(fact("Filters"), /Inspection:/);
     const selected = createHumanReport({ ...source, metadata: { ...source.metadata, range: "selected" } });
     assert.match(selected.facts.find(item => item.label === "Filters").value, /ordinary filters do not remove selected records/);
 });

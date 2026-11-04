@@ -193,6 +193,8 @@ function filterSummary(metadata: Row): string {
     if (filter.mappingRoom) parts.push(`Last-observation room scope: ${text(object(metadata.fixed_mapping_scope).directoryLabel || filter.mappingRoom)} (not confirmed present location)`);
     if (filter.newArrivalsOnly) parts.push("New arrivals: first registered within the last 48 hours, active assets only");
     if (filter.chemistryUnknown) parts.push("Chemistry: not recorded");
+    if (filter.inspection === "concern") parts.push("Inspection: latest valid record states a concern");
+    if (filter.inspection === "none") parts.push("Inspection: no valid record");
     for (const [prefix, label, low, high, unit] of [["capacity", "Capacity", "capacityMinMah", "capacityMaxMah", "mAh"], ["voltage", "Voltage", "voltageMin", "voltageMax", "V"], ["age", "Age since manufacture", "ageMinDays", "ageMaxDays", "days"], ["checkout", "Latest checkout date", "checkoutFrom", "checkoutTo", "Sydney dates"], ["charge", "Latest charge date", "chargeFrom", "chargeTo", "Sydney dates"]]) {
         if (filter[`${prefix}Mode`] === "unknown") parts.push(`${label}: not recorded`);
         else if (filter[low] != null || filter[high] != null) parts.push(`${label}: ${filter[low] ?? "no minimum"} to ${filter[high] ?? "no maximum"} ${unit}`);
