@@ -262,13 +262,10 @@ struct ScanView: View {
 
             if isDone, case let .done(summary) = scan.phase {
                 ScrollView {
-                    VStack(spacing: 14) {
-                        DoneSummaryView(summary: summary)
-                        SaveAsGroupCard(summary: summary)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 20)
-                    .padding(.bottom, 16)
+                    DoneSummaryView(summary: summary)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 20)
+                        .padding(.bottom, 16)
                 }
                 .scrollBounceBehavior(.basedOnSize)
                 .scrollIndicators(.hidden)
@@ -442,8 +439,11 @@ struct ScanView: View {
         switch scan.phase {
         case .uncertain:
             UncertainCard()
-        case .done:
+        case .done(let summary):
             VStack(spacing: 4) {
+                SaveAsGroupCard(summary: summary)
+                    .id(summary.at)
+                    .padding(.bottom, 4)
                 Button { scan.scanMore() } label: {
                     Text("Scan more").font(.headline).foregroundStyle(scan.mode.onTint)
                         .frame(maxWidth: .infinity, minHeight: 40)
@@ -557,33 +557,41 @@ struct NoticeCapsule: View {
     var onTint: Color = .white
     var action: () -> Void
     var onDismiss: () -> Void = {}
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: icon)
-            Text(notice.text).lineLimit(2)
+        // At accessibility sizes the text keeps its own line and the buttons go underneath.
+        let stacked = typeSize.isAccessibilitySize && notice.actionTitle != nil
+        let layout = stacked ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8)) : AnyLayout(HStackLayout(spacing: 8))
+        layout {
+            HStack(spacing: 8) {
+                Image(systemName: icon)
+                Text(notice.text).lineLimit(stacked ? 4 : 2)
+            }
             if let title = notice.actionTitle {
-                Button(action: action) {
-                    Text(title).font(.footnote.weight(.bold)).foregroundStyle(onTint).fixedSize()
+                HStack(spacing: 8) {
+                    Button(action: action) {
+                        Text(title).font(.footnote.weight(.bold)).foregroundStyle(onTint).fixedSize()
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .buttonBorderShape(.capsule)
+                    .tint(tint)
+                    .controlSize(.small)
+                    Button(action: onDismiss) {
+                        Image(systemName: "xmark").font(.caption.weight(.bold)).foregroundStyle(.secondary)
+                            .frame(width: 28, height: 28)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Dismiss")
                 }
-                .buttonStyle(.borderedProminent)
-                .buttonBorderShape(.capsule)
-                .tint(tint)
-                .controlSize(.small)
-                Button(action: onDismiss) {
-                    Image(systemName: "xmark").font(.caption.weight(.bold)).foregroundStyle(.secondary)
-                        .frame(width: 28, height: 28)
-                        .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
-                .accessibilityLabel("Dismiss")
             }
         }
         .font(.subheadline.weight(.semibold))
         .foregroundStyle(notice.kind == .refused ? Tone.failure : Color.primary)
         .padding(.horizontal, 14)
         .padding(.vertical, 9)
-        .background(background, in: .capsule)
+        .background(background, in: .rect(cornerRadius: stacked ? 22 : 40, style: .continuous))
         .accessibilityElement(children: .combine)
     }
 

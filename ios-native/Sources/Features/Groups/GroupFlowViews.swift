@@ -154,6 +154,8 @@ struct GroupCheckoutView: View {
     @State private var savedGroup: TeachingGroup?
     /// The first load has finished, so "not available" is never shown while still unknown.
     @State private var loadedOnce = false
+    /// The open checkout of this group being returned from the warning, pushed on top of the review.
+    @State private var returningRunId: String?
 
     private enum PendingKind: Equatable { case checkout, groupUpdate }
 
@@ -215,6 +217,7 @@ struct GroupCheckoutView: View {
         }
         // Also when coming back from a return pushed on top: the runs have changed.
         .onAppear { Task { await reload() } }
+        .navigationDestination(item: $returningRunId) { id in RunReturnView(runId: id) }
         .sheet(item: $picking) { pick in pickerSheet(pick) }
         .confirmationDialog(permanentTitle, isPresented: Binding(get: { permanent != nil }, set: { if !$0 { permanent = nil } }),
                             titleVisibility: .visible, presenting: permanent) { choice in
@@ -321,11 +324,11 @@ struct GroupCheckoutView: View {
                 .font(.subheadline.weight(.bold))
             Text(separate
                  ? "Separate checkout: a second checkout alongside the one still out. It uses different batteries, and members held there get stand-ins."
-                 : "From your checkout started \(runs[0].startedText). Return it first, or start a separate checkout for another class.")
+                  : "From your checkout started \(runs[0].startedText). Return it first, or start a separate checkout for another class.")
                 .font(.footnote).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 8) {
-                NavigationLink(value: GroupRoute.returnRun(runs[0].id)) {
+                Button { returningRunId = runs[0].id } label: {
                     Text(runs[0].outstanding.count == out ? "Return \(out)" : "Return")
                         .font(.footnote.weight(.bold)).foregroundStyle(Tone.returnInk)
                         .padding(.horizontal, 12).frame(minHeight: 34)
@@ -398,8 +401,8 @@ struct GroupCheckoutView: View {
             let since = slot.member?.checkedOutAt.map { " from \(Sydney.friendly($0))" } ?? ""
             return "With you · keeps your loan\(since)"
         case .borrowed(let by): return slot.actual == nil ? "With \(by) · needs a stand-in" : "With \(by)"
-        case .heldElsewhere(let run): return slot.actual == nil ? "Out in your \(run) checkout · needs a stand-in" : "Out in your \(run) checkout"
-        case .inOtherCheckout(let run): return "Already out in your \(run) checkout"
+        case .heldElsewhere(let run): return slot.actual == nil ? "Out in \(run) · needs a stand-in" : "Out in \(run)"
+        case .inOtherCheckout(let run): return "Already out in \(run)"
         case .retired(let status): return "\(status) · replace it in the group to use this slot"
         case .missing: return "No longer in this inventory · replace it in the group"
         }
@@ -464,6 +467,7 @@ struct GroupCheckoutView: View {
     private func confirmBar(_ plan: GroupCheckoutPlan) -> some View {
         let n = plan.included.count
         let unfilled = plan.unfilled.count
+        let enabled = plan.canSubmit && !locked && loadError == nil && !loading && !app.writes.hasPending
         VStack(spacing: 8) {
             if isPending && !isSending {
                 VStack(alignment: .leading, spacing: 6) {
@@ -475,12 +479,17 @@ struct GroupCheckoutView: View {
                 }
             } else {
                 if unfilled > 0 {
-                    HStack {
-                        Text("\(unfilled) to fill or skip").font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
-                        Spacer()
-                        Button("Skip \(unfilled == 1 ? "it" : "them") this time") { mutate { $0.skipUnfilled() } }
-                            .font(.footnote.weight(.semibold))
-                            .disabled(locked)
+                    ViewThatFits(in: .horizontal) {
+                        HStack {
+                            unfilledHint(unfilled)
+                            Spacer()
+                            skipButton(unfilled)
+                        }
+                        VStack(alignment: .leading, spacing: 4) {
+                            unfilledHint(unfilled)
+                            skipButton(unfilled)
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
                     }
                     .padding(.horizontal, 4)
                 }
@@ -491,18 +500,29 @@ struct GroupCheckoutView: View {
                             .contentTransition(.numericText(value: Double(n)))
                     }
                     .font(.headline)
-                    .foregroundStyle(.white)
+                    .foregroundStyle(enabled || isSending ? Color.white : Color.secondary)
                     .frame(maxWidth: .infinity, minHeight: 42)
                 }
                 .primaryButton(Tone.checkout)
-                .disabled(!plan.canSubmit || locked || loadError != nil || loading || app.writes.hasPending)
+                .disabled(!enabled)
                 .onChange(of: isSending) { _, sending in if sending { Haptics.press() } }
             }
         }
         .padding(.horizontal, 16)
         .padding(.top, 10)
         .padding(.bottom, 8)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .background(.bar)
+    }
+
+    private func unfilledHint(_ n: Int) -> some View {
+        Text("\(n) to fill or skip").font(.footnote.weight(.semibold)).foregroundStyle(.secondary)
+    }
+
+    private func skipButton(_ n: Int) -> some View {
+        Button("Skip \(n == 1 ? "it" : "them") this time") { mutate { $0.skipUnfilled() } }
+            .font(.footnote.weight(.semibold))
+            .disabled(locked)
     }
 
     // MARK: Pickers
@@ -1001,7 +1021,7 @@ struct RunReturnView: View {
                             .contentTransition(.numericText(value: Double(n)))
                     }
                     .font(.headline)
-                    .foregroundStyle(Tone.returnInk)
+                    .foregroundStyle(n == 0 || app.writes.hasPending ? Color.secondary : Tone.returnInk)
                     .frame(maxWidth: .infinity, minHeight: 42)
                 }
                 .primaryButton(Tone.returning)
@@ -1012,6 +1032,7 @@ struct RunReturnView: View {
         .padding(.horizontal, 16)
         .padding(.top, 10)
         .padding(.bottom, 8)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .background(.bar)
     }
 
@@ -1182,29 +1203,15 @@ struct SaveAsGroupCard: View {
                 Label("Saved as “\(saved.name)”", systemImage: "checkmark.circle.fill")
                     .font(.subheadline.weight(.semibold))
                     .foregroundStyle(Tone.success)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity, minHeight: 44)
             } else if offer {
                 Button { editing = true } label: {
-                    HStack(spacing: 12) {
-                        Image(systemName: "person.3.fill")
-                            .font(.subheadline)
-                            .foregroundStyle(Tone.checkout)
-                            .frame(width: 34, height: 34)
-                            .background(Tone.checkout.opacity(0.13), in: .rect(cornerRadius: 10))
-                        VStack(alignment: .leading, spacing: 1) {
-                            Text("Save these \(ids.count) as a group").font(.subheadline.weight(.semibold))
-                            Text("Next time, check out the whole set in one go.").font(.caption).foregroundStyle(.secondary)
-                        }
-                        Spacer(minLength: 4)
-                        Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
-                    }
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 10)
-                    .contentShape(Rectangle())
+                    Label("Save these \(ids.count) as a group", systemImage: "person.3")
+                        .font(.body.weight(.semibold))
+                        .frame(maxWidth: .infinity, minHeight: 36)
                 }
-                .buttonStyle(.plain)
-                .background(Color(.secondarySystemGroupedBackground), in: .rect(cornerRadius: 20, style: .continuous))
+                .secondaryButton()
+                .accessibilityHint("Next time, check out the whole set in one go. This checkout stays as it is.")
             }
         }
         .sheet(isPresented: $editing) {

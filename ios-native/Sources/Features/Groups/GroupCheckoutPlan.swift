@@ -48,6 +48,7 @@ struct CheckoutSlot: Identifiable, Equatable {
         /// On loan to someone else: needs a replacement or to be skipped.
         case borrowed(by: String)
         /// Separate checkout only: held by you in another open group checkout, so this run needs a replacement.
+        /// `run` reads "your checkout from Today, 09:12".
         case heldElsewhere(run: String)
         /// Covered by another of your open group checkouts; not part of this one.
         case inOtherCheckout(run: String)
@@ -110,7 +111,8 @@ struct GroupCheckoutPlan: Equatable {
         let open = runs.filter { $0.actorAccountId == me && $0.isOpen }
 
         func runLabel(_ run: TeachingRun) -> String {
-            run.teachingGroup.id == group.id ? run.startedText : "“\(run.teachingGroup.name)”, \(run.startedText)"
+            run.teachingGroup.id == group.id ? "your checkout from \(run.startedText)"
+                : "your “\(run.teachingGroup.name)” checkout from \(run.startedText)"
         }
         // Your open run of this group that still has this member slot out.
         func coveringSlot(_ memberId: String) -> TeachingRun? {
