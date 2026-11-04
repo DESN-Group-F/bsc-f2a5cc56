@@ -140,6 +140,9 @@ enum Sydney {
         return dayMonthYear.string(from: d)
     }
 
+    /// "4 Nov" for an instant, in Sydney.
+    static func shortDay(_ date: Date = Date()) -> String { dayMonth.string(from: date) }
+
     static func shortTime(_ string: String?) -> String {
         guard let d = date(string) else { return "—" }
         return Calendar.current.isDateInToday(d) || calendar.isDateInToday(d) ? time.string(from: d) : friendly(string)

@@ -451,6 +451,9 @@ enum ReceiptCheck {
             }
             return WriteConfirmation(title: title, group: g, replayed: r.replayed)
 
+        case "teaching_checkout":
+            return verifyTeachingCheckout(entry, response: response)
+
         case "battery_model":
             // Same checks as the web's verifyModelCreateReceipt: identity, account, inventory, and every field as sent.
             guard let sent = try? decoder.decode(WriteEnvelope<NewModelPayload>.self, from: entry.body),

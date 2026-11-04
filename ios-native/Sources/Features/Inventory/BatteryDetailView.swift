@@ -314,14 +314,22 @@ struct BatteryDetailView: View {
             entries.append(TimelineEntry(id: "registered", title: "Registered" + (reg.actorName.map { " by \($0)" } ?? ""),
                                          detail: nil, at: reg.at, tint: Tone.register))
         }
+        let events = detail?.events ?? []
         for loan in detail?.loans ?? [] {
             if loan.cancelledAt != nil {
                 entries.append(TimelineEntry(id: loan.id + "-void", title: "Check-out corrected (voided)",
                                              detail: loan.correctionReason, at: loan.cancelledAt ?? loan.checkedOutAt, tint: .secondary))
                 continue
             }
+            // A loan that went out with a teaching group, or as part of a group checkout, says which.
+            let out = events.first { $0.action == "checkout" && $0.details?.loanId == loan.id }?.details
+            let groupLine = out?.groupName.map { out?.isGroupCheckout == true ? "Group checkout · \($0)" : "Teaching group · \($0)" }
             entries.append(TimelineEntry(id: loan.id + "-out", title: "Checked out by \(loan.borrowerName ?? "someone")",
-                                         detail: nil, at: loan.checkedOutAt, tint: Tone.checkout))
+                                         detail: groupLine, at: loan.checkedOutAt, tint: Tone.checkout))
+            for event in events where event.action == "teaching_loan_continued" && event.details?.loanId == loan.id {
+                entries.append(TimelineEntry(id: event.id, title: "Kept out for a group checkout",
+                                             detail: event.details?.groupName, at: event.at, tint: Tone.checkout))
+            }
             if let returned = loan.returnedAt {
                 entries.append(TimelineEntry(id: loan.id + "-in", title: "Returned by \(loan.returnActorName ?? "someone")",
                                              detail: nil, at: returned, tint: Tone.returning))

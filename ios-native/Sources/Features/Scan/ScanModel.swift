@@ -45,6 +45,16 @@ final class ScanModel {
         var id: String { battery.id }
     }
 
+    /// What a notice's button does.
+    enum NoticeAction: Equatable {
+        /// Register the tag that just failed lookup.
+        case register
+        /// Review a whole teaching group instead (several groups: choose one).
+        case groupCheckout([String])
+        /// Return the rest of the group checkout this battery came from.
+        case returnRun(String)
+    }
+
     struct Notice: Equatable {
         enum Kind: Equatable { case duplicate, refused, info, greeting }
         let kind: Kind
@@ -52,6 +62,7 @@ final class ScanModel {
         var actionTitle: String? = nil
         /// What the system tag sheet says, when it differs from the on-screen text.
         var sheetText: String? = nil
+        var action: NoticeAction? = nil
         let id = UUID()
         /// A notice with an action stays until the next scan or until it's used.
         var isSticky: Bool { actionTitle != nil }
@@ -69,8 +80,6 @@ final class ScanModel {
     private(set) var latestId: String?
     private(set) var readerActive = false
     private(set) var pendingWrites: [PendingMovement] = []
-    /// Set when the list was started from a teaching group; the movement then carries the group reference.
-    private(set) var group: TeachingGroup?
     /// The last tag that wasn't registered, so "Register" can carry its evidence (Demo only).
     private(set) var unregisteredRead: TagRead?
     var returnRoomId: String?
@@ -137,7 +146,6 @@ final class ScanModel {
         latestId = nil
         returnRoomId = nil
         submissionError = nil
-        group = nil
         unregisteredRead = nil
         retireReason = ""
         retireDestination = ""
@@ -168,7 +176,6 @@ final class ScanModel {
         source = nil
         sessionId = RequestID.make()
         latestId = nil
-        group = nil
         mood = .idle
         phase = .scanning
     }
@@ -220,8 +227,7 @@ final class ScanModel {
             items = []
             sessionId = RequestID.make()
         }
-        // A teaching-group reference and return room belong to the old action.
-        group = nil
+        // The return room belongs to the old action.
         returnRoomId = nil
         retireReason = ""
         retireDestination = ""
@@ -299,7 +305,7 @@ final class ScanModel {
         guard let battery else {
             unregisteredRead = read
             refuse("This tag isn't registered", action: "Register",
-                   sheet: "This tag isn't registered. Tap Cancel, then Register to add it.")
+                   sheet: "This tag isn't registered. Tap Cancel, then Register to add it.", does: .register)
             return
         }
         let evidence = read.evidence(adoptedAt: Sydney.timestamp())
@@ -326,18 +332,6 @@ final class ScanModel {
         add(battery, tagId: battery.tagId, evidence: nil, from: .selection)
     }
 
-    /// Starts a fresh list from a teaching group's members. The confirm carries the group reference,
-    /// so the server checks membership and records the group in its history.
-    func begin(group: TeachingGroup, batteries: [BatteryRecord], mode newMode: MovementKind) {
-        if case .done = phase { scanMore() }
-        guard pendingWrites.isEmpty, phase != .submitting, !batteries.isEmpty else { return }
-        reset()
-        mode = newMode
-        for battery in batteries { add(battery, tagId: battery.tagId, evidence: nil, from: .selection) }
-        self.group = group
-        show(.init(kind: .info, text: "\(group.name) · \(items.count) \(items.count == 1 ? "battery" : "batteries")"))
-    }
-
     /// Starts a fresh list from batteries chosen in Inventory.
     func begin(list batteries: [BatteryRecord], mode newMode: MovementKind) {
         if case .done = phase { scanMore() }
@@ -361,6 +355,7 @@ final class ScanModel {
 
     private func add(_ battery: BatteryRecord, tagId: String?, evidence: NFCEvidence?, from newSource: Source) {
         guard let app else { return }
+        var switched: String?
         if items.contains(where: { $0.battery.id == battery.id }) {
             show(.init(kind: .duplicate, text: "Already in the list · \(battery.id)"))
             setMood(.puzzled, hold: 1.4)
@@ -380,9 +375,11 @@ final class ScanModel {
             // The first battery decides the action, so nobody has to pick it in advance.
             if mode == .checkout && battery.isInUse {
                 mode = .return
+                switched = "Switched to Return"
                 show(.init(kind: .info, text: "Switched to Return — it's \(holderPhrase(battery, me: app.user?.id))"))
             } else if mode == .return && battery.isInStore {
                 mode = .checkout
+                switched = "Switched to Check out"
                 show(.init(kind: .info, text: "Switched to Check out — it's in store"))
             }
         } else if mode == .checkout && battery.isInUse {
@@ -392,10 +389,6 @@ final class ScanModel {
             refuse("\(battery.id) is already in store")
             return
         }
-        if let current = group, !current.batteryIds.contains(battery.id) {
-            group = nil
-            show(.init(kind: .info, text: "\(battery.id) isn't in \(current.name), so this is now an ordinary list"))
-        }
         items.insert(Item(battery: battery, tagId: tagId, evidence: evidence), at: 0)
         if notice?.isSticky == true { notice = nil }
         source = newSource
@@ -403,6 +396,28 @@ final class ScanModel {
         setMood(.happy, hold: 0.7)
         reaction += 1
         Haptics.accepted()
+        if items.count == 1 && newSource == .nfc { suggestGroup(for: battery, switched: switched) }
+    }
+
+    /// After the first scan: offer the whole teaching group (checking out), or the rest of the
+    /// group checkout it came from (returning). Nothing changes unless the offer is taken.
+    private func suggestGroup(for battery: BatteryRecord, switched: String?) {
+        guard let app else { return }
+        let prefix = switched.map { "\($0) · " } ?? ""
+        if mode == .checkout {
+            let groups = app.inventory.groups.filter { $0.batteryIds.contains(battery.id) }
+            guard let first = groups.first else { return }
+            let text = groups.count == 1 ? "\(prefix)In “\(first.name)”" : "\(prefix)In \(groups.count) of your groups"
+            show(.init(kind: .info, text: text, actionTitle: "Whole group",
+                       sheetText: "\(battery.id) added · it's in \(groups.count == 1 ? "“\(first.name)”" : "\(groups.count) of your groups"). Keep scanning, or tap Cancel to check out the whole group.",
+                       action: .groupCheckout(groups.map(\.id))))
+        } else if mode == .return, let run = app.runs.openRun(holding: battery) {
+            let n = run.outstanding.count
+            guard n > 1 else { return }
+            show(.init(kind: .info, text: "\(prefix)From “\(run.teachingGroup.name)” · \(n) out", actionTitle: "Return \(n)",
+                       sheetText: "\(battery.id) added · it's from “\(run.teachingGroup.name)”, \(n) still out. Keep scanning, or tap Cancel to return them together.",
+                       action: .returnRun(run.id)))
+        }
     }
 
     func remove(_ item: Item) {
@@ -412,7 +427,6 @@ final class ScanModel {
             source = nil
             sessionId = RequestID.make()
             latestId = nil
-            group = nil
         }
         Haptics.tap()
     }
@@ -424,7 +438,6 @@ final class ScanModel {
         source = nil
         sessionId = RequestID.make()
         latestId = nil
-        group = nil
     }
 
     private func holderPhrase(_ battery: BatteryRecord, me: String?) -> String {
@@ -432,8 +445,8 @@ final class ScanModel {
         return "with \(StatusPill.shortName(battery.borrowerName))"
     }
 
-    private func refuse(_ text: String, action: String? = nil, sheet: String? = nil) {
-        show(.init(kind: .refused, text: text, actionTitle: action, sheetText: sheet))
+    private func refuse(_ text: String, action: String? = nil, sheet: String? = nil, does: NoticeAction? = nil) {
+        show(.init(kind: .refused, text: text, actionTitle: action, sheetText: sheet, action: does))
         setMood(.surprised, hold: 1.4)
         Haptics.refused()
     }
@@ -510,12 +523,10 @@ final class ScanModel {
            let match = app.inventory.rooms(eligibleFor: app.dataset).first(where: { $0.id == roomId }) {
             room = RoomReference(roomId: match.id, version: match.version)
         }
-        var payload = MovementPayload(kind: mode.rawValue, requestId: requestId, batteryIds: ids, expectedLoans: loans,
+        // Ordinary movements only: whole-group checkouts go through the group checkout review.
+        let payload = MovementPayload(kind: mode.rawValue, requestId: requestId, batteryIds: ids, expectedLoans: loans,
                                       scan: ScanContext(sessionId: sessionId, source: usedSource.rawValue, bindings: bindings),
                                       returnRoom: room)
-        if let group, ids.allSatisfy({ group.batteryIds.contains($0) }) {
-            payload.teachingGroup = GroupReference(id: group.id, version: group.version)
-        }
         let body: Data
         do {
             body = try JSONEncoder().encode(InventoryWrite(dataset: app.dataset, action: "movement", payload: payload))
@@ -959,7 +970,7 @@ final class ScanModel {
         return echoed.sorted == sent.sorted
     }
 
-    /// After a rejection the reviewed versions, loans and group version are stale. Rebuild the list from
+    /// After a rejection the reviewed versions and loans are stale. Rebuild the list from
     /// the latest inventory so the next confirm is a fresh review, dropping batteries that no longer fit.
     private func reviewAgainstLatest() {
         guard let app else { return }
@@ -975,17 +986,14 @@ final class ScanModel {
             refreshed.append(Item(battery: latest, tagId: source == .nfc ? item.tagId : latest.tagId, evidence: item.evidence))
         }
         items = refreshed
-        if let current = group {
-            group = app.inventory.groups.first { $0.id == current.id }
-            if let updated = group, !items.allSatisfy({ updated.batteryIds.contains($0.battery.id) }) { group = nil }
-        }
-        if items.isEmpty { source = nil; sessionId = RequestID.make(); latestId = nil; group = nil }
+        if items.isEmpty { source = nil; sessionId = RequestID.make(); latestId = nil }
         if !dropped.isEmpty {
             submissionError = (submissionError.map { $0 + " " } ?? "") + "Removed from the list after refreshing: \(dropped.joined(separator: ", "))."
         }
     }
 
-    /// A group-scoped movement must come back with matching group evidence; an ordinary one must not have any.
+    /// A group-scoped movement (sent by 1.0.x and possibly still waiting on this phone) must come back
+    /// with matching group evidence; an ordinary one must not have any.
     static func groupEvidenceMatches(_ evidence: GroupEvidence?, entry: PendingMovement) -> Bool {
         let sent = (try? JSONDecoder().decode(WriteEnvelope<GroupProbe>.self, from: entry.body))?.payload.teachingGroup
         guard let sent else { return evidence == nil }
@@ -1016,7 +1024,12 @@ final class ScanModel {
         setMood(.happy, hold: 1.6)
         reaction += 1
         Haptics.confirmed()
-        Task { await app.inventory.refresh() }
+        // An ordinary return can also complete part of a group checkout.
+        Task {
+            async let a: Void = app.inventory.refresh()
+            async let b: Void = app.runs.refresh()
+            _ = await (a, b)
+        }
     }
 
     // MARK: Preview support

@@ -62,7 +62,7 @@ struct GroupCard: View {
     }
 }
 
-/// One teaching group: its members, and check out / return of the whole set.
+/// One teaching group: its members, its group checkouts still out, and checking out the whole set.
 struct GroupDetailView: View {
     @Environment(AppModel.self) private var app
     let groupId: String
@@ -81,6 +81,9 @@ struct GroupDetailView: View {
                 let members = group.batteryIds.compactMap { app.inventory.battery(id: $0) }
                 let inStore = members.filter(\.isInStore)
                 let inUse = members.filter(\.isInUse)
+                let open = app.runs.open(forGroup: group.id)
+                // Members with you on ordinary loans (for example from 1.0), not in any group checkout.
+                let looseWithYou = members.filter { $0.isInUse && $0.borrowerAccountId == app.user?.id && app.runs.openRun(holding: $0) == nil }
                 List {
                     Section {
                         VStack(alignment: .leading, spacing: 4) {
@@ -94,22 +97,44 @@ struct GroupDetailView: View {
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets(top: 0, leading: 4, bottom: 6, trailing: 4))
 
-                        HStack(spacing: 8) {
-                            GroupActionTile(title: "Check out", detail: "\(inStore.count) in store", tint: Tone.checkout, onTint: .white,
-                                            enabled: !inStore.isEmpty) {
-                                app.scan.begin(group: group, batteries: inStore, mode: .checkout)
-                                app.tab = .scan
+                        Button { app.groupFlow = .checkout(groupId: group.id) } label: {
+                            VStack(spacing: 2) {
+                                Text("Check out group").font(.headline)
+                                Text(open.isEmpty ? "Review every member before anything is saved" : "Another checkout of this group is still out")
+                                    .font(.caption).opacity(0.85)
                             }
-                            GroupActionTile(title: "Return", detail: "\(inUse.count) in use", tint: Tone.returning, onTint: Tone.returnInk,
-                                            enabled: !inUse.isEmpty) {
-                                app.scan.begin(group: group, batteries: inUse, mode: .return)
-                                app.tab = .scan
-                            }
+                            .foregroundStyle(.white)
+                            .frame(maxWidth: .infinity, minHeight: 48)
                         }
+                        .primaryButton(Tone.checkout)
                         .listRowBackground(Color.clear)
                         .listRowInsets(EdgeInsets())
-                    } footer: {
-                        Text("You'll review the list on Scan before anything is saved. Remove any battery that isn't going out.")
+                    }
+
+                    if !open.isEmpty {
+                        Section {
+                            ForEach(open) { run in
+                                Button { app.groupFlow = .returnRun(runId: run.id) } label: { OpenRunRow(run: run) }
+                                    .buttonStyle(.plain)
+                            }
+                        } header: {
+                            Text("Out now")
+                        } footer: {
+                            Text("Returns only that checkout's batteries. Anything borrowed by someone else stays with them.")
+                        }
+                    }
+
+                    if !looseWithYou.isEmpty {
+                        Section {
+                            Button {
+                                app.scan.begin(list: looseWithYou, mode: .return)
+                                app.tab = .scan
+                            } label: {
+                                Label("Return \(looseWithYou.count) on Scan", systemImage: "arrow.uturn.backward")
+                            }
+                        } footer: {
+                            Text("\(looseWithYou.count == 1 ? "1 member is" : "\(looseWithYou.count) members are") with you outside a group checkout. They return as an ordinary list you can review first.")
+                        }
                     }
 
                     Section("Members") {
@@ -130,6 +155,8 @@ struct GroupDetailView: View {
                     }
                 }
                 .listStyle(.insetGrouped)
+                .refreshable { await app.refreshAll() }
+                .task { await app.runs.refresh() }
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu {
@@ -147,7 +174,8 @@ struct GroupDetailView: View {
                 .confirmationDialog("Delete “\(group.name)”?", isPresented: $confirmDelete, titleVisibility: .visible) {
                     Button("Delete group", role: .destructive) { Task { await delete(group) } }
                 } message: {
-                    Text("Only the saved selection is removed. Batteries, loans and history stay as they are.")
+                    Text(open.isEmpty ? "Only the saved selection is removed. Batteries, loans and history stay as they are."
+                         : "Only the saved selection is removed. Its checkout still out stays as it is and can be returned from Groups on Scan.")
                 }
             } else {
                 ContentUnavailableView("Group not found", systemImage: "person.3",
@@ -176,36 +204,14 @@ struct GroupDetailView: View {
     }
 }
 
-private struct GroupActionTile: View {
-    let title: String
-    let detail: String
-    let tint: Color
-    let onTint: Color
-    let enabled: Bool
-    var action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.headline)
-                Text(detail).font(.caption).opacity(0.85)
-            }
-            .foregroundStyle(enabled ? onTint : Color.secondary)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(14)
-            .background(enabled ? tint : Color(.tertiarySystemFill), in: .rect(cornerRadius: 18, style: .continuous))
-        }
-        .buttonStyle(.plain)
-        .disabled(!enabled)
-    }
-}
-
 /// Create or edit a teaching group: name, notes and up to 100 members.
 struct GroupEditorSheet: View {
     @Environment(AppModel.self) private var app
     @Environment(\.dismiss) private var dismiss
     let group: TeachingGroup?
     var presetMembers: [String] = []
+    /// A suggested name for a new group, e.g. "Lab · 4 Nov" when saving a checkout as a group.
+    var presetName: String = ""
     var onSaved: ((TeachingGroup) -> Void)? = nil
 
     @State private var name = ""
@@ -270,7 +276,7 @@ struct GroupEditorSheet: View {
             .onAppear {
                 guard !loaded else { return }
                 loaded = true
-                name = group?.name ?? ""
+                name = group?.name ?? presetName
                 notes = group?.notes ?? ""
                 members = group?.batteryIds ?? []
                 for id in presetMembers where !members.contains(id) { members.append(id) }

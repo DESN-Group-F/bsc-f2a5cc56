@@ -10,6 +10,24 @@ enum SessionState: Equatable {
     case signedIn(StaffUser)
 }
 
+/// A group checkout flow, shown as one sheet above the tabs wherever it was started.
+enum GroupFlow: Identifiable, Equatable {
+    /// Open group checkouts and your groups, from the Groups button on Scan.
+    case hub
+    /// Review and check out a whole teaching group.
+    case checkout(groupId: String)
+    /// Return all or part of one group checkout.
+    case returnRun(runId: String)
+
+    var id: String {
+        switch self {
+        case .hub: return "hub"
+        case .checkout(let id): return "checkout-" + id
+        case .returnRun(let id): return "return-" + id
+        }
+    }
+}
+
 /// Where a screen's Ink sits, so one Ink can travel from sign-in to the scan stage.
 enum InkStage: Hashable { case signIn, scan }
 
@@ -36,6 +54,8 @@ final class AppModel {
     var pendingDetailId: String?
     /// Registration sheet request, from Inventory or an unregistered tag on the scan station.
     var registration: RegistrationRequest?
+    /// The group checkout sheet, from Scan, a group's page or a scan suggestion.
+    var groupFlow: GroupFlow?
     private(set) var dataset: Dataset = .demo
     /// Shown on the launch screen when the session couldn't be checked (offline, server down).
     private(set) var launchError: String?
@@ -52,6 +72,8 @@ final class AppModel {
         dataset = newValue
         UserDefaults.standard.set(newValue.rawValue, forKey: "dataset")
         inventory.reset()
+        runs.reset()
+        groupFlow = nil
         if let user, let saved = SessionCache.snapshot(accountId: user.id, dataset: newValue) {
             // Show the saved copy of the other inventory at once; the refresh replaces it.
             inventory.restore(saved.0, savedAt: saved.1)
@@ -73,6 +95,7 @@ final class AppModel {
     let scan: ScanModel
     let inbox: InboxModel
     let writes: WriteCenter
+    let runs: TeachingRunsModel
 
     var user: StaffUser? {
         if case let .signedIn(user) = session { return user }
@@ -86,11 +109,13 @@ final class AppModel {
         scan = ScanModel()
         inbox = InboxModel()
         writes = WriteCenter()
+        runs = TeachingRunsModel()
         if let raw = UserDefaults.standard.string(forKey: "dataset"), let saved = Dataset(rawValue: raw) { dataset = saved }
         inventory.app = self
         scan.app = self
         inbox.app = self
         writes.app = self
+        runs.app = self
         if let preview {
             PreviewFixtures.apply(preview, to: self)
         } else if service.client.hasSession, let user = SessionCache.user() {
@@ -221,6 +246,8 @@ final class AppModel {
             scan.unloadIntake()
             inbox.reset()
             writes.reset()
+            runs.reset()
+            groupFlow = nil
         }
         lastSignedInId = user.id
         SessionCache.saveUser(user)
@@ -249,7 +276,9 @@ final class AppModel {
         scan.unloadIntake()
         inbox.reset()
         writes.reset()
+        runs.reset()
         registration = nil
+        groupFlow = nil
         session = .signedOut
         tab = .scan
     }
@@ -265,7 +294,8 @@ final class AppModel {
         guard preview == nil, user != nil else { return }
         async let a: Void = inventory.refresh()
         async let b: Void = inbox.refresh()
-        _ = await (a, b)
+        async let c: Void = runs.refresh()
+        _ = await (a, b, c)
     }
 }
 
@@ -486,6 +516,75 @@ final class InboxModel {
                                                notes: notes, requestId: requestId)
         Haptics.confirmed()
         await refresh()
+    }
+}
+
+// MARK: - Group checkouts
+
+/// Your group checkouts in this inventory, as the server lists them. Used for display and for
+/// suggestions only: a return always reads its run fresh before sending.
+@MainActor
+@Observable
+final class TeachingRunsModel {
+    weak var app: AppModel?
+    private(set) var runs: [TeachingRun] = []
+    private(set) var loaded = false
+    var lastError: String?
+
+    private let gate = RefreshGate()
+
+    func reset() { runs = []; loaded = false; lastError = nil }
+
+    var open: [TeachingRun] { runs.filter(\.isOpen) }
+
+    func open(forGroup id: String) -> [TeachingRun] { open.filter { $0.teachingGroup.id == id } }
+
+    /// The open run that has this battery out on this exact loan.
+    func openRun(holding battery: BatteryRecord) -> TeachingRun? {
+        guard let loan = battery.loanId else { return nil }
+        return open.first { run in run.outstanding.contains { $0.batteryId == battery.id && $0.loanId == loan } }
+    }
+
+    func refresh() async {
+        guard let app, app.preview == nil else { return }
+        await gate.run { [weak self] in await self?.load() }
+    }
+
+    private func load() async {
+        guard let app, let viewer = app.user?.id else { return }
+        let dataset = app.dataset
+        do {
+            let list = try await app.service.teachingRuns(dataset)
+            // Never show another inventory's or another person's checkouts.
+            guard dataset == app.dataset, viewer == app.user?.id else { return }
+            runs = list.filter { $0.actorAccountId == viewer && $0.dataset == dataset }
+            loaded = true
+            lastError = nil
+        } catch {
+            guard dataset == app.dataset, viewer == app.user?.id else { return }
+            lastError = (error as? APIFailure)?.message ?? "Couldn't load group checkouts."
+            app.handle(error)
+        }
+    }
+
+    /// Reads one run fresh and keeps the list in step with it.
+    func latest(_ id: String) async throws -> TeachingRun? {
+        guard let app, let viewer = app.user?.id else { return nil }
+        if app.preview != nil { return runs.first { $0.id == id } }
+        let dataset = app.dataset
+        let run = try await app.service.teachingRun(dataset, id: id)
+        guard dataset == app.dataset, viewer == app.user?.id else { return nil }
+        if let run, run.dataset == dataset {
+            if let index = runs.firstIndex(where: { $0.id == id }) { runs[index] = run } else if run.actorAccountId == viewer { runs.insert(run, at: 0) }
+            return run
+        }
+        runs.removeAll { $0.id == id }
+        return nil
+    }
+
+    func preview(_ list: [TeachingRun]) {
+        runs = list
+        loaded = true
     }
 }
 

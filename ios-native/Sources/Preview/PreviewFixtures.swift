@@ -7,6 +7,7 @@ enum PreviewScreen: String, CaseIterable {
     case scanRegister, scanRegisterEmpty, scanUnregistered
     case inventory, inventoryFiltered, newArrivals, detail, detailBottom, detailConcern, detailRetired
     case register, registerReview, inspection, retire, group, groupEditor, filter, pendingWrite, inkPlayground, inkMotion, newModel
+    case scanReturnGroup, groupsHub, groupCheckout, groupCheckoutFilled, groupCheckoutOpen, groupReturn
     case inbox, me
 
     static func fromLaunchArguments() -> PreviewScreen? {
@@ -17,7 +18,8 @@ enum PreviewScreen: String, CaseIterable {
     /// Screens shown on their own instead of inside the tab bar.
     var isStandalone: Bool {
         switch self {
-        case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel: return true
+        case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
+             .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn: return true
         default: return false
         }
     }
@@ -28,6 +30,8 @@ enum PreviewFixtures {
     static let userId = "6f0d4a52-1c33-4f53-9a51-2b7f3c0c9a11"
     static let otherId = "0b8a1f7e-6d2c-4a77-8f61-93c1d2e4f5a6"
     static let groupId = "3c2b1a09-8f7e-4d6c-9b5a-0f1e2d3c4b5a"
+    static let roboticsId = "5a4b3c2d-1e0f-4a9b-8c7d-6e5f4a3b2c1d"
+    static let runId = "7e6d5c4b-3a29-4180-9f8e-7d6c5b4a3928"
 
     static func apply(_ screen: PreviewScreen, to app: AppModel) {
         guard let snapshot = try? JSONDecoder().decode(InventorySnapshot.self, from: Data(snapshotJSON.utf8)) else { return }
@@ -38,6 +42,9 @@ enum PreviewFixtures {
             app.inbox.unreadCount = messages.filter(\.isUnread).count
         }
         app.session = screen == .signin ? .signedOut : .signedIn(snapshot.user)
+        if let runs = try? JSONDecoder().decode([TeachingRun].self, from: Data(runsJSON.utf8)) {
+            app.runs.preview(runs)
+        }
         let byId = Dictionary(uniqueKeysWithValues: snapshot.batteries.map { ($0.id, $0) })
         let inStore = ["BAT-00000012", "BAT-00000010", "BAT-00000009"].compactMap { byId[$0] }
         switch screen {
@@ -56,11 +63,20 @@ enum PreviewFixtures {
         case .scanUnregistered:
             app.tab = .scan
             app.scan.previewState(items: Array(inStore.prefix(2)), mode: .checkout, phase: .scanning)
-            app.scan.previewNotice(.init(kind: .refused, text: "This tag isn't registered", actionTitle: "Register"), mood: .surprised)
+            app.scan.previewNotice(.init(kind: .refused, text: "This tag isn't registered", actionTitle: "Register", action: .register), mood: .surprised)
         case .scanGroup:
             app.tab = .scan
-            if let group = snapshot.teachingGroups?.first {
-                app.scan.begin(group: group, batteries: group.batteryIds.compactMap { byId[$0] }.filter(\.isInStore), mode: .checkout)
+            if let first = byId["BAT-00000009"] {
+                app.scan.previewState(items: [first], mode: .checkout, phase: .scanning)
+                app.scan.previewNotice(.init(kind: .info, text: "In “ENGG1000 Lab A”", actionTitle: "Whole group",
+                                             action: .groupCheckout([groupId])), mood: .happy)
+            }
+        case .scanReturnGroup:
+            app.tab = .scan
+            if let first = byId["BAT-00000007"] {
+                app.scan.previewState(items: [first], mode: .return, phase: .scanning)
+                app.scan.previewNotice(.init(kind: .info, text: "From “Robotics demo” · 2 out", actionTitle: "Return 2",
+                                             action: .returnRun(runId)), mood: .happy)
             }
         case .scanRegister:
             app.tab = .scan
@@ -122,7 +138,8 @@ enum PreviewFixtures {
             app.writes.previewPending(PendingWrite(id: "preview-write", accountId: userId, dataset: .demo, kind: "scrapped",
                                                    batteryIds: ["BAT-00000002"], body: Data(), createdAt: Date(), attempts: 1,
                                                    action: "lifecycle", title: "Retiring BAT-00000002"))
-        case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel:
+        case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
+             .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn:
             app.tab = .inventory
         case .inbox: app.tab = .inbox
         case .me: app.tab = .me
@@ -170,6 +187,8 @@ enum PreviewFixtures {
          "latestConcern":null}
         """
         let batteries = [
+            battery("BAT-00000016", name: "Robot base pack", chemistry: "NiMH", model: "7.2 V", capacity: 3000, voltage: 7.2,
+                    loan: "1b2c3d4e-5f60-4718-8293-a4b5c6d7e8f9", borrower: ("Tim Wu", userId), checkedOut: now),
             battery("BAT-00000015", name: "Battery", chemistry: "LiPo", model: "3S", capacity: 2200, voltage: 11.1, firstUsed: "2026-11-01"),
             battery("BAT-00000014", name: "Battery", chemistry: "Li-ion", model: "18650", capacity: 3000, voltage: 3.6, firstUsed: "2026-11-01"),
             battery("BAT-00000012", name: "Drone pack", chemistry: "LiPo", model: "4S", capacity: 1500, voltage: 14.8,
@@ -202,11 +221,41 @@ enum PreviewFixtures {
          "staffDirectory":[{"id":"\(userId)","displayName":"Tim Wu","username":"tim","active":true},
                            {"id":"\(otherId)","displayName":"Jordan Chen","username":"jordan","active":true}],
          "teachingGroups":[{"id":"\(groupId)","name":"ENGG1000 Lab A","notes":"Thursday 2–5 pm, J18 workshop",
-                            "batteryIds":["BAT-00000009","BAT-00000010","BAT-00000012","BAT-00000008"],"version":2,
+                            "batteryIds":["BAT-00000009","BAT-00000010","BAT-00000012","BAT-00000008","BAT-00000004","BAT-00000003"],"version":2,
+                            "ownerAccountId":"\(userId)","state":"active","createdAt":"\(lastWeek)","updatedAt":"\(lastWeek)"},
+                           {"id":"\(roboticsId)","name":"Robotics demo","notes":"",
+                            "batteryIds":["BAT-00000007","BAT-00000014","BAT-00000016"],"version":1,
                             "ownerAccountId":"\(userId)","state":"active","createdAt":"\(lastWeek)","updatedAt":"\(lastWeek)"}],
          "newArrivals":{"serverNow":"\(Sydney.timestamp())","throughSequence":15,"acknowledgedThroughSequence":13,"unreadCount":2,
            "items":[{"batteryId":"BAT-00000015","sequence":15,"registeredAt":"\(earlier)","isUnread":true},
                     {"batteryId":"BAT-00000014","sequence":14,"registeredAt":"\(earlier)","isUnread":true}]}}
+        """
+    }
+
+    /// One open group checkout of "Robotics demo": two still out, one already back.
+    static var runsJSON: String {
+        let started = Sydney.timestamp(Date().addingTimeInterval(-3 * 3600))
+        let back = Sydney.timestamp(Date().addingTimeInterval(-1 * 3600))
+        let loans = ["BAT-00000007": "9a6b7c80-2b3c-4d5e-8f90-112233445566", "BAT-00000014": "5e6f7a8b-9c0d-4e1f-a2b3-c4d5e6f70819",
+                     "BAT-00000016": "1b2c3d4e-5f60-4718-8293-a4b5c6d7e8f9"]
+        let ids = ["BAT-00000007", "BAT-00000014", "BAT-00000016"]
+        func tag(_ id: String) -> String { "nfc:uid:04\(id.suffix(2))7862A62090" }
+        func snap(_ id: String) -> String { "{\"batteryId\":\"\(id)\",\"tagId\":\"\(tag(id))\",\"version\":3,\"name\":\"Battery\",\"model\":\"\"}" }
+        let mappings = ids.map { id in
+            "{\"original\":\(snap(id)),\"actual\":\(snap(id)),\"originalLoanId\":null,\"method\":\"original\",\"source\":{\"kind\":\"selection\"},\"loanId\":\"\(loans[id] ?? "")\",\"loanOrigin\":\"new\",\"specificationMatch\":true,\"differences\":[]}"
+        }.joined(separator: ",")
+        let items = ids.map { id in
+            let returned = id == "BAT-00000014"
+            let status = returned ? "returned" : "outstanding"
+            let returnedAt = returned ? "\"" + back + "\"" : "null"
+            let loan = loans[id] ?? ""
+            return "{\"batteryId\":\"\(id)\",\"loanId\":\"\(loan)\",\"status\":\"\(status)\",\"tagId\":\"\(tag(id))\",\"version\":3,\"returnedAt\":\(returnedAt),\"checkedOutAt\":\"\(started)\",\"originalBatteryId\":\"\(id)\",\"pendingReturn\":false}"
+        }.joined(separator: ",")
+        return """
+        [{"id":"\(runId)","dataset":"demo","actorAccountId":"\(userId)","actorName":"Tim Wu",
+          "teachingGroup":{"id":"\(roboticsId)","version":1,"name":"Robotics demo","ownerAccountId":"\(userId)","operationId":"\(runId)","batteryIds":["BAT-00000007","BAT-00000014","BAT-00000016"]},
+          "requestedBatteryIds":["BAT-00000007","BAT-00000014","BAT-00000016"],
+          "mappings":[\(mappings)],"createdAt":"\(started)","items":[\(items)],"revision":1}]
         """
     }
 

@@ -1,7 +1,7 @@
 import Observation
 import SwiftUI
 
-/// Sends registration, retirement, inspection and teaching-group writes with the same
+/// Sends registration, retirement, inspection, teaching-group and group-checkout writes with the same
 /// exact-request rules as the scan station: save before sending, verify the receipt,
 /// and keep anything unresolved until a retry settles it.
 @MainActor
@@ -78,14 +78,14 @@ final class WriteCenter {
             }
             settle(entry)
             Haptics.confirmed()
-            Task { await app.inventory.refresh() }
+            Task { await self.refreshAfter(entry) }
             return .confirmed(confirmation)
         } catch let failure as APIFailure {
             switch failure.kind {
             case .rejected where !isRetry || failure.isFinalRejection || Self.definitelyRejectedOnRetry(entry, failure):
                 settle(entry)
                 Haptics.refused()
-                Task { await app.inventory.refresh() }
+                Task { await self.refreshAfter(entry) }
                 return .rejected(isRetry ? "Not recorded: \(failure.message)" : failure.message)
             case .unauthorized where !isRetry:
                 // Nothing ran on this attempt.
@@ -118,6 +118,18 @@ final class WriteCenter {
         }
     }
 
+    /// What a settled write can have changed: always the inventory; group checkouts also change runs.
+    private func refreshAfter(_ entry: PendingWrite) async {
+        guard let app else { return }
+        if entry.action == "teaching_checkout" {
+            async let a: Void = app.inventory.refresh()
+            async let b: Void = app.runs.refresh()
+            _ = await (a, b)
+        } else {
+            await app.inventory.refresh()
+        }
+    }
+
     private func settle(_ entry: PendingWrite) {
         app?.pending.remove(id: entry.id)
         pending.removeAll { $0.id == entry.id }
@@ -136,6 +148,10 @@ final class WriteCenter {
 
     static func modelBody(_ dataset: Dataset, payload: NewModelPayload) -> Data? {
         try? JSONEncoder().encode(ModelWrite(dataset: dataset, payload: payload))
+    }
+
+    static func teachingBody<P: Encodable>(_ dataset: Dataset, payload: P) -> Data? {
+        try? JSONEncoder().encode(DatasetWrite(dataset: dataset, payload: payload))
     }
 
     // MARK: Preview support

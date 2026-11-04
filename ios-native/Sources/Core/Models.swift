@@ -256,6 +256,36 @@ struct AuditEvent: Decodable, Identifiable, Sendable {
     let batteryId: String?
     let actorName: String?
     let at: String
+    let details: AuditDetails?
+
+    enum CodingKeys: String, CodingKey { case id, action, batteryId, actorName, at, details }
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        action = try c.decode(String.self, forKey: .action)
+        batteryId = try c.decodeIfPresent(String.self, forKey: .batteryId)
+        actorName = try c.decodeIfPresent(String.self, forKey: .actorName)
+        at = try c.decode(String.self, forKey: .at)
+        // Details vary by action; only the few fields shown are read, and nothing in them can fail the event.
+        details = try? c.decodeIfPresent(AuditDetails.self, forKey: .details)
+    }
+}
+
+/// The parts of an event's details the app shows: which loan, and which teaching group or group checkout.
+struct AuditDetails: Decodable, Sendable {
+    let loanId: String?
+    let groupName: String?
+    let isGroupCheckout: Bool
+
+    private struct Named: Decodable { let name: String? }
+    private struct Identified: Decodable { let id: String? }
+    enum CodingKeys: String, CodingKey { case loanId, teachingGroup, teachingCheckout }
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        loanId = try? c.decodeIfPresent(String.self, forKey: .loanId)
+        groupName = (try? c.decodeIfPresent(Named.self, forKey: .teachingGroup))?.name
+        isGroupCheckout = (try? c.decodeIfPresent(Identified.self, forKey: .teachingCheckout))?.id != nil
+    }
 }
 
 struct LoanRecord: Decodable, Identifiable, Sendable {

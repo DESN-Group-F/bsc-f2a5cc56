@@ -8,6 +8,8 @@ struct ScanView: View {
     @State private var gaze: CGPoint?
     @State private var gazeToken = 0
     @State private var inkFrame: CGRect = .zero
+    /// A scanned battery is in several groups: which one to check out.
+    @State private var groupChoice: [TeachingGroup] = []
 
     private var scan: ScanModel { app.scan }
     private var isDone: Bool { if case .done = scan.phase { return true } else { return false } }
@@ -66,6 +68,14 @@ struct ScanView: View {
             }
         } message: { kind in
             Text(switchMessage(kind))
+        }
+        .confirmationDialog("Check out which group?", isPresented: Binding(get: { !groupChoice.isEmpty }, set: { if !$0 { groupChoice = [] } }),
+                            titleVisibility: .visible) {
+            ForEach(groupChoice) { group in
+                Button(group.name) { openGroupCheckout(group.id) }
+            }
+        } message: {
+            Text("This battery is in more than one of your groups. The list is cleared and the group's review opens; nothing is checked out until you confirm there.")
         }
         .task { await scan.reconcileUncertain() }
 
@@ -141,13 +151,43 @@ struct ScanView: View {
     // MARK: Header
 
     private var header: some View {
-        HStack {
+        HStack(spacing: 10) {
             DatasetMenu()
             Spacer()
             if app.inventory.loading && app.inventory.snapshot == nil {
                 ProgressView().controlSize(.small)
                     .frame(width: 40, height: 40)
             }
+            if scan.mode == .checkout || scan.mode == .return {
+                GroupsButton()
+                    .transition(.opacity.combined(with: .scale(scale: 0.9)))
+            }
+        }
+        .animation(.snappy, value: scan.mode)
+    }
+
+    /// Takes the scan suggestion: the list is cleared and the group's own review opens.
+    private func openGroupCheckout(_ id: String) {
+        groupChoice = []
+        scan.dismissNotice()
+        scan.clear()
+        app.groupFlow = .checkout(groupId: id)
+    }
+
+    private func takeNoticeAction(_ notice: ScanModel.Notice) {
+        switch notice.action {
+        case .register:
+            scan.dismissNotice()
+            scan.registerUnregisteredTag()
+        case .groupCheckout(let ids):
+            let groups = ids.compactMap { id in app.inventory.groups.first { $0.id == id } }
+            if groups.count == 1 { openGroupCheckout(groups[0].id) } else if groups.count > 1 { groupChoice = groups } else { scan.dismissNotice() }
+        case .returnRun(let id):
+            scan.dismissNotice()
+            scan.clear()
+            app.groupFlow = .returnRun(runId: id)
+        case nil:
+            scan.dismissNotice()
         }
     }
 
@@ -222,10 +262,13 @@ struct ScanView: View {
 
             if isDone, case let .done(summary) = scan.phase {
                 ScrollView {
-                    DoneSummaryView(summary: summary)
-                        .padding(.horizontal, 16)
-                        .padding(.top, 20)
-                        .padding(.bottom, 16)
+                    VStack(spacing: 14) {
+                        DoneSummaryView(summary: summary)
+                        SaveAsGroupCard(summary: summary)
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 20)
+                    .padding(.bottom, 16)
                 }
                 .scrollBounceBehavior(.basedOnSize)
                 .scrollIndicators(.hidden)
@@ -259,11 +302,6 @@ struct ScanView: View {
                             .transition(.opacity)
                     }
                 }
-                if scan.notice == nil, let group = scan.group {
-                    Label(group.name, systemImage: "person.3.fill")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                }
             } else {
                 Text(emptyTitle)
                     .font(.title.weight(.bold))
@@ -277,11 +315,8 @@ struct ScanView: View {
                 }
             }
             if let notice = scan.notice {
-                NoticeCapsule(notice: notice) {
-                    if notice.actionTitle == "Register" {
-                        scan.dismissNotice()
-                        scan.registerUnregisteredTag()
-                    }
+                NoticeCapsule(notice: notice, tint: noticeTint(notice), onTint: notice.action.map(noticeOnTint) ?? .white) {
+                    takeNoticeAction(notice)
                 } onDismiss: {
                     scan.dismissNotice()
                 }
@@ -290,6 +325,19 @@ struct ScanView: View {
             }
         }
         .frame(minHeight: 32)
+    }
+
+    private func noticeTint(_ notice: ScanModel.Notice) -> Color {
+        switch notice.action {
+        case .groupCheckout: return Tone.checkout
+        case .returnRun: return Tone.returning
+        default: return Tone.failure
+        }
+    }
+
+    private func noticeOnTint(_ action: ScanModel.NoticeAction) -> Color {
+        if case .returnRun = action { return Tone.returnInk }
+        return .white
     }
 
     private var alternatives: some View {
@@ -505,6 +553,8 @@ struct DatasetMenu: View {
 
 struct NoticeCapsule: View {
     let notice: ScanModel.Notice
+    var tint: Color = Tone.failure
+    var onTint: Color = .white
     var action: () -> Void
     var onDismiss: () -> Void = {}
 
@@ -514,11 +564,11 @@ struct NoticeCapsule: View {
             Text(notice.text).lineLimit(2)
             if let title = notice.actionTitle {
                 Button(action: action) {
-                    Text(title).font(.footnote.weight(.bold)).foregroundStyle(.white)
+                    Text(title).font(.footnote.weight(.bold)).foregroundStyle(onTint).fixedSize()
                 }
                 .buttonStyle(.borderedProminent)
                 .buttonBorderShape(.capsule)
-                .tint(Tone.failure)
+                .tint(tint)
                 .controlSize(.small)
                 Button(action: onDismiss) {
                     Image(systemName: "xmark").font(.caption.weight(.bold)).foregroundStyle(.secondary)
@@ -538,6 +588,10 @@ struct NoticeCapsule: View {
     }
 
     private var icon: String {
+        switch notice.action {
+        case .groupCheckout, .returnRun: return "person.3.fill"
+        default: break
+        }
         switch notice.kind {
         case .duplicate: return "questionmark.circle"
         case .refused: return "exclamationmark.circle"

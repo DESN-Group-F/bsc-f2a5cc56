@@ -114,6 +114,9 @@ struct MainTabs: View {
         .sheet(item: $app.registration) { request in
             RegisterBatteryView(request: request)
         }
+        .sheet(item: $app.groupFlow) { flow in
+            GroupFlowSheet(flow: flow)
+        }
     }
 }
 
@@ -191,6 +194,14 @@ struct PreviewStandalone: View {
             RetireSheet(batteryIds: ["BAT-00000009", "BAT-00000010"])
         case .groupEditor:
             GroupEditorSheet(group: app.inventory.groups.first)
+        case .groupsHub:
+            GroupFlowSheet(flow: .hub)
+        case .groupCheckout, .groupCheckoutFilled:
+            GroupFlowSheet(flow: .checkout(groupId: PreviewFixtures.groupId))
+        case .groupCheckoutOpen:
+            GroupFlowSheet(flow: .checkout(groupId: PreviewFixtures.roboticsId))
+        case .groupReturn:
+            GroupFlowSheet(flow: .returnRun(runId: PreviewFixtures.runId))
         case .filter:
             InventoryFilterSheet(filter: $filter)
         case .inkPlayground:

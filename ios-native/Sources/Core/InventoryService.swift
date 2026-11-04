@@ -88,7 +88,6 @@ struct MovementPayload: Encodable, Sendable {
     let expectedLoans: [ExpectedLoan]?
     let scan: ScanContext?
     let returnRoom: RoomReference?
-    var teachingGroup: GroupReference? = nil
 }
 
 struct InventoryWrite<Payload: Encodable>: Encodable {
