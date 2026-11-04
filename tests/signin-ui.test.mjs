@@ -105,14 +105,14 @@ test("sign-in validates username shape and password bounds without imposing setu
 });
 
 test("password-manager form values are submitted unchanged and only server-confirmed access navigates", async () => {
-  const h = harness(async (_url, options) => response(options?.method === "POST" ? { user: { id: "staff" } } : { user: null, setupRequired: false }), "?return_to=%2Fnfc-test%3Fdataset%3Ddemo");
+  const h = harness(async (_url, options) => response(options?.method === "POST" ? { user: { id: "staff" } } : { user: null, setupRequired: false }), "?return_to=%2Fconsole%3Farea%3Dbatteries");
   const tree = await h.ready();
   assert.equal(input(tree, "username").props.autoComplete, "username");
   assert.equal(input(tree, "password").props.autoComplete, "current-password");
   const password = "  test-password-only  ";
   await submit(tree, { username: "  Fictional-Staff  ", password });
   assert.deepEqual(JSON.parse(h.calls[1].options.body), { action: "signin", payload: { username: "Fictional-Staff", password } });
-  assert.deepEqual(h.destinations, ["/nfc-test?dataset=demo"]);
+  assert.deepEqual(h.destinations, ["/console?area=batteries"]);
   assert.equal(h.render().props["data-phase"], "opening");
   h.unmount();
 });

@@ -41,8 +41,8 @@ test('browser typed teaching input preserves exact keyboard tag attribution with
 });
 
 test('browser native selection exposes no typed fallback or reader control until the parent explicitly changes source', async () => {
-    const chosen = [], props = { source: 'native_nfc', onChooseTag: (tag, source) => chosen.push({ tag, source }) }, view = mount(null, props);
-    assert.match(text(view.render()), /Native NFC is unavailable in this browser/);
+    const chosen = [], props = { source: 'native_nfc', nfcEnabled: true, onChooseTag: (tag, source) => chosen.push({ tag, source }) }, view = mount(null, props);
+    assert.match(text(view.render()), /NFC scanning isn.t supported on this device or browser/);
     assert.match(text(view.render()), /Choose Entered tag or Inventory selection above/);
     assert.equal(nodes(view.render()).some(node => node.type === 'Input'), false);
     assert.equal(button(view.render(), 'Read NFC tag'), undefined);
@@ -58,7 +58,7 @@ test('browser native selection exposes no typed fallback or reader control until
 test('controlled native read stages a proposal; explicit adoption alone calls the alternative selector', async () => {
     const chosen = [], busy = [], value = proposal(); let adopts = 0;
     const bridge = { getAvailability: available, read: async () => value, cancel: async () => {}, adopt: async adopted => { adopts++; assert.deepEqual(adopted, value); return { ...adopted, adoptedAt: '2026-10-08T05:00:03.000Z' }; } };
-    const view = mount(bridge, { source: 'native_nfc', onChooseTag: (tag, source) => chosen.push({ tag, source }), onBusyChange: value => busy.push(value) });
+    const view = mount(bridge, { source: 'native_nfc', nfcEnabled: true, onChooseTag: (tag, source) => chosen.push({ tag, source }), onBusyChange: value => busy.push(value) });
     view.render(); await Promise.resolve();
     await button(view.render(), 'Read NFC tag').props.onClick();
     assert.equal(chosen.length, 0); assert.equal(adopts, 0); assert.match(text(view.render()), /This read has not selected or borrowed a battery/);
@@ -72,7 +72,7 @@ test('controlled native read stages a proposal; explicit adoption alone calls th
 test('unknown inventory or explicit-source mismatch keeps the proposal and failed reads never select a battery', async () => {
     const value = proposal(); let calls = 0;
     const bridge = { getAvailability: available, read: async () => value, cancel: async () => {}, adopt: async adopted => ({ ...adopted, adoptedAt: '2026-10-08T05:00:03.000Z' }) };
-    const view = mount(bridge, { source: 'native_nfc', onChooseTag: () => { calls++; throw new Error('Controlled unknown tag or source switch required'); } });
+    const view = mount(bridge, { source: 'native_nfc', nfcEnabled: true, onChooseTag: () => { calls++; throw new Error('Controlled unknown tag or source switch required'); } });
     view.render(); await Promise.resolve(); await button(view.render(), 'Read NFC tag').props.onClick();
     await button(view.render(), 'Use this NFC read').props.onClick();
     assert.equal(calls, 1); assert.match(text(view.render()), /Controlled unknown tag/); assert.ok(button(view.render(), 'Use this NFC read'));
@@ -85,11 +85,19 @@ test('unknown inventory or explicit-source mismatch keeps the proposal and faile
 test('controlled NFC cancellation unlocks the reader without selecting or committing a battery', async () => {
     let rejectRead, selected = 0, cancels = 0;
     const bridge = { getAvailability: available, read: () => new Promise((_, reject) => { rejectRead = reject; }), cancel: async () => { cancels++; rejectRead(new Error('Controlled cancellation')); }, adopt: async () => { throw new Error('No read'); } };
-    const view = mount(bridge, { source: 'native_nfc', onChooseTag: () => { selected++; } }); view.render(); await Promise.resolve();
+    const view = mount(bridge, { source: 'native_nfc', nfcEnabled: true, onChooseTag: () => { selected++; } }); view.render(); await Promise.resolve();
     const reading = button(view.render(), 'Read NFC tag').props.onClick();
     assert.equal(button(view.render(), 'Reading NFC…').props.disabled, true);
     await button(view.render(), 'Cancel NFC read').props.onClick(); await reading;
     assert.equal(cancels, 1); assert.equal(selected, 0); assert.match(text(view.render()), /Controlled cancellation/);
     assert.equal(button(view.render(), 'Read NFC tag').props.disabled, false);
+    view.unmount();
+});
+
+test('outside the Demonstration inventory the NFC source offers no reader even where one exists', async () => {
+    let reads = 0; const bridge = { getAvailability: available, read: async () => { reads++; return proposal(); }, cancel: async () => {}, adopt: async value => value };
+    const view = mount(bridge, { source: 'native_nfc', nfcEnabled: false, onChooseTag() { assert.fail('nothing can be chosen'); } });
+    assert.match(text(view.render()), /demonstration offered only in the Demonstration inventory/);
+    assert.equal(button(view.render(), 'Read NFC tag'), undefined); assert.equal(reads, 0);
     view.unmount();
 });

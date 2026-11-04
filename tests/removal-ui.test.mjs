@@ -34,8 +34,8 @@ const retiredActions = await import(pathToFileURL(join(scratch, "retired-asset-a
 const workflowStorage = await import(pathToFileURL(join(scratch, "client/workflow-storage.mjs")));
 const source = await readFile(new URL("../components/inventory/removal-station.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
-const ui = Object.fromEntries(["BatteryFilterControls", "CheckCircle2", "LogOut", "ScanLine", "Trash2", "Button", "Checkbox", "Input", "Label", "Textarea", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow"].map(name => [name, name]));
-Object.assign(ui, { ReceiptAction: "Button", RetiredAssetActionDialog: "RetiredAssetActionDialog", historyStyles: new Proxy({}, { get: (_, name) => String(name) }) });
+const ui = Object.fromEntries(["BatteryFilterControls", "NfcScanPanel", "CheckCircle2", "LogOut", "ScanLine", "Trash2", "Button", "Checkbox", "Input", "Label", "Textarea", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow"].map(name => [name, name]));
+Object.assign(ui, { ReceiptAction: "Button", useNfcScanOffered: dataset => dataset === "demo", RetiredAssetActionDialog: "RetiredAssetActionDialog", historyStyles: new Proxy({}, { get: (_, name) => String(name) }) });
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 function hooks() {
     const state = [], effects = [];
@@ -83,18 +83,35 @@ function queue(view, id) { nodes(view.render()).find(node => node.type === "Butt
 function reason(view, value = "Retired after staff review") { control(view.render(), "removal-reason").props.onChange({ target: { value } }); }
 function setTag(view, value) { control(view.render(), "removal-tag").props.onChange({ target: { value } }); }
 
-test("recovered native removal keeps its source and evidence for reviewed confirmation and exact retry without typed acquisition", async () => environment(async ({ entries }) => {
+test("NFC scan is a Demonstration-only removal source whose reads queue registered batteries with their own evidence", async () => environment(async ({ entries }) => {
+    const live = mount({ data: fixture("live") }); assert.equal(button(live.render(), "NFC scan"), undefined); assert.equal(nodes(live.render()).find(node => node.type === "NfcScanPanel"), undefined); live.unmount();
+    const evidenceFor = uid => ({ attemptId: crypto.randomUUID(), source: "native-nfc-reader", platform: "android", startedAt: "2026-11-04T00:00:00.000Z", endedAt: "2026-11-04T00:00:01.000Z", adoptedAt: "2026-11-04T00:00:02.000Z", tagId: `nfc:uid:${uid}`, result: { uidHex: uid, technology: "Web NFC (Chrome on Android)", ndefStatus: "unknown", capacityBytes: null, records: [], observedAt: "2026-11-04T00:00:01.000Z" } });
+    const evidence = evidenceFor("04A1B2C3D4E5F6"), data = fixture("demo"); data.batteries[0] = { ...data.batteries[0], tagId: evidence.tagId };
+    const sent = [], view = mount({ data, async write(action, payload) { sent.push(structuredClone(payload)); return receipt(payload, { dataset: "demo" }); } });
+    button(view.render(), "NFC scan").props.onClick(); assert.equal(savedDraft(entries, "demo").source, "native_nfc");
+    const panel = () => nodes(view.render()).find(node => node.type === "NfcScanPanel");
+    assert.equal(panel().props.dataset, "demo"); assert.equal(panel().props.disabled, false);
+    const unknown = evidenceFor("0A0B0C0D"); panel().props.onRead(unknown.tagId, unknown);
+    assert.equal(savedDraft(entries, "demo").items.length, 0); assert.match(text(view.render()), /does not identify exactly one registered battery/);
+    panel().props.onRead(evidence.tagId, evidence);
+    assert.deepEqual(savedDraft(entries, "demo").items.map(item => [item.batteryId, item.nfcEvidence]), [[data.batteries[0].id, evidence]]); assert.equal(sent.length, 0);
+    assert.equal(button(view.render(), "Tag entry").props.disabled, true, "a queue keeps one input source");
+    reason(view, "Reviewed after NFC scan"); await button(view.render(), "Confirm selected").props.onClick();
+    assert.equal(sent[0].source, "native_nfc"); assert.deepEqual(sent[0].items[0].nfcEvidence, evidence); view.unmount();
+}));
+
+test("recovered NFC removal keeps its source and evidence for reviewed confirmation and exact retry without typed acquisition", async () => environment(async ({ entries }) => {
     const evidence = { attemptId: crypto.randomUUID(), source: "native-nfc-reader", platform: "android", startedAt: "2026-10-03T00:00:00.000Z", endedAt: "2026-10-03T00:00:01.000Z", adoptedAt: "2026-10-03T00:00:02.000Z", tagId: "nfc:uid:01020304", result: { uidHex: "01020304", technology: "NfcA", ndefStatus: "unknown", capacityBytes: null, records: [], observedAt: "2026-10-03T00:00:01.000Z" } };
     const data = fixture("demo"), native = { ...data.batteries[0], tagId: evidence.tagId }; data.batteries[0] = native;
     entries.set(removalDraft.removalDraftStorageKey("removal-native-actor", "demo"), JSON.stringify(removalDraft.captureRemovalDraft({ actorAccountId: "removal-native-actor", dataset: "demo", source: "native_nfc", kind: "scrapped", reason: "", destination: "", items: [{ batteryId: native.id, tagId: native.tagId, version: native.version, name: native.name, nfcEvidence: evidence }], selectedIds: [native.id] })));
     const sent = []; let complete = false;
     const write = async (action, payload) => { sent.push(structuredClone(payload)); if (!complete) throw new Error("Controlled missing native receipt"); return receipt(payload, { dataset: "demo" }); };
     const view = mount({ data, write });
-    assert.match(text(view.render()), /Native NFC input is unavailable in this browser/); assert.equal(control(view.render(), "removal-tag"), undefined); assert.equal(button(view.render(), "Read NFC tag"), undefined); assert.equal(sent.length, 0);
+    assert.equal(nodes(view.render()).find(node => node.type === "NfcScanPanel").props.dataset, "demo"); assert.equal(control(view.render(), "removal-tag"), undefined); assert.equal(button(view.render(), "Read NFC tag"), undefined); assert.equal(sent.length, 0);
     assert.equal(button(view.render(), "Manual selection").props.disabled, true); reason(view, "Reviewed native evidence");
     await button(view.render(), "Confirm selected").props.onClick(); const captured = structuredClone(sent[0]); assert.equal(captured.source, "native_nfc"); assert.deepEqual(captured.items[0].nfcEvidence, evidence); view.unmount();
     complete = true; const resumed = mount({ data, write }); await button(resumed.render(), "Retry exact removal").props.onClick(); assert.deepEqual(sent[1], captured);
-    const history = nodes(resumed.render()).find(node => node.props.className === "removal-results"); assert.match(text(history), /Native NFC/); assert.doesNotMatch(text(history), /Typed tag input|Manual selection/);
+    const history = nodes(resumed.render()).find(node => node.props.className === "removal-results"); assert.match(text(history), /NFC scan/); assert.doesNotMatch(text(history), /Typed tag input|Manual selection/);
     assert.equal(savedDraft(entries, "demo").items.length, 0); button(resumed.render(), "Manual selection").props.onClick(); assert.equal(savedDraft(entries, "demo").source, "manual_selection"); resumed.unmount();
 }));
 

@@ -14,6 +14,7 @@ import { inventoryResponse } from "../work/qa/client/inventory-request.mjs";
 // Execute real component handlers with inert visual boundaries; browser and NFC hardware are verified separately.
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 const ui = Object.fromEntries(["ArrowRight", "ArrowRightLeft", "ChevronDown", "RotateCcw", "MotionDisclosure", "LoadingState", "Input", "RefreshCw", "Button", "Checkbox", "Label", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "BatteryFilterControls", "TeachingNfcInput"].map(name => [name, name]));
+ui.useNfcScanOffered = dataset => dataset === "demo";
 function hooks() {
     const state = [], effects = []; let pointer = 0, effectPointer = 0, pending = [];
     return {
@@ -97,6 +98,11 @@ test("missing strict alternative supports shared filters, unknown manual specifi
     assert.deepEqual(page.data.teachingGroups[0].batteryIds, ["BAT-A", "BAT-B"]); assert.equal(page.changed.length, 1); assert.equal(page.entries.size, 0);
 });
 
+test("Working inventory offers no NFC scan source for alternatives; only typed tags and selection", async () => {
+    const entries = new Map(), data = { ...fixture(), dataset: "live" }, page = await view({ entries, data }); chooseOriginal(page.render()); button(page.render(), "Choose").props.onClick();
+    assert.equal(nodes(page.render()).find(node => node.type === "Button" && content(node) === "NFC scan"), undefined); button(page.render(), "Entered tag"); button(page.render(), "Inventory selection");
+});
+
 test("explicit source switching clears only manual alternatives; exact tag and native evidence survive draft refresh", async () => {
     const entries = new Map(), data = fixture(), page = await view({ entries, data }); chooseOriginal(page.render()); button(page.render(), "Choose").props.onClick();
     button(page.render(), "Entered tag").props.onClick(); assert.match(content(page.render()), /Switching source clears/); assert.match(content(page.render()), /2 actual batteries selected/);
@@ -104,7 +110,7 @@ test("explicit source switching clears only manual alternatives; exact tag and n
     assert.equal(nativeInput(page.render()).props.source, "tag");
     assert.equal(nativeInput(page.render()).key, "tag");
     await nativeInput(page.render()).props.onChooseTag("nfc:uid:01020304", { kind: "tag" }); assert.match(content(page.render()), /Entered registered tag/);
-    button(page.render(), "Native NFC").props.onClick(); button(page.render(), "Switch source and clear manual choices").props.onClick();
+    button(page.render(), "NFC scan").props.onClick(); button(page.render(), "Switch source and clear manual choices").props.onClick();
     assert.equal(nativeInput(page.render()).props.source, "native_nfc");
     assert.equal(nativeInput(page.render()).key, "native_nfc");
     const evidence = { attemptId: crypto.randomUUID(), source: "native-nfc-reader", platform: "android", startedAt: at, endedAt: at, adoptedAt: at, tagId: "nfc:uid:01020304", result: { uidHex: "01020304", technology: "NfcA", ndefStatus: "unknown", capacityBytes: null, records: [], observedAt: at } };

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { createWebNfcBridge } from "./web-nfc";
 
 const deviceTime = z.string().datetime({ offset: true });
 const uidHex = z.string().regex(/^(?:[0-9A-F]{8}|[0-9A-F]{14}|[0-9A-F]{20})$/);
@@ -35,6 +36,8 @@ export type TeachingNfcBridge = {
     read(): Promise<TeachingNfcProposal>;
     cancel(): Promise<void>;
     adopt(proposal: TeachingNfcProposal): Promise<TeachingNfcEvidence>;
+    /** Optional continuous listening (the browser reader): one scan for many reads; returns a stop function. */
+    listen?(onProposal: (proposal: TeachingNfcProposal) => void, onFailure: (reason: unknown) => void): () => void;
 };
 
 export function validateTeachingNfcTag(evidence: unknown, tagId: string | null): TeachingNfcEvidence {
@@ -43,8 +46,17 @@ export function validateTeachingNfcTag(evidence: unknown, tagId: string | null):
     return value;
 }
 
-/** Only the mobile runtime installs a native bridge; browsers have no inferred reader. */
+let browserBridge: TeachingNfcBridge | null | undefined;
+
+/**
+ * A mobile runtime may install a native bridge. Otherwise the browser's own Web NFC reader is
+ * used where it exists (Chrome on Android, top-level page); elsewhere there is no reader.
+ * The browser bridge is created once so its identity stays stable across renders.
+ */
 export function teachingNfcBridge(): TeachingNfcBridge | null {
     if (typeof window === "undefined") return null;
-    return (window as Window & { __batteryTeachingNfc?: TeachingNfcBridge }).__batteryTeachingNfc ?? null;
+    const native = (window as Window & { __batteryTeachingNfc?: TeachingNfcBridge }).__batteryTeachingNfc;
+    if (native) return native;
+    if (browserBridge === undefined) browserBridge = createWebNfcBridge();
+    return browserBridge;
 }

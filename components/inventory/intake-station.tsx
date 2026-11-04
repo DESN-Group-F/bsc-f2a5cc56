@@ -2,7 +2,7 @@
 import { getRolePermissions } from "@/lib/permissions";
 
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, LogOut, ScanLine } from "lucide-react";
+import { CheckCircle2, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ReceiptAction, type ReceiptConfirmation } from "@/components/ui/receipt-action";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { TeachingGroupsPanel } from "./teaching-groups-panel";
+import { NfcScanPanel, useNfcScanOffered } from "./nfc-scan-panel";
+import type { TeachingNfcEvidence } from "@/lib/teaching-nfc";
 import { RecordPicker } from "./record-picker";
 import { BatteryModelPicker } from "./battery-model-picker";
 import { BatteryFilterControls } from "./battery-filter-controls";
@@ -35,7 +37,7 @@ function message(error: unknown) {
 }
 function stringFields(common: IntakeCommon) { return Object.fromEntries(Object.entries(common).filter(([key]) => key !== "modelSelection").map(([key, value]) => [key, value == null ? "" : String(value)])); }
 function firstUseLabel(mode: FirstUseMode, date: string | null) { return mode === "at_registration" ? "Each battery's confirmation date" : mode === "date" ? date || "Not recorded" : "Not recorded"; }
-function intakeSourceLabel(source: IntakeQueueEntry["source"]) { return source === "native_nfc" ? "Native NFC" : "Simulated intake (demo)"; }
+function intakeSourceLabel(source: IntakeQueueEntry["source"]) { return source === "native_nfc" ? "NFC scan" : "Simulated intake (demo, earlier)"; }
 function intakeEntrySource(entry: IntakeQueueEntry) { return entry.source === "native_nfc" ? { source: entry.source, nfcEvidence: entry.nfcEvidence } : entry.source ? { source: entry.source } : {}; }
 function emptyDraft(actorAccountId: string): IntakeDraftSession { return { actorAccountId, dataset: "demo", batch: null, entries: [], attempt: null, attemptEntryId: null, completed: [] }; }
 
@@ -57,7 +59,7 @@ function emptyDraft(actorAccountId: string): IntakeDraftSession { return { actor
 function IntakeField({ input, keyName, label, prefix, change, disabled, type, required }: { input: Record<string, string>; keyName: string; label: string; prefix: string; change: (key: string, value: string) => void; disabled: boolean; type: string; required: boolean }) { return formField(input, keyName, label, prefix, change, disabled, type, required); }
 
 export function IntakeStation({ data, write, onExit, onRegistered, paused = false }: IntakeStationProps) {
-    const [context] = useState(() => ({ dataset: data.dataset, actorAccountId: data.user.id }));
+    const [context] = useState(() => ({ dataset: data.dataset, actorAccountId: data.user.id })), nfcOffered = useNfcScanOffered(data.dataset);
     const contextMatches = context.dataset === data.dataset && context.actorAccountId === data.user.id;
     const storageKey = intakeStorageKey(context.actorAccountId, context.dataset);
     const [recovery] = useState(() => {
@@ -73,7 +75,6 @@ export function IntakeStation({ data, write, onExit, onRegistered, paused = fals
     const [modelSelection, setModelSelection] = useState<ModelSelection | null>(recovery.draft?.batch?.common.modelSelection || null);
     const [appliedModel, setAppliedModel] = useState<BatteryModelChoice | null>(null);
     const [modelBusy, setModelBusy] = useState(false), [busy, setBusy] = useState(false);
-    const [tag, setTag] = useState("");
     const [groupEditor, setGroupEditor] = useState<string[] | null>(null), [completedGroupIds, setCompletedGroupIds] = useState<string[]>([]);
     const [completedFilters, setCompletedFilters] = useState<InventoryFilter>(() => ({ ...defaultInventoryFilter(), lifecycle: "all" }));
     const [registrationConfirmation, setRegistrationConfirmation] = useState<ReceiptConfirmation | null>(null);
@@ -85,9 +86,11 @@ export function IntakeStation({ data, write, onExit, onRegistered, paused = fals
     const batch = draft.batch, attempt = draft.attempt;
     const locked = busy || modelBusy || paused || !contextMatches || recovery.invalid;
     const queueLocked = locked || !!attempt || !!storageCandidate || !!storageError || !!editing;
-    const configLocked = queueLocked || !!batch || draft.entries.some(entry => entry.source === "native_nfc");
+    // New batches are NFC batches; drafts left from the retired simulated intake are finished first.
+    const legacyEntries = draft.entries.some(entry => entry.source !== "native_nfc");
+    const configLocked = queueLocked || !!batch || legacyEntries;
     const selected = draft.entries.filter(entry => entry.selected);
-    const nativeQueue = batch?.source === "native_nfc" || draft.entries.some(entry => entry.source === "native_nfc");
+    const legacyBatch = !!batch && batch.source !== "native_nfc";
     const completedIds = new Set(draft.completed.map(receipt => receipt.batteryId));
     const completedMatches = getFilteredBatteries(data, completedFilters, data.batteries.filter(battery => completedIds.has(battery.id)));
     const filteredCompletedIds = new Set(completedMatches.batteries.map(battery => battery.id));
@@ -125,7 +128,7 @@ export function IntakeStation({ data, write, onExit, onRegistered, paused = fals
     function restoreRecovery() {
         if (locked || running.current || !storageCandidate || !persist(storageCandidate)) return;
         if (storageCandidate.batch) { setValues(stringFields(storageCandidate.batch.common)); setFirstUseMode(storageCandidate.batch.firstUseMode); setModelSelection(storageCandidate.batch.common.modelSelection || null); setAppliedModel(null); }
-        setEditing(null); editor.current = null; setEditError(""); setTag(""); setNotice("Intake draft recovery restored. Review pending entries before confirming.");
+        setEditing(null); editor.current = null; setEditError(""); setNotice("Intake draft recovery restored. Review pending entries before confirming.");
     }
     function ownerLabel(ownerId: string) {
         const person = data.people.find(person => person.id === ownerId), account = data.staffDirectory.find(account => account.id === person?.accountId);
@@ -158,27 +161,26 @@ export function IntakeStation({ data, write, onExit, onRegistered, paused = fals
         event.preventDefault();
         if (configLocked || storageBlocked.current || running.current || data.dataset !== "demo") return;
         try {
-            if (current.current.entries.some(entry => entry.source === "native_nfc")) throw new Error("Confirm or remove the Native NFC drafts before starting a simulated intake batch in this browser.");
+            if (current.current.entries.some(entry => entry.source !== "native_nfc")) throw new Error("Confirm or remove the earlier simulated drafts before scanning new batteries.");
             const common = commonFrom(values, firstUseMode, modelSelection);
-            if (persist({ ...current.current, batch: { sessionId: crypto.randomUUID(), common, firstUseMode } })) { setError(""); setNotice("Common details confirmed for new draft scans. Scanning does not register a battery; review the queue and confirm it when ready."); }
+            if (persist({ ...current.current, batch: { sessionId: crypto.randomUUID(), common, firstUseMode, source: "native_nfc" } })) { setError(""); setNotice("Common details confirmed for new draft scans. Scanning does not register a battery; review the queue and confirm it when ready."); }
         } catch (error) { setError(message(error)); }
     }
     function changeCommonDetails() {
         if (queueLocked || storageBlocked.current || running.current || current.current.attempt) return;
-        if (current.current.entries.some(entry => entry.source === "native_nfc")) { setError("Confirm or remove the Native NFC drafts before preparing another input source in this browser."); return; }
-        if (persist({ ...current.current, batch: null })) { setTag(""); setError(""); setNotice("Change common details for subsequent scans. Existing queued entries keep their own reviewed details."); }
+        if (persist({ ...current.current, batch: null })) { setError(""); setNotice("Change common details for subsequent scans. Existing queued entries keep their own reviewed details."); }
     }
-    function queueTag(identifier: string) {
+    function queueRead(tagId: string, nfcEvidence: TeachingNfcEvidence) {
         if (queueLocked || running.current || storageBlocked.current || editor.current || current.current.attempt || data.dataset !== "demo" || !current.current.batch) return;
         try {
-            if (current.current.batch.source === "native_nfc" || current.current.entries.some(entry => entry.source === "native_nfc")) throw new Error("Confirm or remove the Native NFC drafts before preparing a simulated intake queue in this browser.");
-            const tagId = identifier.trim(), currentDraft = current.current, configuration = currentDraft.batch!;
-            if (currentDraft.entries.some(entry => entry.tagId === tagId) || currentDraft.completed.some(receipt => receipt.tagId === tagId) || data.batteries.some(battery => battery.tagId === tagId)) throw new Error("This tag is already queued or registered. Scan a different new battery.");
+            if (current.current.batch.source !== "native_nfc" || current.current.entries.some(entry => entry.source !== "native_nfc")) throw new Error("Confirm or remove the earlier simulated drafts, then choose Change common details before scanning new batteries.");
+            const currentDraft = current.current, configuration = currentDraft.batch!;
+            if (currentDraft.entries.some(entry => entry.tagId === tagId) || currentDraft.completed.some(receipt => receipt.tagId === tagId) || data.batteries.some(battery => battery.tagId === tagId)) throw new Error(`${tagId} is already queued or registered. Scan a different new battery.`);
             if (currentDraft.entries.length >= 200) throw new Error("Confirm or remove queued drafts before adding more than 200 entries.");
-            const scannedAt = new Date().toISOString();
-            const checked = intakePayloadSchema.parse({ requestId: crypto.randomUUID(), sessionId: configuration.sessionId, tagId, scannedAt, common: configuration.common, firstUseMode: configuration.firstUseMode });
-            const entry: IntakeQueueEntry = { id: crypto.randomUUID(), tagId: checked.tagId, scannedAt, common: checked.common, firstUseMode: checked.firstUseMode, sessionId: checked.sessionId, selected: true, error: "" };
-            if (persist({ ...currentDraft, entries: [...currentDraft.entries, entry] })) { setTag(""); setError(""); setNotice(entry.tagId + " added to the draft queue. Review or edit it before confirmation."); }
+            const scannedAt = nfcEvidence.result.observedAt;
+            const checked = intakePayloadSchema.parse({ requestId: crypto.randomUUID(), sessionId: configuration.sessionId, tagId, scannedAt, common: configuration.common, firstUseMode: configuration.firstUseMode, source: "native_nfc", nfcEvidence });
+            const entry: IntakeQueueEntry = { id: crypto.randomUUID(), tagId: checked.tagId, scannedAt, common: checked.common, firstUseMode: checked.firstUseMode, sessionId: checked.sessionId, source: "native_nfc", nfcEvidence, selected: true, error: "" };
+            if (persist({ ...currentDraft, entries: [...currentDraft.entries, entry] })) { setError(""); setNotice(entry.tagId + " added to the draft queue. Review or edit it before confirmation."); }
         } catch (error) { setError(message(error)); }
     }
     function chooseEntries(ids: string[], checked: boolean) {
@@ -269,16 +271,16 @@ export function IntakeStation({ data, write, onExit, onRegistered, paused = fals
 
     return <section className="intake-station" aria-busy={busy}>
         <div className="scan-station-header station-exit-bar"><div><h2>First-time battery intake</h2><p>Scan into an editable draft queue, then confirm selected entries or the whole queue. Existing batteries use Scan return.</p><p className="station-exit-hint">{busy || modelBusy ? "Saving. Wait for the result before leaving." : editing ? "Finish or close the draft editor to exit intake." : storageError || storageCandidate ? "Restore the recovery storage before exiting intake." : "Choose Exit intake to restore sidebar navigation. Your staged queue is kept in this tab."}</p></div><Button type="button" size="lg" className="station-exit-button" onClick={() => { if (!busy && !modelBusy && !storageBlocked.current && !editor.current) onExit(); }} disabled={busy || modelBusy || !!storageError || !!storageCandidate || !!editing}><LogOut size={20}/>Exit intake</Button></div>
-        <div className="scan-station-info connection-message"><ScanLine size={18}/><span><strong>Hardware tag reading is unavailable in this browser.</strong> {data.dataset === "demo" ? "Simulated intake is demo-only and collects draft entries. Permanent battery IDs, registration records and default service dates are created after confirmation." : "This browser offers batch intake only in Demonstration inventory. Use Register battery for Working inventory."}</span></div>
+        <p className="field-hint">{data.dataset === "demo" && !nfcOffered ? "NFC scanning is not offered on this page (for example inside an embedded tab). Open the application in the browser on an Android phone to scan, or use Register battery." : data.dataset === "demo" ? "Batch intake is a demonstration: new batteries are added by scanning their NFC tags (Chrome on Android). Each scan becomes a draft; permanent battery IDs, registration records and default service dates are created only after confirmation. To register a battery by hand, use Register battery." : "Batch intake by NFC scan is a demonstration available only in the Demonstration inventory. Use Register battery for Working inventory."}</p>
         {!contextMatches && <p role="alert" className="form-error">The inventory or account changed. Exit and reopen intake before processing a draft.</p>}
         {data.dataset === "demo" && <div className="scan-station-toolbar detail-card asset-station-guide"><div><strong>Set common details → Add drafts → Review → Confirm</strong><p className="field-hint">Registration starts only after explicit confirmation. Keep adding drafts until you choose Exit intake.</p></div><span className="asset-station-progress">{draft.entries.length} pending · {selected.length} selected · {draft.completed.length} registered</span></div>}
         {data.dataset !== "demo" ? <div className="intake-panel"><h3>Batch intake is unavailable in this browser for Working inventory</h3><p className="field-hint">Use Register battery to prepare and confirm a new Working inventory record.</p></div> : !batch ? <form className="intake-panel" onSubmit={startBatch}>
-            <h3>Common details for new draft scans</h3><p className="field-hint">Choose shared specifications, owner and registered storage once. Each queued entry can be corrected independently before confirmation.</p>
+            <h3>Common details for new draft scans</h3><p className="field-hint">Choose shared specifications, owner and registered storage once. Each queued entry can be corrected independently before confirmation.</p>{legacyEntries && <p className="field-hint">Confirm or remove the drafts left from the earlier simulated intake before starting an NFC batch.</p>}
             <BatteryModelPicker key={data.dataset + "/" + data.user.id} dataset={data.dataset} actorAccountId={data.user.id} canEditModels={getRolePermissions(data.user.role).editModels} values={values} selection={modelSelection} disabled={configLocked} onApply={applyModel} onManual={() => { if (!configLocked) { setModelSelection(null); setAppliedModel(null); } }} onBusyChange={setModelBusy}/>
             <IntakeCommonFields data={data} input={values} mode={firstUseMode} prefix="intake" change={set} changeMode={setFirstUseMode} disabled={configLocked}/><div className="form-footer"><Button type="submit" disabled={configLocked}>Confirm common details and start scanning</Button></div>
         </form> : <>
-            <div className="intake-panel intake-common-summary"><div className="intake-summary-heading"><h3>Common details for subsequent scans</h3><Button type="button" variant="outline" size="sm" onClick={changeCommonDetails} disabled={queueLocked || draft.entries.some(entry => entry.source === "native_nfc")}>Change common details</Button></div><dl><dt>Battery</dt><dd>{batch.common.name}{batch.common.model && " · " + batch.common.model}</dd><dt>Specifications</dt><dd>{batch.common.chemistry || "Chemistry not recorded"} · {batch.common.capacityMah === null ? "Capacity not recorded" : batch.common.capacityMah.toLocaleString() + " mAh"} · {batch.common.voltage === null ? "Voltage not recorded" : batch.common.voltage + " V"}</dd><dt>Responsible owner</dt><dd>{ownerLabel(batch.common.ownerId)}</dd><dt>Registered storage</dt><dd>J18 · {roomLabel(batch.common.homeRoomId)}</dd><dt>Manufactured on</dt><dd>{batch.common.manufacturedOn || "Not recorded — manufacture age unknown"}</dd><dt>First use</dt><dd>{firstUseLabel(batch.firstUseMode, batch.common.firstUsedOn)}</dd></dl></div>
-            {nativeQueue ? <div className="intake-panel"><h3>Native NFC draft queue</h3><p className="field-hint">Native NFC acquisition is unavailable in this browser. The recovered drafts retain their adopted tags and device evidence for review and confirmation. Confirm or remove these drafts, then choose Change common details to start a simulated intake batch.</p></div> : <div className="intake-panel"><h3>Add new battery drafts</h3><p className="field-hint">Each scan adds one editable draft. Nothing is registered until you choose Confirm selected or Confirm all.</p><div className="form-field"><Label htmlFor="intake-demo-tag">Demonstration tag</Label><Input id="intake-demo-tag" value={tag} onChange={event => { if (!queueLocked && !running.current && !storageBlocked.current && !editor.current && !current.current.attempt) setTag(event.target.value); }} onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); queueTag(tag); } }} placeholder="DEMO-INTAKE-…" disabled={modelBusy || paused || !contextMatches || recovery.invalid} readOnly={queueLocked}/></div><div className="intake-actions"><Button type="button" variant="outline" onClick={() => queueTag(tag)} disabled={queueLocked || !tag.trim()}>Simulate this tag</Button><Button type="button" onClick={() => queueTag("DEMO-INTAKE-" + crypto.randomUUID())} disabled={queueLocked}><ScanLine size={16}/>Simulate next new battery</Button></div></div>}
+            <div className="intake-panel intake-common-summary"><div className="intake-summary-heading"><h3>Common details for subsequent scans</h3><Button type="button" variant="outline" size="sm" onClick={changeCommonDetails} disabled={queueLocked}>Change common details</Button></div><dl><dt>Battery</dt><dd>{batch.common.name}{batch.common.model && " · " + batch.common.model}</dd><dt>Specifications</dt><dd>{batch.common.chemistry || "Chemistry not recorded"} · {batch.common.capacityMah === null ? "Capacity not recorded" : batch.common.capacityMah.toLocaleString() + " mAh"} · {batch.common.voltage === null ? "Voltage not recorded" : batch.common.voltage + " V"}</dd><dt>Responsible owner</dt><dd>{ownerLabel(batch.common.ownerId)}</dd><dt>Registered storage</dt><dd>J18 · {roomLabel(batch.common.homeRoomId)}</dd><dt>Manufactured on</dt><dd>{batch.common.manufacturedOn || "Not recorded — manufacture age unknown"}</dd><dt>First use</dt><dd>{firstUseLabel(batch.firstUseMode, batch.common.firstUsedOn)}</dd></dl></div>
+            {legacyBatch ? <div className="intake-panel"><h3>Earlier simulated batch</h3><p className="field-hint">This batch was started with simulated demonstration tags, which are no longer offered. Its drafts can still be reviewed, confirmed or removed. Then choose Change common details to scan new batteries by NFC.</p></div> : <div className="intake-panel"><h3>Add new battery drafts</h3><p className="field-hint">Each scan adds one editable draft. Nothing is registered until you choose Confirm selected or Confirm all.</p><NfcScanPanel dataset={data.dataset} disabled={queueLocked} title="NFC scan of new batteries (demonstration)" hint="Scan the tag of each new battery. A tag that is already registered or queued is refused." onRead={(tagId, evidence) => queueRead(tagId, evidence)}/></div>}
         </>}
         {data.dataset === "demo" && <div className="intake-panel"><div className="intake-summary-heading"><h3>Draft queue</h3><span className="intake-count">{draft.entries.length} pending · {selected.length} selected · {draft.completed.length} registered</span></div><p className="field-hint">Selected entries are confirmed individually. Verified successes leave the queue; errors and unselected drafts stay available for correction.</p><div className="intake-actions"><ReceiptAction type="button" pending={busy} confirmation={registrationConfirmation} reviewKey={draft.entries.map(entry => `${entry.id}:${entry.selected}`).join("|")} actionLabel={`Confirm selected (${selected.length})`} onClick={() => confirmEntries(selected.map(entry => entry.id))} disabled={queueLocked || !selected.length}>Confirm selected ({selected.length})</ReceiptAction><ReceiptAction type="button" variant="outline" pending={busy} confirmation={registrationConfirmation} reviewKey={draft.entries.map(entry => entry.id).join("|")} actionLabel={`Confirm all (${draft.entries.length})`} onClick={() => confirmEntries(draft.entries.map(entry => entry.id))} disabled={queueLocked || !draft.entries.length}>Confirm all ({draft.entries.length})</ReceiptAction></div>
             {!draft.entries.length ? <p className="field-hint">No pending drafts. Scan a new demonstration tag to add one.</p> : <div className="intake-draft-table"><Table><TableHeader><TableRow><TableHead><Checkbox aria-label="Select all intake drafts" checked={selected.length === draft.entries.length ? true : selected.length ? "indeterminate" : false} onCheckedChange={checked => chooseEntries(draft.entries.map(entry => entry.id), checked === true)} disabled={queueLocked}/></TableHead><TableHead>Draft battery / tag</TableHead><TableHead>Owner / storage</TableHead><TableHead>Scanned at (this device)</TableHead><TableHead>Status</TableHead><TableHead>Actions</TableHead></TableRow></TableHeader><TableBody>{draft.entries.map(entry => <TableRow key={entry.id} className="battery-selection-row" data-selectable={!queueLocked} aria-selected={entry.selected} onClick={event => { if (shouldToggleSelection(event)) chooseEntries([entry.id], !entry.selected); }} data-selected={entry.selected} data-testid={"intake-draft-" + entry.tagId}><TableCell><Checkbox aria-label={"Select " + entry.tagId} checked={entry.selected} onCheckedChange={checked => chooseEntries([entry.id], checked === true)} disabled={queueLocked}/></TableCell><TableCell><strong>{entry.common.name}</strong><span className="intake-draft-detail">{entry.tagId}</span><span className="intake-draft-detail">{intakeSourceLabel(entry.source)}</span><span className="intake-draft-detail">{entry.common.model || "Model not recorded"} · {entry.common.chemistry || "Chemistry not recorded"}</span><span className="intake-draft-detail">{entry.common.capacityMah === null ? "Capacity not recorded" : entry.common.capacityMah + " mAh"} · {entry.common.voltage === null ? "Voltage not recorded" : entry.common.voltage + " V"}</span></TableCell><TableCell>{ownerLabel(entry.common.ownerId)}<span className="intake-draft-detail">J18 · {roomLabel(entry.common.homeRoomId)}</span></TableCell><TableCell>{entry.scannedAt ? formatTime(entry.scannedAt) : "Not recorded"}</TableCell><TableCell>{draft.attemptEntryId === entry.id ? "Confirmation unresolved" : entry.error ? "Needs correction" : "Pending confirmation"}{entry.error && <span className="intake-draft-error">{entry.error}</span>}</TableCell><TableCell><div className="intake-draft-row-actions"><Button type="button" variant="outline" size="sm" onClick={() => editEntry(entry.id)} disabled={queueLocked}>Edit</Button><Button type="button" variant="ghost" size="sm" onClick={() => removeEntry(entry.id)} disabled={queueLocked}>Remove</Button></div></TableCell></TableRow>)}</TableBody></Table></div>}

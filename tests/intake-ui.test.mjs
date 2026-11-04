@@ -1,5 +1,6 @@
 import { after, test } from "node:test";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, join, posix } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -33,8 +34,8 @@ await writeFile(join(scratch, "row-selection.mjs"), ts.transpileModule(rowSource
 const rowSelection = await import(pathToFileURL(join(scratch, "row-selection.mjs")));
 const source = await readFile(new URL("../components/inventory/intake-station.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
-const ui = Object.fromEntries(["BatteryFilterControls", "TeachingGroupsPanel", "CheckCircle2", "LogOut", "ScanLine", "Button", "Input", "Label", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "RecordPicker", "BatteryModelPicker", "Checkbox", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"].map(name => [name, name]));
-Object.assign(ui, { ReceiptAction: "Button" });
+const ui = Object.fromEntries(["BatteryFilterControls", "TeachingGroupsPanel", "NfcScanPanel", "CheckCircle2", "LogOut", "ScanLine", "Button", "Input", "Label", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "RecordPicker", "BatteryModelPicker", "Checkbox", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"].map(name => [name, name]));
+Object.assign(ui, { ReceiptAction: "Button", useNfcScanOffered: dataset => dataset === "demo" });
 const jsx = (type, props, key) => typeof type === "function" ? type(props ?? {}) : ({ type, props: props ?? {}, key });
 function hooks() {
     const state = [], effects = [];
@@ -57,7 +58,7 @@ function fixture(dataset = "demo") {
 }
 function receipt(payload, overrides = {}) {
     const common = { ...payload.common }; delete common.modelSelection;
-    return { ...common, requestId: payload.requestId, sessionId: payload.sessionId, dataset: "demo", actorAccountId: "intake-native-actor", batteryId: "BAT-00000001", tagId: payload.tagId, registeredAt: "2026-10-03T01:00:00.000Z", source: "simulated_intake", replayed: false, ...(payload.scannedAt ? { scannedAt: payload.scannedAt } : {}), firstUsedOn: payload.firstUseMode === "at_registration" ? "2026-10-03" : payload.firstUseMode === "date" ? common.firstUsedOn : null, ...overrides };
+    return { ...common, requestId: payload.requestId, sessionId: payload.sessionId, dataset: "demo", actorAccountId: "intake-native-actor", batteryId: "BAT-00000001", tagId: payload.tagId, registeredAt: "2026-10-03T01:00:00.000Z", source: payload.source ?? "simulated_intake", ...(payload.nfcEvidence ? { nfcEvidence: payload.nfcEvidence } : {}), replayed: false, ...(payload.scannedAt ? { scannedAt: payload.scannedAt } : {}), firstUsedOn: payload.firstUseMode === "at_registration" ? "2026-10-03" : payload.firstUseMode === "date" ? common.firstUsedOn : null, ...overrides };
 }
 async function environment(run, seed = []) {
     const saved = Object.fromEntries(["sessionStorage", "window", "Element"].map(name => [name, Object.getOwnPropertyDescriptor(globalThis, name)]));
@@ -79,8 +80,12 @@ function start(view, fields = { name: "Batch batteries", model: "MODEL-BATCH" })
 
 
 function saved(entries) { return JSON.parse(entries.get(intake.intakeStorageKey("intake-native-actor", "demo"))); }
-function queue(view, tag) { if (tag) { input(view.render(), "demo-tag").props.onChange({ target: { value: tag } }); button(view.render(), "Simulate this tag").props.onClick(); } else button(view.render(), "Simulate next new battery").props.onClick(); }
-function draftRow(view, tag) { return nodes(view.render()).find(node => node.type === "TableRow" && node.props["data-testid"] === "intake-draft-" + tag); }
+// New drafts come only from NFC reads (a demonstration); each label maps to a stable 7-byte UID.
+function tagOf(label) { return label.startsWith("nfc:uid:") ? label : `nfc:uid:${createHash("sha256").update(label).digest("hex").slice(0, 14).toUpperCase()}`; }
+function evidenceFor(tagId, at = new Date().toISOString()) { return { attemptId: crypto.randomUUID(), source: "native-nfc-reader", platform: "android", startedAt: at, endedAt: at, adoptedAt: at, tagId, result: { uidHex: tagId.slice(8), technology: "Web NFC (Chrome on Android)", ndefStatus: "unknown", capacityBytes: null, records: [], observedAt: at } }; }
+function scanPanel(view) { return nodes(view.render()).find(node => node.type === "NfcScanPanel"); }
+function queue(view, tag) { const tagId = tagOf(tag ?? crypto.randomUUID()), panel = scanPanel(view); assert.ok(panel, "An NFC batch must offer the scan panel."); return panel.props.onRead(tagId, evidenceFor(tagId)); }
+function draftRow(view, tag) { return nodes(view.render()).find(node => node.type === "TableRow" && node.props["data-testid"] === "intake-draft-" + tagOf(tag)); }
 function rowButton(view, tag, label) { return button(draftRow(view, tag), label); }
 function selectEntry(view, tag, checked) { nodes(draftRow(view, tag)).find(node => node.type === "Checkbox").props.onCheckedChange(checked); }
 function confirmButton(view, kind) { return nodes(view.render()).find(node => node.type === "Button" && text(node).startsWith("Confirm " + kind + " (")); }
@@ -96,7 +101,7 @@ test("recovered native intake keeps adopted tags and evidence through editing, e
     const sent = []; let complete = false;
     const write = async (action, payload) => { sent.push(structuredClone(payload)); if (!complete) throw new Error("Controlled missing native receipt"); return receipt(payload, { source: "native_nfc", nfcEvidence: evidence }); };
     const view = mount({ write });
-    assert.match(text(view.render()), /Native NFC acquisition is unavailable in this browser/); assert.equal(button(view.render(), "Simulate next new battery"), undefined); assert.equal(input(view.render(), "demo-tag"), undefined);
+    assert.ok(scanPanel(view), "a native batch continues with NFC scanning"); assert.equal(button(view.render(), "Simulate next new battery"), undefined); assert.equal(input(view.render(), "demo-tag"), undefined);
     assert.equal(view.writes.length, 0); rowButton(view, evidence.tagId, "Edit").props.onClick(); assert.equal(input(view.render(), "edit-tagId").props.disabled, true);
     editFields(view, { name: "Reviewed native draft" }); saveEdit(view);
     assert.equal(saved(entries).entries[0].common.name, "Reviewed native draft"); assert.deepEqual(saved(entries).entries[0].nfcEvidence, evidence);
@@ -105,27 +110,27 @@ test("recovered native intake keeps adopted tags and evidence through editing, e
     complete = true; const resumed = mount({ write }); await button(resumed.render(), "Retry exact confirmation").props.onClick();
     assert.deepEqual(sent[1], captured); assert.equal(saved(entries).entries.length, 0); assert.equal(saved(entries).attempt, null); assert.deepEqual(saved(entries).completed[0], legacy);
     const resultRows = nodes(resumed.render()).filter(node => node.type === "TableRow" && node.props.onClick && !node.props["data-testid"]);
-    assert.match(text(resultRows.find(row => text(row).includes("BAT-00000001"))), /Native NFC/); assert.doesNotMatch(text(resultRows.find(row => text(row).includes("BAT-00000001"))), /Simulated intake/);
-    assert.match(text(resultRows.find(row => text(row).includes("BAT-00000002"))), /Simulated intake \(demo\)/); resumed.unmount();
+    assert.match(text(resultRows.find(row => text(row).includes("BAT-00000001"))), /NFC scan/); assert.doesNotMatch(text(resultRows.find(row => text(row).includes("BAT-00000001"))), /Simulated intake/);
+    assert.match(text(resultRows.find(row => text(row).includes("BAT-00000002"))), /Simulated intake \(demo, earlier\)/); resumed.unmount();
 }));
 
 test("intake rows toggle once from plain content, preserve interactive controls and text selection, and lock uncertain confirmations", async () => {
     await environment(async ({ entries, control }) => {
         const view = mount({ async write() { throw new Error("Response unavailable"); } });
-        start(view); queue(view, "DEMO-INTAKE-ROW");
+        start(view); queue(view, tagOf("DEMO-INTAKE-ROW"));
         const event = interactive => ({ target: new Element(interactive), currentTarget: { contains: node => node === "inside" }, button: 0, defaultPrevented: false });
-        draftRow(view, "DEMO-INTAKE-ROW").props.onClick(event(false));
+        draftRow(view, tagOf("DEMO-INTAKE-ROW")).props.onClick(event(false));
         assert.equal(saved(entries).entries[0].selected, false);
-        draftRow(view, "DEMO-INTAKE-ROW").props.onClick(event(true));
+        draftRow(view, tagOf("DEMO-INTAKE-ROW")).props.onClick(event(true));
         assert.equal(saved(entries).entries[0].selected, false);
         control.selection = { isCollapsed: false, anchorNode: "inside", focusNode: "inside" };
-        draftRow(view, "DEMO-INTAKE-ROW").props.onClick(event(false));
+        draftRow(view, tagOf("DEMO-INTAKE-ROW")).props.onClick(event(false));
         assert.equal(saved(entries).entries[0].selected, false);
         control.selection = null;
-        selectEntry(view, "DEMO-INTAKE-ROW", true);
+        selectEntry(view, tagOf("DEMO-INTAKE-ROW"), true);
         await confirmButton(view, "selected").props.onClick();
         const preserved = structuredClone(saved(entries));
-        draftRow(view, "DEMO-INTAKE-ROW").props.onClick(event(false));
+        draftRow(view, tagOf("DEMO-INTAKE-ROW")).props.onClick(event(false));
         assert.deepEqual(saved(entries), preserved);
         view.unmount();
     });
@@ -133,7 +138,7 @@ test("intake rows toggle once from plain content, preserve interactive controls 
 
 test("registered intake filters use current records while retaining hidden selections, original receipts and unavailable history", async () => {
     await environment(async ({ entries }) => {
-        const view = mount(); start(view); queue(view, "DEMO-INTAKE-FILTER-A"); queue(view, "DEMO-INTAKE-FILTER-B");
+        const view = mount(); start(view); queue(view, tagOf("DEMO-INTAKE-FILTER-A")); queue(view, tagOf("DEMO-INTAKE-FILTER-B"));
         await confirmButton(view, "all").props.onClick();
         const preserved = structuredClone(saved(entries));
         const receiptRows = () => nodes(view.render()).filter(node => node.type === "TableRow" && node.props.onClick && !node.props["data-testid"]);
@@ -161,7 +166,7 @@ test("registered intake filters use current records while retaining hidden selec
 test("scans create durable editable drafts only; common snapshots, device times and default unknown manufacture dates exist before any API", async () => {
     await environment(async ({ entries }) => {
         const view = mount(); start(view, { name: "Batch pack", model: "Known pack", capacityMah: "2200" });
-        queue(view, "DEMO-INTAKE-ONE"); queue(view, "DEMO-INTAKE-TWO");
+        queue(view, tagOf("DEMO-INTAKE-ONE")); queue(view, tagOf("DEMO-INTAKE-TWO"));
         assert.equal(view.writes.length, 0); assert.equal(view.exits.length, 0);
         const draft = saved(entries);
         assert.equal(draft.entries.length, 2); assert.equal(draft.attempt, null); assert.equal(draft.completed.length, 0);
@@ -171,44 +176,45 @@ test("scans create durable editable drafts only; common snapshots, device times 
         assert.ok(text(view.render()).includes("Scanned at (this device)")); assert.equal(text(view.render()).includes("BAT-00000001"), false);
         await confirmButton(view, "all").props.onClick();
         assert.equal(view.writes.length, 2); assert.equal(saved(entries).entries.length, 0); assert.equal(saved(entries).completed.length, 2);
-        assert.ok(text(view.render()).includes("Registered at (server)")); assert.ok(text(view.render()).includes("2026-10-03")); assert.ok(button(view.render(), "Simulate next new battery")); view.unmount();
+        assert.ok(text(view.render()).includes("Registered at (server)")); assert.ok(text(view.render()).includes("2026-10-03")); assert.ok(scanPanel(view)); view.unmount();
     });
 });
 
 test("edited drafts retain scan time, use a new immutable configuration and can be removed without registration", async () => {
     await environment(async ({ entries }) => {
-        const view = mount(); start(view); queue(view, "DEMO-INTAKE-EDIT"); queue(view, "DEMO-INTAKE-KEEP");
+        const view = mount(); start(view); queue(view, tagOf("DEMO-INTAKE-EDIT")); queue(view, tagOf("DEMO-INTAKE-KEEP"));
         const original = saved(entries).entries[0], other = saved(entries).entries[1];
-        rowButton(view, "DEMO-INTAKE-EDIT", "Edit").props.onClick();
-        editFields(view, { name: "Corrected pack", model: "MODEL-EDIT", chemistry: "Li-ion", capacityMah: "3300", voltage: "7.4", manufacturedOn: "2024-01-01", tagId: "DEMO-INTAKE-CORRECTED" });
+        rowButton(view, tagOf("DEMO-INTAKE-EDIT"), "Edit").props.onClick();
+        assert.equal(input(view.render(), "edit-tagId").props.disabled, true, "an NFC draft keeps its read tag");
+        editFields(view, { name: "Corrected pack", model: "MODEL-EDIT", chemistry: "Li-ion", capacityMah: "3300", voltage: "7.4", manufacturedOn: "2024-01-01" });
         nodes(view.render()).find(node => node.type === "RecordPicker" && node.props.id === "intake-edit-owner").props.onChange("staff-another-owner");
         nodes(view.render()).find(node => node.type === "RecordPicker" && node.props.id === "intake-edit-room").props.onChange("J18-DEMO");
         nodes(view.render()).find(node => node.type === "Select").props.onValueChange("date"); editFields(view, { firstUsedOn: "2024-02-01" }); saveEdit(view);
         const edited = saved(entries).entries[0];
         assert.equal(view.writes.length, 0); assert.equal(edited.scannedAt, original.scannedAt); assert.notEqual(edited.sessionId, original.sessionId); assert.deepEqual(saved(entries).entries[1], other);
         assert.equal(edited.common.ownerId, "staff-another-owner"); assert.equal(edited.common.homeRoomId, "J18-DEMO"); assert.equal(edited.common.firstUsedOn, "2024-02-01"); assert.equal(edited.common.capacityMah, 3300);
-        rowButton(view, "DEMO-INTAKE-KEEP", "Remove").props.onClick(); assert.equal(saved(entries).entries.length, 1); assert.equal(view.writes.length, 0);
-        await confirmButton(view, "all").props.onClick(); assert.equal(view.writes.length, 1); assert.equal(view.writes[0].payload.tagId, "DEMO-INTAKE-CORRECTED"); assert.equal(view.writes[0].payload.sessionId, edited.sessionId); view.unmount();
+        rowButton(view, tagOf("DEMO-INTAKE-KEEP"), "Remove").props.onClick(); assert.equal(saved(entries).entries.length, 1); assert.equal(view.writes.length, 0);
+        await confirmButton(view, "all").props.onClick(); assert.equal(view.writes.length, 1); assert.equal(view.writes[0].payload.tagId, tagOf("DEMO-INTAKE-EDIT")); assert.equal(view.writes[0].payload.common.name, "Corrected pack"); assert.equal(view.writes[0].payload.sessionId, edited.sessionId); view.unmount();
     });
 });
 
 test("selected confirmation sends only chosen drafts; Confirm all includes the remaining unselected entry", async () => {
     await environment(async ({ entries }) => {
-        const view = mount(); start(view); queue(view, "DEMO-INTAKE-A"); queue(view, "DEMO-INTAKE-B"); queue(view, "DEMO-INTAKE-C");
-        selectEntry(view, "DEMO-INTAKE-B", false); selectEntry(view, "DEMO-INTAKE-C", false);
+        const view = mount(); start(view); queue(view, tagOf("DEMO-INTAKE-A")); queue(view, tagOf("DEMO-INTAKE-B")); queue(view, tagOf("DEMO-INTAKE-C"));
+        selectEntry(view, tagOf("DEMO-INTAKE-B"), false); selectEntry(view, tagOf("DEMO-INTAKE-C"), false);
         await confirmButton(view, "selected").props.onClick();
-        assert.deepEqual(view.writes.map(write => write.payload.tagId), ["DEMO-INTAKE-A"]);
-        assert.deepEqual(saved(entries).entries.map(entry => [entry.tagId, entry.selected]), [["DEMO-INTAKE-B", false], ["DEMO-INTAKE-C", false]]);
+        assert.deepEqual(view.writes.map(write => write.payload.tagId), [tagOf("DEMO-INTAKE-A")]);
+        assert.deepEqual(saved(entries).entries.map(entry => [entry.tagId, entry.selected]), [[tagOf("DEMO-INTAKE-B"), false], [tagOf("DEMO-INTAKE-C"), false]]);
         assert.equal(confirmButton(view, "selected").props.disabled, true);
-        await confirmButton(view, "all").props.onClick(); assert.deepEqual(view.writes.map(write => write.payload.tagId), ["DEMO-INTAKE-A", "DEMO-INTAKE-B", "DEMO-INTAKE-C"]); view.unmount();
+        await confirmButton(view, "all").props.onClick(); assert.deepEqual(view.writes.map(write => write.payload.tagId), [tagOf("DEMO-INTAKE-A"), tagOf("DEMO-INTAKE-B"), tagOf("DEMO-INTAKE-C")]); view.unmount();
     });
 });
 
 test("queue selections and confirmed receipts recover after explicit exit without automatically sending any draft", async () => {
     await environment(async ({ entries }) => {
-        const view = mount(); start(view); queue(view, "DEMO-INTAKE-EXIT-A"); queue(view, "DEMO-INTAKE-EXIT-B"); selectEntry(view, "DEMO-INTAKE-EXIT-B", false);
+        const view = mount(); start(view); queue(view, tagOf("DEMO-INTAKE-EXIT-A")); queue(view, tagOf("DEMO-INTAKE-EXIT-B")); selectEntry(view, tagOf("DEMO-INTAKE-EXIT-B"), false);
         await confirmButton(view, "selected").props.onClick(); button(view.render(), "Exit intake").props.onClick(); assert.equal(view.exits.length, 1); view.unmount();
-        const reopened = mount(); assert.ok(draftRow(reopened, "DEMO-INTAKE-EXIT-B")); assert.equal(saved(entries).entries[0].selected, false); assert.ok(text(reopened.render()).includes("BAT-00000001")); assert.equal(reopened.writes.length, 0);
+        const reopened = mount(); assert.ok(draftRow(reopened, tagOf("DEMO-INTAKE-EXIT-B"))); assert.equal(saved(entries).entries[0].selected, false); assert.ok(text(reopened.render()).includes("BAT-00000001")); assert.equal(reopened.writes.length, 0);
         const selectAll = nodes(reopened.render()).find(node => node.type === "Checkbox" && node.props["aria-label"] === "Select all intake drafts"); selectAll.props.onCheckedChange(true);
         assert.equal(saved(entries).entries[0].selected, true); reopened.unmount();
     });
@@ -217,7 +223,7 @@ test("queue selections and confirmed receipts recover after explicit exit withou
 test("explicit intake exit retains an uncertain request and reopening retries only that original confirmation", async () => {
     await environment(async ({ entries }) => {
         const view = mount({ async write() { throw new Error("Response lost"); } });
-        start(view); queue(view, "DEMO-INTAKE-UNKNOWN"); queue(view, "DEMO-INTAKE-LATER");
+        start(view); queue(view, tagOf("DEMO-INTAKE-UNKNOWN")); queue(view, tagOf("DEMO-INTAKE-LATER"));
         await confirmButton(view, "all").props.onClick();
         const preserved = saved(entries);
         assert.ok(preserved.attempt);
@@ -231,7 +237,7 @@ test("explicit intake exit retains an uncertain request and reopening retries on
         assert.equal(reopened.writes.length, 0);
         await button(reopened.render(), "Retry exact confirmation").props.onClick();
         assert.deepEqual(reopened.writes.map(write => write.payload), [preserved.attempt.payload]);
-        assert.deepEqual(saved(entries).entries.map(entry => entry.tagId), ["DEMO-INTAKE-LATER"]);
+        assert.deepEqual(saved(entries).entries.map(entry => entry.tagId), [tagOf("DEMO-INTAKE-LATER")]);
         assert.equal(saved(entries).attempt, null);
         reopened.unmount();
     });
@@ -242,46 +248,46 @@ test("partial success removes verified drafts, retains an unknown item and its e
     await environment(async ({ entries }) => {
         const view = mount({ async write(action, payload) {
             writes.push(structuredClone(payload)); const calls = (attempts.get(payload.tagId) || 0) + 1; attempts.set(payload.tagId, calls);
-            if (payload.tagId === "DEMO-INTAKE-PART-B" && calls === 1) throw new Error("Response lost");
-            if (payload.tagId === "DEMO-INTAKE-PART-B" && calls === 2) throw Object.assign(new Error("Sign in again"), { status: 401 });
+            if (payload.tagId === tagOf("DEMO-INTAKE-PART-B") && calls === 1) throw new Error("Response lost");
+            if (payload.tagId === tagOf("DEMO-INTAKE-PART-B") && calls === 2) throw Object.assign(new Error("Sign in again"), { status: 401 });
             return receipt(payload, { batteryId: payload.tagId.endsWith("A") ? "BAT-00000001" : "BAT-00000002", replayed: calls > 1 });
         } });
-        start(view); for (const tag of ["DEMO-INTAKE-PART-A", "DEMO-INTAKE-PART-B", "DEMO-INTAKE-PART-C"]) queue(view, tag);
+        start(view); for (const tag of [tagOf("DEMO-INTAKE-PART-A"), tagOf("DEMO-INTAKE-PART-B"), tagOf("DEMO-INTAKE-PART-C")]) queue(view, tag);
         await confirmButton(view, "all").props.onClick();
-        assert.deepEqual(writes.map(payload => payload.tagId), ["DEMO-INTAKE-PART-A", "DEMO-INTAKE-PART-B"]); assert.equal(saved(entries).completed.length, 1);
+        assert.deepEqual(writes.map(payload => payload.tagId), [tagOf("DEMO-INTAKE-PART-A"), tagOf("DEMO-INTAKE-PART-B")]); assert.equal(saved(entries).completed.length, 1);
         assert.equal(confirmButton(view, "all").props.pending, false);
         assert.equal(confirmButton(view, "all").props.confirmation.count, 1);
         assert.equal(confirmButton(view, "all").props.confirmation.identity, writes[0].requestId);
         assert.equal(confirmButton(view, "all").props.confirmation.text, "1 battery registered");
         assert.match(text(view.render()), /one confirmation is unresolved/);
-        const pending = saved(entries).attempt; assert.equal(saved(entries).entries.length, 2); assert.equal(rowButton(view, "DEMO-INTAKE-PART-C", "Edit").props.disabled, true);
+        const pending = saved(entries).attempt; assert.equal(saved(entries).entries.length, 2); assert.equal(rowButton(view, tagOf("DEMO-INTAKE-PART-C"), "Edit").props.disabled, true);
         await button(view.render(), "Retry exact confirmation").props.onClick(); assert.deepEqual(saved(entries).attempt, pending);
         assert.equal(confirmButton(view, "all").props.confirmation, null);
         await button(view.render(), "Retry exact confirmation").props.onClick(); assert.equal(saved(entries).attempt, null); assert.equal(saved(entries).entries.length, 1);
         assert.equal(confirmButton(view, "all").props.confirmation.count, 1);
         assert.equal(confirmButton(view, "all").props.confirmation.identity, pending.payload.requestId);
-        assert.equal(saved(entries).entries[0].tagId, "DEMO-INTAKE-PART-C"); assert.equal(writes.filter(payload => payload.tagId === "DEMO-INTAKE-PART-C").length, 0);
-        assert.equal(new Set(writes.filter(payload => payload.tagId === "DEMO-INTAKE-PART-B").map(payload => JSON.stringify(payload))).size, 1); view.unmount();
+        assert.equal(saved(entries).entries[0].tagId, tagOf("DEMO-INTAKE-PART-C")); assert.equal(writes.filter(payload => payload.tagId === tagOf("DEMO-INTAKE-PART-C")).length, 0);
+        assert.equal(new Set(writes.filter(payload => payload.tagId === tagOf("DEMO-INTAKE-PART-B")).map(payload => JSON.stringify(payload))).size, 1); view.unmount();
     });
 });
 
 test("definite per-item rejections remain editable while the rest of the explicit confirmation progresses", async () => {
     const writes = [];
     await environment(async ({ entries }) => {
-        const view = mount({ async write(action, payload) { writes.push(payload); if (payload.tagId === "DEMO-INTAKE-BAD") throw Object.assign(new Error("Tag already exists"), { status: 409, code: "intake_rejected_final" }); return receipt(payload); } });
-        start(view); queue(view, "DEMO-INTAKE-BAD"); queue(view, "DEMO-INTAKE-GOOD");
+        let rejected = false; const view = mount({ async write(action, payload) { writes.push(payload); if (payload.tagId === tagOf("DEMO-INTAKE-BAD") && !rejected) { rejected = true; throw Object.assign(new Error("Tag already exists"), { status: 409, code: "intake_rejected_final" }); } return receipt(payload); } });
+        start(view); queue(view, tagOf("DEMO-INTAKE-BAD")); queue(view, tagOf("DEMO-INTAKE-GOOD"));
         await confirmButton(view, "all").props.onClick(); assert.equal(writes.length, 2); assert.equal(saved(entries).entries.length, 1); assert.equal(saved(entries).attempt, null); assert.ok(saved(entries).entries[0].error.includes("Tag already exists"));
-        rowButton(view, "DEMO-INTAKE-BAD", "Edit").props.onClick(); editFields(view, { tagId: "DEMO-INTAKE-FIXED" }); saveEdit(view);
+        rowButton(view, tagOf("DEMO-INTAKE-BAD"), "Edit").props.onClick(); editFields(view, { name: "Reviewed after rejection" }); saveEdit(view);
         assert.equal(saved(entries).entries[0].error, ""); await confirmButton(view, "all").props.onClick(); assert.equal(saved(entries).entries.length, 0); view.unmount();
     });
 });
 
 test("scanning and editing reject duplicate or invalid tags without sending API requests or hiding modal errors", async () => {
     await environment(async ({ entries }) => {
-        const view = mount(); start(view); queue(view, "DEMO-INTAKE-DUP"); queue(view, "DEMO-INTAKE-DUP"); assert.equal(saved(entries).entries.length, 1);
-        queue(view, "DEMO-INTAKE-SECOND"); rowButton(view, "DEMO-INTAKE-SECOND", "Edit").props.onClick(); editFields(view, { tagId: "DEMO-INTAKE-DUP" }); saveEdit(view);
-        assert.ok(nodes(view.render()).filter(node => node.type === "Dialog").some(node => text(node).includes("already queued")));
-        editFields(view, { tagId: "WRONG-PREFIX" }); saveEdit(view); assert.ok(nodes(view.render()).filter(node => node.type === "Dialog").some(node => text(node).includes("DEMO-INTAKE-")));
+        const view = mount(); start(view); queue(view, tagOf("DEMO-INTAKE-DUP")); queue(view, tagOf("DEMO-INTAKE-DUP")); assert.equal(saved(entries).entries.length, 1);
+        assert.ok(nodes(view.render()).some(node => node.props?.role === "alert" && text(node).includes("already queued or registered")));
+        queue(view, tagOf("DEMO-INTAKE-SECOND")); rowButton(view, tagOf("DEMO-INTAKE-SECOND"), "Edit").props.onClick(); editFields(view, { tagId: tagOf("DEMO-INTAKE-DUP") }); saveEdit(view);
+        assert.ok(nodes(view.render()).filter(node => node.type === "Dialog").some(node => text(node).includes("retain its adopted tag")));
         assert.equal(view.writes.length, 0); assert.equal(saved(entries).entries.length, 2); view.unmount();
     });
 });
@@ -289,18 +295,18 @@ test("scanning and editing reject duplicate or invalid tags without sending API 
 test("storage failure accepts no new queue state, blocks configuration changes and restores the same prospective draft before confirmation", async () => {
     await environment(async ({ entries, control }) => {
         const view = mount(); start(view); control.failWrites = true;
-        queue(view, "DEMO-INTAKE-STORAGE"); assert.equal(saved(entries).entries.length, 0); assert.equal(view.writes.length, 0);
+        queue(view, tagOf("DEMO-INTAKE-STORAGE")); assert.equal(saved(entries).entries.length, 0); assert.equal(view.writes.length, 0);
         assert.equal(button(view.render(), "Change common details").props.disabled, true); button(view.render(), "Change common details").props.onClick();
         assert.equal(nodes(view.render()).some(node => node.type === "form"), false); assert.equal(confirmButton(view, "all").props.disabled, true);
         control.failWrites = false; button(view.render(), "Restore draft recovery").props.onClick(); const restored = saved(entries).entries[0];
-        assert.equal(restored.tagId, "DEMO-INTAKE-STORAGE"); assert.equal(view.writes.length, 0); await confirmButton(view, "all").props.onClick();
+        assert.equal(restored.tagId, tagOf("DEMO-INTAKE-STORAGE")); assert.equal(view.writes.length, 0); await confirmButton(view, "all").props.onClick();
         assert.equal(view.writes[0].payload.scannedAt, restored.scannedAt); assert.equal(view.writes[0].payload.sessionId, restored.sessionId); view.unmount();
     });
 });
 
 test("confirmation capture must be durable before sending and storage restoration preserves its request UUID", async () => {
     await environment(async ({ entries, control }) => {
-        const view = mount(); start(view); queue(view, "DEMO-INTAKE-CAPTURE"); control.failWrites = true; await confirmButton(view, "all").props.onClick();
+        const view = mount(); start(view); queue(view, tagOf("DEMO-INTAKE-CAPTURE")); control.failWrites = true; await confirmButton(view, "all").props.onClick();
         assert.equal(view.writes.length, 0); assert.equal(saved(entries).attempt, null); control.failWrites = false; button(view.render(), "Restore draft recovery").props.onClick();
         const preserved = saved(entries).attempt; assert.ok(preserved); await button(view.render(), "Retry exact confirmation").props.onClick();
         assert.equal(view.writes[0].payload.requestId, preserved.payload.requestId); assert.equal(saved(entries).entries.length, 0); view.unmount();
@@ -321,8 +327,8 @@ test("model suggestions preserve ownership and support explicit manual correctio
     await environment(async ({ entries }) => {
         const view = mount(); nodes(view.render()).find(node => node.type === "RecordPicker" && node.props.id === "intake-owner").props.onChange("staff-another-owner");
         nodes(view.render()).find(node => node.type === "BatteryModelPicker").props.onApply({ id: "MODEL-REFERENCE", origin: "inventory", contentHash: "a".repeat(64), name: "Model battery", model: "MODEL-REF", chemistry: "LiPo", capacityMah: 2000, voltage: null }, ["name", "model", "chemistry", "capacityMah"]);
-        nodes(view.render()).find(node => node.type === "form").props.onSubmit({ preventDefault() {} }); queue(view, "DEMO-INTAKE-SOURCE");
-        rowButton(view, "DEMO-INTAKE-SOURCE", "Edit").props.onClick(); editFields(view, { capacityMah: "2100" }); button(view.render(), "Use manual model details").props.onClick(); saveEdit(view);
+        nodes(view.render()).find(node => node.type === "form").props.onSubmit({ preventDefault() {} }); queue(view, tagOf("DEMO-INTAKE-SOURCE"));
+        rowButton(view, tagOf("DEMO-INTAKE-SOURCE"), "Edit").props.onClick(); editFields(view, { capacityMah: "2100" }); button(view.render(), "Use manual model details").props.onClick(); saveEdit(view);
         assert.equal(saved(entries).entries[0].common.modelSelection, undefined); assert.equal(saved(entries).entries[0].common.ownerId, "staff-another-owner"); assert.equal(saved(entries).entries[0].common.manufacturedOn, null);
         await confirmButton(view, "all").props.onClick(); assert.equal(view.writes[0].payload.common.capacityMah, 2100); assert.equal(view.writes[0].payload.common.modelSelection, undefined); view.unmount();
     });
@@ -339,7 +345,7 @@ test("explicit known and unknown service dates are kept in queued items and defa
 
 test("foreign receipts stay unresolved, stored queues cannot change native context, and live inventory exposes no simulated controls", async () => {
     await environment(async ({ entries }) => {
-        const live = mount({ data: fixture("live") }); assert.equal(button(live.render(), "Simulate next new battery"), undefined); assert.equal(confirmButton(live, "all"), undefined); live.unmount();
+        const live = mount({ data: fixture("live") }); assert.equal(scanPanel(live), undefined); assert.equal(button(live.render(), "Simulate next new battery"), undefined); assert.equal(confirmButton(live, "all"), undefined); live.unmount();
         const view = mount({ async write(action, payload) { return receipt(payload, { actorAccountId: "foreign-account" }); } }); start(view); queue(view); await confirmButton(view, "all").props.onClick();
         assert.ok(saved(entries).attempt); assert.equal(saved(entries).completed.length, 0); assert.ok(button(view.render(), "Retry exact confirmation"));
         view.props.data = { ...view.props.data, user: { ...view.props.data.user, id: "another-native-account" } };
@@ -349,41 +355,54 @@ test("foreign receipts stay unresolved, stored queues cannot change native conte
     });
 });
 
-test("Enter scanning keeps the same editable input, rapid confirmation is serialized and no control steals focus", async () => {
+test("NFC reads stay in the scan panel, rapid confirmation is serialized and scanning pauses while a confirmation is open", async () => {
     let release;
     await environment(async ({ entries }) => {
         const view = mount({ write(action, payload) { view.writes.push({ action, payload }); return new Promise(resolve => { release = () => resolve(receipt(payload)); }); } });
-        start(view); input(view.render(), "demo-tag").props.onChange({ target: { value: "DEMO-INTAKE-ENTER" } });
-        input(view.render(), "demo-tag").props.onKeyDown({ key: "Enter", preventDefault() {} });
-        assert.equal(view.writes.length, 0); assert.equal(input(view.render(), "demo-tag").props.disabled, false); assert.equal(input(view.render(), "demo-tag").props.readOnly, false); assert.equal(input(view.render(), "demo-tag").props.value, "");
+        start(view); queue(view, tagOf("DEMO-INTAKE-ENTER"));
+        assert.equal(view.writes.length, 0); assert.equal(scanPanel(view).props.disabled, false); assert.equal(scanPanel(view).props.dataset, "demo");
         const confirm = confirmButton(view, "all").props.onClick, inFlight = confirm(); await confirm();
-        assert.equal(view.writes.length, 1); assert.equal(input(view.render(), "demo-tag").props.disabled, false); assert.equal(input(view.render(), "demo-tag").props.readOnly, true);
-        assert.equal(input(view.render(), "demo-tag").props.autoFocus, undefined); assert.equal(button(view.render(), "Exit intake").props.disabled, true);
-        release(); await inFlight; assert.equal(saved(entries).entries.length, 0); assert.equal(input(view.render(), "demo-tag").props.readOnly, false); view.unmount();
+        assert.equal(view.writes.length, 1); assert.equal(scanPanel(view).props.disabled, true); assert.equal(button(view.render(), "Exit intake").props.disabled, true);
+        queue(view, tagOf("DEMO-INTAKE-DURING")); assert.equal(saved(entries).entries.length, 1, "a read during confirmation is not queued");
+        release(); await inFlight; assert.equal(saved(entries).entries.length, 0); assert.equal(scanPanel(view).props.disabled, false); view.unmount();
+    });
+});
+
+test("a batch left from the retired simulated intake can still be confirmed, and the next batch scans by NFC", async () => {
+    await environment(async ({ entries }) => {
+        const legacy = bareAttempt("DEMO-INTAKE-EARLIER").payload, entry = { id: crypto.randomUUID(), tagId: legacy.tagId, scannedAt: "2026-10-03T00:00:00.000Z", sessionId: legacy.sessionId, common: legacy.common, firstUseMode: "at_registration", selected: true, error: "" };
+        entries.set(intake.intakeStorageKey("intake-native-actor", "demo"), JSON.stringify(drafts.captureIntakeDraft({ actorAccountId: "intake-native-actor", dataset: "demo", batch: { sessionId: entry.sessionId, common: entry.common, firstUseMode: "at_registration" }, entries: [entry], completed: [], attempt: null, attemptEntryId: null })));
+        const view = mount();
+        assert.match(text(view.render()), /Earlier simulated batch/); assert.equal(scanPanel(view), undefined); assert.equal(input(view.render(), "demo-tag"), undefined);
+        await confirmButton(view, "all").props.onClick();
+        assert.equal(view.writes.length, 1); assert.equal(view.writes[0].payload.tagId, "DEMO-INTAKE-EARLIER"); assert.equal(view.writes[0].payload.source, undefined); assert.equal(saved(entries).entries.length, 0);
+        button(view.render(), "Change common details").props.onClick(); start(view);
+        assert.equal(saved(entries).batch.source, "native_nfc"); queue(view, tagOf("DEMO-INTAKE-NEXT"));
+        assert.equal(saved(entries).entries[0].source, "native_nfc"); assert.equal(saved(entries).entries[0].tagId, tagOf("DEMO-INTAKE-NEXT")); view.unmount();
     });
 });
 
 test("a delayed old confirmation cannot replace a newer station's draft or exact request", async () => {
     let release;
     await environment(async ({ entries }) => {
-        const view = mount({ write(action, payload) { return new Promise(resolve => { release = () => resolve(receipt(payload)); }); } }); start(view); queue(view, "DEMO-INTAKE-OLD");
+        const view = mount({ write(action, payload) { return new Promise(resolve => { release = () => resolve(receipt(payload)); }); } }); start(view); queue(view, tagOf("DEMO-INTAKE-OLD"));
         const inFlight = confirmButton(view, "all").props.onClick(), original = saved(entries); view.unmount();
-        const newer = structuredClone(original); newer.entries[0].tagId = "DEMO-INTAKE-NEWER"; newer.attempt.payload.tagId = "DEMO-INTAKE-NEWER"; newer.attempt.payload.requestId = crypto.randomUUID();
+        const newer = structuredClone(original); newer.attempt.payload.requestId = crypto.randomUUID();
         entries.set(intake.intakeStorageKey("intake-native-actor", "demo"), JSON.stringify(newer)); release(); await inFlight;
         assert.deepEqual(saved(entries), newer); assert.equal(view.exits.length, 0);
     });
 });
 test("only server-confirmed intake assets can be selected for teaching groups and the station stays open", async () => {
     await environment(async () => {
-        const view = mount(); start(view); queue(view, "DEMO-INTAKE-GROUP-A"); queue(view, "DEMO-INTAKE-GROUP-B");
+        const view = mount(); start(view); queue(view, tagOf("DEMO-INTAKE-GROUP-A")); queue(view, tagOf("DEMO-INTAKE-GROUP-B"));
         assert.equal(button(view.render(), "Add registered batteries to group"), undefined);
-        selectEntry(view, "DEMO-INTAKE-GROUP-B", false);
+        selectEntry(view, tagOf("DEMO-INTAKE-GROUP-B"), false);
         await confirmButton(view, "selected").props.onClick();
         button(view.render(), "Add registered batteries to group").props.onClick();
         const group = nodes(view.render()).find(node => node.type === "TeachingGroupsPanel");
         assert.equal(group.props.addToExisting, true);
         assert.deepEqual(group.props.initialIds, ["BAT-00000001"]);
         assert.equal(view.writes.length, 1); assert.equal(view.exits.length, 0);
-        group.props.onClose(); assert.ok(button(view.render(), "Simulate next new battery")); view.unmount();
+        group.props.onClose(); assert.ok(scanPanel(view)); view.unmount();
     });
 });

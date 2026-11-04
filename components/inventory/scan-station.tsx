@@ -2,7 +2,7 @@
 import { isActiveBattery } from "@/lib/battery-lifecycle";
 
 import { useEffect, useRef, useState } from "react";
-import { CheckCircle2, LogOut, Radio, RefreshCw, ScanLine, Trash2 } from "lucide-react";
+import { CheckCircle2, LogOut, RefreshCw, ScanLine, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ReceiptAction } from "@/components/ui/receipt-action";
 import { Input } from "@/components/ui/input";
@@ -16,6 +16,8 @@ import { formatTime, roomLabel } from "@/lib/client-utils";
 import { isSelectableRoom } from "@/lib/location-catalog";
 import { recoverScanSession, resolveRegisteredTagIssues, saveScanSession, verifySavedScanSession, scanCompletedReadMatches, scanFailureStatus, scanMovementPayload, scanReadProblem, type ScanAttempt, type ScanIssue, type ScanReceipt, type ScanSession, type ScanSource } from "@/lib/scan-session";
 import { TeachingGroupsPanel } from "./teaching-groups-panel";
+import { NfcScanPanel, useNfcScanOffered } from "./nfc-scan-panel";
+import type { TeachingNfcEvidence } from "@/lib/teaching-nfc";
 import { verifyGroupEvidence } from "@/lib/teaching-context";
 import type { WriteAction } from "@/lib/client/inventory-contracts";
 import { BatteryFilterControls } from "./battery-filter-controls";
@@ -55,12 +57,12 @@ function sourceLabel(source: ScanSource | "native_nfc") {
         case "selection": return "Manual selection";
         case "manual": return "Typed tag input";
         case "simulated": return "Simulated reader (demo)";
-        case "native_nfc": return "Native NFC";
+        case "native_nfc": return "NFC scan";
     }
 }
 
 export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, paused = false }: ScanStationProps) {
-    const storageKey = sessionStorageKey(data, kind);
+    const storageKey = sessionStorageKey(data, kind), nfcOffered = useNfcScanOffered(data.dataset);
     const [initial] = useState(() => loadSession(storageKey, kind));
     const [session, setSession] = useState<ScanSession>(initial.session);
     const current = useRef(session), running = useRef(false), tagInput = useRef<HTMLInputElement>(null);
@@ -73,7 +75,7 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
     const [confirmedSelectionSnapshots, setConfirmedSelectionSnapshots] = useState<Map<string, BatteryRecord>>(() => new Map());
     const [confirmation, setConfirmation] = useState<Confirmation>(null), [latest, setLatest] = useState<LatestReview | null>(null), [toast, setToast] = useState("");
     const [reviewedRooms, setReviewedRooms] = useState<InventorySnapshot["rooms"] | null>(null);
-    const [noticeTone, setNoticeTone] = useState<"info" | "warning">("info");
+    const [noticeTone, setNoticeTone] = useState<"info" | "warning">("info"), [nfcListening, setNfcListening] = useState(false);
     function setNotice(message: string, tone: "info" | "warning" = "info") { setNoticeText(message); setNoticeTone(tone); }
     const checkout = kind === "checkout", roomLocked = busy || paused || !!session.attempt || !!storageError;
     const roomConfirmationRequired = !checkout && !!session.roomConfirmationRequired;
@@ -98,8 +100,8 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
     }
     function finishWork() { running.current = false; setBusy(false); }
     useEffect(() => {
-        if (!busy && !paused && !session.attempt) tagInput.current?.focus({ preventScroll: true });
-    }, [busy, paused, session.attempt]);
+        if (!busy && !paused && !session.attempt && !nfcListening) tagInput.current?.focus({ preventScroll: true });
+    }, [busy, paused, session.attempt, nfcListening]);
     useEffect(() => {
         if (!busy && !session.queue.length && !session.attempt) return;
         const protect = (event: BeforeUnloadEvent) => { event.preventDefault(); event.returnValue = ""; };
@@ -162,10 +164,11 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
             catch { setNotice("The server confirmed the movement. Shared inventory refresh is unavailable; the completed list retains the receipt.", "warning"); }
         }
     }
-    async function readTags(tags: string[], source: ScanSource) {
+    async function readTags(tags: string[], source: ScanSource, nfcEvidence?: TeachingNfcEvidence) {
         if (current.current.attempt || current.current.roomConfirmationRequired || !startWork()) return;
         try {
             const normalized = tags.map(value => value.trim()).filter(Boolean), unique = [...new Set(normalized)];
+            if (source === "native_nfc" && (normalized.length !== 1 || nfcEvidence?.tagId !== normalized[0])) throw new Error("An NFC read must keep its own tag evidence.");
             if (!unique.length) { setNotice("Enter or select a tag to read."); return; }
             if (unique.length > 100 || unique.some(value => value.length > 128)) { setNotice("Read up to 100 unique tags at a time; each tag must be at most 128 characters.", "warning"); return; }
             if (current.current.queue.length && current.current.queue[0].source !== source) {
@@ -186,9 +189,9 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
                 const problem = scanReadProblem(kind, battery, tagId);
                 if (problem) { addIssue("state", tagId, `${battery.id}: ${problem}`); continue; }
                 if (state.queue.length >= 100) { addIssue("limit", tagId, "The queue already contains 100 batteries. Confirm or clear it before adding another read."); continue; }
-                change(previous => ({ ...previous, queue: [...previous.queue, { battery, tagId, source, readAt: new Date().toISOString() }] }));
+                change(previous => ({ ...previous, queue: [...previous.queue, { battery, tagId, source, readAt: new Date().toISOString(), ...(source === "native_nfc" && nfcEvidence ? { nfcEvidence } : {}) }] }));
             }
-            setTag("");
+            if (source === "manual") setTag("");
             setNotice(`Valid reads were added to the review queue. Choose Confirm ${checkout ? "checkout" : "return"} to save the movement.`);
         } catch (error) { addIssue("lookup", tags.join(", "), `Lookup failed. ${errorMessage(error)} No new movement was attempted.`); }
         finally { finishWork(); }
@@ -332,15 +335,15 @@ export function ScanStation({ data, kind, write, onExit, onRegister, onChanged, 
 
     return <section className="scan-station" aria-label={`${checkout ? "Checkout" : "Return"} scan station`} aria-busy={busy}>
         <div className="scan-station-header station-exit-bar"><div><span className="eyebrow">STAFF SCAN STATION</span><h2>{checkout ? "Check out batteries" : "Return batteries"}</h2><p>{checkout ? "Review selected batteries, then confirm checkout to your signed-in staff account. Responsible ownership remains unchanged." : "Receive reviewed active loans from any staff holder. Return placement is recorded separately from registered storage home."}</p><p className="station-exit-hint">{busy ? "Wait for the current action to finish before leaving." : storageError ? "Resolve recovery storage before leaving. The saved original work must be preserved." : session.attempt?.status === "uncertain" ? "Resolve the preserved request before exiting. Use Retry same request below." : "Choose Exit scanning to finish this session and restore sidebar navigation."}</p></div><Button type="button" size="lg" className="station-exit-button" onClick={requestExit} disabled={busy || paused || !!storageError}><LogOut size={20}/>Exit scanning</Button></div>
-        <div className="scan-station-info connection-message"><Radio size={18}/><span><strong>Hardware tag reading is unavailable in this browser.</strong> Type a registered tag or choose batteries with Manual selection. Both options prepare a review queue in either inventory.</span></div>
         {storageError && <div className="form-error" role="alert"><p>{storageError}</p><Button variant="outline" onClick={retryStorage} disabled={busy || paused}>Retry recovery storage</Button></div>}
         {recovering && <p className="field-hint">Captured reads and request IDs remain in this station until resolved. An uncertain result must be confirmed by retrying its exact request; current loan state alone does not prove the earlier result.</p>}
-        <div className="scan-station-toolbar detail-card"><div><strong>Add batteries → Review list → Confirm</strong><p className="field-hint">Add one or more batteries using a registered tag or manual selection. Review up to 100 batteries, then confirm to save. Use one input method per review list.</p></div>
+        <div className="scan-station-toolbar detail-card"><div><strong>Add batteries → Review list → Confirm</strong><p className="field-hint">{nfcOffered ? "Add batteries by typing a registered tag, by manual selection or, as a demonstration, by NFC scan." : "Add batteries by typing a registered tag or by manual selection."} Review up to 100 batteries, then confirm to save. Use one input method per review list.</p></div>
             {checkout ? <div><Label>Current holder for this checkout</Label><strong>{data.user.displayName} · {data.user.username}</strong><p className="field-hint">Signed-in staff account; no proxy holder.</p></div> : <div><Label>Return room · J18 · optional</Label><Select value={roomConfirmationRequired ? "__confirmation_required" : session.room?.id ?? "__unspecified"} onValueChange={chooseRoom} disabled={roomLocked || roomConfirmationRequired && !reviewedRooms || !roomConfirmationRequired && (!!session.queue.length || !!session.completed.length)}><SelectTrigger aria-label="Session return room"><SelectValue/></SelectTrigger><SelectContent>{roomConfirmationRequired && <SelectItem value="__confirmation_required" disabled>Confirm room or choose Room unspecified</SelectItem>}<SelectItem value="__unspecified">Room unspecified</SelectItem>{session.room && !rooms.some(room => room.id === session.room?.id) && <SelectItem value={session.room.id} disabled>{session.room.name} — Captured room unavailable</SelectItem>}{rooms.map(room => <SelectItem key={room.id} value={room.id} disabled={data.dataset === "live" && room.isPlaceholder}>{room.id === session.room?.id ? `${session.room.name}${session.room.isPlaceholder ? " — Placeholder" : ""} · Captured` : data.dataset === "live" && room.isPlaceholder ? `${room.name} — Unverified room, unavailable` : roomLabel(room)}</SelectItem>)}</SelectContent></Select>{roomConfirmationRequired && !reviewedRooms && <Button variant="outline" onClick={reloadReturnRooms} disabled={busy || paused}>Reload current return rooms</Button>}<p className="field-hint">{roomConfirmationRequired ? "Confirm a reviewed room or explicitly choose Room unspecified before another read. Completed movements retain their original placement evidence." : session.room?.isPlaceholder ? "Demonstration placeholder only; this is not verified physical location evidence." : "Choose once before accepted reads. Unspecified records no room; there is no registered-home fallback."}</p></div>}
         </div>
-        <div className="group-scan-context"><Label>Process as teaching group — optional</Label><Select value={session.teachingGroup?.id ?? "__none"} disabled={locked || !!session.queue.length || !!session.completed.length} onValueChange={id => { const group = data.teachingGroups?.find(group => group.id === id); change(previous => ({ ...previous, teachingGroup: group ? { id: group.id, version: group.version } : undefined })); setSelectedIds([]); }}><SelectTrigger aria-label="Scan teaching group"><SelectValue/></SelectTrigger><SelectContent><SelectItem value="__none">Individual battery operations</SelectItem>{data.teachingGroups?.map(group => <SelectItem key={group.id} value={group.id}>{group.name}</SelectItem>)}{session.teachingGroup && !scanGroup && <SelectItem value={session.teachingGroup.id} disabled>Reviewed group unavailable</SelectItem>}</SelectContent></Select>{session.teachingGroup && <p className="field-hint">Only reviewed group members can be processed. A confirmed batch is one group operation in shared Activity. Changing the group requires a new session.</p>}</div>
+        {session.teachingGroup && <div className="group-scan-context"><Label>Teaching group (session started earlier)</Label><p><strong>{scanGroup?.name ?? "Reviewed group unavailable"}</strong></p><p className="field-hint">This session was started for a teaching group before whole-group checkouts moved to Teaching groups. Only reviewed group members can be processed here, and a confirmed batch is one group operation in shared Activity. New whole-group checkouts and returns use Teaching groups.</p>{!session.queue.length && !session.completed.length && <Button variant="outline" size="sm" disabled={locked} onClick={() => { change(previous => ({ ...previous, teachingGroup: undefined })); setSelectedIds([]); }}>Continue without the group</Button>}</div>}
         <div className="scan-station-summary"><div className="detail-card"><span>Completed this session</span><strong>{session.completed.length}</strong></div><div className="detail-card"><span>Queued / not committed</span><strong>{session.queue.length}</strong></div><div className="detail-card"><span>Unresolved read issues</span><strong>{unresolvedIssues.filter(issue => session.attempt?.status !== "uncertain" || issue.id !== session.attempt.payload.requestId).length + (session.attempt?.status === "uncertain" ? 1 : 0)}</strong></div></div>
-        <div className="scan-station-grid"><section className="scan-station-reader inventory-panel"><div className="section-heading"><h2><ScanLine size={18}/>Manual tag lookup</h2></div><div className="form-stack p-5"><Label htmlFor="scan-station-tag">Tag identifier</Label><div className="inline-input"><Input ref={tagInput} id="scan-station-tag" value={tag} onChange={event => setTag(event.target.value)} maxLength={128} onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); void readTags([tag], "manual"); } }} placeholder="Enter a registered tag, then press Enter" disabled={locked}/><Button onClick={() => readTags([tag], "manual")} disabled={locked || !tag.trim()}>Add tag to review</Button></div><p className="field-hint">A valid tag only adds to the review queue. Confirm the list to save. Source is recorded as typed tag input; it is not a hardware reading.</p></div></section>
+        <NfcScanPanel dataset={data.dataset} disabled={paused || !!storageError || !!session.attempt || roomConfirmationRequired || !!groupEditor} hint={`Each tag read is looked up and, when valid, added to the review list. Nothing is ${checkout ? "checked out" : "returned"} until you confirm the list.`} onRead={(tagId, evidence) => readTags([tagId], "native_nfc", evidence)} onListeningChange={setNfcListening}/>
+        <div className="scan-station-grid"><section className="scan-station-reader inventory-panel"><div className="section-heading"><h2><ScanLine size={18}/>Manual tag entry</h2></div><div className="form-stack p-5"><Label htmlFor="scan-station-tag">Tag identifier</Label><div className="inline-input"><Input ref={tagInput} id="scan-station-tag" value={tag} onChange={event => setTag(event.target.value)} maxLength={128} onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); void readTags([tag], "manual"); } }} placeholder="Enter a registered tag, then press Enter" disabled={locked}/><Button onClick={() => readTags([tag], "manual")} disabled={locked || !tag.trim()}>Add tag to review</Button></div><p className="field-hint">A valid tag only adds to the review queue. Confirm the list to save. Source is recorded as typed tag input; it is not a hardware reading.</p></div></section>
             <section className="scan-station-selection inventory-panel">
                 <div className="section-heading"><h2>Manual selection</h2><span>{selectedBatteries.length} selected</span></div>
                 <div className="form-stack p-5">

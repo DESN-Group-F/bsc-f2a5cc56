@@ -35,9 +35,9 @@ const rowSelection = await import(pathToFileURL(join(scratch, "row-selection.mjs
 const source = await readFile(new URL("../components/inventory/scan-station.tsx", import.meta.url), "utf8");
 const componentSource = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText
     .replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
-const uiNames = ["BatteryFilterControls", "RecordPicker", "Plus", "TeachingGroupsPanel", "CheckCircle2", "LogOut", "Radio", "RefreshCw", "ScanLine", "Trash2", "Button", "Input", "Label", "Checkbox", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"];
+const uiNames = ["BatteryFilterControls", "RecordPicker", "Plus", "TeachingGroupsPanel", "NfcScanPanel", "CheckCircle2", "LogOut", "Radio", "RefreshCw", "ScanLine", "Trash2", "Button", "Input", "Label", "Checkbox", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"];
 const ui = Object.fromEntries(uiNames.map(name => [name, name]));
-Object.assign(ui, { ReceiptAction: "Button" });
+Object.assign(ui, { ReceiptAction: "Button", useNfcScanOffered: dataset => dataset === "demo" });
 const movementComponentSource = ts.transpileModule(await readFile(new URL("../components/inventory/movement-dialog.tsx", import.meta.url), "utf8"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 function hooks() {
@@ -218,20 +218,20 @@ function receipt(payload, inventory) {
     };
 }
 
-test("browser review preserves recovered native evidence and labels historical sources without a native acquisition control", async () => withStorage(async store => {
+test("browser review preserves recovered NFC evidence, labels historical sources and offers NFC only through the scan panel", async () => withStorage(async store => {
     const evidence = { attemptId: crypto.randomUUID(), source: "native-nfc-reader", platform: "android", startedAt: "2026-10-03T00:00:00.000Z", endedAt: "2026-10-03T00:00:01.000Z", adoptedAt: "2026-10-03T00:00:02.000Z", tagId: "nfc:uid:01020304", result: { uidHex: "01020304", technology: "NfcA", ndefStatus: "unknown", capacityBytes: null, records: [], observedAt: "2026-10-03T00:00:01.000Z" } };
     const native = battery("NATIVE-QUEUE", evidence.tagId), history = ["manual", "selection", "simulated"].map((source, index) => ({ battery: battery(`HISTORY-${index}`, `HISTORY-TAG-${index}`), tagId: `HISTORY-TAG-${index}`, source, readAt: "2026-10-03T00:00:00.000Z", receipt: { kind: "checkout", requestId: crypto.randomUUID(), batteryIds: [`HISTORY-${index}`], count: 1, at: "2026-10-03T00:00:00.000Z" } }));
     const inventory = data([native, ...history.map(read => read.battery)]), saved = { sessionId: crypto.randomUUID(), mode: "batch", room: null, queue: [{ battery: native, tagId: native.tagId, source: "native_nfc", readAt: evidence.result.observedAt, nfcEvidence: evidence }], completed: history, issues: [], attempt: null };
     store.storage.setItem("battery-scan:review-account:demo:checkout", JSON.stringify(saved));
     const writes = [], station = mount({ data: inventory, kind: "checkout", onExit() {}, onRegister() {}, async write(action, payload) { writes.push(structuredClone(payload)); return receipt(payload, inventory); } });
     const tree = station.render(), queuePanel = nodes(tree).find(node => node.props.className === "scan-station-queue inventory-panel"), historyPanel = nodes(tree).find(node => node.props.className === "scan-station-completed inventory-panel");
-    assert.match(text(tree), /Hardware tag reading is unavailable in this browser/);
-    assert.match(text(queuePanel), /Native NFC/); assert.doesNotMatch(text(queuePanel), /Typed tag input|Simulated reader/);
+    assert.doesNotMatch(text(tree), /Hardware tag reading is unavailable/); assert.equal(nodes(tree).find(node => node.type === "NfcScanPanel").props.dataset, "demo");
+    assert.match(text(queuePanel), /NFC scan/); assert.doesNotMatch(text(queuePanel), /Typed tag input|Simulated reader/);
     assert.match(text(historyPanel), /Typed tag input/); assert.match(text(historyPanel), /Manual selection/); assert.match(text(historyPanel), /Simulated reader \(demo\)/);
     assert.equal(button(tree, "Read NFC tag"), undefined); assert.equal(writes.length, 0);
     await confirmQueue(station, "checkout", 1);
     assert.equal(writes[0].scan.source, "native_nfc"); assert.deepEqual(writes[0].scan.bindings[0].nfcEvidence, evidence);
-    assert.match(text(nodes(station.render()).find(node => node.props.className === "scan-station-completed inventory-panel")), /Native NFC/);
+    assert.match(text(nodes(station.render()).find(node => node.props.className === "scan-station-completed inventory-panel")), /NFC scan/);
     assert.deepEqual(store.read().completed.slice(0, 3), history);
 }));
 
@@ -747,23 +747,51 @@ test("manual selection filters preserve chosen batteries and submit the complete
     assert.deepEqual(calls.map(call => call.payload.batteryIds), [[first.id, second.id]], "hidden selected batteries remain explicitly counted and included in one confirmed request");
     assert.equal(store.read().completed.length, 2); assert.equal(store.read().queue.length, 0);
 }));
-test("scan selections can join groups, and an explicit group batch records a captured context without accepting outsiders", async () => withStorage(async store => {
+test("fresh stations offer no group batch, while a session started earlier for a group still finishes with its captured group", async () => withStorage(async store => {
     const inventory = data([battery("GROUP-A", null), battery("GROUP-B", "GROUP-TAG-B"), battery("OUTSIDE", "OTHER-TAG")]);
     inventory.teachingGroups = [{ id: crypto.randomUUID(), name: "Class set", version: 1, ownerAccountId: inventory.user.id, batteryIds: ["GROUP-A", "GROUP-B"] }];
+    const fresh = mount({ data: inventory, kind: "checkout", onExit() {}, onRegister() {}, async write() { assert.fail("no request while only rendering"); } });
+    assert.equal(nodes(fresh.render()).find(node => node.type === "Select" && nodes(node).some(child => child.props["aria-label"] === "Scan teaching group")), undefined);
+    assert.doesNotMatch(text(fresh.render()), /Process as teaching group/); assert.equal(store.storage.getItem("battery-scan:review-account:demo:checkout"), null);
+    const earlier = inventory.batteries.find(item => item.id === "GROUP-A");
+    store.storage.setItem("battery-scan:review-account:demo:checkout", JSON.stringify({ sessionId: crypto.randomUUID(), mode: "batch", room: null, queue: [{ battery: earlier, tagId: null, source: "selection", readAt: "2026-11-04T00:00:00.000Z" }], completed: [], issues: [], attempt: null, teachingGroup: { id: inventory.teachingGroups[0].id, version: 1 } }));
     const calls = [], station = mount({ data: inventory, kind: "checkout", onExit() {}, onRegister() {}, async write(action, payload) {
         calls.push({ action, payload: structuredClone(payload) });
         if (action === "scan_lookup") return { source: payload.source, results: payload.tagIds.map(tagId => ({ tagId, battery: inventory.batteries.find(battery => battery.tagId === tagId) ?? null })) };
         return { ...receipt(payload, inventory), teachingGroup: { ...payload.teachingGroup, name: "Class set", ownerAccountId: inventory.user.id, operationId: payload.requestId, batteryIds: payload.batteryIds } };
     } });
-    const picker = nodes(station.render()).find(node => node.type === "Select" && nodes(node).some(child => child.props["aria-label"] === "Scan teaching group"));
-    picker.props.onValueChange(inventory.teachingGroups[0].id);
-    assert.equal(store.read().mode, "batch"); assert.equal(selectionChoice(station.render(), "OUTSIDE"), undefined);
-    selectionChoice(station.render(), "GROUP-A").props.onCheckedChange(true); selectionChoice(station.render(), "GROUP-B").props.onCheckedChange(true);
-    button(station.render(), "Add selected to teaching group").props.onClick(); const editor = nodes(station.render()).find(node => node.type === "TeachingGroupsPanel"); assert.deepEqual(editor.props.initialIds, ["GROUP-A", "GROUP-B"]); assert.equal(calls.length, 0); editor.props.onClose();
+    assert.match(text(station.render()), /Teaching group \(session started earlier\)/); assert.match(text(station.render()), /Class set/);
+    assert.equal(button(station.render(), "Continue without the group"), undefined, "a group session with queued batteries keeps its group");
+    assert.equal(selectionChoice(station.render(), "OUTSIDE"), undefined);
+    selectionChoice(station.render(), "GROUP-B").props.onCheckedChange(true);
     await submitSelection(station); assert.equal(calls.length, 0);
     await button(station.render(), "Confirm checkout (2)").props.onClick();
     assert.deepEqual(calls[0].payload.teachingGroup, { id: inventory.teachingGroups[0].id, version: 1 }); assert.equal(store.read().completed.length, 2);
+    assert.equal(button(station.render(), "Continue without the group"), undefined, "a group session with completed movements keeps its group");
     button(station.render(), "Add all session batteries to group").props.onClick(); const completed = nodes(station.render()).find(node => node.type === "TeachingGroupsPanel"); assert.deepEqual(completed.props.initialIds, ["GROUP-A", "GROUP-B"]);
+}));
+test("NFC reads from the scan panel join the review list with their own evidence and confirm as one NFC batch", async () => withStorage(async store => {
+    const evidenceFor = uid => ({ attemptId: crypto.randomUUID(), source: "native-nfc-reader", platform: "android", startedAt: "2026-11-04T00:00:00.000Z", endedAt: "2026-11-04T00:00:01.000Z", adoptedAt: "2026-11-04T00:00:02.000Z", tagId: `nfc:uid:${uid}`, result: { uidHex: uid, technology: "Web NFC (Chrome on Android)", ndefStatus: "unknown", capacityBytes: null, records: [], observedAt: "2026-11-04T00:00:01.000Z" } });
+    const evidence = evidenceFor("04A1B2C3D4E5F6"), scanned = battery("NFC-A", evidence.tagId), typed = battery("TYPED", "TYPED-TAG");
+    const inventory = data([scanned, typed]), calls = [];
+    const station = mount({ data: inventory, kind: "checkout", onExit() {}, onRegister() {}, async write(action, payload) {
+        calls.push({ action, payload: structuredClone(payload) });
+        if (action === "scan_lookup") return { source: payload.source, results: payload.tagIds.map(tagId => ({ tagId, battery: inventory.batteries.find(item => item.tagId === tagId) ?? null })) };
+        return receipt(payload, inventory);
+    } });
+    const panel = () => nodes(station.render()).find(node => node.type === "NfcScanPanel");
+    assert.equal(panel().props.dataset, "demo"); assert.equal(panel().props.disabled, false);
+    await panel().props.onRead(evidence.tagId, evidence);
+    assert.deepEqual(calls[0], { action: "scan_lookup", payload: { tagIds: [evidence.tagId], source: "native_nfc" } });
+    assert.equal(store.read().queue[0].source, "native_nfc"); assert.deepEqual(store.read().queue[0].nfcEvidence, evidence);
+    await panel().props.onRead(evidence.tagId, evidence); assert.equal(store.read().queue.length, 1, "a repeated read is ignored");
+    await station.read("TYPED-TAG"); assert.equal(store.read().queue.length, 1, "typed tags cannot join an NFC review list");
+    const before = calls.length; await panel().props.onRead("nfc:uid:01020304", evidence);
+    assert.equal(calls.length, before, "a read whose evidence names another tag is refused before lookup"); assert.equal(store.read().queue.length, 1);
+    await confirmQueue(station, "checkout", 1);
+    const movement = calls.find(call => call.action === "movement").payload;
+    assert.equal(movement.scan.source, "native_nfc"); assert.deepEqual(movement.scan.bindings[0].nfcEvidence, evidence);
+    assert.match(text(nodes(station.render()).find(node => node.props.className === "scan-station-completed inventory-panel")), /NFC scan/);
 }));
 
 function mountMovement(props) {

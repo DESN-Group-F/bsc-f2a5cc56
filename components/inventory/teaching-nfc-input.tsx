@@ -10,16 +10,18 @@ import { teachingNfcBridge, validateTeachingNfcTag, type TeachingNfcProposal, ty
 export type TeachingNfcInputProps = {
     disabled?: boolean;
     source?: TeachingTagSource["kind"];
+    /** NFC is a demonstration feature: false outside the Demonstration inventory, where no reader is offered. */
+    nfcEnabled?: boolean;
     onChooseTag: (tagId: string, source: TeachingTagSource) => void | Promise<void>;
     onBusyChange?: (busy: boolean) => void;
 };
 
 /** Acquisition only: the parent chooses an original slot and reviews the registered asset. */
-export function TeachingNfcInput({ disabled = false, source = "tag", onChooseTag, onBusyChange }: TeachingNfcInputProps) {
+export function TeachingNfcInput({ disabled = false, source = "tag", nfcEnabled = false, onChooseTag, onBusyChange }: TeachingNfcInputProps) {
     const [tag, setTag] = useState(""), [reading, setReading] = useState(false), [busy, setBusy] = useState(false);
     const [proposal, setProposal] = useState<TeachingNfcProposal | null>(null), [error, setError] = useState("");
     const [availability, setAvailability] = useState<{ available: boolean; enabled: boolean; reason?: string } | null>(null);
-    const running = useRef(false), mounted = useRef(true), bridge = source === "native_nfc" ? teachingNfcBridge() : null;
+    const running = useRef(false), mounted = useRef(true), bridge = source === "native_nfc" && nfcEnabled ? teachingNfcBridge() : null;
     useEffect(() => {
         mounted.current = true;
         if (bridge) void bridge.getAvailability().then(value => { if (mounted.current) setAvailability(value); }).catch(reason => { if (mounted.current) setError(reason instanceof Error ? reason.message : "NFC availability could not be checked."); });
@@ -55,8 +57,8 @@ export function TeachingNfcInput({ disabled = false, source = "tag", onChooseTag
         <div className="inline-input"><Input id="teaching-alternative-tag" value={tag} onChange={event => setTag(event.target.value)} onKeyDown={event => { if (event.key === "Enter") { event.preventDefault(); void choose(false); } }} maxLength={128} disabled={locked} placeholder="Enter the exact registered tag"/><Button type="button" onClick={() => choose(false)} disabled={locked || !tag}><ScanLine size={16}/>Find registered tag</Button></div>
         <p className="field-hint">Typed tag input only locates an existing battery. Choose the original group member to replace, review differences, then confirm the checkout. It is recorded as typed tag input, without hardware evidence.</p></> : <>
         {bridge && <div className="flex flex-wrap gap-2"><Button type="button" variant="outline" onClick={read} disabled={locked || !availability?.available || !availability.enabled}><Radio size={16}/>{reading ? "Reading NFC…" : "Read NFC tag"}</Button>{reading && <Button type="button" variant="outline" onClick={() => bridge.cancel().catch(reason => setError(reason instanceof Error ? reason.message : "NFC cancellation failed."))}>Cancel NFC read</Button>}</div>}
-        {!bridge ? <p className="field-hint">Native NFC is unavailable in this browser. Choose Entered tag or Inventory selection above to change the input source explicitly.</p> : !availability ? <p className="field-hint">Checking native NFC availability…</p> : (!availability.available || !availability.enabled) && <p className="field-hint">{availability.reason || "Native NFC is unavailable or disabled on this device."} Choose Entered tag or Inventory selection above to change the input source explicitly.</p>}
-        {proposal && <div className="history-entry"><strong>{proposal.tagId}</strong><p className="field-hint">Device read: {proposal.platform} · {proposal.result.technology} · {proposal.result.observedAt}. Raw UID and NDEF evidence are saved separately. This read has not selected or borrowed a battery. Explicit adoption retains Native NFC as its source.</p><details><summary>Device read evidence</summary><pre className="max-w-full whitespace-pre-wrap break-all text-xs">{JSON.stringify(proposal, null, 2)}</pre></details><div className="flex flex-wrap gap-2"><Button type="button" disabled={locked} onClick={() => choose(true)}>Use this NFC read</Button><Button type="button" variant="outline" disabled={locked} onClick={() => setProposal(null)}>Discard identifier proposal</Button></div></div>}</>}
+        {!bridge ? <p className="field-hint">{nfcEnabled ? "NFC scanning isn't supported on this device or browser (it works in Chrome on Android)." : "NFC scanning is a demonstration offered only in the Demonstration inventory, outside embedded pages."} Choose Entered tag or Inventory selection above to change the input source explicitly.</p> : !availability ? <p className="field-hint">Checking NFC availability…</p> : (!availability.available || !availability.enabled) && <p className="field-hint">{availability.reason || "NFC is unavailable or switched off on this device."} Choose Entered tag or Inventory selection above to change the input source explicitly.</p>}
+        {proposal && <div className="history-entry"><strong>{proposal.tagId}</strong><p className="field-hint">Device read: {proposal.platform} · {proposal.result.technology} · {proposal.result.observedAt}. Raw UID and NDEF evidence are saved separately. This read has not selected or borrowed a battery. Explicit adoption records it as an NFC scan.</p><details><summary>Device read evidence</summary><pre className="max-w-full whitespace-pre-wrap break-all text-xs">{JSON.stringify(proposal, null, 2)}</pre></details><div className="flex flex-wrap gap-2"><Button type="button" disabled={locked} onClick={() => choose(true)}>Use this NFC read</Button><Button type="button" variant="outline" disabled={locked} onClick={() => setProposal(null)}>Discard identifier proposal</Button></div></div>}</>}
         <p className="field-hint">One input source per review list. A source change must be explicit and must retain any already reviewed alternatives or require a separate list.</p>
         {error && <p role="alert" className="form-error">{error}</p>}
     </section>;

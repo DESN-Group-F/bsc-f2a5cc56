@@ -151,6 +151,14 @@
 .scan-station-grid > section > .section-heading h2 { display: flex; align-items: center; gap: 8px; }
 .scan-station-grid > section > .section-heading h2 > svg { width: var(--control-icon-size); height: var(--control-icon-size); flex: none; }
 
+/* NFC scan panel (demonstration only; Demonstration inventory, top-level pages). */
+.nfc-scan-panel > .section-heading { padding: 14px 18px; }
+.nfc-scan-panel > .section-heading h2 { display: flex; align-items: center; gap: 8px; }
+.nfc-scan-panel > .section-heading h2 > svg { width: var(--control-icon-size); height: var(--control-icon-size); flex: none; }
+.nfc-scan-panel > .section-heading [role="status"] { font-size: 13px; color: var(--muted-foreground); }
+.nfc-scan-panel > .form-stack { padding: 16px 18px; margin-top: 0; gap: 10px; }
+.nfc-scan-panel > .form-stack p { font-size: 14px; line-height: 1.6; margin: 0; }
+
 .scan-station-reader > .form-stack {
   padding: 16px 18px;
 }
