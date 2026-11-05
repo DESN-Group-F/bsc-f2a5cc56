@@ -23,7 +23,7 @@ enum Tone {
 enum MovementKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case checkout
     case `return`
-    /// First-time registration of tagged batteries; sent as `intake` writes (Demo).
+    /// First-time registration of tagged batteries; sent as `intake` writes.
     case register
     /// Scrap or permanently remove; sent as a `lifecycle` write, not a movement.
     case retire

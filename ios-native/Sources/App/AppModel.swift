@@ -69,6 +69,25 @@ final class AppModel {
     var travel: InkTravel?
     private var lastSignedInId: String?
 
+    /// Whether this inventory takes native tag reads for an operation, as the server advertises it in the
+    /// snapshot (`capabilities.nativeNfc`). Before a snapshot arrives, or from a server that doesn't say,
+    /// the earlier rule applies: Demonstration only. Turning NFC on for Working is a server change; the
+    /// phone follows it without a new build.
+    func allowsNFC(_ operation: NFCOperation) -> Bool {
+        if let snapshot = inventory.snapshot, snapshot.dataset == dataset,
+           let nfc = snapshot.capabilities?.nativeNfc {
+            return nfc.enabled == true && (nfc.enabledDatasets ?? []).contains(dataset.rawValue)
+                && (nfc.operations?.contains(operation.rawValue) ?? true)
+        }
+        return dataset.allowsNFCWrites
+    }
+
+    /// Preview mode only: show the fictional data as if in another inventory.
+    func previewSelect(_ value: Dataset) {
+        guard preview != nil else { return }
+        dataset = value
+    }
+
     /// Switching inventory clears what was loaded for the previous one.
     func select(_ newValue: Dataset) {
         guard newValue != dataset else { return }

@@ -80,7 +80,7 @@ final class ScanModel {
     private(set) var latestId: String?
     private(set) var readerActive = false
     private(set) var pendingWrites: [PendingMovement] = []
-    /// The last tag that wasn't registered, so "Register" can carry its evidence (Demo only).
+    /// The last tag that wasn't registered, so "Register" can carry its evidence.
     private(set) var unregisteredRead: TagRead?
     var returnRoomId: String?
     /// Retire mode: outcome and optional details, chosen before confirming.
@@ -249,9 +249,9 @@ final class ScanModel {
     private(set) var lookupReads: [LookupRead] = []
     private(set) var lookingUp = false
 
-    /// Whether this iPhone and inventory can look batteries up by tag (Demo-only, like every tag scan).
+    /// Whether this iPhone and inventory can look batteries up by tag (as the server allows it for this inventory).
     var canLookUp: Bool {
-        guard let app, app.dataset.allowsNFCWrites else { return false }
+        guard let app, app.allowsNFC(.lookup) else { return false }
         // Simulator screenshots have no reader; preview mode shows the entry points anyway.
         return NFCReader.isAvailable || app.preview != nil
     }
@@ -389,13 +389,13 @@ final class ScanModel {
         if case .done = phase { scanMore() }
         guard let app, phase == .scanning else { return }
         if readerActive { return }
-        if mode == .register && !(app.dataset.allowsNFCWrites && NFCReader.isAvailable) {
+        if mode == .register && !(app.allowsNFC(.intake) && NFCReader.isAvailable) {
             // Without tag scanning, registration is one battery at a time with the form.
             app.registration = RegistrationRequest()
             return
         }
-        guard app.dataset.allowsNFCWrites else {
-            show(.init(kind: .info, text: "Tag scanning is Demo-only for now. Pick batteries from the list."))
+        guard app.allowsNFC(mode.nfcOperation) else {
+            show(.init(kind: .info, text: "Tag scanning isn't turned on for the \(app.dataset.title) yet. Pick batteries from the list."))
             showChooser = true
             return
         }
@@ -484,13 +484,13 @@ final class ScanModel {
     /// Opens registration for the tag that just failed lookup.
     func registerUnregisteredTag() {
         guard let app else { return }
-        if let read = unregisteredRead, app.dataset.allowsNFCWrites, items.isEmpty, phase == .scanning {
+        if let read = unregisteredRead, app.allowsNFC(.intake), items.isEmpty, phase == .scanning {
             // Start (or add to) a batch intake with the tag that was just read.
             mode = .register
             addIntake(read)
             return
         }
-        app.registration = RegistrationRequest(tagRead: app.dataset.allowsNFCWrites ? unregisteredRead : nil)
+        app.registration = RegistrationRequest(tagRead: app.allowsNFC(.intake) ? unregisteredRead : nil)
     }
 
     private func add(_ battery: BatteryRecord, tagId: String?, evidence: NFCEvidence?, from newSource: Source) {
@@ -816,8 +816,8 @@ final class ScanModel {
         guard !intakeHasUncertain else { phase = .uncertain; return }
         let targets = intakeEntries.filter { $0.status == .draft || $0.isFailed }.map(\.id)
         guard !targets.isEmpty else { finishIntakeBatch(); return }
-        guard app.dataset.allowsNFCWrites else {
-            submissionError = "Batch registration with tags is Demo-only for now."
+        guard app.allowsNFC(.intake) else {
+            submissionError = "Registration with tags isn't turned on for the \(app.dataset.title) yet."
             return
         }
         guard intakeProblems.isEmpty, let common = intakeDetails.common(in: app.inventory) else {

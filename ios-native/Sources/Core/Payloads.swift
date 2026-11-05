@@ -105,7 +105,7 @@ struct OperatorRegistrationPayload: Codable, Sendable {
     }
 }
 
-/// `intake` with `native_nfc`: a physically read tag with full evidence. Demonstration only.
+/// `intake` with `native_nfc`: a physically read tag with full evidence, where the server allows native NFC.
 struct NFCIntakePayload: Codable, Sendable {
     let requestId: String
     let sessionId: String
@@ -147,7 +147,7 @@ struct LifecycleItem: Codable, Equatable, Sendable {
     let batteryId: String
     let version: Int
     let tagId: String?
-    /// Present only for `native_nfc` (Demo): the full evidence of the physical read.
+    /// Present only for `native_nfc`: the full evidence of the physical read.
     var nfcEvidence: NFCEvidence? = nil
 
     enum CodingKeys: String, CodingKey { case batteryId, version, tagId, nfcEvidence }

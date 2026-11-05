@@ -125,7 +125,7 @@ struct LookupSheet: View {
                 Text("No battery in this inventory has this tag. If it's a new battery, register it first.")
                     .font(.subheadline).foregroundStyle(.secondary)
             }
-            if let tagRead = read.tagRead, app.dataset.allowsNFCWrites {
+            if let tagRead = read.tagRead, app.allowsNFC(.intake) {
                 Button {
                     after { app.registration = RegistrationRequest(tagRead: tagRead) }
                 } label: {

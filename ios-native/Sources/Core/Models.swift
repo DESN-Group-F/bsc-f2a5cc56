@@ -8,8 +8,28 @@ enum Dataset: String, Codable, CaseIterable, Identifiable, Sendable {
     var id: String { rawValue }
     var title: String { self == .demo ? "Demo inventory" : "Working inventory" }
     var shortTitle: String { self == .demo ? "Demo" : "Working" }
-    /// Native NFC business writes are accepted only in Demonstration (server rule).
+    /// Fallback when the server doesn't advertise `capabilities.nativeNfc`: Demonstration only, the rule of
+    /// every server release so far. The server's capability decides (`AppModel.allowsNFC`).
     var allowsNFCWrites: Bool { self == .demo }
+}
+
+/// What a native tag read may be used for, by the server's names in `capabilities.nativeNfc.operations`.
+enum NFCOperation: String, Sendable {
+    case lookup = "scan_lookup"
+    case movement
+    case intake
+    case lifecycle
+}
+
+extension MovementKind {
+    /// The NFC operation a scan in this mode feeds.
+    var nfcOperation: NFCOperation {
+        switch self {
+        case .checkout, .return: return .movement
+        case .register: return .intake
+        case .retire: return .lifecycle
+        }
+    }
 }
 
 struct StaffUser: Codable, Equatable, Sendable {
@@ -270,6 +290,14 @@ struct InventoryCapabilities: Codable, Sendable {
     let operatorRegistration: Int?
     let demoIntake: Int?
     let batteryModels: Int?
+    let nativeNfc: NativeNFCCapability?
+}
+
+/// The server's `nativeNfcCapability(dataset)`: whether this inventory takes native tag reads, and for what.
+struct NativeNFCCapability: Codable, Sendable {
+    let enabled: Bool?
+    let enabledDatasets: [String]?
+    let operations: [String]?
 }
 
 struct InventorySnapshot: Codable, Sendable {

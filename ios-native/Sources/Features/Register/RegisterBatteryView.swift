@@ -1,14 +1,15 @@
 import SwiftUI
 
-/// A request to open registration, optionally carrying a tag the scan station just read (Demo only).
+/// A request to open registration, optionally carrying a tag the scan station just read.
 struct RegistrationRequest: Identifiable {
     let id = UUID()
     var tagRead: TagRead? = nil
 }
 
 /// New battery registration: details → review → confirmed by the server.
-/// Working inventory uses `operator_register` (untagged or a typed tag). In Demo a physically read tag
-/// is registered through `intake` with its full NFC evidence; a read is never relabelled as typed.
+/// Untagged or typed-tag registration uses `operator_register`. Where the server allows native NFC
+/// (`AppModel.allowsNFC`), a physically read tag is registered through `intake` with its full NFC evidence;
+/// a read is never relabelled as typed.
 /// Batches of tagged batteries are registered from the Scan station's Register mode.
 struct RegisterBatteryView: View {
     @Environment(AppModel.self) private var app
@@ -87,9 +88,9 @@ struct RegisterBatteryView: View {
             } header: {
                 Text("Tag")
             } footer: {
-                Text(app.dataset.allowsNFCWrites
+                Text(app.allowsNFC(.intake)
                      ? "Scan the tag stuck on the battery, or leave it untagged. For several new batteries, use Register on the Scan tab."
-                     : "Tag scanning is Demo-only for now. Type a tag ID only if it's printed on the tag, or leave it untagged.")
+                     : "Tag scanning isn't turned on for this inventory yet. Type a tag ID only if it's printed on the tag, or leave it untagged.")
             }
 
             if !problems.isEmpty {
@@ -109,7 +110,7 @@ struct RegisterBatteryView: View {
                 Button("Remove", role: .destructive) { self.scanned = nil }.buttonStyle(.borderless)
             }
         } else {
-            if app.dataset.allowsNFCWrites && NFCReader.isAvailable {
+            if app.allowsNFC(.intake) && NFCReader.isAvailable {
                 Button {
                     scanTag()
                 } label: {
@@ -230,7 +231,7 @@ struct RegisterBatteryView: View {
         prepared = true
         details = app.scan.intakeDetails
         if details.ownerId.isEmpty, let me = app.inventory.staffOwners.first(where: { $0.accountId == app.user?.id }) { details.ownerId = me.id }
-        if scanned == nil, let read = request.tagRead, app.dataset.allowsNFCWrites { scanned = read }
+        if scanned == nil, let read = request.tagRead, app.allowsNFC(.intake) { scanned = read }
         if let building = previewBuilding, app.preview != nil { details.chooseBuilding(building) }
         if previewReview, app.preview != nil, let model = PreviewFixtures.models.first {
             details.apply(model)
@@ -286,7 +287,7 @@ struct RegisterBatteryView: View {
         let session = RequestID.make()
         let body: Data?
         let action: String
-        if let scanned, app.dataset.allowsNFCWrites {
+        if let scanned, app.allowsNFC(.intake) {
             action = "intake"
             let evidence = scanned.evidence(adoptedAt: Sydney.timestamp())
             body = WriteCenter.inventoryBody(app.dataset, action: action, payload: NFCIntakePayload(
@@ -331,7 +332,7 @@ struct RegisterBatteryView: View {
         confirmation = nil
         message = nil
         step = .form
-        if app.dataset.allowsNFCWrites && NFCReader.isAvailable { scanTag() }
+        if app.allowsNFC(.intake) && NFCReader.isAvailable { scanTag() }
     }
 }
 

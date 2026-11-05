@@ -158,7 +158,6 @@ struct ScanView: View {
                 ProgressView().controlSize(.small)
                     .frame(width: 40, height: 40)
             }
-            LookupMenu()
             if scan.mode == .checkout || scan.mode == .return {
                 GroupsButton()
                     .transition(.opacity.combined(with: .scale(scale: 0.9)))
@@ -299,17 +298,6 @@ struct ScanView: View {
                         Text("Added \(latest)").font(.subheadline).foregroundStyle(.secondary)
                             .transition(.opacity)
                     }
-                    // A hand-picked list can keep growing by label; a list from tag scans can't take them.
-                    if scan.mode != .register && scan.source != .nfc && scan.phase == .scanning {
-                        Button { app.labelScan = .addToList } label: {
-                            Image(systemName: "qrcode.viewfinder").font(.subheadline.weight(.semibold))
-                                .frame(width: 36, height: 36)
-                                .contentShape(Rectangle())
-                        }
-                        .buttonStyle(.plain)
-                        .foregroundStyle(scan.mode.tint == Tone.returning ? Tone.returnGlyph : scan.mode.tint)
-                        .accessibilityLabel("Add by scanning a label")
-                    }
                 }
             } else {
                 Text(emptyTitle)
@@ -363,22 +351,22 @@ struct ScanView: View {
             }
             .secondaryButton()
             .controlSize(.regular)
-            if scan.mode != .register {
-                Button { app.labelScan = .addToList } label: {
-                    Label("Scan label", systemImage: "qrcode.viewfinder")
+            if scan.mode != .register && scan.canLookUp {
+                Button { scan.startLookup() } label: {
+                    Label("Look up", systemImage: "sensor.tag.radiowaves.forward")
                         .font(.subheadline.weight(.semibold))
                         .padding(.horizontal, 6)
                 }
                 .secondaryButton()
                 .controlSize(.regular)
-                .accessibilityHint("Use the camera to add batteries by their printed label.")
+                .accessibilityHint("Scan tags to see batteries' details. Nothing changes.")
             }
         }
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
 
     private var emptyTitle: String {
-        let nfc = app.dataset.allowsNFCWrites
+        let nfc = app.allowsNFC(scan.mode.nfcOperation)
         switch scan.mode {
         case .register: return nfc ? "Scan new batteries" : "Register a battery"
         case .retire: return nfc ? "Scan to retire" : "Pick from the list"
@@ -387,17 +375,17 @@ struct ScanView: View {
     }
 
     private var emptyMessage: String {
-        let nfc = app.dataset.allowsNFCWrites
+        let nfc = app.allowsNFC(scan.mode.nfcOperation)
         switch scan.mode {
         case .register:
             return nfc ? "Set the batch details above, tap me, then hold your iPhone near each new tag. Nothing is registered until you confirm."
-                : "Tag scanning is Demo-only for now. Tap me to register one battery at a time with the form."
+                : "Tag scanning isn't turned on for this inventory yet. Tap me to register one battery at a time with the form."
         case .retire:
             return nfc ? "Tap me, then hold your iPhone near each battery you're taking out of service. Nothing changes until you confirm."
-                : "Tag scanning is Demo-only for now. Choose batteries, then confirm."
+                : "Tag scanning isn't turned on for this inventory yet. Choose batteries, then confirm."
         default:
             return nfc ? "Hold the top of your iPhone near a battery tag. Keep going — nothing is saved until you confirm."
-                : "Tag scanning is Demo-only for now. Choose batteries, then confirm."
+                : "Tag scanning isn't turned on for this inventory yet. Choose batteries, then confirm."
         }
     }
 
@@ -575,39 +563,6 @@ struct DatasetMenu: View {
         .tint(.primary)
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .accessibilityLabel("Inventory: \(app.dataset.title)")
-    }
-}
-
-/// Look a battery up without changing anything: by its NFC tag (Demo) or its printed label (camera).
-struct LookupMenu: View {
-    @Environment(AppModel.self) private var app
-    /// Toolbars already supply glass; use false there.
-    var glass = true
-
-    var body: some View {
-        Group {
-            if app.scan.canLookUp {
-                Menu {
-                    Button { app.scan.startLookup() } label: { Label("Hold near a tag", systemImage: "sensor.tag.radiowaves.forward") }
-                    Button { app.labelScan = .lookUp } label: { Label("Scan a label", systemImage: "qrcode.viewfinder") }
-                } label: { icon }
-            } else {
-                Button { app.labelScan = .lookUp } label: { icon }
-                    .buttonStyle(.plain)
-            }
-        }
-        .disabled(app.scan.readerActive || app.inventory.snapshot == nil)
-        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
-        .accessibilityLabel("Look up a battery")
-    }
-
-    private var icon: some View {
-        Image(systemName: "magnifyingglass")
-            .font(.subheadline.weight(.semibold))
-            .foregroundStyle(.primary)
-            .frame(width: glass ? 38 : 30, height: glass ? 38 : 30)
-            .contentShape(Circle())
-            .interactiveGlass(glass, shape: .circle)
     }
 }
 
@@ -1010,16 +965,6 @@ extension View {
     func interactiveGlass(_ enabled: Bool) -> some View {
         if enabled {
             glassEffect(.regular.interactive(), in: .capsule)
-        } else {
-            self
-        }
-    }
-
-    /// Interactive glass in a given shape, or nothing when the container already provides it.
-    @ViewBuilder
-    func interactiveGlass<S: Shape>(_ enabled: Bool, shape: S) -> some View {
-        if enabled {
-            glassEffect(.regular.interactive(), in: shape)
         } else {
             self
         }

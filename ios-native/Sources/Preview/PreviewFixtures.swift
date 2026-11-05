@@ -3,7 +3,7 @@ import Foundation
 /// Screens that can be opened directly with `-uiPreview <name>` for simulator screenshots.
 /// Preview mode never contacts the server and uses only the fictional data below.
 enum PreviewScreen: String, CaseIterable {
-    case signin, scan, scanWelcome, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, scanGroup, scanRetire, scanRetireDone
+    case signin, scan, scanWorking, inventoryWorking, scanWelcome, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, scanGroup, scanRetire, scanRetireDone
     case scanRegister, scanRegisterEmpty, scanUnregistered
     case inventory, inventoryFiltered, newArrivals, detail, detailBottom, detailConcern, detailRetired
     case register, registerReview, registerStorage, inspection, retire, group, groupEditor, filter, pendingWrite, inkPlayground, inkMotion, newModel
@@ -50,6 +50,12 @@ enum PreviewFixtures {
         switch screen {
         case .signin: break
         case .scan: app.tab = .scan
+        case .scanWorking:
+            app.previewSelect(.live)
+            app.tab = .scan
+        case .inventoryWorking:
+            app.previewSelect(.live)
+            app.tab = .inventory
         case .scanWelcome:
             app.tab = .scan
             app.scan.previewNotice(.init(kind: .greeting, text: "Welcome back, Tim · Demo inventory"), mood: .happy)
