@@ -453,9 +453,16 @@ final class InventoryModel {
         (snapshot?.rooms ?? []).filter { $0.eligibleForReturn(in: dataset) }
     }
 
-    /// Rooms a new battery's registered home may use: selectable J18 rooms.
-    var registrationRooms: [Room] {
-        (snapshot?.rooms ?? []).filter { $0.buildingId == "J18" && ($0.selectable ?? false) }
+    /// Buildings a new battery may be stored in: the supported list, in its order, as this inventory records them.
+    var storageBuildings: [Building] {
+        let recorded = snapshot?.buildings ?? []
+        return StorageBuildings.supported.compactMap { id in recorded.first { $0.id == id } }
+    }
+
+    /// Rooms a new battery's registered home may use in a building: selectable rooms, which exist only in J18.
+    func registrationRooms(in buildingId: String) -> [Room] {
+        guard StorageBuildings.hasRooms(buildingId) else { return [] }
+        return (snapshot?.rooms ?? []).filter { $0.buildingId == buildingId && ($0.selectable ?? false) }
     }
 
     /// Active staff people who can be responsible owners.

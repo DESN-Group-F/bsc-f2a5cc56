@@ -16,6 +16,8 @@ struct RegisterBatteryView: View {
     let request: RegistrationRequest
     /// Preview mode only: open on the review step with a model applied.
     var previewReview = false
+    /// Preview mode only: open the form with this storage building chosen.
+    var previewBuilding: String? = nil
 
     private enum Step: Equatable { case form, review, done }
 
@@ -137,7 +139,7 @@ struct RegisterBatteryView: View {
                     ReviewRow(title: "Voltage", value: details.voltage.map { Format.voltage($0) } ?? "Not recorded")
                     ReviewRow(title: "Tag", value: tagSummary)
                     ReviewRow(title: "Responsible", value: details.owner(in: app.inventory)?.name ?? "—")
-                    ReviewRow(title: "Home", value: "J18 · " + (details.room(in: app.inventory).map { $0.name + (($0.isPlaceholder ?? false) ? " (placeholder)" : "") } ?? "Room not specified"))
+                    ReviewRow(title: "Home", value: details.storageLine(in: app.inventory))
                     ReviewRow(title: "Manufactured", value: details.manufactured.map { Sydney.longDay($0) } ?? "Not recorded")
                     ReviewRow(title: "First use", value: details.firstUseSummary, last: true)
                 }
@@ -229,9 +231,11 @@ struct RegisterBatteryView: View {
         details = app.scan.intakeDetails
         if details.ownerId.isEmpty, let me = app.inventory.staffOwners.first(where: { $0.accountId == app.user?.id }) { details.ownerId = me.id }
         if scanned == nil, let read = request.tagRead, app.dataset.allowsNFCWrites { scanned = read }
+        if let building = previewBuilding, app.preview != nil { details.chooseBuilding(building) }
         if previewReview, app.preview != nil, let model = PreviewFixtures.models.first {
             details.apply(model)
             details.manufactured = "2025-06-02"
+            details.chooseBuilding("E10")
             step = .review
         }
     }
@@ -273,7 +277,7 @@ struct RegisterBatteryView: View {
 
     private func submit() async {
         guard !working, problems.isEmpty, app.user != nil, let owner = details.owner(in: app.inventory),
-              let ownerAccount = owner.accountId, let building = app.inventory.snapshot?.buildings?.first(where: { $0.id == "J18" }),
+              let ownerAccount = owner.accountId, let building = details.building(in: app.inventory),
               let common = details.common(in: app.inventory) else { return }
         working = true
         defer { working = false }

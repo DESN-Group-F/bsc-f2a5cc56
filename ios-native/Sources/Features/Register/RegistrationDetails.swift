@@ -9,6 +9,8 @@ struct RegistrationDetails: Codable, Equatable {
     var capacity: Double?
     var voltage: Double?
     var ownerId = ""
+    /// The storage building; nil (drafts saved before E10 and G17) means J18.
+    var buildingId: String?
     var roomId: String?
     var manufactured: String?
     var firstUseMode = "at_registration"
@@ -68,8 +70,27 @@ struct RegistrationDetails: Codable, Equatable {
 
     @MainActor
     func owner(in inventory: InventoryModel) -> Person? { inventory.staffOwners.first { $0.id == ownerId } }
+    var storageBuildingId: String { buildingId ?? StorageBuildings.defaultId }
     @MainActor
-    func room(in inventory: InventoryModel) -> Room? { roomId.flatMap { id in inventory.registrationRooms.first { $0.id == id } } }
+    func building(in inventory: InventoryModel) -> Building? { inventory.storageBuildings.first { $0.id == storageBuildingId } }
+    @MainActor
+    func room(in inventory: InventoryModel) -> Room? {
+        roomId.flatMap { id in inventory.registrationRooms(in: storageBuildingId).first { $0.id == id } }
+    }
+
+    /// Moves storage to another building. Rooms belong to one building, so the room is cleared.
+    mutating func chooseBuilding(_ id: String) {
+        guard id != storageBuildingId else { return }
+        buildingId = id
+        roomId = nil
+    }
+
+    /// "J18 · Demo room", "E10 · Room not specified" — the web console's storage wording.
+    @MainActor
+    func storageLine(in inventory: InventoryModel) -> String {
+        guard let room = room(in: inventory) else { return "\(storageBuildingId) · Room not specified" }
+        return room.label + ((room.isPlaceholder ?? false) ? " (placeholder)" : "")
+    }
 
     @MainActor
     func problems(in inventory: InventoryModel) -> [String] {
@@ -81,10 +102,12 @@ struct RegistrationDetails: Codable, Equatable {
         if let c = capacity, !(c > 0 && c <= 1_000_000) { list.append("Capacity must be above 0 mAh.") }
         if let v = voltage, !(v > 0 && v <= 1000) { list.append("Voltage must be between 0 and 1000 V.") }
         if owner(in: inventory) == nil { list.append("Choose who is responsible.") }
-        if roomId != nil && room(in: inventory) == nil { list.append("That home room is no longer available.") }
-        if inventory.snapshot?.buildings?.contains(where: { $0.id == "J18" }) != true {
-            list.append("J18 isn't available yet. Pull to refresh Inventory and try again.")
+        if !StorageBuildings.isSupported(storageBuildingId) {
+            list.append("Choose \(StorageBuildings.listText) as the storage building.")
+        } else if building(in: inventory) == nil {
+            list.append("\(storageBuildingId) isn't available yet. Pull to refresh Inventory and try again.")
         }
+        if roomId != nil && room(in: inventory) == nil { list.append("That home room is no longer available.") }
         if firstUseMode == "date" && firstUsed == nil { list.append("Pick the first-use date, or choose another first-use option.") }
         if let m = manufactured, firstUseMode == "date", let f = firstUsed, f < m { list.append("First use can't be before manufacture.") }
         let today = Sydney.ymd()
@@ -100,7 +123,7 @@ struct RegistrationDetails: Codable, Equatable {
             ModelSelectionRef(origin: $0.origin, id: $0.id, contentHash: $0.contentHash, confirmed: true, appliedFields: appliedFields)
         }
         return RegistrationCommon(name: name.jsTrimmed, chemistry: chemistry.jsTrimmed, model: model.jsTrimmed,
-                                  capacityMah: capacity, voltage: voltage, ownerId: owner.id, homeBuildingId: "J18",
+                                  capacityMah: capacity, voltage: voltage, ownerId: owner.id, homeBuildingId: storageBuildingId,
                                   homeRoomId: room(in: inventory)?.id, manufacturedOn: manufactured,
                                   firstUsedOn: firstUseMode == "date" ? firstUsed : nil, modelSelection: selection)
     }
@@ -133,6 +156,10 @@ struct RegistrationDetailsSections: View {
     @State private var formKey = UUID()
 
     private var tint: Color { Tone.register }
+
+    private var building: Binding<String> {
+        Binding(get: { details.storageBuildingId }, set: { details.chooseBuilding($0) })
+    }
 
     var body: some View {
         Section {
@@ -200,19 +227,39 @@ struct RegistrationDetailsSections: View {
         }
         .id(formKey)
 
-        Section("Responsible & storage") {
+        Section {
             Picker("Responsible", selection: $details.ownerId) {
                 if details.ownerId.isEmpty { Text("Choose…").tag("") }
                 ForEach(app.inventory.staffOwners) { person in
                     Text(person.accountId == app.user?.id ? "\(person.name) (me)" : person.name).tag(person.id)
                 }
             }
-            LabeledContent("Building", value: "J18 · Willis Annexe")
-            Picker("Home room", selection: $details.roomId) {
-                Text("Not specified").tag(String?.none)
-                ForEach(app.inventory.registrationRooms) { room in
-                    Text(room.label + ((room.isPlaceholder ?? false) ? " · placeholder" : "")).tag(Optional(room.id))
+            let buildings = app.inventory.storageBuildings
+            if buildings.isEmpty {
+                LabeledContent("Building", value: details.storageBuildingId)
+            } else {
+                Picker("Building", selection: building) {
+                    if !buildings.contains(where: { $0.id == details.storageBuildingId }) {
+                        Text("\(details.storageBuildingId) · not available").tag(details.storageBuildingId)
+                    }
+                    ForEach(buildings) { Text($0.label).tag($0.id) }
                 }
+            }
+            if StorageBuildings.hasRooms(details.storageBuildingId) {
+                Picker("Home room", selection: $details.roomId) {
+                    Text("Not specified").tag(String?.none)
+                    ForEach(app.inventory.registrationRooms(in: details.storageBuildingId)) { room in
+                        Text(room.label + ((room.isPlaceholder ?? false) ? " · placeholder" : "")).tag(Optional(room.id))
+                    }
+                }
+            } else {
+                LabeledContent("Home room", value: "Room not specified")
+            }
+        } header: {
+            Text("Responsible & storage")
+        } footer: {
+            if !StorageBuildings.hasRooms(details.storageBuildingId) {
+                Text("\(details.storageBuildingId) has no rooms recorded yet, so the building identifies the makerspace.")
             }
         }
 

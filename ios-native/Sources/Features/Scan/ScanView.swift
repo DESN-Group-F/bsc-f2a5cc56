@@ -1061,8 +1061,7 @@ struct BatchDetailsCard: View {
 
     private func subtitle(_ details: RegistrationDetails) -> String {
         let owner = details.owner(in: app.inventory)?.name ?? "No owner"
-        let room = details.room(in: app.inventory)?.name ?? "room not specified"
-        return "\(owner) · J18 \(room)"
+        return "\(owner) · \(details.storageLine(in: app.inventory))"
     }
 }
 

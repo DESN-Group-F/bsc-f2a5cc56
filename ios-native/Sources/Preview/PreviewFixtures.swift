@@ -6,7 +6,7 @@ enum PreviewScreen: String, CaseIterable {
     case signin, scan, scanWelcome, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, scanGroup, scanRetire, scanRetireDone
     case scanRegister, scanRegisterEmpty, scanUnregistered
     case inventory, inventoryFiltered, newArrivals, detail, detailBottom, detailConcern, detailRetired
-    case register, registerReview, inspection, retire, group, groupEditor, filter, pendingWrite, inkPlayground, inkMotion, newModel
+    case register, registerReview, registerStorage, inspection, retire, group, groupEditor, filter, pendingWrite, inkPlayground, inkMotion, newModel
     case scanReturnGroup, groupsHub, groupCheckout, groupCheckoutFilled, groupCheckoutOpen, groupReturn, lookup, labelScan
     case inbox, me
 
@@ -18,7 +18,7 @@ enum PreviewScreen: String, CaseIterable {
     /// Screens shown on their own instead of inside the tab bar.
     var isStandalone: Bool {
         switch self {
-        case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
+        case .register, .registerReview, .registerStorage, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
              .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn, .lookup, .labelScan: return true
         default: return false
         }
@@ -138,7 +138,7 @@ enum PreviewFixtures {
             app.writes.previewPending(PendingWrite(id: "preview-write", accountId: userId, dataset: .demo, kind: "scrapped",
                                                    batteryIds: ["BAT-00000002"], body: Data(), createdAt: Date(), attempts: 1,
                                                    action: "lifecycle", title: "Retiring BAT-00000002"))
-        case .register, .registerReview, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
+        case .register, .registerReview, .registerStorage, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
              .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn, .lookup, .labelScan:
             app.tab = .inventory
         case .inbox: app.tab = .inbox
@@ -153,16 +153,20 @@ enum PreviewFixtures {
                                 owner: (String, String) = ("Tim Wu", PreviewFixtures.userId), firstUsed: String? = "2026-10-13",
                                 manufactured: String? = nil, charged: String? = nil, chargeMinutes: Int? = nil,
                                 lifecycle: String = "active", lifecycleAt: String? = nil, reason: String? = nil,
-                                inspection: String = "null", observed: (String, String)? = nil) -> String {
+                                inspection: String = "null", observed: (String, String)? = nil, home: String = "J18") -> String {
         func q(_ s: String?) -> String { s.map { "\"\($0)\"" } ?? "null" }
+        // J18 batteries sit in the demo room; E10 and G17 hold storage without a room.
+        let buildingName = home == "E10" ? "E10 - Hilmer Building" : "G17 - Electrical Engineering Building"
+        let storage = home == "J18"
+            ? #""homeBuildingId":"J18","homeBuildingName":"J18 - Willis Annexe","homeRoomId":"J18-DEMO-ROOM","homeRoomName":"Demo room","homeRoomNumber":null,"homeRoomIsPlaceholder":true"#
+            : #""homeBuildingId":"\#(home)","homeBuildingName":"\#(buildingName)","homeRoomId":null,"homeRoomName":null,"homeRoomNumber":null,"homeRoomIsPlaceholder":null"#
         return """
         {"id":"\(id)","name":"\(name)","chemistry":"\(chemistry)","model":"\(model)","version":3,"tagId":"nfc:uid:04\(id.suffix(2))7862A62090",
          "capacityMah":\(capacity.map { String($0) } ?? "null"),"voltage":\(voltage.map { String($0) } ?? "null"),"lifecycleStatus":"\(lifecycle)",
          "lifecycleAt":\(q(lifecycleAt)),"lifecycleReason":\(q(reason)),"lifecycleDestination":null,
          "manufacturedOn":\(q(manufactured)),"firstUsedOn":\(q(firstUsed)),"registeredAt":"2026-10-13T00:07:03.065Z",
          "ownerId":"staff-\(owner.1)","ownerName":"\(owner.0)","ownerAccountId":"\(owner.1)",
-         "homeBuildingId":"J18","homeBuildingName":"J18 - Willis Annexe","homeRoomId":"J18-DEMO-ROOM","homeRoomName":"Demo room","homeRoomNumber":null,
-         "homeRoomIsPlaceholder":true,"loanId":\(q(loan)),"borrowerName":\(q(borrower?.0)),"borrowerAccountId":\(q(borrower?.1)),
+         \(storage),"loanId":\(q(loan)),"borrowerName":\(q(borrower?.0)),"borrowerAccountId":\(q(borrower?.1)),
          "borrowerKind":\(loan == nil ? "null" : "\"staff\""),
          "checkedOutAt":\(q(checkedOut)),"lastCheckedOutAt":\(q(checkedOut)),
          "observedRoom":\(q(observed?.0)),"observedRoomId":\(observed == nil ? "null" : "\"J18-DEMO-WORKSPACE\""),"observedBuilding":\(observed == nil ? "null" : "\"J18 - Willis Annexe\""),
@@ -192,7 +196,7 @@ enum PreviewFixtures {
             battery("BAT-00000015", name: "Battery", chemistry: "LiPo", model: "3S", capacity: 2200, voltage: 11.1, firstUsed: "2026-11-01"),
             battery("BAT-00000014", name: "Battery", chemistry: "Li-ion", model: "18650", capacity: 3000, voltage: 3.6, firstUsed: "2026-11-01"),
             battery("BAT-00000012", name: "Drone pack", chemistry: "LiPo", model: "4S", capacity: 1500, voltage: 14.8,
-                    manufactured: "2025-06-02", charged: earlier, chargeMinutes: 75, inspection: ok),
+                    manufactured: "2025-06-02", charged: earlier, chargeMinutes: 75, inspection: ok, home: "E10"),
             battery("BAT-00000010", name: "Battery", chemistry: "LiPo", model: "3S", capacity: 2200, voltage: 11.1, charged: lastWeek, chargeMinutes: 90),
             battery("BAT-00000009", name: "Battery", chemistry: "LiPo", model: "3S", capacity: 2200, voltage: 11.1),
             battery("BAT-00000008", name: "Battery", chemistry: "LiPo", model: "3S", capacity: 2200, voltage: 11.1,
@@ -215,7 +219,8 @@ enum PreviewFixtures {
          "batteries":[\(batteries)],
          "people":[{"id":"staff-\(userId)","version":1,"name":"Tim Wu","role":"staff","accountId":"\(userId)"},
                    {"id":"staff-\(otherId)","version":1,"name":"Jordan Chen","role":"staff","accountId":"\(otherId)"}],
-         "buildings":[{"id":"J18","version":1,"name":"J18 - Willis Annexe"}],
+         "buildings":[{"id":"E10","version":1,"name":"E10 - Hilmer Building"},{"id":"G17","version":1,"name":"G17 - Electrical Engineering Building"},
+                      {"id":"J18","version":1,"name":"J18 - Willis Annexe"}],
          "rooms":[{"id":"J18-DEMO-ROOM","version":1,"name":"Demo room","number":null,"isPlaceholder":true,"selectable":true,"buildingId":"J18"},
                   {"id":"J18-DEMO-WORKSPACE","version":1,"name":"Demo workspace","number":null,"isPlaceholder":true,"selectable":true,"buildingId":"J18"}],
          "staffDirectory":[{"id":"\(userId)","displayName":"Tim Wu","username":"tim","active":true},

@@ -119,13 +119,15 @@ struct BatteryRecord: Codable, Identifiable, Equatable, Hashable, Sendable {
         return parts.isEmpty ? "Specs not recorded" : parts.joined(separator: " · ")
     }
 
+    /// "J18 · 101 Store", "E10 · Room not specified". A building outside the supported list shows as not available, as on the web.
     var homeLine: String {
-        let building = homeBuildingId ?? "—"
+        guard let building = homeBuildingId else { return "Not recorded" }
+        guard StorageBuildings.isSupported(building) else { return "\(building) · Not available" }
         if let room = homeRoomName, !room.isEmpty {
             let number = (homeRoomNumber?.isEmpty == false) ? "\(homeRoomNumber!) " : ""
             return "\(building) · \(number)\(room)"
         }
-        return homeBuildingId == nil ? "Not recorded" : "\(building) · Room not set"
+        return "\(building) · Room not specified"
     }
 
     var statusTitle: String {
@@ -177,6 +179,38 @@ struct Building: Codable, Identifiable, Sendable {
     let id: String
     let version: Int
     let name: String
+
+    /// "E10 · Hilmer Building", whether or not the recorded name repeats the code ("E10 - Hilmer Building").
+    var label: String {
+        var rest = name.trimmingCharacters(in: .whitespaces)
+        for separator in [" - ", " – ", " · ", " "] where rest.hasPrefix(id + separator) {
+            rest = String(rest.dropFirst(id.count + separator.count)).trimmingCharacters(in: .whitespaces)
+            break
+        }
+        return rest.isEmpty || rest == id ? id : "\(id) · \(rest)"
+    }
+}
+
+/// Buildings that may hold registered storage, as the server's `lib/location-catalog.ts` defines them
+/// (docs/storage-buildings.md, deployment 2026-11-05-locations-1.0.0). Only J18 has rooms; E10 and G17
+/// hold storage without a room, and each pilot makerspace is the only one in its building.
+enum StorageBuildings {
+    static let supported = ["J18", "E10", "G17"]
+    static let withRooms = ["J18"]
+    static let defaultId = "J18"
+
+    static func isSupported(_ id: String?) -> Bool { id.map { supported.contains($0) } ?? false }
+    static func hasRooms(_ id: String?) -> Bool { id.map { withRooms.contains($0) } ?? false }
+    /// "J18, E10 or G17", like the server's messages.
+    static var listText: String { supported.dropLast().joined(separator: ", ") + " or " + (supported.last ?? "") }
+
+    /// Supported buildings first, in the server's order, then anything else by code.
+    static func sorted(_ ids: [String]) -> [String] {
+        ids.sorted { a, b in
+            let ia = supported.firstIndex(of: a) ?? supported.count, ib = supported.firstIndex(of: b) ?? supported.count
+            return ia != ib ? ia < ib : a < b
+        }
+    }
 }
 
 struct Room: Codable, Identifiable, Hashable, Sendable {
@@ -190,8 +224,9 @@ struct Room: Codable, Identifiable, Hashable, Sendable {
 
     var label: String {
         let base = (number?.isEmpty == false) ? "\(number!) · \(name)" : name
-        return "\(buildingId ?? "J18") · \(base)"
+        return buildingId.map { "\($0) · \(base)" } ?? base
     }
+    /// Return rooms stay in J18, the only building with rooms (unchanged by the storage-buildings update).
     func eligibleForReturn(in dataset: Dataset) -> Bool {
         buildingId == "J18" && (selectable ?? false) && (dataset == .demo || !(isPlaceholder ?? true))
     }

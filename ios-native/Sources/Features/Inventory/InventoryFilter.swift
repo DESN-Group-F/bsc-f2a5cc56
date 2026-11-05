@@ -491,7 +491,7 @@ struct InventoryFilterSheet: View {
     }
 
     private var buildings: [String] {
-        Array(Set(app.inventory.batteries.compactMap(\.homeBuildingId))).sorted()
+        StorageBuildings.sorted(Array(Set(app.inventory.batteries.compactMap(\.homeBuildingId))))
     }
 
     private var observedRooms: [Choice] {

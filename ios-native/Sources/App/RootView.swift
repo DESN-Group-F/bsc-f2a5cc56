@@ -194,6 +194,8 @@ struct PreviewStandalone: View {
             RegisterBatteryView(request: RegistrationRequest())
         case .registerReview:
             RegisterBatteryView(request: RegistrationRequest(), previewReview: true)
+        case .registerStorage:
+            RegisterBatteryView(request: RegistrationRequest(), previewBuilding: "E10")
         case .inspection:
             if let battery = app.inventory.battery(id: "BAT-00000012") { InspectionSheet(battery: battery) }
         case .retire:
