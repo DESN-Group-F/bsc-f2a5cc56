@@ -50,7 +50,7 @@ test("Working teaching runs keep typed-tag and selection inputs, and a native co
   const native = { kind: "native_nfc", evidence: proof("0004AB01") };
   const continuation = { action: "continue", requestId: crypto.randomUUID(), runId: typed.run.id, expectedRevision: 1, teachingGroup: { id: f.group.id, version: f.group.version }, personalScope: "all", mappings: [{ original: await f.binding("SECOND"), actual: await f.binding("ALTERNATIVE"), originalLoanId: null, method: "manual", source: native }] };
   const continued = await f.checkouts().save(continuation);
-  assert.deepEqual((continued.run.currentMappings ?? continued.run.mappings).find(mapping => mapping.actual.batteryId === "ALTERNATIVE")?.source, native);
+  assert.equal(continued.change.action, "continue"); assert.equal(continued.change.mappings[0].actual.batteryId, "ALTERNATIVE"); assert.deepEqual(continued.change.mappings[0].source, native);
   assert.equal((await rows("loans", f.scope)).filter(row => !row.returned_at).length, 2);
 });
 

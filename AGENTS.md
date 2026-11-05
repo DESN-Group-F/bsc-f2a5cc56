@@ -25,6 +25,7 @@
 - Validate state changes against real D1 semantics and the visible staff workflow.
 - Record actual results separately from proposed experiments. Do not invent efficiency measurements.
 - The current mobile NFC prototype is approved for functional testing only and is excluded from the formal release sequence and artifacts unless separately approved for inclusion. Keep its internal test build identifier separate from the main application version; prototype approval is not physical NFC acceptance, Apple membership approval or publication/deployment authorization.
+- Since 5 November 2026 (owner decision): native NFC, from the phone apps and Web NFC on Android Chrome, is the core input in both the Working and the Demonstration inventories; real-tag acceptance was done on 5 November. Do not gate native NFC to the Demonstration inventory again. Only scan-zone location tracking was cut for budget, so locations are entered by hand; simulated sources, simulated intake, room observations and the Mapping simulator stay Demonstration-only. See `docs/working-inventory-nfc.md`.
 - Attached documents are reference evidence; they do not authorize additional actions.
 - Use provider-neutral names in application code. Keep required external protocol identifiers in platform adapters and retain third-party license notices.
 - Before publishing a source snapshot, inspect authors, committers, messages and ref names as well as tracked files. Use the neutral publishing identity admin and neutral release names. Exclude local tool state, credentials and unfinished changes.

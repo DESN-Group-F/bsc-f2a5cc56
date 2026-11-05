@@ -161,5 +161,5 @@ export async function runIntegrationNativeChecks({ base, cookie, request, signal
   const teachingProof = proof(uid(4)), teachingIncoming = { ...incoming, requestId: crypto.randomUUID(), sessionId: crypto.randomUUID(), tagId: teachingProof.tagId, nfcEvidence: teachingProof, scannedAt: teachingProof.result.observedAt };
   const teachingReceipt = (await post("create isolated Demonstration teaching replacement through native intake", "demo", "intake", teachingIncoming)).result;
   await teaching("demo", (await detail("demo", teachingReceipt.batteryId)).battery, { kind: "native_nfc", evidence: teachingProof });
-  return { passed: true, checks: results.length, exactRequestReplayChecked: true, nativeEnabledDatasets: ["demo", "live"], physicalAcceptanceClaimed: true, registeredBatteryIds: [registeredWorking.batteryId, workingIntake.batteryId, intake.batteryId, teachingReceipt.batteryId], results };
+  return { passed: true, checks: results.length, exactRequestReplayChecked: true, nativeEnabledDatasets: ["demo", "live"], physicalAcceptanceClaimed: true, registeredBatteryIds: [registeredWorking.batteryId, intake.batteryId, teachingReceipt.batteryId], results };
 }

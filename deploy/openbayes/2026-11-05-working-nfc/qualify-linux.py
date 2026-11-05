@@ -237,7 +237,23 @@ def run(args):
         status, working_lookup, _ = request(ready, "/api/inventory", "POST", {"dataset": "live", "action": "scan_lookup", "payload": {"source": "native_nfc", "tagIds": ["nfc:uid:0004AB00"]}}, cookie)
         assert status == 200 and working_lookup["result"]["source"] == "native_nfc" and working_lookup["result"]["results"][0]["battery"] is None, working_lookup
         status, working_simulated, _ = request(ready, "/api/inventory", "POST", {"dataset": "live", "action": "scan_lookup", "payload": {"source": "simulated", "tagIds": ["nfc:uid:0004AB00"]}}, cookie); assert status == 400, working_simulated
-        passed("the Working inventory advertises native NFC and answers a native tag lookup; simulated scans stay Demonstration-only")
+        live_owner = next(person for person in working["people"] if person["accountId"] == credentials["accountId"])
+        live_tag = "nfc:uid:04A1B2C3D4E5F7"
+        live_evidence = {**evidence, "attemptId": str(uuid.uuid4()), "tagId": live_tag, "result": {**evidence["result"], "uidHex": "04A1B2C3D4E5F7"}}
+        live_incoming = {**incoming, "requestId": str(uuid.uuid4()), "sessionId": str(uuid.uuid4()), "tagId": live_tag, "nfcEvidence": live_evidence, "common": {**incoming["common"], "name": "Fictional Working qualification asset", "ownerId": live_owner["id"], "homeBuildingId": "E10"}}
+        status, live_registration, _ = request(ready, "/api/inventory", "POST", {"dataset": "live", "action": "intake", "payload": live_incoming}, cookie)
+        assert status == 200 and live_registration["result"]["source"] == "native_nfc" and live_registration["result"]["nfcEvidence"] == live_evidence, live_registration
+        status, live_replay, _ = request(ready, "/api/inventory", "POST", {"dataset": "live", "action": "intake", "payload": live_incoming}, cookie); assert status == 200 and live_replay["result"] == {**live_registration["result"], "replayed": True}, live_replay
+        live_id = live_registration["result"]["batteryId"]
+        status, found, _ = request(ready, "/api/inventory", "POST", {"dataset": "live", "action": "scan_lookup", "payload": {"source": "native_nfc", "tagIds": [live_tag]}}, cookie)
+        assert status == 200 and found["result"]["results"][0]["battery"]["id"] == live_id, found
+        live_binding = {"batteryId": live_id, "tagId": live_tag, "version": found["result"]["results"][0]["battery"]["version"], "nfcEvidence": live_evidence}
+        live_checkout = {"requestId": str(uuid.uuid4()), "kind": "checkout", "batteryIds": [live_id], "scan": {"sessionId": str(uuid.uuid4()), "source": "native_nfc", "bindings": [live_binding]}}
+        status, live_out, _ = request(ready, "/api/inventory", "POST", {"dataset": "live", "action": "movement", "payload": live_checkout}, cookie); assert status == 200 and live_out["result"]["scan"]["source"] == "native_nfc", live_out
+        status, live_held, _ = request(ready, "/api/inventory?dataset=live&batteryId=" + live_id, cookie=cookie); assert status == 200 and live_held["battery"]["loanId"], live_held
+        live_return = {"requestId": str(uuid.uuid4()), "kind": "return", "batteryIds": [live_id], "expectedLoans": [{"batteryId": live_id, "loanId": live_held["battery"]["loanId"]}], "scan": {"sessionId": str(uuid.uuid4()), "source": "native_nfc", "bindings": [{**live_binding, "version": live_held["battery"]["version"]}]}}
+        status, live_back, _ = request(ready, "/api/inventory", "POST", {"dataset": "live", "action": "movement", "payload": live_return}, cookie); assert status == 200 and live_back["result"]["scan"]["source"] == "native_nfc", live_back
+        passed("the Working inventory advertises native NFC; a Working tag registers by NFC in E10 (its exact retry replays), is found by a native lookup, and is checked out and returned by NFC; simulated scans stay Demonstration-only")
         before_rollback_status, original_detail, _ = request(ready, "/api/inventory?dataset=demo&batteryId=" + asset_id, cookie=cookie); assert before_rollback_status == 200
         # An execution restart kills every process without shutdown: emulate it with SIGKILL.
         runtime_pid = current.inventory_runtime_pid
