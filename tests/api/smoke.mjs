@@ -955,6 +955,37 @@ export async function runApiSmoke({
   await checkNewArrivals({ check, json, adminCookie, staffCookie });
   await checkTeachingCheckouts({ check, json, adminCookie, staffCookie });
   await checkLocations({ check, json, adminCookie, staffCookie });
+  // A sign-in made inside the Teams tab gets the partitioned SameSite=None session instead of
+  // the ordinary Strict one; it authenticates the same way and signs out with the same form.
+  const embeddedSignin = await check(
+    "an embedded sign-in receives a partitioned SameSite=None session",
+    "/api/session",
+    json({ action: "signin", embedded: true, payload: credentials.staff }),
+  );
+  const embeddedSetCookie = embeddedSignin.headers.get("set-cookie");
+  assert.match(embeddedSetCookie, /; SameSite=None;/);
+  assert.match(embeddedSetCookie, /; Secure/);
+  assert.match(embeddedSetCookie, /; Partitioned$/);
+  assert.doesNotMatch(embeddedSetCookie, /SameSite=Strict/);
+  const embeddedCookie = embeddedSetCookie.split(";")[0];
+  await check(
+    "an embedded session reads the shared inventory",
+    "/api/inventory?dataset=demo",
+    { headers: { Cookie: embeddedCookie } },
+  );
+  const embeddedSignout = await check(
+    "an embedded sign-out clears the partitioned session",
+    "/api/session",
+    json({ action: "signout", embedded: true }, embeddedCookie),
+  );
+  assert.match(embeddedSignout.headers.get("set-cookie"), /^inventory_session=; .*SameSite=None; Max-Age=0; Secure; Partitioned$/);
+  await check(
+    "a signed-out embedded session loses access",
+    "/api/inventory",
+    { headers: { Cookie: embeddedCookie } },
+    401,
+  );
+  assert.match((await check("an ordinary sign-in keeps the Strict session", "/api/session", json({ action: "signin", payload: credentials.staff }))).headers.get("set-cookie"), /; SameSite=Strict;/);
   await check(
     "staff sign-out invalidates their session",
     "/api/session",

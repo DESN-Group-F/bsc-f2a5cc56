@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
-import { Activity, AlertTriangle, BatteryFull, Bell, CalendarClock, ExternalLink, LayoutDashboard, RefreshCw, Search, Settings2, Table2, X } from "lucide-react";
+import { Activity, AlertTriangle, BatteryFull, Bell, CalendarClock, ExternalLink, LayoutDashboard, LogOut, RefreshCw, Search, Settings2, Table2, X } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { StaffUser } from "@/lib/accounts";
 import type { BatteryRecord, Dataset } from "@/lib/domain";
 import type { TaskCycleRecord } from "@/lib/task-plans";
 import type { EditorDraft, ExportDraft, ImportKind, WriteAction } from "@/lib/client/inventory-contracts";
 import { getRolePermissions } from "@/lib/permissions";
+import { signOut } from "@/lib/client-session";
 import { defaultInventoryFilter } from "@/lib/inventory-query";
 import { inventoryResponse } from "@/lib/client/inventory-request";
 import { summarizeOverview } from "@/lib/console/overview";
@@ -113,6 +114,8 @@ export function ManagementConsole({ initialUser }: { initialUser: StaffUser }) {
   const [embedded, setEmbedded] = useState(false);
   const nonce = useRef(0);
   const [unsavedEdits, setUnsavedEdits] = useState(0);
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState("");
 
   useEffect(() => {
     const initial = readArea();
@@ -211,7 +214,7 @@ export function ManagementConsole({ initialUser }: { initialUser: StaffUser }) {
     <main className={styles.main}>
       {error && <div className={styles.notice} data-tone="danger" style={{ margin: "12px 24px 0" }}><AlertTriangle size={16} /><div className={styles.noticeBody}><p>{error}</p></div><button type="button" className={styles.btn} onClick={() => void refresh()}>Retry</button></div>}
       {embedded && <div className={styles.notice} style={{ margin: "12px 24px 0" }}>
-        <p>Signed in with your battery inventory account. If a download or sign-in does not work inside Teams, <Link className={styles.link} href="/console" target="_blank" rel="noreferrer">open the console in your browser</Link>.</p>
+        <p>Signed in inside Teams with your battery inventory account (not your UNSW account). Sign out here from My account; the browser has its own sign-in. Edits not yet confirmed stay with this tab, so finish them here. If a download does not start, <Link className={styles.link} href="/console" target="_blank" rel="noreferrer">open the console in your browser</Link>.</p>
       </div>}
       {!data ? <div className={styles.page}><div className={styles.empty} style={{ paddingTop: 80 }}><strong>{error ? "The inventory could not be loaded" : "Loading the inventory…"}</strong>{error ? "Check the connection, then retry." : "This uses the same records as the full application."}</div></div> : <>
         {area === "overview" && summary && <OverviewView snapshot={data} summary={summary} tasks={tasks.data} tasksError={tasks.error} tasksLoading={tasks.loading}
@@ -253,9 +256,15 @@ export function ManagementConsole({ initialUser }: { initialUser: StaffUser }) {
     {data && cycle && <TaskCycleDialog cycle={cycle} data={data} onClose={() => setCycle(null)} onSaved={async () => { setCycle(null); await tasks.reload(); await changed(); }} onDetail={(id) => { setCycle(null); openBatteries(undefined, id); }} />}
     {accountOpen && <Dialog open onOpenChange={(open) => { if (!open) setAccountOpen(false); }}>
       <DialogContent className={`${styles.portal} max-w-[720px] sm:max-w-[720px]`}>
-        <DialogHeader><DialogTitle>My account</DialogTitle><DialogDescription>Your profile, password and starting inventory. Sign out from the full application.</DialogDescription></DialogHeader>
+        <DialogHeader><DialogTitle>My account</DialogTitle><DialogDescription>Your profile, password and starting inventory.{embedded ? " Signing out here ends the session of this Teams tab; the browser signs in separately." : ""}</DialogDescription></DialogHeader>
         <div style={{ maxHeight: "70vh", overflow: "auto" }}><MyAccount user={user} onSaved={() => load(dataset)} /></div>
-        <div style={{ display: "flex", justifyContent: "flex-end" }}><button type="button" className={styles.btn} onClick={() => setAccountOpen(false)}><X size={15} />Close</button></div>
+        {signOutError && <div className={styles.notice} data-tone="danger" role="alert"><AlertTriangle size={16} /><div className={styles.noticeBody}><p>{signOutError}</p></div></div>}
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 8 }}>
+          <button type="button" className={styles.btn} disabled={signingOut || !!unsavedEdits} title={unsavedEdits ? "Save or discard the unsaved battery edits before signing out." : undefined}
+            onClick={() => { setSigningOut(true); setSignOutError(""); void signOut().catch((failure: unknown) => { setSignOutError(failure instanceof Error ? failure.message : "Sign-out could not complete. Try again."); setSigningOut(false); }); }}>
+            <LogOut size={15} />{signingOut ? "Signing out…" : "Sign out"}</button>
+          <button type="button" className={styles.btn} onClick={() => setAccountOpen(false)}><X size={15} />Close</button>
+        </div>
       </DialogContent>
     </Dialog>}
   </div>;

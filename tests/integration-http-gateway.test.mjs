@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import http from "node:http";
 import test from "node:test";
-import { createInventoryHttpServer } from "../deploy/integration/http-gateway.mjs";
+import { createInventoryHttpServer, embeddingHosts } from "../deploy/integration/http-gateway.mjs";
 
 const publicOrigin = "https://inventory.example.invalid";
 const token = "a".repeat(64);
 const signin = { action: "signin", payload: { username: "fictional-staff", password: "fictional-test-password" } };
+const framePolicy = "frame-ancestors https://teams.microsoft.com https://*.teams.microsoft.com https://*.cloud.microsoft";
+const noFraming = "frame-ancestors 'none'";
 
 async function fixture(t, options = {}) {
   const requests = [];
@@ -190,7 +192,9 @@ test("static GET and HEAD retain useful web headers without cross-origin or hop 
   assert.equal(response.headers["access-control-allow-origin"], undefined);
   assert.equal(response.headers["x-forwarded-proto"], undefined);
   assert.equal(response.headers["cache-control"], "no-store");
-  assert.equal(response.headers["content-security-policy"], "default-src 'self'");
+  // The Worker's policy is kept and the gateway's frame-ancestors policy is added; browsers enforce both.
+  assert.equal(response.headers["content-security-policy"], "default-src 'self', " + noFraming);
+  assert.equal(response.headers["x-frame-options"], undefined);
   assert.equal(requests[0].headers["if-none-match"], "asset-version");
   assert.equal((await request({ method: "HEAD", path: "/assets/app.js" })).text, "");
 });
@@ -307,4 +311,70 @@ test("an unfinished request body and a stalled response stream are bounded", asy
   const response = await post();
   assert.equal(response.status, 503);
   assert.equal(requests.length, 1);
+});
+
+test("only the console and its sign-in page may be framed, only by Microsoft Teams hosts; everything else forbids framing", async t => {
+  assert.deepEqual([...embeddingHosts], ["https://teams.microsoft.com", "https://*.teams.microsoft.com", "https://*.cloud.microsoft"]);
+  const { request, post } = await fixture(t, { result: () => new Response("<!doctype html><title>Page</title>", { headers: { "Content-Type": "text/html" } }) });
+  for (const response of [await request({ path: "/console" }), await request({ path: "/console?area=batteries" }), await request({ path: "/signin?return_to=%2Fconsole" }), await request({ path: "/console", headers: { Origin: "https://foreign.invalid" } })]) {
+    assert.equal(response.headers["content-security-policy"], framePolicy);
+    assert.equal(response.headers["x-frame-options"], undefined);
+  }
+  for (const response of [await request({ path: "/" }), await request({ path: "/assets/app.js" }), await post(), await request({ path: "/api/unknown" }), await request({ path: "/", headers: { Origin: "https://foreign.invalid" } }), await request({ path: "//foreign.invalid/console" })]) {
+    assert.equal(response.headers["content-security-policy"], noFraming);
+    assert.equal(response.headers["x-frame-options"], undefined);
+  }
+  const dispatchFetch = async () => Response.json({});
+  for (const frameAncestors of [["*"], ["https://*"], ["http://teams.microsoft.com"], ["https://teams.microsoft.com/path"], ["https://a.*.example.invalid"], ["https://teams.microsoft.com 'unsafe-inline'"], ["http://127.0.0.1:5191"], "https://teams.microsoft.com", Array(17).fill("https://a.example.invalid")]) {
+    assert.throws(() => createInventoryHttpServer({ publicOrigin, dispatchFetch, frameAncestors }));
+  }
+  createInventoryHttpServer({ publicOrigin: "http://127.0.0.1:50000", dispatchFetch, allowLoopbackHttp: true, frameAncestors: ["http://localhost:5191"] }).close();
+});
+
+test("a Teams tab may load the console or its sign-in page in a cross-site frame; nothing else enters a frame", async t => {
+  const { request, post, requests } = await fixture(t, { result: () => new Response(null, { status: 307, headers: { Location: "/signin?return_to=%2Fconsole" } }) });
+  const frame = { "Sec-Fetch-Site": "cross-site", "Sec-Fetch-Mode": "navigate", "Sec-Fetch-Dest": "iframe" };
+  const entry = await request({ path: "/console", headers: frame });
+  assert.equal(entry.status, 307);
+  assert.equal(entry.headers.location, publicOrigin + "/signin?return_to=%2Fconsole");
+  assert.equal((await request({ path: "/signin?return_to=%2Fconsole", headers: frame })).status, 307);
+  assert.equal(requests.length, 2);
+  for (const path of ["/", "/console/extra", "/consoles"]) assert.equal((await request({ path, headers: frame })).status, 403);
+  assert.equal((await request({ path: "/console", headers: { ...frame, "Sec-Fetch-Site": "same-site" } })).status, 403);
+  assert.equal((await request({ headers: frame })).status, 403);
+  assert.equal((await request({ path: "/assets/app.js", headers: { ...frame, "Sec-Fetch-Mode": "no-cors", "Sec-Fetch-Dest": "script" } })).status, 403);
+  assert.equal((await request({ path: "/console", headers: { ...frame, "Sec-Fetch-Dest": "embed" } })).status, 403);
+  assert.equal((await request({ path: "/console", headers: { ...frame, Origin: "https://teams.microsoft.com" } })).status, 403);
+  assert.equal((await post({ "Sec-Fetch-Site": "cross-site", "Sec-Fetch-Mode": "cors", "Sec-Fetch-Dest": "empty", Origin: "https://teams.microsoft.com" })).status, 403);
+  assert.equal(requests.length, 2);
+});
+
+test("the embedded session cookie is accepted only as SameSite=None, Secure and Partitioned", async t => {
+  let cookie;
+  const { post } = await fixture(t, { result: () => Response.json({ ok: true }, { headers: { "Set-Cookie": cookie } }) });
+  const embedded = `inventory_session=${token}; Path=/; HttpOnly; SameSite=None; Max-Age=28800; Secure; Partitioned`;
+  for (cookie of [embedded, "inventory_session=; Path=/; HttpOnly; SameSite=None; Max-Age=0; Secure; Partitioned"]) {
+    assert.deepEqual((await post()).headers["set-cookie"], [cookie]);
+  }
+  for (cookie of [
+    embedded.replace("; Partitioned", ""), embedded.replace("; Secure", ""), embedded.replace("None", "Lax"),
+    embedded.replace("None", "Strict"), embedded.replace("; Partitioned", "; Partitioned=1"), embedded + "; Partitioned",
+    embedded.replace("; HttpOnly", ""), embedded + "; Domain=inventory.example.invalid",
+  ]) {
+    const result = await post();
+    assert.equal(result.status, 503, cookie);
+    assert.equal(result.headers["set-cookie"], undefined);
+  }
+});
+
+test("an embedded session cookie keeps Secure on loopback HTTP, where the ordinary one does not", async t => {
+  const embedded = `inventory_session=${token}; Path=/; HttpOnly; SameSite=None; Max-Age=28800; Secure; Partitioned`;
+  const { post, request } = await fixture(t, {
+    gateway: { publicOrigin: "http://127.0.0.1:50000", allowLoopbackHttp: true, frameAncestors: ["http://localhost:5191"] },
+    result: () => Response.json({}, { headers: { "Set-Cookie": embedded } }),
+  });
+  const result = await post();
+  assert.deepEqual(result.headers["set-cookie"], [embedded]);
+  assert.equal(result.headers["content-security-policy"], noFraming);
+  assert.equal((await request({ path: "/console" })).headers["content-security-policy"], "frame-ancestors http://localhost:5191");
 });

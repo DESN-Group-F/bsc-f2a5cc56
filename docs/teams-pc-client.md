@@ -1,6 +1,6 @@
 # Management console (PC client for Microsoft Teams and SharePoint)
 
-Updated: 4 November 2026 (Australia/Sydney). Owned by the server and web workstream. Status: **first increment implemented and checked locally; not deployed; not yet opened inside Teams.**
+Updated: 4 November 2026 (Australia/Sydney). Owned by the server and web workstream. Status: **live since 4 Nov 2026; embedding in a Teams website tab implemented on 5 Nov (see Embedding in Teams).**
 
 ## Purpose and decisions (owner, 4 Nov 2026)
 
@@ -63,20 +63,24 @@ Not verified: running inside Microsoft Teams or SharePoint, the hosted service, 
 - The console needs the merged line deployed: `operator_edit` depends on migration 0023, and the `inspection` criterion is ignored by the hosted R3 export (so filtered exports would include everything) until the new server is live.
 - Deploy `integration/r3-merge` (now containing the baseline and the lint fix) together with the console branch, following the existing hosted procedure, after owner confirmation.
 
-## Embedding in Teams (designed, not implemented)
+## Embedding in Teams
 
-Tenant check (owner, 4 Nov 2026): the UNSW tenant allows the Microsoft **Website** tab app. The owner added a Website tab to the Team F channel through ＋ → Apps → Website and the external page displayed inside Teams. The Loop "existing page" and Lists entries in the same menu are not this route. The website tab is therefore the planned entry; it still needs the change below before the console can sign in inside it.
+Tenant check (owner, 4 Nov 2026): the UNSW tenant allows the Microsoft **Website** tab app. The owner added a Website tab to the Team F channel through ＋ → Apps → Website and the external page displayed inside Teams. The Loop "existing page" and Lists entries in the same menu are not this route. Microsoft stopped loading Website tabs inside new Teams for most tenants in July 2024 (message MC708500) but exempted education tenants, which matches what the owner saw; if that exemption ends, the tab opens the console in the browser instead.
 
-A Teams website tab loads the page in a cross-site iframe. The hosted service currently refuses that, by design:
+The tab is the management console (`/console`), unchanged. Embedding (implemented 5 Nov 2026):
 
-- the hosted gateway (`deploy/integration/http-gateway.mjs`) sends `X-Frame-Options: DENY` and rejects cross-site navigations that are not top-level documents (`sec-fetch-dest: iframe`);
-- the session cookie is `SameSite=Strict` (`lib/credentials.ts`) and the gateway requires that, so no session would be sent inside the frame.
+- **Framing**: the hosted gateway (`deploy/integration/http-gateway.mjs`) no longer sends `X-Frame-Options: DENY`. `/console` and `/signin` carry `Content-Security-Policy: frame-ancestors https://teams.microsoft.com https://*.teams.microsoft.com https://*.cloud.microsoft`; every other response carries `frame-ancestors 'none'`. Hosts follow Microsoft's tab requirements (Teams, and the new `*.cloud.microsoft` host, which also covers other Microsoft 365 hosts). Browsers check every ancestor, so any other site, including other apps inside Teams, cannot frame the console. A Worker policy, if any, is kept as a second policy. The UNSW SharePoint host is not listed yet; add it once confirmed from the team site's address if a SharePoint page should also embed the console.
+- **Entry**: the gateway accepts a cross-site navigation into a frame (`Sec-Fetch-Dest: iframe`, `Sec-Fetch-Site: cross-site`) for `/console` and `/signin` only. Top-level links from other sites work as before. APIs, assets, other pages and every write still require the exact same origin.
+- **Session**: a sign-in made inside a frame sends `embedded: true`; the server then issues `SameSite=None; Secure; Partitioned` instead of `SameSite=Strict`. Browsers keep a partitioned cookie only for the embedding host (Teams), so it cannot be used from other sites, and the Strict cookie of ordinary browser use is unchanged. The tab and the browser therefore have separate sign-ins: the console's My account has **Sign out**, which inside Teams ends the tab's session only (blocked while battery edits are unsaved). The gateway accepts exactly these two cookie forms.
+- **Clients that refuse the cookie**: some WebKit versions reject partitioned cookies, and a client may block third-party cookies entirely. After an embedded sign-in the page reads the session back; if the tab did not keep it, it says so and links to the console in the browser instead of returning to the sign-in page.
+- **Sign-in page**: states that it is the battery inventory account, not a UNSW (zID) sign-in, and inside Teams links to the browser. The console's notice inside Teams says where to sign out, that edits not yet confirmed stay with the tab (browser storage inside Teams is separate from the browser's), and offers the browser if a download does not start.
+- **Rollback** to the wrap-up application keeps already signed-in tabs working; a new sign-in inside the tab then gets the ordinary cookie and fails until `restore`.
 
-Proposed change, to be built and tested in Teams before deployment: allow `frame-ancestors` for the Teams and SharePoint origins only (verify the current origins first), accept iframe navigations from those origins for document routes, and issue a separate partitioned, `SameSite=None; Secure` session for embedded sign-in, keeping the existing Origin checks on every write. Until then the reliable entry is a link in the channel (or a SharePoint quick link) that opens `/console` in the browser; the console already detects embedding and offers to open itself in the browser.
+Checks: gateway tests (frame policy per page, frame entry for the console and sign-in page only, the two cookie forms), sign-in page tests (embedded flag, wording), API checks (embedded sign-in, reads, sign-out), the Linux qualification of the update (headers, frame entry, embedded session, refused cross-site write), and a local check with the production build behind the real gateway framed by another local site. Inside Microsoft Teams itself it is checked by the owner after deployment (sign-in, records, export download, sign-out, desktop and web Teams).
 
 ## Next steps
 
 1. Owner review of the console on the local server; adjust.
 2. Deploy the merged line and the console (owner confirmation), then add the channel link.
-3. Embedding change above, tested inside the owner's Teams.
+3. Embedding (above): deployed with the 5 Nov Teams update; owner checks inside Teams.
 4. Candidates after pilot feedback: batch inspection recording (one form, separate requests per battery), saved custom views, CSV import review through the operator import contract (migration 0024), a model template area.

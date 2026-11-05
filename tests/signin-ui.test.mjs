@@ -25,12 +25,13 @@ const form = tree => nodes(tree).find(node => node.type === "form");
 const submit = (tree, values) => form(tree).props.onSubmit({ preventDefault() {}, currentTarget: { values } });
 const account = { username: "fictional-staff", password: "test-password-only" };
 
-function harness(request = async () => response({ user: null, setupRequired: false }), search = "") {
+function harness(request = async () => response({ user: null, setupRequired: false }), search = "", embedded = false) {
   const states = [], effects = [], timers = new Map(), calls = [], destinations = [], focused = [];
   let pointer = 0, effectPointer = 0, nextTimer = 1, effectQueue = [];
   const bindings = {
     ...Object.fromEntries(["ArrowRight", "Battery", "Check", "LoaderCircle", "ShieldCheck", "Button", "Input", "Label"].map(name => [name, name])),
     safeReturnPath,
+    isEmbeddedPage: () => embedded,
     flushSync: update => update(),
     reloadSessionPage: destination => destinations.push(destination),
     window: { location: { search } },
@@ -111,9 +112,67 @@ test("password-manager form values are submitted unchanged and only server-confi
   assert.equal(input(tree, "password").props.autoComplete, "current-password");
   const password = "  test-password-only  ";
   await submit(tree, { username: "  Fictional-Staff  ", password });
-  assert.deepEqual(JSON.parse(h.calls[1].options.body), { action: "signin", payload: { username: "Fictional-Staff", password } });
+  assert.deepEqual(JSON.parse(h.calls[1].options.body), { action: "signin", embedded: false, payload: { username: "Fictional-Staff", password } });
   assert.deepEqual(h.destinations, ["/console?area=batteries"]);
   assert.equal(h.render().props["data-phase"], "opening");
+  h.unmount();
+});
+
+test("inside a Teams tab the sign-in asks for the embedded session, confirms it is readable and says it is not a UNSW sign-in", async () => {
+  let signedIn = false;
+  const h = harness(async (_url, options) => {
+    if (options?.method === "POST") { signedIn = true; return response({ user: { id: "staff" } }); }
+    return response(signedIn ? { user: { id: "staff" } } : { user: null, setupRequired: false });
+  }, "?return_to=%2Fconsole", true);
+  const tree = await h.ready();
+  const text = nodes(tree).flatMap(node => [node.props.children].flat()).filter(value => typeof value === "string").join(" ");
+  assert.match(text, /this is not a UNSW \(zID\) sign-in/);
+  assert.match(text, /Opened inside Microsoft Teams/);
+  assert.ok(nodes(tree).some(node => node.type === "a" && node.props.href === "/console" && node.props.target === "_blank"));
+  await submit(tree, { username: "fictional-staff", password: "test-password-only" });
+  assert.deepEqual(JSON.parse(h.calls[1].options.body), { action: "signin", embedded: true, payload: { username: "fictional-staff", password: "test-password-only" } });
+  assert.equal(h.calls[2].url, "/api/session");
+  assert.equal(h.calls[2].options?.method, undefined);
+  assert.deepEqual(h.destinations, ["/console"]);
+  h.unmount();
+});
+
+test("inside a Teams tab sign-in always returns to the console, the only page that may be framed", async () => {
+  for (const search of ["", "?return_to=%2F", "?return_to=%2Fconsole%3Farea%3Dtasks"]) {
+    let signedIn = false;
+    const h = harness(async (_url, options) => {
+      if (options?.method === "POST") { signedIn = true; return response({ user: { id: "staff" } }); }
+      return response(signedIn ? { user: { id: "staff" } } : { user: null, setupRequired: false });
+    }, search, true);
+    const tree = await h.ready();
+    await submit(tree, { username: "fictional-staff", password: "test-password-only" });
+    assert.deepEqual(h.destinations, [search.includes("area") ? "/console?area=tasks" : "/console"]);
+    h.unmount();
+  }
+});
+
+test("a failed session check after an embedded sign-in is uncertain, not blamed on Teams", async () => {
+  let signedIn = false;
+  const h = harness(async (_url, options) => {
+    if (options?.method === "POST") { signedIn = true; return response({ user: { id: "staff" } }); }
+    return signedIn ? response({ error: "unavailable" }, 503) : response({ user: null, setupRequired: false });
+  }, "?return_to=%2Fconsole", true);
+  const tree = await h.ready();
+  await submit(tree, { username: "fictional-staff", password: "test-password-only" });
+  const after = h.render();
+  assert.deepEqual(h.destinations, []);
+  assert.match(label(after), /could not be confirmed/);
+  assert.doesNotMatch(label(after), /did not keep the sign-in/);
+  assert.ok(button(after, "Check access"));
+  h.unmount();
+});
+
+test("when a Teams tab refuses the embedded session, sign-in says so and does not loop back to the console", async () => {
+  const h = harness(async (_url, options) => response(options?.method === "POST" ? { user: { id: "staff" } } : { user: null, setupRequired: false }), "?return_to=%2Fconsole", true);
+  const tree = await h.ready();
+  await submit(tree, { username: "fictional-staff", password: "test-password-only" });
+  assert.deepEqual(h.destinations, []);
+  assert.match(label(h.render()), /did not keep the sign-in/);
   h.unmount();
 });
 

@@ -14,11 +14,13 @@ export async function GET(request: Request) {
 }
 export async function POST(request: Request) {
     try {
-        const body = z.object({ action: z.enum(["signin", "signout", "setup"]), payload: z.unknown().optional(), setupKey: z.string().optional() }).parse(await requestJson(request, 5000));
+        const body = z.object({ action: z.enum(["signin", "signout", "setup"]), payload: z.unknown().optional(), setupKey: z.string().optional(), embedded: z.boolean().optional() }).parse(await requestJson(request, 5000));
+        // Set by the page when it runs inside an embedding host; it selects only the cookie form.
+        const embedded = body.embedded === true;
         const store = new AccountStore(getD1Database()), secure = new URL(request.url).protocol === "https:";
         if (body.action === "signout") {
             await store.signOut(sessionToken(request.headers.get("cookie")));
-            return apiJson({ ok: true }, 200, { "Set-Cookie": sessionCookie("", secure, true) });
+            return apiJson({ ok: true }, 200, { "Set-Cookie": sessionCookie("", secure, true, embedded) });
         }
         if (body.action === "setup") {
             if (!env.INVENTORY_SETUP_KEY || !body.setupKey || !constantEqual(env.INVENTORY_SETUP_KEY, body.setupKey)) throw new DomainError(403, "Enter the administrator setup key configured for this installation.");
@@ -26,6 +28,6 @@ export async function POST(request: Request) {
             return apiJson({ ok: true, user });
         }
         const result = await store.signIn(body.payload);
-        return apiJson({ user: result.user }, 200, { "Set-Cookie": sessionCookie(result.token, secure) });
+        return apiJson({ user: result.user }, 200, { "Set-Cookie": sessionCookie(result.token, secure, false, embedded) });
     } catch (error) { return apiError(error); }
 }

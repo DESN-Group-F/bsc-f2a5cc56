@@ -36,6 +36,7 @@ export async function startIntegrationCandidate({
   publicOrigin: configuredOrigin,
   signal,
   onProgress = () => {},
+  frameAncestors,
 } = {}) {
   const originalConfigPath = path.join(projectRoot, "dist/server/wrangler.json");
   let original;
@@ -150,6 +151,8 @@ export async function startIntegrationCandidate({
     server = createInventoryHttpServer({
       publicOrigin,
       allowLoopbackHttp: !configuredOrigin,
+      // Local embedding checks may add an explicit loopback parent page; the default is the reviewed host list.
+      ...(frameAncestors ? { frameAncestors } : {}),
       dispatchFetch: async (url, init) => {
         if (new URL(url).pathname === "/healthz") {
           if (!started) return Response.json({ error: "The integration candidate is starting." }, { status: 503 });

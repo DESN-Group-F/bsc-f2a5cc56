@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { reloadSessionPage } from "@/lib/client-utils";
 import { safeReturnPath } from "@/lib/return-path";
+import { isEmbeddedPage } from "@/lib/embedded-page";
 
 type Phase = "checking" | "ready" | "submitting" | "opening" | "unavailable" | "unconfirmed";
 type Field = "key" | "name" | "username" | "password";
@@ -30,6 +31,7 @@ export default function SignInForm() {
   const [notice, setNotice] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [slow, setSlow] = useState(false);
+  const [framed, setFramed] = useState(false);
   const submitting = useRef(false);
   const mounted = useRef(true);
   const submitController = useRef<AbortController | null>(null);
@@ -43,11 +45,15 @@ export default function SignInForm() {
   function openWorkspace() {
     // Only a server-confirmed session enters this state. Navigate immediately.
     flushSync(() => { setSlow(false); setPhase("opening"); });
-    reloadSessionPage(safeReturnPath(new URLSearchParams(window.location.search).get("return_to")));
+    const requested = safeReturnPath(new URLSearchParams(window.location.search).get("return_to"));
+    // Inside a Teams tab only the console may be framed; any other page would be refused there.
+    const framedPage = requested === "/console" || requested.startsWith("/console?");
+    reloadSessionPage(isEmbeddedPage() && !framedPage ? "/console" : requested);
   }
 
   useEffect(() => {
     mounted.current = true;
+    queueMicrotask(() => { if (mounted.current) setFramed(isEmbeddedPage()); });
     return () => { mounted.current = false; submitController.current?.abort(); };
   }, []);
 
@@ -120,10 +126,11 @@ export default function SignInForm() {
     const timer = setTimeout(() => { timedOut = true; controller.abort(); }, requestTimeout);
     setSlow(false);
     setPhase("submitting");
+    const embedded = isEmbeddedPage();
     try {
       const response = await fetch("/api/session", {
         method: "POST", headers: { "Content-Type": "application/json" }, signal: controller.signal,
-        body: JSON.stringify({ action: setup ? "setup" : "signin", ...(setup ? { setupKey: values.key } : {}), payload: { username: values.username, password: values.password, ...(setup ? { displayName: values.name, email: "", role: "admin" } : {}) } }),
+        body: JSON.stringify({ action: setup ? "setup" : "signin", ...(setup ? { setupKey: values.key } : {}), embedded, payload: { username: values.username, password: values.password, ...(setup ? { displayName: values.name, email: "", role: "admin" } : {}) } }),
       });
       const body = await response.json() as { error?: string; user?: object };
       if (!mounted.current) return;
@@ -135,6 +142,15 @@ export default function SignInForm() {
         setSlow(false); setPhase("ready"); return;
       }
       if (!body.user) throw new SignInError("Staff access could not be confirmed. Check access before trying again.", true);
+      if (embedded) {
+        // Inside a Teams tab the session is a partitioned cookie, which some clients refuse.
+        // Confirm the session is readable here before opening the console.
+        const check = await fetch("/api/session", { signal: controller.signal, headers: { Accept: "application/json" } });
+        if (!check.ok) throw new SignInError("Staff access could not be confirmed. Check access before trying again.", true);
+        const confirmed = await check.json() as { user?: object | null };
+        if (!mounted.current) return;
+        if (!confirmed?.user) throw new SignInError("This Teams tab did not keep the sign-in (the tab refused its session cookie). Open the console in your browser with the link below.");
+      }
       openWorkspace();
     } catch (failure) {
       if (!mounted.current) return;
@@ -210,7 +226,8 @@ export default function SignInForm() {
             <p>{status || "Ready when you are."}</p>
             {slow && status && <p className="signin-slow-message">{slowMessage}</p>}
           </div>
-          <div className="signin-note"><ShieldCheck size={17} aria-hidden="true" /><span>Staff access only. Use the account provided by your administrator.</span></div>
+          <div className="signin-note"><ShieldCheck size={17} aria-hidden="true" /><span>Staff access only. Use the battery inventory account provided by your administrator; this is not a UNSW (zID) sign-in.</span></div>
+          {framed && <p className="signin-note">Opened inside Microsoft Teams. If signing in here does not work, <a href={safeReturnPath(new URLSearchParams(window.location.search).get("return_to"))} target="_blank" rel="noreferrer">open it in your browser</a>.</p>}
         </section>
       </div>
       <footer className="signin-footer"><span>DESN2000</span><span>Battery inventory prototype</span></footer>

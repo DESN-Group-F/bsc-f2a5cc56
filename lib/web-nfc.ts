@@ -1,4 +1,5 @@
 import type { TeachingNfcBridge, TeachingNfcProposal } from "./teaching-nfc";
+import { isEmbeddedPage } from "./embedded-page";
 
 /**
  * Web NFC (NDEFReader) in the browser. Chrome on Android is the only browser that offers it,
@@ -20,10 +21,7 @@ export class WebNfcError extends Error {
     constructor(message: string, kind: WebNfcErrorKind) { super(message); this.name = "WebNfcError"; this.kind = kind; }
 }
 
-export function isEmbeddedPage(): boolean {
-    if (typeof window === "undefined") return false;
-    try { return window.self !== window.top; } catch { return true; }
-}
+export { isEmbeddedPage };
 
 export function webNfcSupport(): WebNfcSupport {
     if (typeof window === "undefined") return "unsupported";

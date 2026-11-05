@@ -20,8 +20,14 @@ export function constantEqual(a: string, b: string) {
     for (let i = 0; i < Math.max(a.length, b.length); i++) difference |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
     return difference === 0;
 }
-export function sessionCookie(token: string, secure: boolean, clear = false) {
-    return `${SESSION_COOKIE}=${clear ? "" : token}; Path=/; HttpOnly; SameSite=Strict; Max-Age=${clear ? 0 : SESSION_SECONDS}${secure ? "; Secure" : ""}`;
+/**
+ * Ordinary sessions are SameSite=Strict. A sign-in made inside an embedding host (the Teams
+ * website tab) gets a partitioned SameSite=None cookie instead: browsers send it only inside
+ * that host, and every write still requires the same Origin as before.
+ */
+export function sessionCookie(token: string, secure: boolean, clear = false, embedded = false) {
+    const site = embedded ? "SameSite=None" : "SameSite=Strict";
+    return `${SESSION_COOKIE}=${clear ? "" : token}; Path=/; HttpOnly; ${site}; Max-Age=${clear ? 0 : SESSION_SECONDS}${secure || embedded ? "; Secure" : ""}${embedded ? "; Partitioned" : ""}`;
 }
 export function sessionToken(cookie: string | null) {
     const values = (cookie ?? "").split(";").map(s => s.trim()).filter(s => s.startsWith(`${SESSION_COOKIE}=`));

@@ -29,20 +29,39 @@ const responseHeaderNames = [
 const safeHeaders = {
   "Cache-Control": "no-store",
   "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
   "Referrer-Policy": "same-origin",
 };
+// Hosts that may frame the management console and its sign-in page, sent as CSP frame-ancestors
+// instead of X-Frame-Options: Microsoft Teams website tabs (classic and new Teams, web and
+// desktop). Browsers check every ancestor of a frame, so a page framed by any other site,
+// including apps inside Teams, is refused. Every other response forbids framing. Writes keep
+// their exact same-origin requirement regardless of framing.
+export const embeddingHosts = Object.freeze([
+  "https://teams.microsoft.com", "https://*.teams.microsoft.com", "https://*.cloud.microsoft",
+]);
+export const framedPages = Object.freeze(["/console", "/signin"]);
+const noFraming = "frame-ancestors 'none'";
 const unconfirmedMessage = "The inventory service could not confirm this request. Preserve any uncertain operation and retry its exact captured request.";
 
 function fail(status, message) {
   throw Object.assign(new Error(message), { gatewayStatus: status });
 }
 
-function reply(request, response, status, error) {
+function reply(request, response, status, error, framePolicy) {
   // Discard rejected input without buffering it or passing it to the Worker.
   request.resume();
-  response.writeHead(status, { ...safeHeaders, "Content-Type": "application/json" });
+  response.writeHead(status, { ...safeHeaders, "Content-Security-Policy": framePolicy, "Content-Type": "application/json" });
   response.end(request.method === "HEAD" ? undefined : JSON.stringify({ error }));
+}
+
+function framePolicyFor(hosts, allowLoopbackHttp) {
+  if (!Array.isArray(hosts) || hosts.length > 16) throw new Error("List the reviewed embedding hosts.");
+  for (const host of hosts) {
+    const https = typeof host === "string" && /^https:\/\/(?:\*\.)?[a-z0-9-]+(?:\.[a-z0-9-]+)+$/.test(host);
+    const loopback = allowLoopbackHttp && typeof host === "string" && /^http:\/\/(?:127\.0\.0\.1|localhost):[1-9]\d{0,4}$/.test(host);
+    if (!https && !loopback) throw new Error("Embedding hosts must be exact HTTPS hosts or HTTPS subdomain wildcards.");
+  }
+  return ["frame-ancestors", ...hosts].join(" ");
 }
 
 function trustedOrigin(value, allowLoopbackHttp) {
@@ -76,9 +95,14 @@ function originPolicy(request, publicUrl, url) {
   if (origin !== undefined && origin !== publicUrl.origin)
     fail(403, "Cross-origin requests are not allowed.");
   const fetchSite = request.headers["sec-fetch-site"];
-  const documentEntry = request.method === "GET" && !url.pathname.startsWith("/api/") && url.pathname !== "/api"
-    && origin === undefined && request.headers["sec-fetch-mode"] === "navigate" && request.headers["sec-fetch-dest"] === "document"
-    && ["cross-site", "same-site"].includes(fetchSite);
+  // A link from another site opens a page (document); a Teams tab loads the console or its
+  // sign-in page in a cross-site frame (iframe). Which sites may frame them is the browser's
+  // frame-ancestors check; APIs, assets and writes stay same-origin only.
+  const navigation = request.method === "GET" && !url.pathname.startsWith("/api/") && url.pathname !== "/api"
+    && origin === undefined && request.headers["sec-fetch-mode"] === "navigate";
+  const dest = request.headers["sec-fetch-dest"];
+  const documentEntry = navigation && (dest === "document" && ["cross-site", "same-site"].includes(fetchSite)
+    || dest === "iframe" && fetchSite === "cross-site" && framedPages.includes(url.pathname));
   if (fetchSite !== undefined && !["same-origin", "none"].includes(fetchSite) && !documentEntry)
     fail(403, "Cross-origin browser requests are not allowed.");
   const browser = Object.keys(request.headers).some(name => name.startsWith("sec-fetch-"));
@@ -168,12 +192,16 @@ function responseCookies(headers, secure) {
   for (const part of parts.slice(1)) {
     const separator = part.indexOf("="), key = (separator < 0 ? part : part.slice(0, separator)).toLowerCase();
     const value = separator < 0 ? "" : part.slice(separator + 1);
-    if (!key || attributes.has(key) || !["path", "httponly", "samesite", "max-age", "secure"].includes(key))
+    if (!key || attributes.has(key) || !["path", "httponly", "samesite", "max-age", "secure", "partitioned"].includes(key))
       fail(503, unconfirmedMessage);
     attributes.set(key, value);
   }
-  const age = attributes.get("max-age");
-  if (attributes.get("path") !== "/" || attributes.get("httponly") !== "" || attributes.get("samesite")?.toLowerCase() !== "strict"
+  const age = attributes.get("max-age"), sameSite = attributes.get("samesite")?.toLowerCase();
+  // Two forms only: the ordinary Strict session, and the embedded session (SameSite=None),
+  // which must be Secure and Partitioned so browsers keep it for the embedding host alone.
+  const ordinary = sameSite === "strict" && !attributes.has("partitioned");
+  const embedded = sameSite === "none" && attributes.get("partitioned") === "" && attributes.get("secure") === "";
+  if (attributes.get("path") !== "/" || attributes.get("httponly") !== "" || !(ordinary || embedded)
       || !/^(?:0|[1-9]\d{0,4})$/.test(age ?? "") || Number(age) > 28_800
       || attributes.has("secure") && attributes.get("secure") !== "" || secure && !attributes.has("secure")
       || !(token === "" && Number(age) === 0 || /^[a-f0-9]{64}$/.test(token) && Number(age) > 0))
@@ -224,9 +252,10 @@ async function boundedResponse(response, limit, signal) {
  */
 export function createInventoryHttpServer({
   publicOrigin, dispatchFetch, allowLoopbackHttp = false,
-  requestTimeoutMs = 30_000, responseLimitBytes = 32 * 1024 * 1024,
+  requestTimeoutMs = 30_000, responseLimitBytes = 32 * 1024 * 1024, frameAncestors = embeddingHosts,
 } = {}) {
   const publicUrl = trustedOrigin(publicOrigin, allowLoopbackHttp);
+  const framePolicy = framePolicyFor(frameAncestors, allowLoopbackHttp);
   if (typeof dispatchFetch !== "function") throw new Error("Supply the owned Worker dispatchFetch function.");
   if (!Number.isInteger(requestTimeoutMs) || requestTimeoutMs < 1 || requestTimeoutMs > 120_000
       || !Number.isInteger(responseLimitBytes) || responseLimitBytes < 1 || responseLimitBytes > 128 * 1024 * 1024)
@@ -237,9 +266,11 @@ export function createInventoryHttpServer({
     timer.unref();
     const disconnected = () => { if (!response.writableFinished) controller.abort(); };
     response.once("close", disconnected);
-    let upstreamResponse;
+    let upstreamResponse, pagePolicy = noFraming;
     try {
       const url = requestUrl(request, publicUrl);
+      // The console and its sign-in page may be framed by Teams, so their errors render there too.
+      pagePolicy = framedPages.includes(url.pathname) ? framePolicy : noFraming;
       originPolicy(request, publicUrl, url);
       const isApi = url.pathname.startsWith("/api/") || url.pathname === "/api";
       if (privatePaths.has(url.pathname) || isApi && !apiRoutes.has(url.pathname)) fail(404, "Not found.");
@@ -275,13 +306,16 @@ export function createInventoryHttpServer({
       if (!Number.isInteger(upstreamResponse?.status) || upstreamResponse.status < 200 || upstreamResponse.status > 599
           || typeof upstreamResponse.headers?.get !== "function" || typeof upstreamResponse.headers.getSetCookie !== "function")
         fail(503, unconfirmedMessage);
-      const outgoing = { ...safeHeaders };
+      const outgoing = { ...safeHeaders, "Content-Security-Policy": pagePolicy };
       if (upstreamResponse.status >= 300 && upstreamResponse.status < 400 && upstreamResponse.status !== 304)
         outgoing.Location = webRedirect(upstreamResponse, request, url, publicUrl);
       for (const name of responseHeaderNames) {
         const value = upstreamResponse.headers.get(name);
         if (value && (value.length > 8192 || /[\r\n]/.test(value))) fail(503, unconfirmedMessage);
-        if (value) outgoing[name] = value;
+        // A Worker policy is kept as a second policy; browsers enforce both, so the gateway's
+        // frame-ancestors always applies.
+        if (value && name === "content-security-policy") outgoing["Content-Security-Policy"] = [value, pagePolicy];
+        else if (value) outgoing[name] = value;
       }
       const cookies = responseCookies(upstreamResponse.headers, publicUrl.protocol === "https:");
       if (cookies) outgoing["Set-Cookie"] = cookies;
@@ -295,7 +329,7 @@ export function createInventoryHttpServer({
       if (response.headersSent) response.destroy();
       else {
         if (controller.signal.aborted && !request.complete) response.setHeader("Connection", "close");
-        reply(request, response, error.gatewayStatus ?? 503, error.gatewayStatus ? error.message : unconfirmedMessage);
+        reply(request, response, error.gatewayStatus ?? 503, error.gatewayStatus ? error.message : unconfirmedMessage, pagePolicy);
       }
     } finally {
       clearTimeout(timer);
