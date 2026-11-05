@@ -6,7 +6,7 @@ import {
   DomainError,
   validateBatteryDates,
 } from "../../domain";
-import { isSupportedBuilding } from "../../location-catalog";
+import { isRoomBuilding, isSupportedBuilding, SUPPORTED_BUILDINGS_LABEL } from "../../location-catalog";
 import { InventoryDatabase } from "./database";
 import { InventorySession } from "./actor";
 import { InventoryTransactions } from "./transactions";
@@ -64,10 +64,10 @@ export class InventoryImports {
     else if (kind === "rooms")
       for (const raw of records) {
         const r = roomSchema.parse(raw);
-        if (!isSupportedBuilding(r.buildingId))
+        if (!isRoomBuilding(r.buildingId))
           throw new DomainError(
             400,
-            `${r.id}: only J18 rooms are available for the current project.`,
+            `${r.id}: rooms can be added only in J18 for now. E10 and G17 hold storage without a room.`,
           );
         if (
           !(await this.database.first(
@@ -104,7 +104,7 @@ export class InventoryImports {
           this.database.scope,
         );
       const ownerKeys = new Set<string>(),
-        roomKeys = new Set<string>(),
+        roomKeys = new Map<string, string>(),
         tagHashes = new Set<string>();
       for (const raw of records) {
         const b = batterySchema.parse(raw);
@@ -128,10 +128,10 @@ export class InventoryImports {
         )
           throw new DomainError(
             400,
-            `${b.id}: select an active staff account as its responsible owner, J18, and an available room or leave it unspecified.`,
+            `${b.id}: select an active staff account as its responsible owner, ${SUPPORTED_BUILDINGS_LABEL} as the storage building, and an available room in that building or leave it unspecified.`,
           );
         ownerKeys.add(String(owner.key));
-        if (room) roomKeys.add(String(room.key));
+        if (room) roomKeys.set(String(room.key), String(room.building_key));
         writes.push(
           this.database.statement(
             "INSERT INTO batteries(key,scope,id,name,chemistry,model,capacity_mah,voltage,tag_id,owner_key,home_building_key,home_room_key,manufactured_on,first_used_on,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
@@ -168,14 +168,13 @@ export class InventoryImports {
         );
       }
       guard =
-        "(SELECT COUNT(*) FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.scope=? AND p.role='staff' AND a.active=1 AND p.key IN (SELECT value FROM json_each(?)))=? AND (SELECT COUNT(*) FROM rooms WHERE scope=? AND selectable=1 AND building_key=? AND key IN (SELECT value FROM json_each(?)))=? AND NOT EXISTS(SELECT 1 FROM purged_tag_reservations WHERE scope=? AND tag_hash IN (SELECT value FROM json_each(?)))";
+        "(SELECT COUNT(*) FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.scope=? AND p.role='staff' AND a.active=1 AND p.key IN (SELECT value FROM json_each(?)))=? AND (SELECT COUNT(*) FROM rooms r JOIN json_each(?) reviewed ON r.key=json_extract(reviewed.value,'$.room') AND r.building_key=json_extract(reviewed.value,'$.building') WHERE r.scope=? AND r.selectable=1)=? AND NOT EXISTS(SELECT 1 FROM purged_tag_reservations WHERE scope=? AND tag_hash IN (SELECT value FROM json_each(?)))";
       guardValues = [
         this.database.scope,
         JSON.stringify([...ownerKeys]),
         ownerKeys.size,
+        JSON.stringify([...roomKeys].map(([room, building]) => ({ room, building }))),
         this.database.scope,
-        this.database.key("J18"),
-        JSON.stringify([...roomKeys]),
         roomKeys.size,
         this.database.scope,
         JSON.stringify([...tagHashes]),

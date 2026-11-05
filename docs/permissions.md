@@ -62,7 +62,7 @@ These permissions apply to both datasets unless a row explicitly says otherwise.
 | Correct eligible checkout or return history | No | Yes | Latest eligible loan, exact reviewed state and a recorded reason; original evidence retained |
 | Create reusable battery-model templates | Yes | Yes | Shared templates; model evidence does not identify a physical asset |
 | Edit saved battery-model templates | No | Yes | Also applies to templates created by the current staff member; edits do not update existing batteries |
-| Add, edit or import buildings and rooms | No | Yes | Version, hierarchy and current J18 selection restrictions still apply |
+| Add, edit or import buildings and rooms | No | Yes | Version and hierarchy restrictions apply; storage in J18, E10 or G17, rooms in J18 only ([storage buildings](storage-buildings.md)) |
 | Initialize example inventory | Demonstration only | Demonstration only | One-time initialization, not a reset or deletion operation |
 
 Teaching-group membership supplies a selection boundary, not additional authority. Both roles may perform their permitted movements and retirement operations in their own groups. Only administrators may apply a common owner, registered storage, charging record or standalone demonstration observation to group members.

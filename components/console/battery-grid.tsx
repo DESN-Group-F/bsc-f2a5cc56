@@ -4,7 +4,7 @@ import { memo, useEffect, useRef, useState, type KeyboardEvent } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
 import { columnById, type BatteryColumn, type ColumnContext } from "@/lib/console/battery-columns";
-import { describeValue, editBlockReason, parseFieldInput, recordValues, type BatteryChanges, type EditableField } from "@/lib/console/battery-edits";
+import { currentStorageValue, describeValue, editBlockReason, normalizeStorageValue, parseFieldInput, recordValues, resolveStorage, storageOptions, type BatteryChanges, type EditableField } from "@/lib/console/battery-edits";
 import styles from "./console.module.css";
 
 export type Draft = { baseVersion: number; changes: BatteryChanges; errors: Partial<Record<EditableField, string>>; raw: Partial<Record<EditableField, string>> };
@@ -36,9 +36,6 @@ function staffOwners(snapshot: InventorySnapshot) {
   return snapshot.people.filter((person) => person.role === "staff" && person.accountId).map((person) => ({ id: person.id, name: person.name, active: active.get(person.accountId!) !== false }))
     .sort((a, b) => a.name.localeCompare(b.name, "en"));
 }
-function storageRooms(snapshot: InventorySnapshot) {
-  return snapshot.rooms.filter((room) => room.buildingId === "J18" && room.selectable).sort((a, b) => a.name.localeCompare(b.name, "en", { numeric: true }));
-}
 
 function CellEditor({ battery, field, draft, snapshot, onDone }: { battery: BatteryRecord; field: EditableField; draft?: Draft; snapshot: InventorySnapshot; onDone: (raw: string | null, move: "down" | "right" | "left" | null) => void }) {
   const current = draft && field in draft.raw ? draft.raw[field]! : draft && field in draft.changes ? String(draft.changes[field] ?? "") : String(recordValues(battery)[field] ?? "");
@@ -57,8 +54,9 @@ function CellEditor({ battery, field, draft, snapshot, onDone }: { battery: Batt
   if (selectableFields.has(field)) {
     const options = field === "ownerId"
       ? staffOwners(snapshot).filter((owner) => owner.active || owner.id === battery.ownerId).map((owner) => ({ value: owner.id, label: `${owner.name}${owner.active ? "" : " (inactive)"}` }))
-      : [{ value: "", label: "Room not specified" }, ...storageRooms(snapshot).map((room) => ({ value: room.id, label: describeValue("homeRoomId", room.id, snapshot) }))];
-    return <select ref={ref} className={styles.cellEditor} value={value} aria-label={field === "ownerId" ? "Responsible owner" : "Storage room in J18"}
+      : storageOptions(snapshot);
+    const selectedValue = field === "homeRoomId" && !value ? currentStorageValue(battery) : value;
+    return <select ref={ref} className={styles.cellEditor} value={selectedValue} aria-label={field === "ownerId" ? "Responsible owner" : "Storage building and room"}
       onChange={(event) => setValue(event.target.value)} onKeyDown={onKey} onBlur={() => finish(null)}>
       {options.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
     </select>;
@@ -75,7 +73,7 @@ function cellText(column: BatteryColumn, battery: BatteryRecord, context: Column
     if (field in draft.raw && draft.errors[field]) return draft.raw[field] || "—";
     if (field in draft.changes) {
       const value = draft.changes[field];
-      if (field === "homeRoomId") return `J18 · ${value ? describeValue(field, value, context.snapshot) : "Room not specified"}`;
+      if (field === "homeRoomId") return value ? describeValue(field, value, context.snapshot) : `${resolveStorage(battery, null, context.snapshot).buildingId} · Room not specified`;
       if (field === "ownerId") return describeValue(field, value, context.snapshot);
       return value === null || value === "" ? "" : field === "capacityMah" ? Number(value).toLocaleString("en-AU") : String(value);
     }
@@ -199,7 +197,8 @@ export function applyCellInput(battery: BatteryRecord, draft: Draft | undefined,
   const next: Draft = draft ? { ...draft, changes: { ...draft.changes }, errors: { ...draft.errors }, raw: { ...draft.raw } } : { baseVersion: battery.version, changes: {}, errors: {}, raw: {} };
   if (!parsed.ok) { next.errors[field] = parsed.error; next.raw[field] = raw; delete next.changes[field]; return next; }
   delete next.errors[field]; delete next.raw[field];
-  if (parsed.value === recordValues(battery)[field]) delete next.changes[field];
-  else (next.changes as Record<string, unknown>)[field] = parsed.value;
+  const value = field === "homeRoomId" ? normalizeStorageValue(battery, parsed.value as string | null) : parsed.value;
+  if (value === recordValues(battery)[field]) delete next.changes[field];
+  else (next.changes as Record<string, unknown>)[field] = value;
   return Object.keys(next.changes).length || Object.keys(next.errors).length ? next : undefined;
 }

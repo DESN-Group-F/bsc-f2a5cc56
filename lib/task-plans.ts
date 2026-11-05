@@ -3,6 +3,7 @@ import type { StaffUser } from "./accounts";
 import { DomainError, recordKey, type Dataset } from "./domain";
 import { currentSydneyDate } from "./battery-age";
 import { rejectPurgedReplay } from "./server/purge-evidence";
+import { isSupportedBuilding } from "./location-catalog";
 import { taskPlanSchema, taskSchedulePreview, taskReminderAt, taskCycleCandidate, taskPlanMatchesQuery, type TaskPlan } from "./task-schedule";
 
 type Row = Record<string, unknown>;
@@ -129,7 +130,7 @@ export class TaskPlanStore {
         }
         if (plan.targetKind === "storage_area" && plan.targetRef) {
             const room = await this.first("SELECT r.*,b.id AS building_id,b.name AS building_name FROM rooms r JOIN buildings b ON b.key=r.building_key WHERE r.scope=? AND r.id=?", this.scope, plan.targetRef);
-            if (!room || room.building_id !== "J18" || room.selectable !== 1) throw new DomainError(400, "Select an available J18 storage room.");
+            if (!room || !isSupportedBuilding(String(room.building_id)) || room.selectable !== 1) throw new DomainError(400, "Select an available storage room.");
             if (plan.state === "active" && this.dataset === "live" && room.is_placeholder === 1) throw new DomainError(400, "A working-inventory storage task requires a verified room. Placeholder rooms remain provisional.");
             target.room = { id: room.id, name: room.name, number: room.number, buildingId: room.building_id, buildingName: room.building_name, isPlaceholder: room.is_placeholder === 1 };
             guardParts.push("EXISTS(SELECT 1 FROM rooms WHERE key=? AND scope=? AND version=? AND selectable=1 AND (?=0 OR is_placeholder=0))"); values.push(room.key, this.scope, room.version, Number(plan.state === "active" && this.dataset === "live"));

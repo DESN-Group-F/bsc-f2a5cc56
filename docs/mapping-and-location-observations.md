@@ -18,7 +18,7 @@ Selecting a room card opens only its summary beside the map. The summary shows a
 
 **View details** opens a room tab, or focuses the existing tab for that room without duplicating it. Each open room tab has its own inventory filters, ordering, page, expanded records and selected batteries. Switching tabs, returning to Overview or using **Back to mapping** preserves those states while the tabs remain open. A room tab can be closed individually; closing it discards that tab's local view state and selects an adjacent tab or Overview. Overview cannot be closed. Tabs and their local view state are not a durable browser-session restore feature; changing the account or inventory also creates a new Mapping workspace.
 
-Overview's **Filter** control contains the building choices. J18 Willis Annexe is the supported selection. E10 Hilmer Building and G17 Electrical Engineering Building appear as unavailable reference choices. **Clear filters** returns to the supported J18 overview and closes this filter disclosure; it does not clear the selected room summary or any room tab's filters and selected batteries.
+Overview's **Filter** control contains the building choices. J18 Willis Annexe is the building with rooms. E10 Hilmer Building and G17 Electrical Engineering Building hold storage without rooms and appear as "no rooms yet". **Clear filters** returns to the J18 overview and closes this filter disclosure; it does not clear the selected room summary or any room tab's filters and selected batteries.
 
 Room detail tabs reuse the ordinary inventory table. The room identity is a fixed `mappingRoom` query boundary. Search, ordinary filters, lifecycle criteria, sorting, status counts, pagination and downloads compose with that boundary; **Clear filters** retains it and the chosen batteries. Summary and selected-detail exports retain the room boundary, including exports opened from battery details. A selection whose latest observation moves outside its tab is identified as outside scope rather than silently treated as belonging to the old room.
 
@@ -30,10 +30,10 @@ Overview counts and previews include active assets only. Scrapped and permanentl
 
 | Latest evidence | Mapping bucket |
 | --- | --- |
-| Valid observation time and stable identity of a currently selectable J18 room | That room |
+| Valid observation time and stable identity of a currently selectable room (J18) | That room |
 | No observation recorded | Unknown |
 | Observation time or stable room identity unavailable | Unknown |
-| Last observed room outside the selectable J18 map, including a no-longer-available room | Unknown |
+| Last observed room outside the supported buildings' selectable rooms, including a no-longer-available room | Unknown |
 
 Unknown therefore means **without a usable mapped last observation**, not proof that a battery has no location or that its earlier evidence was erased. Known evidence outside this map remains in history. A missing historical room label is also preserved as unavailable; it is not replaced with the current directory label or registered home. A usable stable room identity can still place the asset in its room bucket. Placeholder rooms remain labelled as placeholders and do not become verified physical locations merely because they have observations.
 
@@ -71,13 +71,13 @@ Each beacon includes its ID, operator label, configured broadcast identifier, ro
 | --- | --- |
 | `requestId` | UUID retained for exact retries |
 | `id`, `label`, `identifier` | Beacon management ID, display label and configured identifier |
-| `roomId`, `roomVersion`, `buildingVersion` | The reviewed existing J18 directory binding |
+| `roomId`, `roomVersion`, `buildingVersion` | The reviewed existing room directory binding (selectable rooms are in J18) |
 | `active` | Boolean; use false to deactivate |
 | `expectedVersion` | Required when updating a saved mapping |
 
 Do not repeat `action` inside the HTTP payload. The shared `LocationBeaconRequest` type includes it for local state, and the route inserts the outer action before validation.
 
-Only administrators may save mappings. The selected room must be selectable and belong to J18; working-inventory mappings additionally require a non-placeholder room. Adding or editing a mapping does not validate hardware or enable ingestion. No request property can turn hardware ingestion on.
+Only administrators may save mappings. The selected room must be selectable and belong to a supported storage building (selectable rooms are in J18; migration 0021 enforces it for beacons); working-inventory mappings additionally require a non-placeholder room. Adding or editing a mapping does not validate hardware or enable ingestion. No request property can turn hardware ingestion on.
 
 ## Capture API
 
@@ -106,7 +106,7 @@ The example UUID placeholder must be replaced with a real UUID. The evidence val
 
 Candidates are a distinct list of up to 16 configured beacons. Their samples must fall within 30 seconds before the adopted battery scan. This is a software capture-binding rule for the prototype, not a measured Bluetooth room-selection or ranging threshold. RSSI is optional evidence and never selects the strongest beacon automatically.
 
-All candidates must still match their reviewed mapping version and an active, selectable J18 mapping. Stale, disabled, missing or cross-inventory bindings are rejected. Candidates resolving to one room produce one observation. Candidates resolving to multiple rooms return `ambiguous`; an empty list returns `unresolved`. Both latter outcomes are attributed audit records with exact receipts, but do not overwrite the last definite observation.
+All candidates must still match their reviewed mapping version and an active mapping to a selectable room in a supported building. Stale, disabled, missing or cross-inventory bindings are rejected. Candidates resolving to one room produce one observation. Candidates resolving to multiple rooms return `ambiguous`; an empty list returns `unresolved`. Both latter outcomes are attributed audit records with exact receipts, but do not overwrite the last definite observation.
 
 The battery must remain active and match its exact ID, tag and reviewed version. Room samples alone, manual inventory selection and unregistered intake drafts cannot create this observation.
 
@@ -128,7 +128,7 @@ Location capture does not borrow or return batteries, change responsible ownersh
 
 Open **Location setup** from Mapping Overview to view the room beacon directory and server-returned capabilities. All active staff can read the directory. Administrator controls appear only when the server reports `manageBeacons`; the single-scan simulator also requires `demoSimulation` and the demonstration inventory. Hardware ingestion always displays **Disabled**. There is no hardware enable switch.
 
-An administrator configures a beacon's display label, broadcast identifier and existing J18 room, then saves the mapping. The client allocates the management ID for a new mapping. Editing captures the loaded mapping, room and building versions. Deactivation marks the mapping inactive without deleting history. Working-inventory mappings require a verified, non-placeholder room on the server. Configuration does not install, discover, calibrate or validate a beacon.
+An administrator configures a beacon's display label, broadcast identifier and existing room, then saves the mapping. The client allocates the management ID for a new mapping. Editing captures the loaded mapping, room and building versions. Deactivation marks the mapping inactive without deleting history. Working-inventory mappings require a verified, non-placeholder room on the server. Configuration does not install, discover, calibrate or validate a beacon.
 
 For a demonstration event:
 

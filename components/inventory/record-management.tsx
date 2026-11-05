@@ -23,7 +23,7 @@ import {
   storageRoomLabel,
   downloadExportAttachment,
 } from "@/lib/client-utils";
-import { isSupportedBuilding, isSelectableRoom } from "@/lib/location-catalog";
+import { isRoomBuilding, isSupportedBuilding, isSelectableRoom, SUPPORTED_BUILDINGS_LABEL } from "@/lib/location-catalog";
 import type {
   ImportKind,
   RecordActions,
@@ -333,7 +333,10 @@ export function RecordManagement({
                 </TableCell>
                 <TableCell>
                   {isSupportedBuilding(building.id)
-                    ? "Placeholder rooms awaiting confirmation"
+                    ? (() => {
+                        const count = data.rooms.filter((room) => room.buildingId === building.id && room.selectable).length;
+                        return !isRoomBuilding(building.id) ? "Storage without rooms" : count ? `${count} ${count === 1 ? "room" : "rooms"} registered` : "No rooms registered yet";
+                      })()
                     : "Not available"}
                 </TableCell>
                 {permissions.manageDirectories && (
@@ -479,7 +482,7 @@ export function RecordManagement({
       <div className="panel-footer">
         <span>
           {kind === "buildings" || kind === "rooms"
-            ? "J18 is currently supported. Placeholder rooms await confirmation; a battery's room can remain unspecified."
+            ? `${SUPPORTED_BUILDINGS_LABEL} are currently supported for storage; rooms can be added in J18 only. Placeholder rooms await confirmation; a battery's room can remain unspecified.`
             : kind === "people"
               ? "Use an active Owner ID (CSV) as owner_id when importing batteries. In the Excel staff directory, use the Owner ID for imports column; Evidence people retains the original id field. Administrators manage staff identities through Staff accounts."
               : "Responsible owners and current holders are distinct staff accounts."}

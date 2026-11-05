@@ -20,7 +20,7 @@ import {
   type IntakePayload,
   type IntakeReceipt,
 } from "./intake-session";
-import { isSupportedBuilding } from "./location-catalog";
+import { isSupportedBuilding, SUPPORTED_BUILDINGS_LABEL, SUPPORTED_BUILDINGS_SQL } from "./location-catalog";
 import { mobileRegistrationPayloadSchema, MOBILE_REGISTRATION_SOURCE, type MobileRegistrationPayload, type MobileRegistrationReceipt } from "./mobile-registration-session";
 import { operatorRegistrationPayloadSchema, OPERATOR_REGISTRATION_SOURCE, type OperatorRegistrationPayload, type OperatorRegistrationReceipt } from "./operator-registration-session";
 import { InventoryDatabase } from "./server/inventory/database";
@@ -271,7 +271,7 @@ export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
     )
       throw new DomainError(
         400,
-        "Choose an active staff owner and J18 as the storage building. The room may remain unspecified.",
+        `Choose an active staff owner and ${SUPPORTED_BUILDINGS_LABEL} as the storage building. The room may remain unspecified.`,
       );
     const room = common.homeRoomId
       ? await this.first(
@@ -286,7 +286,7 @@ export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
     )
       throw new DomainError(
         400,
-        "Choose an available J18 room, or leave the room unspecified.",
+        "Choose an available room in the chosen building, or leave the room unspecified.",
       );
     const model = await this.modelContext(common);
     const context: IntakeContext = {
@@ -312,7 +312,7 @@ export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
   }
   private directoryGuard(context: IntakeContext): Guard {
     return {
-      sql: "EXISTS(SELECT 1 FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.scope=? AND p.key=? AND p.version=? AND p.account_id=? AND p.role='staff' AND a.active=1) AND EXISTS(SELECT 1 FROM buildings WHERE scope=? AND key=? AND id='J18' AND version=?) AND (? IS NULL OR EXISTS(SELECT 1 FROM rooms WHERE scope=? AND key=? AND version=? AND building_key=? AND selectable=1))",
+      sql: `EXISTS(SELECT 1 FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.scope=? AND p.key=? AND p.version=? AND p.account_id=? AND p.role='staff' AND a.active=1) AND EXISTS(SELECT 1 FROM buildings WHERE scope=? AND key=? AND id IN ${SUPPORTED_BUILDINGS_SQL} AND version=?) AND (? IS NULL OR EXISTS(SELECT 1 FROM rooms WHERE scope=? AND key=? AND version=? AND building_key=? AND selectable=1))`,
       values: [
         this.scope,
         context.owner.key,

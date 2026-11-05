@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { batterySchema, datasetSchema, identifier, type Dataset } from "./domain";
 import { canonicalModelJson } from "./battery-models";
+import { SUPPORTED_BUILDING_IDS } from "./location-catalog";
 
 const version = z.number().int().positive().max(Number.MAX_SAFE_INTEGER);
 export const operatorImportRecordSchema = z.object({
@@ -8,7 +9,7 @@ export const operatorImportRecordSchema = z.object({
   model: batterySchema.shape.model.removeDefault(), chemistry: batterySchema.shape.chemistry.removeDefault(),
   capacityMah: batterySchema.shape.capacityMah.removeDefault(), voltage: batterySchema.shape.voltage.removeDefault(),
   tagId: batterySchema.shape.tagId.removeDefault(), ownerId: identifier,
-  homeBuildingId: z.literal("J18"), homeRoomId: identifier.nullable(),
+  homeBuildingId: z.enum(SUPPORTED_BUILDING_IDS), homeRoomId: identifier.nullable(),
   manufacturedOn: batterySchema.shape.manufacturedOn.removeDefault(), firstUsedOn: batterySchema.shape.firstUsedOn.removeDefault(),
 }).strict();
 export const operatorImportBindingsSchema = z.object({

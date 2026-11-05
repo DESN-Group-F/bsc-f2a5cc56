@@ -152,14 +152,14 @@ test("matching names and unlinked directory rows cannot assign a new responsible
     await assert.rejects(db.prepare("UPDATE people SET account_id=?,version=version+1 WHERE scope=? AND id='unlinked-name'").bind(staff.id, scope).run(), /CONSTRAINT/);
 });
 
-test("reference buildings are real catalog entries; only J18 and selectable rooms may receive new assets", async () => {
+test("reference buildings are real catalog entries; only supported buildings and selectable rooms may receive new assets", async () => {
     const scope = "reference-policy:demo", store = await fixture(scope), self = inventory(scope, staff), snapshot = await store.snapshot();
     assert.deepEqual(snapshot.buildings.map(row => [row.id, row.name]), [["E10", "Hilmer Building"], ["G17", "Electrical Engineering Building"], ["J18", "Willis Annexe"]]);
     assert.deepEqual(snapshot.rooms.map(row => row.id).sort(), PLACEHOLDER_ROOMS.map(row => row.id).sort()); assert.ok(snapshot.rooms.every(row => row.buildingId === "J18" && row.isPlaceholder && row.selectable));
-    await assert.rejects(self.saveBattery(asset("WRONG-BUILDING", staff, { homeBuildingId: "E10", homeRoomId: null })), status(400));
-    await assert.rejects(store.saveRoom({ id: "E10-ROOM", buildingId: "E10", number: "G19", name: "Unsupported room" }), status(400));
-    await assert.rejects(store.importRecords("rooms", [{ id: "G17-ROOM", buildingId: "G17", number: "120", name: "Unsupported room" }]), status(400));
-    await assert.rejects(self.importRecords("batteries", [asset("GOOD-ROW"), asset("BAD-ROW", staff, { homeBuildingId: "G17", homeRoomId: null })]), status(400));
+    await assert.rejects(self.saveBattery(asset("WRONG-BUILDING", staff, { homeBuildingId: "K17", homeRoomId: null })), status(400));
+    await assert.rejects(store.saveRoom({ id: "K17-ROOM", buildingId: "K17", number: "G19", name: "Unsupported room" }), status(400));
+    await assert.rejects(store.importRecords("rooms", [{ id: "K17-ROOM", buildingId: "K17", number: "120", name: "Unsupported room" }]), status(400));
+    await assert.rejects(self.importRecords("batteries", [asset("GOOD-ROW"), asset("BAD-ROW", staff, { homeBuildingId: "K17", homeRoomId: null })]), status(400));
     assert.ok(!(await self.snapshot()).batteries.some(row => ["GOOD-ROW", "BAD-ROW"].includes(row.id)));
     await self.saveBattery(asset("NO-ROOM", staff, { homeRoomId: null }));
     const saved = (await self.snapshot()).batteries.find(row => row.id === "NO-ROOM"); assert.equal(saved.homeRoomName, null); assert.equal(saved.homeRoomIsPlaceholder, null);

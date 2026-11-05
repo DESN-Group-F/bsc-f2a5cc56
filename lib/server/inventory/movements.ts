@@ -4,7 +4,7 @@ import {
   uniqueIds,
   type ReturnPlacement,
 } from "../../domain";
-import { isSupportedBuilding } from "../../location-catalog";
+import { isSupportedBuilding, SUPPORTED_BUILDINGS_SQL } from "../../location-catalog";
 import { InventoryDatabase } from "./database";
 import { InventorySession } from "./actor";
 import { InventoryTransactions } from "./transactions";
@@ -216,7 +216,7 @@ export class InventoryMovements {
         )
           throw new DomainError(
             400,
-            "Select an available J18 room, or leave the return location unspecified.",
+            "Select an available storage room, or leave the return location unspecified.",
           );
         if (this.session.dataset === "live" && room.is_placeholder === 1)
           throw new DomainError(
@@ -245,7 +245,7 @@ export class InventoryMovements {
           buildingVersion: Number(room.building_version),
         };
         evidenceGuard +=
-          " AND EXISTS(SELECT 1 FROM rooms r JOIN buildings building ON building.key=r.building_key WHERE r.key=? AND r.scope=? AND r.version=? AND r.selectable=1 AND building.id='J18' AND building.version=? AND (?=0 OR r.is_placeholder=0))";
+          ` AND EXISTS(SELECT 1 FROM rooms r JOIN buildings building ON building.key=r.building_key WHERE r.key=? AND r.scope=? AND r.version=? AND r.selectable=1 AND building.id IN ${SUPPORTED_BUILDINGS_SQL} AND building.version=? AND (?=0 OR r.is_placeholder=0))`;
         evidenceValues.push(
           room.key,
           this.database.scope,

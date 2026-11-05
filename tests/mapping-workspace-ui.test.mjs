@@ -31,7 +31,8 @@ function fixture() {
     { id: "BAT-4", observedRoomId: "E10-Z", observedAt: "2026-10-10T03:00:00.000Z", observedRoom: "Historical room", observationSource: "Staff return confirmation", loanId: null },
     { id: "BAT-5", observedRoomId: "J18-A", observedAt: "2026-10-10T04:00:00.000Z", lifecycleStatus: "scrapped", loanId: null },
   ].map(battery => ({ lifecycleStatus: "active", ...battery }));
-  return { dataset: "demo", user: { id: "staff-a", role: "staff" }, rooms, batteries, teachingGroups: [] };
+  const buildings = [{ id: "E10", name: "Hilmer Building" }, { id: "G17", name: "Electrical Engineering Building" }, { id: "J18", name: "Willis Annexe" }];
+  return { dataset: "demo", user: { id: "staff-a", role: "staff" }, buildings, rooms, batteries, teachingGroups: [] };
 }
 
 async function mount(overrides = {}) {
@@ -81,7 +82,8 @@ test("mapping summarizes latest active observations without substituting registe
   assert.match(text(tree), /Staff return confirmation/);
   assert.match(text(tree), /Simulated room observation/);
   assert.match(text(tree), /Loan status, not physical presence/);
-  assert.equal(button(tree, "E10Hilmer Building · unavailable").props.disabled, true);
+  assert.equal(button(tree, "E10Hilmer Building · no rooms yet").props.disabled, true);
+  assert.equal(button(tree, "J18Willis Annexe").props["aria-pressed"], true);
 });
 
 test("View details opens independent persistent tabs and reopening the same room keeps its table mounted", async () => {

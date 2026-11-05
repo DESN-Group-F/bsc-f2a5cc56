@@ -5,7 +5,8 @@ import { AlertTriangle, Check, Columns3, Download, Filter, ListChecks, Pencil, S
 import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
 import { filterBatteries, type InventoryFilter } from "@/lib/inventory-query";
 import { batteryColumns, columnById, contextFor, defaultColumnIds, sortForColumn } from "@/lib/console/battery-columns";
-import { describeValue, draftIsStale, editableFields, fieldLabels, parseFieldInput, prepareBatteryEdit, editBlockReason, type EditableField } from "@/lib/console/battery-edits";
+import { describeValue, draftIsStale, editableFields, fieldLabels, parseFieldInput, prepareBatteryEdit, editBlockReason, storageOptions, type EditableField } from "@/lib/console/battery-edits";
+import { isSupportedBuilding, SUPPORTED_BUILDING_IDS } from "@/lib/location-catalog";
 import { consoleViews, viewById, type ConsoleViewId } from "@/lib/console/views";
 import { unresolvedBatteryIds } from "@/lib/console/edit-journal";
 import type { ExportDraft } from "@/lib/client/inventory-contracts";
@@ -42,7 +43,7 @@ function useOutside(open: boolean, close: () => void) {
 
 const criterionLabels: Partial<Record<keyof InventoryFilter, string>> = {
   search: "Search", status: "Status", owner: "Owner", holder: "Held by", model: "Model", modelUnknown: "Model", chemistry: "Chemistry", chemistryUnknown: "Chemistry",
-  room: "Storage room", inspection: "Inspection", lifecycle: "Lifecycle", personalScope: "Scope", newArrivalsOnly: "New arrivals", observedRoom: "Last observed",
+  building: "Storage building", room: "Storage room", inspection: "Inspection", lifecycle: "Lifecycle", personalScope: "Scope", newArrivalsOnly: "New arrivals", observedRoom: "Last observed",
 };
 
 export function BatteriesView({ snapshot, revision, now, intent, canEdit, newArrivals, onArrivalsOpened, onOpenRecord, onExport, onChanged, onDraftCountChange }: {
@@ -199,6 +200,7 @@ export function BatteriesView({ snapshot, revision, now, intent, canEdit, newArr
 
   const [bulk, setBulk] = useState<{ field: EditableField; value: string; error: string }>({ field: "ownerId", value: "", error: "" });
   function applyBulk() {
+    if (bulk.field === "homeRoomId" && !bulk.value) { setBulk({ ...bulk, error: "Choose a storage building and room." }); return; }
     const parsed = parseFieldInput(bulk.field, bulk.value);
     if (!parsed.ok) { setBulk({ ...bulk, error: parsed.error }); return; }
     setDrafts((current) => {
@@ -225,14 +227,15 @@ export function BatteriesView({ snapshot, revision, now, intent, canEdit, newArr
   const owners = useMemo(() => snapshot.people.filter((person) => person.role === "staff").sort((a, b) => a.name.localeCompare(b.name, "en")), [snapshot.people]);
   const models = useMemo(() => [...new Set(snapshot.batteries.map((battery) => battery.model).filter(Boolean))].sort(), [snapshot.batteries]);
   const chemistries = useMemo(() => [...new Set(snapshot.batteries.map((battery) => battery.chemistry).filter(Boolean))].sort(), [snapshot.batteries]);
-  const rooms = useMemo(() => snapshot.rooms.filter((room) => room.buildingId === "J18"), [snapshot.rooms]);
+  const rooms = useMemo(() => SUPPORTED_BUILDING_IDS.flatMap((buildingId) => snapshot.rooms.filter((room) => room.buildingId === buildingId && (filter.building === "all" || room.buildingId === filter.building))), [snapshot.rooms, filter.building]);
+  const storageBuildings = useMemo(() => snapshot.buildings.filter((building) => isSupportedBuilding(building.id)), [snapshot.buildings]);
   const holders = useMemo(() => snapshot.staffDirectory.filter((account) => snapshot.batteries.some((battery) => battery.loanId && battery.borrowerAccountId === account.id)), [snapshot]);
   const unresolved = edits.entries;
 
   function criterionText(key: keyof InventoryFilter): string {
     const value = filter[key];
     if (key === "owner") return snapshot.people.find((person) => person.id === value)?.name ?? String(value);
-    if (key === "room") return value === "__unspecified" ? "Not specified" : rooms.find((room) => room.id === value)?.name ?? String(value);
+    if (key === "room") return value === "__unspecified" ? "Not specified" : snapshot.rooms.find((room) => room.id === value)?.name ?? String(value);
     if (key === "holder") return snapshot.staffDirectory.find((account) => account.id === value)?.displayName ?? String(value);
     if (key === "status") return value === "in" ? "In store" : value === "out" ? "In use" : "All";
     if (key === "inspection") return value === "concern" ? "Latest reports a concern" : value === "none" ? "None recorded" : "Any";
@@ -279,6 +282,10 @@ export function BatteriesView({ snapshot, revision, now, intent, canEdit, newArr
           <div className={styles.field}><label htmlFor="console-filter-chemistry">Chemistry</label>
             <select id="console-filter-chemistry" className={styles.fieldInput} value={filter.chemistryUnknown ? "__unknown" : filter.chemistry ?? ""} onChange={(event) => setFilter({ ...filter, chemistry: event.target.value && event.target.value !== "__unknown" ? event.target.value : null, chemistryUnknown: event.target.value === "__unknown" })}>
               <option value="">Any chemistry</option><option value="__unknown">Not recorded</option>{chemistries.map((value) => <option key={value} value={value}>{value}</option>)}
+            </select></div>
+          <div className={styles.field}><label htmlFor="console-filter-building">Registered storage building</label>
+            <select id="console-filter-building" className={styles.fieldInput} value={filter.building} onChange={(event) => setFilter({ ...filter, building: event.target.value, room: "all" })}>
+              <option value="all">Any building</option>{storageBuildings.map((building) => <option key={building.id} value={building.id}>{building.id} · {building.name}</option>)}
             </select></div>
           <div className={styles.field}><label htmlFor="console-filter-room">Registered storage room</label>
             <select id="console-filter-room" className={styles.fieldInput} value={filter.room} onChange={(event) => setFilter({ ...filter, room: event.target.value })}>
@@ -334,7 +341,7 @@ export function BatteriesView({ snapshot, revision, now, intent, canEdit, newArr
             {bulk.field === "ownerId" ? <select id="console-bulk-value" className={styles.fieldInput} value={bulk.value} onChange={(event) => setBulk({ ...bulk, value: event.target.value, error: "" })}>
               <option value="">Choose an owner</option>{owners.filter((person) => person.accountId && snapshot.staffDirectory.find((account) => account.id === person.accountId)?.active !== false).map((person) => <option key={person.id} value={person.id}>{person.name}</option>)}
             </select> : bulk.field === "homeRoomId" ? <select id="console-bulk-value" className={styles.fieldInput} value={bulk.value} onChange={(event) => setBulk({ ...bulk, value: event.target.value, error: "" })}>
-              <option value="">Room not specified</option>{rooms.filter((room) => room.selectable).map((room) => <option key={room.id} value={room.id}>{describeValue("homeRoomId", room.id, snapshot)}</option>)}
+              <option value="">Choose a building and room</option>{storageOptions(snapshot).map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
             </select> : <input id="console-bulk-value" className={styles.fieldInput} value={bulk.value} placeholder={bulk.field === "manufacturedOn" || bulk.field === "firstUsedOn" ? "YYYY-MM-DD, or empty for unknown" : "Empty means not recorded"} onChange={(event) => setBulk({ ...bulk, value: event.target.value, error: "" })} />}
             {bulk.error && <span className={styles.fieldError}>{bulk.error}</span>}
           </div>

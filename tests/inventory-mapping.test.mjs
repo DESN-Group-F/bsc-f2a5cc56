@@ -34,7 +34,8 @@ test("the map partitions latest observations by stable identity without inferrin
   const rooms = [
     { id: "A", name: "Same label", number: "1", buildingId: "J18", selectable: true },
     { id: "B", name: "Same label", number: "2", buildingId: "J18", selectable: true },
-    { id: "OTHER", name: "Other building", buildingId: "E10", selectable: true },
+    { id: "E10R", name: "Makerspace", number: "G19", buildingId: "E10", selectable: true },
+    { id: "OTHER", name: "Other building", buildingId: "K17", selectable: true },
   ];
   const base = { observedAt: null, observedRoomId: null, homeRoomId: "A" };
   assert.equal(mappingBucket(base, rooms), UNKNOWN_MAPPING_ROOM);
@@ -42,7 +43,10 @@ test("the map partitions latest observations by stable identity without inferrin
   assert.equal(mappingBucket({ ...base, observedAt: "2000-01-01T00:00:00Z", observedRoomId: "B", observationRoomSnapshot: "unavailable" }, rooms), "B");
   assert.equal(mappingBucket({ ...base, observedAt: now, observedRoomId: "OTHER" }, rooms), UNKNOWN_MAPPING_ROOM);
   assert.equal(mappingBucket({ ...base, observedAt: "invalid", observedRoomId: "A" }, rooms), UNKNOWN_MAPPING_ROOM);
-  assert.deepEqual(getMappingRooms(rooms).map(room => room.id), ["A", "B"]);
+  assert.equal(mappingBucket({ ...base, observedAt: now, observedRoomId: "E10R" }, rooms), "E10R", "a supported building keeps its own room bucket");
+  assert.deepEqual(getMappingRooms(rooms).map(room => room.id), ["A", "B", "E10R"]);
+  assert.deepEqual(getMappingRooms(rooms, "J18").map(room => room.id), ["A", "B"]);
+  assert.deepEqual(getMappingRooms(rooms, "E10").map(room => room.id), ["E10R"]);
 });
 
 test("D1 latest observation, room counts and ordinary filters use the same Mapping scope", async () => {

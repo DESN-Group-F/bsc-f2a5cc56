@@ -14,7 +14,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { MotionDisclosure } from "@/components/ui/workspace-motion";
 import type { InventorySnapshot, BatteryRecord, BatteryDetail } from "@/lib/domain";
 import { actionNames, formatTime, sydneyInput, fromSydneyInput, numberOrNull, buildingLabel, storageRoomLabel, durationLabel, reloadSessionPage } from "@/lib/client-utils";
-import { buildingPickerOptions, isSupportedBuilding, roomPickerOptions } from "@/lib/location-catalog";
+import { buildingPickerOptions, DEFAULT_BUILDING_ID, isRoomBuilding, isSupportedBuilding, roomPickerOptions } from "@/lib/location-catalog";
 import { RecordPicker } from "./record-picker";
 import { BatteryMovementSummary } from "./battery-movement-summary";
 import { BatteryAgeAndUsage, BatteryInspectionSummary, BatteryInspections, type InspectionRecoveryStatus } from "./battery-history";
@@ -148,7 +148,7 @@ function DetailForm({ form, battery, data, onClose, write }: {
     onClose: () => void;
     write: WriteAction;
 }) {
-    const [time, setTime] = useState(sydneyInput()), [duration, setDuration] = useState(""), [buildingId, setBuilding] = useState(battery.homeBuildingId || "J18"), [roomId, setRoom] = useState(""), [reason, setReason] = useState(""), [error, setError] = useState(""), [busy, setBusy] = useState(false);
+    const [time, setTime] = useState(sydneyInput()), [duration, setDuration] = useState(""), [buildingId, setBuilding] = useState<string>(isRoomBuilding(battery.homeBuildingId) ? battery.homeBuildingId : DEFAULT_BUILDING_ID), [roomId, setRoom] = useState(""), [reason, setReason] = useState(""), [error, setError] = useState(""), [busy, setBusy] = useState(false);
     const attempt = useRef({ signature: "", id: "" });
     const permissions = getRolePermissions(data.user.role);
     const permitted = isActiveBattery(battery) && (form.kind === "charge" ? permissions.recordCharges : form.kind === "observation" ? permissions.recordDemoObservations && data.dataset === "demo" : permissions.correctLoans);

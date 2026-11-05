@@ -2,7 +2,7 @@
 
 ## Mapping and room observation service
 
-Version 1.0.0 derives Mapping from the existing latest-observation projection and shared inventory query. `lib/inventory-mapping.ts` assigns stable J18 room identities or Unknown; it never substitutes registered home or loan state. `mappingRoom` is a fixed view boundary for room-tab counts, pagination, selected records and all export ranges. Directory names label navigation while saved observation labels remain immutable evidence. A later observation that moves a selected battery outside an opened room prevents operations and downloads until the selection is reviewed.
+Version 1.0.0 derives Mapping from the existing latest-observation projection and shared inventory query. `lib/inventory-mapping.ts` assigns stable selectable room identities (currently J18) or Unknown; it never substitutes registered home or loan state. `mappingRoom` is a fixed view boundary for room-tab counts, pagination, selected records and all export ranges. Directory names label navigation while saved observation labels remain immutable evidence. A later observation that moves a selected battery outside an opened room prevents operations and downloads until the selection is reviewed.
 
 `MappingWorkspace` keeps Overview and independently closable room tabs mounted. Room selection controls the animated summary; only View details opens a tab. Each tab reuses `InventoryTable`, including its existing operations and role boundaries. Mapping survives sidebar navigation and scan/intake transitions within the current account/dataset session.
 
@@ -57,12 +57,12 @@ Production API checks copy the built Worker and assets into an isolated run dire
 | Table | Responsibility |
 | --- | --- |
 | people | Explicit native staff-account directory projections |
-| buildings | Reference campus building codes and names; current write support is J18 |
+| buildings | Reference campus building codes and names; storage in J18, E10 and G17; rooms in J18 |
 | rooms | Number/name, parent building, placeholder and selectable flags |
 | batteries | Asset identity, tag, specifications, owner and storage building with optional room |
 | loans | Checkout, original holder snapshot/account ID, return and correction state |
 | observations | Room, observation time, receipt time and source |
-| location_beacons | Inventory-scoped, versioned beacon configuration referencing existing J18 rooms; no battery-position copies |
+| location_beacons | Inventory-scoped, versioned beacon configuration referencing existing selectable rooms (J18; enforced by migration 0021); no battery-position copies |
 | charges | Historical completion time, duration in minutes and recorder; legacy percentage retained |
 | audit_events | Who did what, when, and relevant before/after details |
 | operations | Idempotency result and transaction guard |
@@ -155,7 +155,7 @@ Migration 0006 adds nullable people/loan account references and immutable associ
 
 Loan state is independent of observations. Latest location sorts by observation time, then receipt time and insertion order. Delayed older evidence cannot replace newer evidence. Observation time and source always travel with the room.
 
-Storage uses a building plus an optional room. J18 Willis Annexe, E10 Hilmer Building and G17 Electrical Engineering Building are reference configuration, never evidence of physical presence. Only J18 is enabled for new battery and room registration/import. Demo room and Demo workspace are explicitly marked placeholders in both inventories; unknown assigned rooms can still be SQL NULL. Other building choices are disabled and room information is Not available. Rooms have stable IDs and numbers unique within their building. A selected room must be selectable and belong to the supported building and inventory. Renaming alone preserves its placeholder flag; verification is an explicit administrator action.
+Storage uses a building plus an optional room. J18 Willis Annexe, E10 Hilmer Building and G17 Electrical Engineering Building are reference configuration, never evidence of physical presence. J18, E10 and G17 are enabled for new battery registration/import; rooms can be added in J18 only (`docs/storage-buildings.md`). Demo room and Demo workspace are explicitly marked placeholders in both inventories; unknown assigned rooms can still be SQL NULL. Any other building is disabled and its room information is Not available. Rooms have stable IDs and numbers unique within their building. A selected room must be selectable and belong to the supported building and inventory. Renaming alone preserves its placeholder flag; verification is an explicit administrator action.
 
 Migration 0007 adds constrained boolean room flags without rebuilding tables. It preserves existing identities, versions and evidence and accepts explicit placeholder labels in the existing observation-integrity guard. The local preview uses fresh disposable test business state; no compatibility-owner mapping field or legacy-borrower UI category was introduced.
 
@@ -297,7 +297,7 @@ Permanent replacement uses the existing versioned private-group update: it repla
 
 `lib/teaching-context.ts` defines the strict reviewed group reference and recorded evidence. `InventoryStore.resolveGroup` resolves the actor's active own group, exact version and actual affected members. Its guard participates in the same atomic D1 batch as each movement, lifecycle change or individual saved-record action. Recorded evidence contains server-resolved name/version, owner account, operation ID and actual battery IDs. Receipt replay runs before current-definition lookup, so exact retries remain valid after rename/archive. Existing native authority, metadata versions, tag/null-tag bindings, exact return loans and final rejection reservations remain required. No new schema migration is needed for these snapshots.
 
-Administrator `group_maintenance` requests use a discriminated strict schema for common owner, J18 registered storage, charge or demo observation. Every reviewed member/version/tag and any selected directory/native owner is checked and guarded at commit. All member writes and audit events commit together. Native staff cannot invoke this administrator action, and administrators cannot use another account's private group. Canonical requests are preserved in account/inventory-bound tab storage before writing; exact receipt verification and recovery prevent replacement after an uncertain result. A confirmed update followed by a refresh failure is marked saved and cannot be resubmitted from that dialog.
+Administrator `group_maintenance` requests use a discriminated strict schema for common owner, registered storage in a supported building, charge or demo observation. Every reviewed member/version/tag and any selected directory/native owner is checked and guarded at commit. All member writes and audit events commit together. Native staff cannot invoke this administrator action, and administrators cannot use another account's private group. Canonical requests are preserved in account/inventory-bound tab storage before writing; exact receipt verification and recovery prevent replacement after an uncertain result. A confirmed update followed by a refresh failure is marked saved and cannot be resubmitted from that dialog.
 
 Scan stations can explicitly capture group context before processing, restrict candidates to its reviewed members and attach that reference to exact queued/session requests. Membership controls also combine selected or completed assets with an existing private group using its loaded version. Intake exposes only server-confirmed registrations for group addition. These definition edits do not relabel earlier inventory operations.
 

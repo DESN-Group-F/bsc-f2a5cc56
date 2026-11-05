@@ -14,7 +14,7 @@ import { formatTime, saveDownloadAttachment } from "@/lib/client-utils";
 import { inventoryResponse } from "@/lib/client/inventory-request";
 import { captureLocationAttempt, acknowledgeLocationAttempt, locationFailureStatus, locationRequestStorageKey, persistLocationAttempt, verifyLocationReceipt, type LocationAttempt, type LocationReceipt } from "@/lib/client/location-request";
 import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
-import { roomPickerOptions, SUPPORTED_BUILDING_ID } from "@/lib/location-catalog";
+import { allRoomPickerOptions } from "@/lib/location-catalog";
 import { locationBeaconRequestSchema, locationCaptureSchema, type LocationBeacon, type LocationDirectorySnapshot } from "@/lib/location-observations";
 import styles from "./location-tools-panel.module.css";
 
@@ -148,7 +148,7 @@ export function LocationToolsPanel({ data, ready, onChanged, onClose }: {
   function saveBeacon(event: React.FormEvent) {
     event.preventDefault(); if (blocked || !canManage) return;
     try {
-      if (!form.room || !roomOptions.some(room => room.id === form.room?.roomId)) throw new Error(context.dataset === "live" ? "Choose an existing verified, selectable J18 room." : "Choose an existing selectable J18 room.");
+      if (!form.room || !roomOptions.some(room => room.id === form.room?.roomId)) throw new Error(context.dataset === "live" ? "Choose an existing verified, selectable storage room." : "Choose an existing selectable storage room.");
       const fields = { requestId: crypto.randomUUID(), id: form.editing?.id ?? `BEACON-${crypto.randomUUID()}`, label: form.label, identifier: form.identifier, ...form.room, active: form.active };
       const payload = locationBeaconRequestSchema.parse(form.editing ? { ...fields, action: "update", expectedVersion: form.editing.version } : { ...fields, action: "create" });
       void submit(captureLocationAttempt(context.actorAccountId, context.dataset, { kind: "beacon", payload }));
@@ -179,7 +179,7 @@ export function LocationToolsPanel({ data, ready, onChanged, onClose }: {
     } catch (failure) { setError(messageOf(failure)); }
   }
 
-  const roomOptions = roomPickerOptions(data.rooms.filter(room => context.dataset === "demo" || !room.isPlaceholder), SUPPORTED_BUILDING_ID);
+  const roomOptions = allRoomPickerOptions(data.rooms.filter(room => context.dataset === "demo" || !room.isPlaceholder));
   const activeBeacons = directory?.beacons.filter(beacon => beacon.active && beacon.roomSelectable) ?? [];
   const staleBeacons = selectedBeacons.filter(selected => !activeBeacons.some(current => current.id === selected.id && current.version === selected.version && current.roomId === selected.roomId));
   const visibleBeacons = [...activeBeacons, ...selectedBeacons.filter(selected => !activeBeacons.some(current => current.id === selected.id))];
@@ -216,7 +216,7 @@ export function LocationToolsPanel({ data, ready, onChanged, onClose }: {
         </section>}
         {refreshNeeded && <Button variant="outline" onClick={() => void refresh()} disabled={busy || contextChanged}><RefreshCw size={16}/>Refresh inventory</Button>}
 
-        <section className={styles.section} aria-labelledby="beacon-directory-heading"><div className={styles.sectionHeading}><div><h2 id="beacon-directory-heading"><MapPin size={18} aria-hidden="true"/>Room beacon directory</h2><p>Mappings use existing selectable J18 rooms. Placeholder rooms remain labelled.</p></div><Button variant="outline" size="sm" disabled={busy || loading || contextChanged} onClick={() => void loadDirectory().catch(() => {})}><RefreshCw size={15}/>Refresh directory</Button></div>
+        <section className={styles.section} aria-labelledby="beacon-directory-heading"><div className={styles.sectionHeading}><div><h2 id="beacon-directory-heading"><MapPin size={18} aria-hidden="true"/>Room beacon directory</h2><p>Mappings use existing selectable storage rooms. Placeholder rooms remain labelled.</p></div><Button variant="outline" size="sm" disabled={busy || loading || contextChanged} onClick={() => void loadDirectory().catch(() => {})}><RefreshCw size={15}/>Refresh directory</Button></div>
           {loading && <LoadingState compact label={directory ? "Refreshing room beacons" : "Loading room beacons"} detail={directory ? "Your last received directory remains visible while it updates." : "Retrieving room mappings and server capabilities."} />}{directoryError && <p className={styles.error} role="alert">{directoryError}</p>}
           {directory && !directory.beacons.length && <p className={styles.empty}>No room beacons configured.</p>}
           {!!directory?.beacons.length && <div className={styles.tableWrap}><table className={styles.table}><thead><tr><th>Beacon</th><th>Mapped room</th><th>State</th>{canManage && <th><span className="sr-only">Actions</span></th>}</tr></thead><tbody>{directory.beacons.map(beacon => <tr key={beacon.id}><td><strong>{beacon.label}</strong><span className={styles.identifier}>{beacon.identifier}</span><small>{beacon.id} · Version {beacon.version}</small></td><td>{beacon.buildingId} {beacon.buildingName}<span>{beacon.roomName}</span></td><td>{beacon.active ? "Configured" : "Inactive"}<small>Hardware unvalidated</small></td>{canManage && <td><Button variant="ghost" size="sm" disabled={blocked} onClick={() => { setError(""); setForm({ editing: beacon, label: beacon.label, identifier: beacon.identifier, active: beacon.active, room: { roomId: beacon.roomId, roomVersion: beacon.roomVersion, buildingVersion: beacon.buildingVersion } }); }}><Pencil size={14}/>Edit</Button></td>}</tr>)}</tbody></table></div>}
@@ -225,7 +225,7 @@ export function LocationToolsPanel({ data, ready, onChanged, onClose }: {
 
         {canManage && <section className={styles.section} aria-labelledby="beacon-config-heading"><h2 id="beacon-config-heading">{form.editing ? `Edit ${form.editing.label}` : "Configure a room beacon"}</h2><p className={styles.hint}>Set a beacon identifier and its room once. Reconfigure only when its assignment changes.</p>
           <form className={styles.form} onSubmit={saveBeacon}><div className={styles.formGrid}><div><Label htmlFor="beacon-label">Beacon label</Label><Input id="beacon-label" value={form.label} onChange={event => setForm({ ...form, label: event.target.value })} maxLength={120} required disabled={blocked}/></div><div><Label htmlFor="beacon-identifier">Beacon identifier</Label><Input id="beacon-identifier" value={form.identifier} onChange={event => setForm({ ...form, identifier: event.target.value })} maxLength={128} required disabled={blocked}/></div></div>
-            <div><Label htmlFor="beacon-room">{context.dataset === "live" ? "Existing verified J18 room" : "Existing J18 room"}</Label><RecordPicker id="beacon-room" options={roomOptions} value={form.room?.roomId ?? ""} placeholder="Choose a room" disabled={blocked || !roomOptions.length} onChange={roomId => { const room = data.rooms.find(item => item.id === roomId), building = data.buildings.find(item => item.id === room?.buildingId); setForm({ ...form, room: room && building ? { roomId, roomVersion: room.version, buildingVersion: building.version } : null }); }}/>{context.dataset === "live" && !roomOptions.length && <p className={styles.hint}>No verified selectable J18 rooms are available. Configure a verified room in the room directory before saving a working-inventory beacon.</p>}</div>
+            <div><Label htmlFor="beacon-room">{context.dataset === "live" ? "Existing verified room" : "Existing room"}</Label><RecordPicker id="beacon-room" options={roomOptions} value={form.room?.roomId ?? ""} placeholder="Choose a room" disabled={blocked || !roomOptions.length} onChange={roomId => { const room = data.rooms.find(item => item.id === roomId), building = data.buildings.find(item => item.id === room?.buildingId); setForm({ ...form, room: room && building ? { roomId, roomVersion: room.version, buildingVersion: building.version } : null }); }}/>{context.dataset === "live" && !roomOptions.length && <p className={styles.hint}>No verified selectable storage rooms are available. Configure a verified room in the room directory before saving a working-inventory beacon.</p>}</div>
             <label className={styles.checkbox}><input type="checkbox" checked={form.active} onChange={event => setForm({ ...form, active: event.target.checked })} disabled={blocked}/>Mapping active</label>
             <div className={styles.actions}><Button type="submit" disabled={blocked || !roomOptions.some(room => room.id === form.room?.roomId)}>{form.editing ? "Save mapping changes" : "Save beacon mapping"}</Button>{form.editing && <Button type="button" variant="outline" disabled={blocked} onClick={() => setForm(emptyForm())}>Cancel edit</Button>}</div>
           </form>

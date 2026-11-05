@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { batterySchema, datasetSchema, identifier } from "./domain";
 import { canonicalModelJson } from "./battery-models";
+import { SUPPORTED_BUILDING_IDS } from "./location-catalog";
 
 const metadataFields = {
   name: batterySchema.shape.name,
@@ -11,7 +12,7 @@ const metadataFields = {
   manufacturedOn: batterySchema.shape.manufacturedOn.removeDefault(), firstUsedOn: batterySchema.shape.firstUsedOn.removeDefault(),
 };
 const version = z.number().int().positive().max(Number.MAX_SAFE_INTEGER);
-export const operatorEditFieldsSchema = z.object({ ...metadataFields, homeBuildingId: z.literal("J18") }).strict();
+export const operatorEditFieldsSchema = z.object({ ...metadataFields, homeBuildingId: z.enum(SUPPORTED_BUILDING_IDS) }).strict();
 export const operatorEditSnapshotSchema = z.object({ ...metadataFields, version, registeredAt: z.string().datetime({ offset: true }) }).strict();
 export const operatorEditPayloadSchema = z.object({
   requestId: z.string().uuid(), batteryId: identifier,

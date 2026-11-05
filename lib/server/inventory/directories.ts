@@ -4,7 +4,7 @@ import {
   roomSchema,
   DomainError,
 } from "../../domain";
-import { isSupportedBuilding } from "../../location-catalog";
+import { isRoomBuilding } from "../../location-catalog";
 import { InventoryDatabase } from "./database";
 import { InventorySession } from "./actor";
 import { InventoryTransactions } from "./transactions";
@@ -149,10 +149,10 @@ export class InventoryDirectories {
         this.database.scope,
         r.id,
       );
-    if (!isSupportedBuilding(r.buildingId))
+    if (!isRoomBuilding(r.buildingId))
       throw new DomainError(
         400,
-        "Only J18 rooms are available for the current project.",
+        "Rooms can be added only in J18 for now. E10 and G17 hold storage without a room.",
       );
     if (update && !before) throw new DomainError(404, "Room not found.");
     if (!update && before)

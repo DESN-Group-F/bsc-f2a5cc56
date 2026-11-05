@@ -282,6 +282,27 @@ test("migration preserves existing histories and marks missing original room lab
   }finally{await runtime.dispose();}
 });
 
+test("E10 and G17 hold storage without a room; rooms stay in J18 and a room must belong to the chosen building",async()=>{
+  const scope="pilot-buildings:live",s=store(scope,"live");
+  await s.snapshot();
+  await assert.rejects(s.saveRoom({id:"E10-G19",name:"MCIC Makerspace",buildingId:"E10",number:"G19",isPlaceholder:false}),domainStatus(400));
+  await assert.rejects(s.importRecords("rooms",[{id:"G17-120",name:"Electrical Engineering Makerspace",buildingId:"G17",number:"120"}]),domainStatus(400));
+  await s.saveRoom({id:"J18-120",name:"Confirmed J18 room",buildingId:"J18",number:"120",isPlaceholder:false});
+  await s.saveBattery({id:"E10-PACK",name:"Makerspace pack",ownerId:nativeOwner,homeBuildingId:"E10",homeRoomId:null});
+  let b=await battery(s,"E10-PACK");assert.equal(b.homeBuildingId,"E10");assert.equal(b.homeRoomId,null);assert.equal(b.homeBuildingName,"Hilmer Building");
+  await s.saveBattery({...b,homeBuildingId:"G17",homeRoomId:null,expectedVersion:b.version},true);
+  b=await battery(s,"E10-PACK");assert.equal(b.homeBuildingId,"G17");assert.equal(b.homeRoomId,null);
+  await assert.rejects(s.saveBattery({...b,homeBuildingId:"G17",homeRoomId:"J18-120",expectedVersion:b.version},true),domainStatus(400));
+  await assert.rejects(s.saveBattery({id:"MIXED",name:"Mixed storage",ownerId:nativeOwner,homeBuildingId:"E10",homeRoomId:"J18-120"}),domainStatus(400));
+  await s.saveBattery({...b,homeBuildingId:"J18",homeRoomId:"J18-120",expectedVersion:b.version},true);
+  b=await battery(s,"E10-PACK");assert.equal(b.homeBuildingId,"J18");assert.equal(b.homeRoomId,"J18-120");
+  await s.importRecords("batteries",[{id:"CSV-E10",name:"Imported E10",ownerId:nativeOwner,homeBuildingId:"E10",homeRoomId:null},{id:"CSV-G17",name:"Imported G17",ownerId:nativeOwner,homeBuildingId:"G17",homeRoomId:null}]);
+  const imported=(await s.snapshot()).batteries.filter(x=>x.id.startsWith("CSV-")).map(x=>[x.id,x.homeBuildingId,x.homeRoomId]).sort();
+  assert.deepEqual(imported,[["CSV-E10","E10",null],["CSV-G17","G17",null]]);
+  await assert.rejects(s.importRecords("batteries",[{id:"CSV-WRONG",name:"Wrong building",ownerId:nativeOwner,homeBuildingId:"G17",homeRoomId:"J18-120"}]),domainStatus(400));
+  assert.equal((await s.snapshot()).batteries.some(x=>x.id==="CSV-WRONG"||x.id==="MIXED"),false);
+});
+
 test("building-only storage can later gain a confirmed room; other scopes and buildings cannot be mixed",async()=>{
   const scope="hierarchy:live",s=store(scope,"live");
   const initial=await s.snapshot();assert.deepEqual(initial.buildings.map(b=>b.id),["E10","G17","J18"]);assert.deepEqual(initial.rooms.map(room=>room.id).sort(),PLACEHOLDER_ROOMS.map(room=>room.id).sort());assert.ok(initial.rooms.every(room=>room.buildingId==="J18"&&room.isPlaceholder&&room.selectable));assert.ok(initial.people.some(person=>person.id===nativeOwner&&person.accountId==="test-teacher"));
@@ -290,18 +311,19 @@ test("building-only storage can later gain a confirmed room; other scopes and bu
   await s.saveRoom({id:"J18-115",name:"Confirmed test room",buildingId:"J18",number:"115",isPlaceholder:false});
   await s.saveBattery({...b,homeRoomId:"J18-115",expectedVersion:b.version},true);
   b=await battery(s,b.id);assert.equal(b.homeRoomNumber,"115");
-  await assert.rejects(s.saveRoom({id:"E10-115",name:"Other test room",buildingId:"E10",number:"115"}),domainStatus(400));
-  await db.prepare("INSERT INTO rooms(key,scope,id,name,building_key,number) VALUES(?,?,?,?,?,?)").bind(`${scope}/E10-115`,scope,"E10-115","Unavailable test room",`${scope}/E10`,"115").run();
-  await assert.rejects(s.saveBattery({...b,homeRoomId:"E10-115",expectedVersion:b.version},true),domainStatus(400));
+  await s.saveBuilding({id:"K17",name:"Unsupported test building"});
+  await assert.rejects(s.saveRoom({id:"K17-115",name:"Other test room",buildingId:"K17",number:"115"}),domainStatus(400));
+  await db.prepare("INSERT INTO rooms(key,scope,id,name,building_key,number) VALUES(?,?,?,?,?,?)").bind(`${scope}/K17-115`,scope,"K17-115","Unavailable test room",`${scope}/K17`,"115").run();
+  await assert.rejects(s.saveBattery({...b,homeRoomId:"K17-115",expectedVersion:b.version},true),domainStatus(400));
   await assert.rejects(s.saveRoom({id:"DUPLICATE",name:"Same number",buildingId:"J18",number:"115"}),domainStatus(409));
-  await assert.rejects(s.saveRoom({id:"J18-115",name:"Room moved in error",buildingId:"E10",number:"115",expectedVersion:1},true),domainStatus(400));
+  await assert.rejects(s.saveRoom({id:"J18-115",name:"Room moved in error",buildingId:"K17",number:"115",expectedVersion:1},true),domainStatus(400));
   await assert.rejects(db.prepare("UPDATE batteries SET home_building_key=?,version=version+1 WHERE key=?").bind(`${scope}/E10`,`${scope}/BUILDING-ONLY`).run(),/CONSTRAINT/i);
   await assert.rejects(db.prepare("INSERT OR REPLACE INTO buildings(key,scope,id,name) VALUES(?,?,?,?)").bind(`${scope}/J18`,scope,"J18","Replacement building").run(),/CONSTRAINT/i);
   const other=store("hierarchy-other:live","live");await other.snapshot();
   await assert.rejects(db.prepare("UPDATE batteries SET home_building_key=?,home_room_key=NULL,version=version+1 WHERE key=?").bind("hierarchy-other:live/J18",`${scope}/BUILDING-ONLY`).run(),/CONSTRAINT/i);
-  await assert.rejects(s.saveBattery({...b,homeBuildingId:"E10",homeRoomId:null,expectedVersion:b.version},true),domainStatus(400));
+  await assert.rejects(s.saveBattery({...b,homeBuildingId:"K17",homeRoomId:null,expectedVersion:b.version},true),domainStatus(400));
   b=await battery(s,b.id);assert.equal(b.homeRoomId,"J18-115");assert.equal(b.homeBuildingId,"J18");
-  await assert.rejects(s.importRecords("batteries",[{id:"VALID",name:"Valid import",ownerId:nativeOwner,homeBuildingId:"J18"},{id:"WRONG",name:"Wrong room",ownerId:nativeOwner,homeBuildingId:"J18",homeRoomId:"E10-115"}]),domainStatus(400));
+  await assert.rejects(s.importRecords("batteries",[{id:"VALID",name:"Valid import",ownerId:nativeOwner,homeBuildingId:"J18"},{id:"WRONG",name:"Wrong room",ownerId:nativeOwner,homeBuildingId:"J18",homeRoomId:"K17-115"}]),domainStatus(400));
   assert.equal((await s.snapshot()).batteries.some(x=>x.id==="VALID"),false);
   await s.importRecords("batteries",[{id:"IMPORTED",name:"Unspecified room import",ownerId:nativeOwner,homeBuildingId:"J18",homeRoomId:null}]);
   assert.equal((await battery(s,"IMPORTED")).homeRoomId,null);

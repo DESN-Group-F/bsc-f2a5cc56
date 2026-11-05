@@ -250,7 +250,7 @@ export async function runApiSmoke({
     ),
   );
   await check(
-    "unavailable building cannot be a new battery location",
+    "unsupported building cannot be a new battery location",
     "/api/inventory",
     json(
       {
@@ -260,7 +260,7 @@ export async function runApiSmoke({
           id: "QA-UNAVAILABLE-BUILDING",
           name: "Rejected location battery",
           ownerId: staffOwner.id,
-          homeBuildingId: "E10",
+          homeBuildingId: "K17",
         },
       },
       staffCookie,
@@ -268,7 +268,7 @@ export async function runApiSmoke({
     400,
   );
   await check(
-    "unavailable building cannot receive a new room",
+    "E10 cannot receive a new room (rooms stay in J18)",
     "/api/inventory",
     json(
       {

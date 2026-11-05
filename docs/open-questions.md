@@ -10,8 +10,8 @@ The items below distinguish confirmed scope from remaining evidence gaps. Empty 
 | Room discrimination | Room-level target approved | Test adjacent rooms, doors and real storage geometry |
 | Metal and packed batteries | Not tested | Read-rate and cross-room false-positive study |
 | Reader-to-room mapping | Unknown | Validated detector identity and installation map |
-| Target building and storage room | J18 is the enabled target; Demo room and Demo workspace are explicit placeholders; E10/G17 names are disabled references | Teacher confirms actual storage room number/name and placement before operational use; renaming alone does not verify a room |
-| Return placement | Optional room selected once per scan session; dated staff/simulated return confirmation kept separately from registered home | Confirm actual selectable J18 rooms; automatic room inference requires a validated fixed-reader mapping |
+| Target building and storage room | J18, E10 and G17 hold storage (5 Nov pilot: E10 G19 MCIC Makerspace, G17 120 Electrical Engineering Makerspace, recorded at building level); rooms only in J18 until a migration; Demo room and Demo workspace are explicit J18 placeholders | Teacher confirms actual storage room number/name and placement before operational use; renaming alone does not verify a room |
+| Return placement | Optional room selected once per scan session; dated staff/simulated return confirmation kept separately from registered home | Confirm actual selectable rooms; automatic room inference requires a validated fixed-reader mapping |
 | Existing records | Format/count unknown | Staff, borrower and room conventions; inventory sample without unnecessary personal data |
 | Teacher efficiency baseline | Stakeholder goal reported | Observe and time the actual existing workflow |
 | Shared access | Staff/admin roles and shared inventory implemented and tested locally | Confirm authorized staff membership and departmental access approval |

@@ -4,7 +4,7 @@ import { AlertTriangle, CheckCircle2, CircleDashed, Loader2, XCircle } from "luc
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
 import type { OperatorEditPayload } from "@/lib/operator-edit";
-import { describeValue, fieldLabels, recordValues, type EditableField } from "@/lib/console/battery-edits";
+import { currentStorageValue, describeValue, fieldLabels, recordValues, storageBuildingValue, type EditableField } from "@/lib/console/battery-edits";
 import type { EditResult } from "./use-metadata-edits";
 import styles from "./console.module.css";
 
@@ -55,9 +55,9 @@ export function EditReviewDialog({ items, snapshot, results, running, submitted,
                 <td>
                   {item.fields.map((field) => <div key={field} style={{ marginBottom: 3 }}>
                     <span className={styles.muted}>{fieldLabels[field]}: </span>
-                    <span className={styles.before}>{describeValue(field, before[field], snapshot)}</span> → <span className={styles.after}>{describeValue(field, item.payload.fields[field], snapshot)}</span>
+                    <span className={styles.before}>{field === "homeRoomId" ? describeValue(field, currentStorageValue(item.battery), snapshot) : describeValue(field, before[field], snapshot)}</span> → <span className={styles.after}>{field === "homeRoomId" ? describeValue(field, item.payload.fields.homeRoomId ?? storageBuildingValue(item.payload.fields.homeBuildingId), snapshot) : describeValue(field, item.payload.fields[field], snapshot)}</span>
                   </div>)}
-                  {item.setsBuilding && <div className={styles.muted} style={{ fontSize: 12 }}>Registered building will be set to J18.</div>}
+                  {item.setsBuilding && <div className={styles.muted} style={{ fontSize: 12 }}>Registered building will be set to {item.payload.fields.homeBuildingId}.</div>}
                 </td>
                 <td>
                   {submitted ? <div style={{ display: "grid", gap: 6, justifyItems: "start" }}>

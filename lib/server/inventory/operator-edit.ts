@@ -7,6 +7,7 @@ import {
   type OperatorEditReceipt, type OperatorEditSnapshot,
 } from "../../operator-edit";
 import { registeredTagHash } from "../purge-evidence";
+import { SUPPORTED_BUILDINGS_LABEL, SUPPORTED_BUILDINGS_SQL } from "../../location-catalog";
 import { InventoryDatabase, type Row } from "./database";
 import { requireActiveBattery } from "./records";
 
@@ -109,9 +110,9 @@ export class OperatorEditStore {
     if (canonicalModelJson(before) !== canonicalModelJson(payload.before)) throw new DomainError(409, conflict);
     const retainedOwner = !!owner && beforeRow.owner_key === owner.key;
     if (!owner || (owner.accountActive !== 1 && !retainedOwner) || !building)
-      throw new DomainError(400, "Select an active staff account as the responsible owner and J18 as the storage building. The current inactive owner may be retained.");
+      throw new DomainError(400, `Select an active staff account as the responsible owner and ${SUPPORTED_BUILDINGS_LABEL} as the storage building. The current inactive owner may be retained.`);
     if (fields.homeRoomId && (!room || room.building_key !== building.key || room.selectable !== 1))
-      throw new DomainError(400, "Select an available J18 room, or leave it unspecified.");
+      throw new DomainError(400, "Select an available room in the chosen building, or leave it unspecified.");
     if (owner.version !== bindings.ownerVersion || owner.account_id !== bindings.ownerAccountId || building.version !== bindings.buildingVersion || (room?.version ?? null) !== bindings.roomVersion)
       throw new DomainError(409, conflict);
     const tagHash = fields.tagId === null ? null : await registeredTagHash(db.scope, fields.tagId);
@@ -123,7 +124,7 @@ export class OperatorEditStore {
     const receipt: OperatorEditReceipt = { kind: "metadata_edit", ...this.identity(payload), batteryId: payload.batteryId, at, replayed: false, before, after, directoryBindings: bindings };
     const guard = `EXISTS(SELECT 1 FROM batteries WHERE key=? AND scope=? AND version=? AND tag_id IS ? AND lifecycle_status='active')
       AND EXISTS(SELECT 1 FROM people p JOIN staff_accounts a ON a.id=p.account_id WHERE p.key=? AND p.scope=? AND p.role='staff' AND p.version=? AND p.account_id=? AND (a.active=1 OR ?=1))
-      AND EXISTS(SELECT 1 FROM buildings WHERE key=? AND scope=? AND id='J18' AND version=?)
+      AND EXISTS(SELECT 1 FROM buildings WHERE key=? AND scope=? AND id IN ${SUPPORTED_BUILDINGS_SQL} AND version=?)
       AND (? IS NULL OR EXISTS(SELECT 1 FROM rooms WHERE key=? AND scope=? AND building_key=? AND selectable=1 AND version=?))
       AND NOT EXISTS(SELECT 1 FROM batteries WHERE scope=? AND tag_id=? AND key<>?)
       AND NOT EXISTS(SELECT 1 FROM purged_tag_reservations WHERE scope=? AND tag_hash=?)`;

@@ -5,7 +5,7 @@ import {
   DomainError,
   validatePastTime,
 } from "../../domain";
-import { isSupportedBuilding } from "../../location-catalog";
+import { isSupportedBuilding, SUPPORTED_BUILDINGS_SQL } from "../../location-catalog";
 import { canonicalModelJson } from "../../battery-models";
 import { groupMaintenanceSchema } from "../../group-maintenance";
 import { InventoryDatabase, type Row } from "./database";
@@ -100,7 +100,7 @@ export class InventoryMaintenance {
       );
     requireActiveBattery(b);
     if (!r || !isSupportedBuilding(String(r.building_id)) || r.selectable !== 1)
-      throw new DomainError(400, "Select an available J18 room.");
+      throw new DomainError(400, "Select an available storage room.");
     const at = this.session.clock().toISOString(),
       observedAt = validatePastTime(v.observedAt, this.session.clock()),
       id = crypto.randomUUID();
@@ -115,7 +115,7 @@ export class InventoryMaintenance {
       fingerprint,
       { id, batteryId: v.batteryId },
       at,
-      "(SELECT COUNT(*) FROM rooms r LEFT JOIN buildings building ON building.key=r.building_key WHERE r.key=? AND r.scope=? AND r.version=? AND r.selectable=1 AND building.id='J18' AND building.version IS ?)=1 AND EXISTS(SELECT 1 FROM batteries WHERE key=? AND scope=? AND lifecycle_status='active')",
+      `(SELECT COUNT(*) FROM rooms r LEFT JOIN buildings building ON building.key=r.building_key WHERE r.key=? AND r.scope=? AND r.version=? AND r.selectable=1 AND building.id IN ${SUPPORTED_BUILDINGS_SQL} AND building.version IS ?)=1 AND EXISTS(SELECT 1 FROM batteries WHERE key=? AND scope=? AND lifecycle_status='active')`,
       [
         r.key,
         this.database.scope,
@@ -326,31 +326,46 @@ export class InventoryMaintenance {
           );
         if (roomId) {
           room = await this.database.first(
-            "SELECT r.*,b.id AS building_id,b.version AS building_version,b.name AS building_name FROM rooms r JOIN buildings b ON b.key=r.building_key WHERE r.scope=? AND r.id=? AND r.selectable=1 AND b.id='J18'",
+            `SELECT r.*,b.id AS building_id,b.version AS building_version,b.name AS building_name FROM rooms r JOIN buildings b ON b.key=r.building_key WHERE r.scope=? AND r.id=? AND r.selectable=1 AND b.id IN ${SUPPORTED_BUILDINGS_SQL}`,
             this.database.scope,
             roomId,
           );
-          if (!room)
-            throw new DomainError(400, "Select an available J18 room.");
-          relatedGuard =
-            "EXISTS(SELECT 1 FROM rooms r JOIN buildings b ON b.key=r.building_key WHERE r.key=? AND r.scope=? AND r.version=? AND r.selectable=1 AND b.id='J18' AND b.version=?)";
+          if (
+            !room ||
+            (payload.kind === "storage" &&
+              room.building_id !== payload.homeBuildingId)
+          )
+            throw new DomainError(
+              400,
+              "Select an available room in the chosen building.",
+            );
+          // Storage binds the reviewed building; an observation binds the room's own building.
+          relatedGuard = `EXISTS(SELECT 1 FROM rooms r JOIN buildings b ON b.key=r.building_key WHERE r.key=? AND r.scope=? AND r.version=? AND r.selectable=1 AND b.id IN ${SUPPORTED_BUILDINGS_SQL} AND b.id=? AND b.version=?)`;
           relatedValues = [
             room.key,
             this.database.scope,
             room.version,
+            room.building_id,
             room.building_version,
           ];
         } else {
+          const buildingId =
+            payload.kind === "storage" ? payload.homeBuildingId : null;
           if (
+            !buildingId ||
+            !isSupportedBuilding(buildingId) ||
             !(await this.database.first(
-              "SELECT key FROM buildings WHERE scope=? AND id='J18'",
+              "SELECT key FROM buildings WHERE scope=? AND id=?",
               this.database.scope,
+              buildingId,
             ))
           )
-            throw new DomainError(400, "J18 is unavailable in this inventory.");
-          relatedGuard =
-            "EXISTS(SELECT 1 FROM buildings WHERE scope=? AND id='J18')";
-          relatedValues = [this.database.scope];
+            throw new DomainError(
+              400,
+              `${buildingId ?? "The storage building"} is unavailable in this inventory.`,
+            );
+          relatedGuard = "EXISTS(SELECT 1 FROM buildings WHERE scope=? AND id=?)";
+          relatedValues = [this.database.scope, buildingId];
         }
       }
       const evidenceAt =
@@ -360,6 +375,8 @@ export class InventoryMaintenance {
             ? validatePastTime(payload.observedAt, this.session.clock())
             : null;
       const writes: D1PreparedStatement[] = [];
+      const storageBuildingId =
+        payload.kind === "storage" ? payload.homeBuildingId : null;
       for (const item of payload.items) {
         const before = batteries.find((row) => row.id === item.batteryId)!;
         const details: Record<string, unknown> = {
@@ -375,7 +392,7 @@ export class InventoryMaintenance {
               ? { ...before, owner_key: owner!.key, version: item.version + 1 }
               : {
                   ...before,
-                  home_building_key: this.database.key("J18"),
+                  home_building_key: this.database.key(payload.homeBuildingId),
                   home_room_key: room?.key ?? null,
                   version: item.version + 1,
                 };
@@ -393,7 +410,7 @@ export class InventoryMaintenance {
             writes.push(
               this.database.statement(
                 "UPDATE batteries SET home_building_key=?,home_room_key=?,version=version+1 WHERE key=? AND scope=? AND version=?",
-                this.database.key("J18"),
+                this.database.key(storageBuildingId!),
                 room?.key ?? null,
                 before.key,
                 this.database.scope,
@@ -427,7 +444,7 @@ export class InventoryMaintenance {
               room!.is_placeholder === 1
                 ? `${room!.name} — Placeholder`
                 : `${room!.number} - ${room!.name}`,
-            buildingLabel = `J18 - ${room!.building_name}`;
+            buildingLabel = `${room!.building_id} - ${room!.building_name}`;
           writes.push(
             this.database.statement(
               "INSERT INTO observations(id,scope,battery_key,room_key,observed_at,received_at,source,room_name,room_building) VALUES(?,?,?,?,?,?,?,?,?)",

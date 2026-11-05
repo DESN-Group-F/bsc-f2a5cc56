@@ -648,7 +648,7 @@ export default function InventoryApp({
             <span>{dataset === "demo" ? "Fictional demo data" : "Shared working data"}</span>
             <span className="context-disclosure">About this data</span>
           </summary>
-          <p>{dataset === "demo" ? "Battery specifications and sample activity are fictional. J18 rooms are placeholders awaiting confirmation." : "All staff share this inventory. Real battery records are awaiting input. J18 rooms are placeholders awaiting confirmation."}</p>
+          <p>{dataset === "demo" ? "Battery specifications and sample activity are fictional. Placeholder rooms await confirmation." : "All staff share this inventory. Real battery records are awaiting input. Placeholder rooms await confirmation."}</p>
         </details>
       </>}
     >

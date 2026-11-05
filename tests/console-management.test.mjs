@@ -1,7 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { summarizeOverview, dueState, dueLabel, openDueCycles, calendarDaysBetween, elapsedLabel } from "../work/qa/console/overview.mjs";
-import { prepareBatteryEdit, parseFieldInput, effectiveChanges, changedFields, describeValue, draftIsStale } from "../work/qa/console/battery-edits.mjs";
+import { prepareBatteryEdit, parseFieldInput, effectiveChanges, changedFields, describeValue, draftIsStale, storageOptions, currentStorageValue, normalizeStorageValue, storageBuildingValue } from "../work/qa/console/battery-edits.mjs";
 import { readJournal, writeJournal, upsertEntries, removeEntry, journalKey, settleOutcome, unresolvedBatteryIds } from "../work/qa/console/edit-journal.mjs";
 import { sortForColumn, contextFor, statusLabel, inspectionLabel, storageLabel } from "../work/qa/console/battery-columns.mjs";
 import { consoleViews, viewById } from "../work/qa/console/views.mjs";
@@ -127,7 +127,7 @@ test("edits that the server would refuse are stopped before review", () => {
   assert.match(prepare({ tagId: "TAG-9" }).errors.join(" "), /already assigned to BAT-2/);
   assert.match(prepare({ ownerId: "staff-other" }).errors.join(" "), /active staff account/);
   assert.match(prepare({ ownerId: "legacy" }).errors.join(" "), /staff account/);
-  assert.match(prepare({ homeRoomId: "J18-OLD" }).errors.join(" "), /available J18 room/);
+  assert.match(prepare({ homeRoomId: "J18-OLD" }).errors.join(" "), /available storage room/);
   assert.match(prepare({ manufacturedOn: "2099-01-01" }).errors.join(" "), /future/);
   assert.match(prepare({ manufacturedOn: "2026-05-01", firstUsedOn: "2026-04-01" }).errors.join(" "), /earlier than the manufacture date/);
   assert.match(prepare({ name: "Other" }, snap.batteries[2]).errors.join(" "), /Retired batteries/);
@@ -142,6 +142,47 @@ test("an inactive owner may be kept, and a missing building is recorded as J18",
   assert.equal(prepared.payload.fields.homeBuildingId, "J18");
 });
 
+test("storage edits choose a supported building and room together", () => {
+  const extra = {
+    buildings: [{ id: "J18", name: "Willis Annexe", version: 7 }, { id: "E10", name: "Hilmer Building", version: 2 }, { id: "G17", name: "Electrical Engineering Building", version: 3 }, { id: "K17", name: "Elsewhere", version: 1 }],
+    rooms: [
+      { id: "J18-101", name: "Store", building: "Willis Annexe", buildingId: "J18", number: "101", isPlaceholder: false, selectable: true, version: 5 },
+      { id: "E10-G19", name: "MCIC Makerspace", building: "Hilmer Building", buildingId: "E10", number: "G19", isPlaceholder: false, selectable: true, version: 1 },
+      { id: "G17-120", name: "Electrical Engineering Makerspace", building: "Electrical Engineering Building", buildingId: "G17", number: "120", isPlaceholder: false, selectable: true, version: 4 },
+      { id: "K17-1", name: "Unsupported", building: "Elsewhere", buildingId: "K17", number: "1", isPlaceholder: false, selectable: true, version: 1 },
+    ],
+  };
+  const record = battery({ homeRoomId: "J18-101", homeRoomName: "Store", homeRoomNumber: "101", homeRoomIsPlaceholder: false, homeRoomSelectable: true });
+  const snap = snapshot([record], extra);
+  assert.deepEqual(storageOptions(snap).map((option) => option.value), ["@J18", "J18-101", "@E10", "E10-G19", "@G17", "G17-120"], "only supported buildings, each with a no-room choice");
+  assert.equal(currentStorageValue(record), "J18-101");
+  assert.equal(currentStorageValue(battery()), "@J18");
+  assert.equal(storageBuildingValue("E10"), "@E10");
+  const prepare = (changes, target = record) => prepareBatteryEdit({ battery: target, changes, snapshot: snap, requestId: crypto.randomUUID(), now: new Date("2026-11-05T00:00:00Z") });
+  const room = prepare({ homeRoomId: "E10-G19" });
+  assert.equal(room.ok, true);
+  assert.equal(room.setsBuilding, true);
+  assert.equal(room.buildingId, "E10");
+  assert.equal(room.payload.fields.homeBuildingId, "E10");
+  assert.equal(room.payload.fields.homeRoomId, "E10-G19");
+  assert.deepEqual(room.payload.directoryBindings, { ownerVersion: 4, ownerAccountId: ownerAccount, buildingVersion: 2, roomVersion: 1 });
+  const noRoom = prepare({ homeRoomId: "@G17" });
+  assert.equal(noRoom.ok, true);
+  assert.equal(noRoom.payload.fields.homeBuildingId, "G17");
+  assert.equal(noRoom.payload.fields.homeRoomId, null);
+  assert.deepEqual(noRoom.payload.directoryBindings, { ownerVersion: 4, ownerAccountId: ownerAccount, buildingVersion: 3, roomVersion: null });
+  assert.deepEqual(noRoom.fields, ["homeRoomId"]);
+  const sameBuilding = prepare({ homeRoomId: "@J18" });
+  assert.equal(sameBuilding.payload.fields.homeBuildingId, "J18");
+  assert.equal(sameBuilding.payload.fields.homeRoomId, null);
+  assert.equal(sameBuilding.setsBuilding, false);
+  assert.equal(prepare({ homeRoomId: "@J18" }, battery()).ok, false, "choosing the saved building with no room is not a change");
+  assert.equal(normalizeStorageValue(battery(), "@J18"), null);
+  assert.equal(normalizeStorageValue(battery(), "@E10"), "@E10");
+  assert.match(prepare({ homeRoomId: "K17-1" }).errors.join(" "), /storage building/);
+  assert.match(prepare({ homeRoomId: "@K17" }).errors.join(" "), /storage building/);
+});
+
 test("draft helpers detect stale bases and only report real changes", () => {
   const record = battery();
   assert.deepEqual(effectiveChanges(record, { name: "Drone pack", voltage: 12 }), { voltage: 12 });
@@ -151,7 +192,8 @@ test("draft helpers detect stale bases and only report real changes", () => {
   assert.equal(draftIsStale(3, undefined), true);
   const snap = snapshot([record]);
   assert.equal(describeValue("ownerId", "staff-owner", snap), "Olivia Owner");
-  assert.equal(describeValue("homeRoomId", "J18-101", snap), "101 · Store");
+  assert.equal(describeValue("homeRoomId", "J18-101", snap), "J18 · 101 · Store");
+  assert.equal(describeValue("homeRoomId", "@E10", snap), "E10 · Room not specified");
   assert.equal(describeValue("capacityMah", null, snap), "Not recorded");
 });
 

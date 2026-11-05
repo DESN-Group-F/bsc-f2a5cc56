@@ -1,6 +1,6 @@
 import { batterySchema, DomainError, validateBatteryDates } from "../../domain";
 import { demoBatteries } from "../../fixtures";
-import { isSupportedBuilding } from "../../location-catalog";
+import { isSupportedBuilding, SUPPORTED_BUILDINGS_LABEL } from "../../location-catalog";
 import { modelSelectionSchema, modelFieldNames } from "../../battery-models";
 import { BatteryModelStore } from "../../battery-model-store";
 import { resolveReferenceModel } from "../../battery-reference-catalog";
@@ -230,7 +230,7 @@ export class InventoryRegistration {
     )
       throw new DomainError(
         400,
-        "Select an active staff account as the responsible owner and J18 as the storage building. The room can stay unspecified.",
+        `Select an active staff account as the responsible owner and ${SUPPORTED_BUILDINGS_LABEL} as the storage building. The room can stay unspecified.`,
       );
     if (
       b.homeRoomId &&
@@ -238,7 +238,7 @@ export class InventoryRegistration {
     )
       throw new DomainError(
         400,
-        "Select an available J18 room, or leave it unspecified.",
+        "Select an available room in the chosen building, or leave it unspecified.",
       );
     if (update && !before) throw new DomainError(404, "Battery not found.");
     if (!update && before)

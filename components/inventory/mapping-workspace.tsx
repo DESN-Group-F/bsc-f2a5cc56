@@ -8,7 +8,7 @@ import type { BatteryRecord, InventorySnapshot } from "@/lib/domain";
 import type { EditorDraft, ExportDraft } from "@/lib/client/inventory-contracts";
 import { isActiveBattery } from "@/lib/battery-lifecycle";
 import { formatTime } from "@/lib/client-utils";
-import { REFERENCE_BUILDINGS, SUPPORTED_BUILDING_ID } from "@/lib/location-catalog";
+import { DEFAULT_BUILDING_ID, isRoomBuilding, isSupportedBuilding, REFERENCE_BUILDINGS, type SupportedBuildingId } from "@/lib/location-catalog";
 import { getMappingRooms, mappingBucket, UNKNOWN_MAPPING_ROOM } from "@/lib/inventory-mapping";
 import { InventoryTable } from "./inventory-table";
 import { MappingRoomDrawing } from "./mapping-room-drawing";
@@ -16,7 +16,7 @@ import styles from "./mapping-workspace.module.css";
 
 const OVERVIEW = "__overview";
 type OpenRoom = { id: string; label: string };
-type RoomSummary = OpenRoom & { placeholder: boolean; unknown: boolean; batteries: BatteryRecord[] };
+type RoomSummary = OpenRoom & { buildingId: string | null; placeholder: boolean; unknown: boolean; batteries: BatteryRecord[] };
 
 export type MappingWorkspaceProps = {
   data: InventorySnapshot;
@@ -55,15 +55,21 @@ export function MappingWorkspace({
   const roomButtons = useRef(new Map<string, HTMLButtonElement>());
   const focusTab = useRef<string | null>(null);
   const filterButton = useRef<HTMLButtonElement>(null);
-  const rooms = getMappingRooms(data.rooms);
+  const [buildingId, setBuildingId] = useState<SupportedBuildingId>(DEFAULT_BUILDING_ID);
+  const buildingName = data.buildings.find(building => building.id === buildingId)?.name ?? REFERENCE_BUILDINGS.find(building => building.id === buildingId)?.name ?? "";
+  // Every supported building's rooms keep their own bucket, so an observation in another
+  // building is not counted as Unknown; the overview shows the selected building only.
+  const mappedRooms = getMappingRooms(data.rooms);
+  const rooms = mappedRooms.filter(room => room.buildingId === buildingId);
   const activeBatteries = data.batteries.filter(isActiveBattery);
-  const buckets = new Map<string, BatteryRecord[]>(rooms.map(room => [room.id, []]));
+  const buckets = new Map<string, BatteryRecord[]>(mappedRooms.map(room => [room.id, []]));
   buckets.set(UNKNOWN_MAPPING_ROOM, []);
   for (const battery of activeBatteries) (buckets.get(mappingBucket(battery, data.rooms)) ?? buckets.get(UNKNOWN_MAPPING_ROOM)!).push(battery);
-  const summaries: RoomSummary[] = [
-    ...rooms.map(room => ({ id: room.id, label: room.name, placeholder: room.isPlaceholder, unknown: false, batteries: buckets.get(room.id) ?? [] })),
-    { id: UNKNOWN_MAPPING_ROOM, label: "Unknown", placeholder: false, unknown: true, batteries: buckets.get(UNKNOWN_MAPPING_ROOM) ?? [] },
+  const allSummaries: RoomSummary[] = [
+    ...mappedRooms.map(room => ({ id: room.id, label: room.name, buildingId: room.buildingId, placeholder: room.isPlaceholder, unknown: false, batteries: buckets.get(room.id) ?? [] })),
+    { id: UNKNOWN_MAPPING_ROOM, label: "Unknown", buildingId: null, placeholder: false, unknown: true, batteries: buckets.get(UNKNOWN_MAPPING_ROOM) ?? [] },
   ];
+  const summaries = allSummaries.filter(room => room.unknown || room.buildingId === buildingId);
   const selected = summaries.find(room => room.id === selectedId);
   const selectedPreview = selected ? [...selected.batteries].sort((left, right) => recordedTime(right) - recordedTime(left) || left.id.localeCompare(right.id, "en", { numeric: true })).slice(0, 3) : [];
   const selectedInUse = selected?.batteries.filter(battery => battery.loanId).length ?? 0;
@@ -108,6 +114,13 @@ export function MappingWorkspace({
     setActiveTab(next);
   }
 
+  function chooseBuilding(id: string) {
+    if (overlayOpen || !isSupportedBuilding(id) || !isRoomBuilding(id)) return;
+    setBuildingId(id);
+    setSelectedId(null);
+    filterButton.current?.focus({ preventScroll: true });
+  }
+
   function resetSelection() {
     if (overlayOpen) return;
     const previous = selectedId;
@@ -132,7 +145,7 @@ export function MappingWorkspace({
           <MapIcon aria-hidden="true" />Overview
         </button>
         {openRooms.map(room => {
-          const label = summaries.find(item => item.id === room.id)?.label ?? room.label;
+          const label = allSummaries.find(item => item.id === room.id)?.label ?? room.label;
           return <div className={styles.roomTab} key={room.id} data-active={activeTab === room.id} role="presentation">
             <button type="button" role="tab" className={styles.tab} id={tabId(room.id)} aria-controls={panelId(room.id)} aria-selected={activeTab === room.id} tabIndex={activeTab === room.id ? 0 : -1} disabled={overlayOpen} ref={element => { if (element) tabs.current.set(room.id, element); else tabs.current.delete(room.id); }} onClick={() => activateTab(room.id)} onKeyDown={event => navigateTabs(event, room.id)}>
               <DoorOpen aria-hidden="true" /><span>{label}</span>
@@ -146,22 +159,22 @@ export function MappingWorkspace({
       <div role="tabpanel" id={panelId(OVERVIEW)} aria-labelledby={tabId(OVERVIEW)} hidden={activeTab !== OVERVIEW}>
         <div className={styles.toolbar}>
           <Button ref={filterButton} variant="outline" className={filterOpen ? styles.filterActive : undefined} disabled={overlayOpen} aria-expanded={filterOpen} aria-controls={filterId} onClick={() => setFilterOpen(value => !value)}><SlidersHorizontal size={15} aria-hidden="true" />Filter<ChevronDown size={14} aria-hidden="true" /></Button>
-          <span className={styles.buildingChip}><Building2 aria-hidden="true" />J18 · Willis Annexe</span>
+          <span className={styles.buildingChip}><Building2 aria-hidden="true" />{buildingId}{buildingName ? ` · ${buildingName}` : ""}</span>
           <span className={styles.total}>{rooms.length} {rooms.length === 1 ? "room" : "rooms"} · {activeBatteries.length} active batteries</span>
           {onLocationTools && <Button variant="ghost" disabled={overlayOpen} onClick={onLocationTools}><Settings2 size={15} aria-hidden="true" />Location setup</Button>}
         </div>
         <MotionDisclosure open={filterOpen} id={filterId}>
           <div className={styles.filters}>
             <span className={styles.filterLabel}>Building</span>
-            {REFERENCE_BUILDINGS.map(building => <button key={building.id} type="button" className={styles.building} aria-pressed={building.id === SUPPORTED_BUILDING_ID} disabled={building.id !== SUPPORTED_BUILDING_ID || overlayOpen} onClick={() => filterButton.current?.focus({ preventScroll: true })}>
-              <Building2 aria-hidden="true" /><span>{building.id}<small>{building.name}{building.id !== SUPPORTED_BUILDING_ID && " · unavailable"}</small></span>{building.id === SUPPORTED_BUILDING_ID && <Check aria-hidden="true" />}
+            {REFERENCE_BUILDINGS.map(building => <button key={building.id} type="button" className={styles.building} aria-pressed={building.id === buildingId} disabled={!isRoomBuilding(building.id) || overlayOpen} onClick={() => chooseBuilding(building.id)}>
+              <Building2 aria-hidden="true" /><span>{building.id}<small>{building.name}{!isSupportedBuilding(building.id) ? " · unavailable" : !isRoomBuilding(building.id) ? " · no rooms yet" : ""}</small></span>{building.id === buildingId && <Check aria-hidden="true" />}
             </button>)}
-            <Button variant="ghost" className={styles.clearFilters} disabled={overlayOpen} onClick={() => { setFilterOpen(false); filterButton.current?.focus({ preventScroll: true }); }}>Clear filters</Button>
+            <Button variant="ghost" className={styles.clearFilters} disabled={overlayOpen} onClick={() => { setFilterOpen(false); setBuildingId(DEFAULT_BUILDING_ID); setSelectedId(null); filterButton.current?.focus({ preventScroll: true }); }}>Clear filters</Button>
           </div>
         </MotionDisclosure>
         <div className={styles.mapLayout} data-selected={!!selected}>
           <div className={styles.canvas} aria-label="Schematic last observed room locations">
-            <div className={styles.canvasLabel}><Layers2 aria-hidden="true" /><span>J18 / LAST OBSERVED LOCATIONS</span></div>
+            <div className={styles.canvasLabel}><Layers2 aria-hidden="true" /><span>{buildingId} / LAST OBSERVED LOCATIONS</span></div>
             {selected && <Button variant="ghost" size="sm" className={styles.reset} onClick={resetSelection} disabled={overlayOpen}><Maximize size={14} aria-hidden="true" />Reset view</Button>}
             <div className={styles.ground} aria-hidden="true" />
             <div className={summaries.length > 4 ? styles.roomGrid : styles.roomLayer}>
@@ -175,7 +188,7 @@ export function MappingWorkspace({
           <aside className={styles.inspector} aria-label="Selected room summary" inert={!selected} aria-hidden={!selected}>
             <div className={styles.inspectorContent}>
               {selected && <>
-                <div className={styles.inspectorHeading}><div><span className={styles.eyebrow}>{selected.unknown ? "No mapped last observation" : "J18 · Last observed location"}</span><h2>{selected.label}</h2>{selected.placeholder && <p className={styles.caption}>Placeholder room · not a verified physical location</p>}</div><Button variant="ghost" size="icon-sm" disabled={overlayOpen} onClick={resetSelection} aria-label="Close room summary"><X size={16} aria-hidden="true" /></Button></div>
+                <div className={styles.inspectorHeading}><div><span className={styles.eyebrow}>{selected.unknown ? "No mapped last observation" : `${selected.buildingId} · Last observed location`}</span><h2>{selected.label}</h2>{selected.placeholder && <p className={styles.caption}>Placeholder room · not a verified physical location</p>}</div><Button variant="ghost" size="icon-sm" disabled={overlayOpen} onClick={resetSelection} aria-label="Close room summary"><X size={16} aria-hidden="true" /></Button></div>
                 <div className={styles.count}><strong>{selected.batteries.length}</strong><span>{selected.unknown ? "without a mapped observation" : "last observed here"}</span></div>
                 <div><dl className={styles.stats}><div><dt>In store</dt><dd>{selected.batteries.length - selectedInUse}</dd></div><div><dt>In use</dt><dd>{selectedInUse}</dd></div></dl><p className={styles.caption}>Loan status, not physical presence.</p></div>
                 <div><span className={styles.eyebrow}>{selected.unknown ? "Records to review" : "Latest recorded evidence"}</span>
@@ -191,12 +204,12 @@ export function MappingWorkspace({
       </div>
 
       {openRooms.map(room => {
-        const summary = summaries.find(item => item.id === room.id);
+        const summary = allSummaries.find(item => item.id === room.id);
         const label = summary?.label ?? room.label;
         const visible = active && activeTab === room.id;
         return <div key={room.id} className={styles.detail} role="tabpanel" id={panelId(room.id)} aria-labelledby={tabId(room.id)} hidden={activeTab !== room.id}>
-          <div className={styles.detailHeader}><div><h2>{label}</h2><p>{room.id === UNKNOWN_MAPPING_ROOM ? "Batteries without a usable mapped last observation." : "J18 · Latest recorded observations"}{summary?.placeholder && " · Placeholder room"}</p></div><Button variant="ghost" disabled={overlayOpen} onClick={() => activateTab(OVERVIEW)}><ArrowLeft size={16} aria-hidden="true" />Back to mapping</Button></div>
-          {!summary && <p className="form-error" role="alert">This room is no longer available in the J18 map. Its original evidence remains in battery history.</p>}
+          <div className={styles.detailHeader}><div><h2>{label}</h2><p>{room.id === UNKNOWN_MAPPING_ROOM ? "Batteries without a usable mapped last observation." : `${summary?.buildingId ?? "Room"} · Latest recorded observations`}{summary?.placeholder && " · Placeholder room"}</p></div><Button variant="ghost" disabled={overlayOpen} onClick={() => activateTab(OVERVIEW)}><ArrowLeft size={16} aria-hidden="true" />Back to mapping</Button></div>
+          {!summary && <p className="form-error" role="alert">This room is no longer available in the mapped buildings. Its original evidence remains in battery history.</p>}
           <InventoryTable data={data} ready={ready && !!summary} mappingRoom={room.id} active={visible} overlayOpen={overlayOpen} onMovement={onMovement} onScan={onScan} onEdit={onEdit} onDetail={id => onDetail(id, room.id)} onSetup={onSetup} onExport={onExport} onGroupsChanged={onGroupsChanged} onGroupDialogChange={onGroupDialogChange} onOpenGroups={onOpenGroups} onRemoval={onRemoval} />
         </div>;
       })}

@@ -914,7 +914,7 @@ export function InventoryTable({
                     ? "You have no batteries currently checked out. Shared records remain available in Battery inventory."
                     : batteries.length
                       ? "Adjust or clear your filters."
-                      : "Register a battery in J18 and choose its responsible staff account. Its room can stay unspecified."}
+                      : "Register a battery in a supported building and choose its responsible staff account. Its room can stay unspecified."}
             </p>
             {!batteries.length && personalScope === "all" && (
               <Button variant="outline" onClick={onSetup}>

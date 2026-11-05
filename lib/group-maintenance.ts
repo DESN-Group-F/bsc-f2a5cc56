@@ -1,12 +1,13 @@
 import { z } from "zod";
 import { identifier, datasetSchema, type Dataset } from "./domain";
 import { teachingGroupReferenceSchema, teachingGroupEvidenceSchema, verifyGroupEvidence } from "./teaching-context";
+import { SUPPORTED_BUILDING_IDS } from "./location-catalog";
 
 const base = { requestId: z.string().uuid(), teachingGroup: teachingGroupReferenceSchema,
     items: z.array(z.object({ batteryId: identifier, version: z.number().int().positive().max(Number.MAX_SAFE_INTEGER - 1), tagId: z.string().min(1).max(128).nullable() }).strict()).min(1).max(100) };
 export const groupMaintenanceSchema = z.discriminatedUnion("kind", [
     z.object({ ...base, kind: z.literal("owner"), ownerId: identifier }).strict(),
-    z.object({ ...base, kind: z.literal("storage"), homeBuildingId: z.literal("J18"), homeRoomId: identifier.nullable() }).strict(),
+    z.object({ ...base, kind: z.literal("storage"), homeBuildingId: z.enum(SUPPORTED_BUILDING_IDS), homeRoomId: identifier.nullable() }).strict(),
     z.object({ ...base, kind: z.literal("charge"), completedAt: z.string().datetime({ offset: true }), durationMinutes: z.number().finite().positive().max(525600) }).strict(),
     z.object({ ...base, kind: z.literal("observation"), roomId: identifier, observedAt: z.string().datetime({ offset: true }) }).strict(),
 ]).refine(value => new Set(value.items.map(item => item.batteryId)).size === value.items.length, "Review each battery once.");

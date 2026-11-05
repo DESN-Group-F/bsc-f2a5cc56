@@ -41,7 +41,7 @@ function harness(kind) {
     getRolePermissions: role => ({ manageAccounts: role === "admin" }),
     useLocationRecovery: () => ({ recovery: { attempts: [], error: "" }, read: () => ({ attempts: [], error: "" }) }),
     locationRequestStorageKey: (actor, dataset) => `location:${actor}:${dataset}`,
-    roomPickerOptions: () => [], SUPPORTED_BUILDING_ID: "J18",
+    allRoomPickerOptions: () => [],
     styles: new Proxy({}, { get: (_target, name) => name }),
   };
   const component = new Function(...Object.keys(bindings), "_jsx", "_jsxs", "_Fragment", `${sources[kind]}\nreturn ${kind === "accounts" ? "AccountManagementContent" : "LocationToolsPanel"};`)(...Object.values(bindings), jsx, jsx, "Fragment");

@@ -1,12 +1,13 @@
 import type { BatteryRecord, Room } from "./domain";
-import { isSelectableRoom } from "./location-catalog";
+import { isSelectableRoom, SUPPORTED_BUILDING_IDS } from "./location-catalog";
 
 export const UNKNOWN_MAPPING_ROOM = "__unknown";
 
 /** Current directory labels are navigation, never replacements for saved observation labels. */
-export function getMappingRooms(rooms: readonly Room[]): Room[] {
-  return rooms.filter(isSelectableRoom).sort((a, b) =>
-    (a.number ?? a.name).localeCompare(b.number ?? b.name, "en", { numeric: true }) || a.id.localeCompare(b.id, "en"));
+export function getMappingRooms(rooms: readonly Room[], buildingId?: string): Room[] {
+  const order = (room: Room) => (SUPPORTED_BUILDING_IDS as readonly (string | null)[]).indexOf(room.buildingId);
+  return rooms.filter(room => isSelectableRoom(room) && (buildingId === undefined || room.buildingId === buildingId)).sort((a, b) =>
+    order(a) - order(b) || (a.number ?? a.name).localeCompare(b.number ?? b.name, "en", { numeric: true }) || a.id.localeCompare(b.id, "en"));
 }
 
 /** Use the server's latest observation projection; registered storage and loans do not locate an asset. */
