@@ -165,7 +165,7 @@ test("Working assets offer no demo intake and never switch to the Demonstration 
   const app = mount("InventoryApp", env, { initialUser: env.user });
   node(app, "ApplicationShell").props.onAssets();
   assert.equal(button(app, "Start demo intake"), undefined); assert.equal(button(app, "Resume demo intake"), undefined);
-  assert.match(text(app.render()), /Register new batteries by scanning their tags with the\s+iPhone or Android app/);
+  assert.match(text(app.render()), /Register new batteries by scanning their NFC tags with\s+the iPhone or Android app, which binds each tag to its\s+battery\./); assert.doesNotMatch(text(app.render()), /by hand with Register battery/);
   assert.equal(env.dataset, "live"); assert.equal(node(app, "IntakeStation"), undefined);
   app.unmount();
 }));

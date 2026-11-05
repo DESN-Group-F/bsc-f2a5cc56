@@ -797,8 +797,8 @@ export default function InventoryApp({
                       <div className="intake-panel">
                         <h3>Register new batteries</h3>
                         <p className="field-hint">
-                          Register new batteries by scanning their tags with the
-                          iPhone or Android app, or by hand with Register
+                          Register new batteries by scanning their NFC tags with
+                          the iPhone or Android app, which binds each tag to its
                           battery.
                         </p>
                       </div>
