@@ -354,7 +354,7 @@ export default function InventoryApp({
           resumeRemoval(pending.pending);
           break;
         case "intake":
-          startIntake();
+          resumeIntake();
           break;
         case "movement":
           resumeMovement(pending.pending);
@@ -448,12 +448,25 @@ export default function InventoryApp({
       return true;
     }
   }
+  // Browser batch intake is a Demonstration practice tool. A new intake starts only from the
+  // Demonstration inventory, so nothing in Working inventory moves a user into Demonstration.
   function startIntake() {
     if (modalOpen || interceptPendingWorkflow("intake")) return;
-    if (dataset !== "demo") changeWorkflowDataset("demo");
+    if (dataset !== "demo") return;
     setView("assets");
     setAssetTab("intake");
     setNotice("");
+    setIntake({ nonce: crypto.randomUUID() });
+  }
+  // An unfinished Demonstration intake draft must be finished before other work, so resuming it
+  // switches inventory, and says so.
+  function resumeIntake() {
+    if (modalOpen || interceptPendingWorkflow("intake")) return;
+    const switching = dataset !== "demo";
+    if (switching) changeWorkflowDataset("demo");
+    setView("assets");
+    setAssetTab("intake");
+    setNotice(switching ? "Switched to the Demonstration inventory to finish your unfinished demo intake draft. Switch back to Working inventory when it is done." : "");
     setIntake({ nonce: crypto.randomUUID() });
   }
   function resumeMovement(pending: {
@@ -681,7 +694,7 @@ export default function InventoryApp({
           resumeMovement={resumeMovement}
           resumeRemoval={resumeRemoval}
           resumeRetiredAction={resumeRetiredAction}
-          startIntake={startIntake}
+          startIntake={resumeIntake}
           resumeGroupChange={resumeGroupChange}
         />
         <MotionPresence>{notice && (
@@ -764,23 +777,30 @@ export default function InventoryApp({
                           void refresh();
                         }}
                       />
-                    ) : (
+                    ) : dataset === "demo" ? (
                       <div className="intake-panel">
                         <h3>Prepare new batteries</h3>
                         <p className="field-hint">
                           Batch intake by NFC scan: set common details once,
                           scan each new battery&apos;s tag into an editable
                           pending list, then confirm all or selected batteries.
-                          In this browser it runs in the Demonstration
-                          inventory; in Working inventory, register by tag with
-                          the iPhone or Android app, or by hand with Register
-                          battery.
+                          In this browser it is a Demonstration practice tool;
+                          real batteries are registered in Working inventory.
                         </p>
                         <Button onClick={startIntake} disabled={!ready}>
                           {pendingIntakes.length
                             ? "Resume demo intake"
                             : "Start demo intake"}
                         </Button>
+                      </div>
+                    ) : (
+                      <div className="intake-panel">
+                        <h3>Register new batteries</h3>
+                        <p className="field-hint">
+                          Register new batteries by scanning their tags with the
+                          iPhone or Android app, or by hand with Register
+                          battery.
+                        </p>
                       </div>
                     ))}
                   {!intake && (

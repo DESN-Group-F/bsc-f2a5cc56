@@ -160,8 +160,28 @@ test("the whole assets workspace requires explicit exit for both roles and inven
   });
 });
 
-test("starting intake within locked working assets switches to demo and its guarded exit restores navigation", async () => environment(async env => {
+test("Working assets offer no demo intake and never switch to the Demonstration inventory", async () => environment(async env => {
   env.dataset = "live";
+  const app = mount("InventoryApp", env, { initialUser: env.user });
+  node(app, "ApplicationShell").props.onAssets();
+  assert.equal(button(app, "Start demo intake"), undefined); assert.equal(button(app, "Resume demo intake"), undefined);
+  assert.match(text(app.render()), /Register new batteries by scanning their tags with the\s+iPhone or Android app/);
+  assert.equal(env.dataset, "live"); assert.equal(node(app, "IntakeStation"), undefined);
+  app.unmount();
+}));
+
+test("resuming an unfinished demo intake from Working inventory switches to Demonstration and says so", async () => environment(async env => {
+  env.dataset = "live";
+  const app = mount("InventoryApp", env, { initialUser: env.user });
+  node(app, "RecoveryNotices").props.startIntake();
+  assert.equal(env.dataset, "demo"); assert.ok(node(app, "IntakeStation"));
+  assert.match(text(app.render()), /Switched to the Demonstration inventory to finish your unfinished demo intake draft/);
+  node(app, "IntakeStation").props.onExit();
+  app.unmount();
+}));
+
+test("starting demo intake within locked Demonstration assets and its guarded exit restores navigation", async () => environment(async env => {
+  env.dataset = "demo";
   const app = mount("InventoryApp", env, { initialUser: env.user });
   node(app, "ApplicationShell").props.onAssets();
   assert.equal(node(app, "ApplicationShell").props.locked, true);

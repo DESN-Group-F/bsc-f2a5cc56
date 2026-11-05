@@ -26,7 +26,7 @@ Web:
 
 - The NFC scan panels and the "NFC scan" sources in checkout and return, Retire or remove, and teaching checkout review follow the capability, so they now appear in Working inventory (Chrome on Android, top-level page; never inside the Teams tab).
 - The browser's native removal draft and removal recovery accept Working inventory (`lib/removal-draft.ts`, `lib/lifecycle-session.ts`).
-- Browser batch intake stays Demonstration-only for now (owner, 5 Nov); its Working-inventory text points to registering by tag in the phone apps or by hand with Register battery.
+- Browser batch intake stays Demonstration-only for now (owner, 5 Nov). Working inventory no longer shows "Start demo intake" and starting an intake never switches a Working user into Demonstration (owner, 5 Nov: avoid mistaken taps); the page only says to register by tag in the phone apps or by hand with Register battery. Resuming an unfinished demo intake draft, which must be finished before other work, still switches inventory and now says so.
 - Wording that called NFC a demonstration feature is gone from the interface.
 
 Clients (their own workstreams; task card given to the owner on 5 Nov):
