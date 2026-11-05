@@ -19,6 +19,8 @@ struct RegisterBatteryView: View {
     var previewReview = false
     /// Preview mode only: open the form with this storage building chosen.
     var previewBuilding: String? = nil
+    /// Preview mode only: a model typed before opening the model picker (two rows in its section).
+    var previewTypedModel: String? = nil
 
     private enum Step: Equatable { case form, review, done }
 
@@ -233,6 +235,7 @@ struct RegisterBatteryView: View {
         if details.ownerId.isEmpty, let me = app.inventory.staffOwners.first(where: { $0.accountId == app.user?.id }) { details.ownerId = me.id }
         if scanned == nil, let read = request.tagRead, app.allowsNFC(.intake) { scanned = read }
         if let building = previewBuilding, app.preview != nil { details.chooseBuilding(building) }
+        if let model = previewTypedModel, app.preview != nil { details.model = model }
         if previewReview, app.preview != nil, let model = PreviewFixtures.models.first {
             details.apply(model)
             details.manufactured = "2025-06-02"

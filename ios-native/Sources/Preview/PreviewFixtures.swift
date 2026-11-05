@@ -6,7 +6,7 @@ enum PreviewScreen: String, CaseIterable {
     case signin, scan, scanWorking, inventoryWorking, scanWelcome, scanList, scanReturn, scanDone, scanUncertain, scanDuplicate, scanGroup, scanRetire, scanRetireDone
     case scanRegister, scanRegisterEmpty, scanUnregistered
     case inventory, inventoryFiltered, newArrivals, detail, detailBottom, detailConcern, detailRetired
-    case register, registerReview, registerStorage, inspection, retire, group, groupEditor, filter, pendingWrite, inkPlayground, inkMotion, newModel
+    case register, registerReview, registerStorage, registerModels, inspection, retire, group, groupEditor, filter, pendingWrite, inkPlayground, inkMotion, newModel
     case scanReturnGroup, groupsHub, groupCheckout, groupCheckoutFilled, groupCheckoutOpen, groupReturn, lookup, labelScan
     case inbox, me
 
@@ -18,7 +18,7 @@ enum PreviewScreen: String, CaseIterable {
     /// Screens shown on their own instead of inside the tab bar.
     var isStandalone: Bool {
         switch self {
-        case .register, .registerReview, .registerStorage, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
+        case .register, .registerReview, .registerStorage, .registerModels, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
              .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn, .lookup, .labelScan: return true
         default: return false
         }
@@ -144,7 +144,7 @@ enum PreviewFixtures {
             app.writes.previewPending(PendingWrite(id: "preview-write", accountId: userId, dataset: .demo, kind: "scrapped",
                                                    batteryIds: ["BAT-00000002"], body: Data(), createdAt: Date(), attempts: 1,
                                                    action: "lifecycle", title: "Retiring BAT-00000002"))
-        case .register, .registerReview, .registerStorage, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
+        case .register, .registerReview, .registerStorage, .registerModels, .inspection, .retire, .groupEditor, .filter, .inkPlayground, .inkMotion, .newModel,
              .groupsHub, .groupCheckout, .groupCheckoutFilled, .groupCheckoutOpen, .groupReturn, .lookup, .labelScan:
             app.tab = .inventory
         case .inbox: app.tab = .inbox

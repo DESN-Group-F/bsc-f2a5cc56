@@ -194,6 +194,8 @@ struct PreviewStandalone: View {
             RegisterBatteryView(request: RegistrationRequest())
         case .registerReview:
             RegisterBatteryView(request: RegistrationRequest(), previewReview: true)
+        case .registerModels:
+            RegisterBatteryView(request: RegistrationRequest(), previewTypedModel: "3S 2200")
         case .registerStorage:
             RegisterBatteryView(request: RegistrationRequest(), previewBuilding: "E10")
         case .inspection:

@@ -178,6 +178,27 @@ struct RegistrationDetailsSections: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            // The sheets hang on this one row. Attached to the section they were repeated on every row
+            // in it, so with a model typed or chosen (two or more rows) the picker opened and at once closed.
+            .sheet(isPresented: $showModels) {
+                ModelPickerView(prefill: details) { choice in
+                    details.apply(choice)
+                    formKey = UUID()
+                }
+                .presentationDetents([.large])
+            }
+            .sheet(isPresented: $creatingModel) {
+                NewModelSheet(prefill: details) { saved in
+                    details.apply(saved)
+                    formKey = UUID()
+                }
+            }
+            .task {
+                // Preview mode only: open the picker the way a tap does, with a typed model in the section.
+                guard app.preview == .registerModels else { return }
+                try? await Task.sleep(for: .milliseconds(800))
+                showModels = true
+            }
             if let chosen = details.chosenModel {
                 ForEach(chosen.warnings ?? [], id: \.self) { warning in
                     Label(warning, systemImage: "exclamationmark.triangle").font(.footnote).foregroundStyle(.orange)
@@ -202,19 +223,6 @@ struct RegistrationDetailsSections: View {
                         .font(.footnote.weight(.semibold))
                 }
                 .disabled(app.writes.hasPending)
-            }
-        }
-        .sheet(isPresented: $showModels) {
-            ModelPickerView(prefill: details) { choice in
-                details.apply(choice)
-                formKey = UUID()
-            }
-            .presentationDetents([.large])
-        }
-        .sheet(isPresented: $creatingModel) {
-            NewModelSheet(prefill: details) { saved in
-                details.apply(saved)
-                formKey = UUID()
             }
         }
 
