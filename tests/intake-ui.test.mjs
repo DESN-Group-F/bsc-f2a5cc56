@@ -35,7 +35,7 @@ const rowSelection = await import(pathToFileURL(join(scratch, "row-selection.mjs
 const source = await readFile(new URL("../components/inventory/intake-station.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
 const ui = Object.fromEntries(["BatteryFilterControls", "TeachingGroupsPanel", "NfcScanPanel", "CheckCircle2", "LogOut", "ScanLine", "Button", "Input", "Label", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "RecordPicker", "BatteryModelPicker", "Checkbox", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"].map(name => [name, name]));
-Object.assign(ui, { ReceiptAction: "Button", useNfcScanOffered: dataset => dataset === "demo" });
+Object.assign(ui, { ReceiptAction: "Button", useNfcScanOffered: () => true });
 const jsx = (type, props, key) => typeof type === "function" ? type(props ?? {}) : ({ type, props: props ?? {}, key });
 function hooks() {
     const state = [], effects = [];

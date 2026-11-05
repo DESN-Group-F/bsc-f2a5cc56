@@ -62,15 +62,15 @@ test('native removal requires full matching per-item evidence and typed sources 
   assert.throws(() => lifecyclePayloadSchema.parse({ ...payload, source: 'manual_selection' }));
   assert.throws(() => lifecyclePayloadSchema.parse({ ...payload, source: 'tag_entry' }));
   assert.throws(() => lifecyclePayloadSchema.parse({ ...payload, items: [{ ...payload.items[0], tagId: null }] }));
-  assert.throws(() => captureLifecycleAttempt('reader-account', 'live', payload), /Demonstration/);
+  assert.equal(captureLifecycleAttempt('reader-account', 'live', payload).dataset, 'live', 'Working inventory accepts native removal like Demonstration');
 });
 
-test('native removal draft retains evidence and selections, rejects live, and enforces the existing 100 cap', () => {
+test('native removal draft retains evidence and selections in both inventories and enforces the existing 100 cap', () => {
   const payload = lifecycle();
   const input = { actorAccountId: 'reader-account', dataset: 'demo', source: payload.source, kind: payload.kind, reason: '', destination: '', items: payload.items.map(item => ({ ...item, name: 'Controlled battery' })), selectedIds: ['BAT-ONE'] };
   const draft = captureRemovalDraft(input);
   assert.deepEqual(recoverRemovalDraft(JSON.stringify(draft), 'reader-account', 'demo'), draft);
-  assert.throws(() => captureRemovalDraft({ ...input, dataset: 'live' }));
+  assert.deepEqual(recoverRemovalDraft(JSON.stringify(captureRemovalDraft({ ...input, dataset: 'live' })), 'reader-account', 'live').items, draft.items);
   assert.throws(() => captureRemovalDraft({ ...input, source: 'manual_selection' }));
   const items = Array.from({ length: 100 }, (_, index) => { const proof = evidence(index.toString(16).toUpperCase().padStart(8, '0')); return { ...input.items[0], batteryId: `BAT-${index}`, tagId: proof.tagId, nfcEvidence: proof }; });
   assert.equal(captureRemovalDraft({ ...input, items, selectedIds: [] }).items.length, 100);

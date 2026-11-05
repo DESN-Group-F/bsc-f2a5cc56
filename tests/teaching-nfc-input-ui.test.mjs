@@ -94,10 +94,10 @@ test('controlled NFC cancellation unlocks the reader without selecting or commit
     view.unmount();
 });
 
-test('outside the Demonstration inventory the NFC source offers no reader even where one exists', async () => {
+test('where NFC is not offered (for example an embedded tab) the NFC source offers no reader even where one exists', async () => {
     let reads = 0; const bridge = { getAvailability: available, read: async () => { reads++; return proposal(); }, cancel: async () => {}, adopt: async value => value };
     const view = mount(bridge, { source: 'native_nfc', nfcEnabled: false, onChooseTag() { assert.fail('nothing can be chosen'); } });
-    assert.match(text(view.render()), /demonstration offered only in the Demonstration inventory/);
+    assert.match(text(view.render()), /NFC scanning isn't offered here/);
     assert.equal(button(view.render(), 'Read NFC tag'), undefined); assert.equal(reads, 0);
     view.unmount();
 });

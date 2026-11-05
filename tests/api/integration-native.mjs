@@ -24,14 +24,14 @@ export async function runIntegrationNativeChecks({ base, cookie, request, signal
     return stable;
   };
   const demo = await get("Demonstration advertises controlled native evidence capability", "/api/inventory?dataset=demo");
-  const live = await get("Working advertises explicit native scope exclusion", "/api/inventory?dataset=live");
-  for (const [snapshot, enabled] of [[demo, true], [live, false]]) {
+  const live = await get("Working advertises native NFC for business scans", "/api/inventory?dataset=live");
+  for (const [snapshot, isDemo] of [[demo, true], [live, false]]) {
     assert.equal(snapshot.capabilities.operatorRegistration, 1);
     assert.deepEqual(Object.keys(snapshot.capabilities).sort(), ["batteryModels", "csvImport", "demoIntake", "editMetadata", "modelCreate", "nativeNfc", "operatorRegistration"]);
-    assert.equal(snapshot.capabilities.demoIntake, enabled ? 1 : 0);
-    assert.equal(snapshot.capabilities.nativeNfc.version, 1); assert.equal(snapshot.capabilities.nativeNfc.enabled, enabled);
-    assert.deepEqual(snapshot.capabilities.nativeNfc.enabledDatasets, ["demo"]);
-    assert.equal(snapshot.capabilities.nativeNfc.evidenceSource, "device-reported"); assert.equal(snapshot.capabilities.nativeNfc.physicalAcceptance, false);
+    assert.equal(snapshot.capabilities.demoIntake, isDemo ? 1 : 0);
+    assert.equal(snapshot.capabilities.nativeNfc.version, 1); assert.equal(snapshot.capabilities.nativeNfc.enabled, true);
+    assert.deepEqual(snapshot.capabilities.nativeNfc.enabledDatasets, ["demo", "live"]);
+    assert.equal(snapshot.capabilities.nativeNfc.evidenceSource, "device-reported"); assert.equal(snapshot.capabilities.nativeNfc.physicalAcceptance, true);
   }
   const actor = demo.user;
   assert.equal(live.user.id, actor.id);
@@ -59,15 +59,27 @@ export async function runIntegrationNativeChecks({ base, cookie, request, signal
   assert.equal(workingDetail.events.find(event => event.action === "battery_registered").details.source, operator.source);
   const workingBinding = { batteryId: workingDetail.battery.id, tagId: workingDetail.battery.tagId, version: workingDetail.battery.version, nfcEvidence: proof(operator.tagId.slice("nfc:uid:".length)) };
   const workingNative = { requestId: crypto.randomUUID(), kind: "checkout", batteryIds: [workingBinding.batteryId], scan: { sessionId: crypto.randomUUID(), source: "native_nfc", bindings: [workingBinding] } };
-  assert.equal((await post("Working ordinary native lookup remains gated", "live", "scan_lookup", { source: "native_nfc", tagIds: [operator.tagId] }, 400)).code, "native_nfc_demo_only");
-  assert.equal((await post("Working ordinary native checkout remains gated", "live", "movement", workingNative, 400)).code, "native_nfc_demo_only");
+  const workingLookup = (await post("Working native lookup resolves the registered tag", "live", "scan_lookup", { source: "native_nfc", tagIds: [operator.tagId] })).result;
+  assert.equal(workingLookup.source, "native_nfc"); assert.equal(workingLookup.results[0].battery.id, workingBinding.batteryId);
+  await post("Working simulated lookup stays Demonstration-only", "live", "scan_lookup", { source: "simulated", tagIds: [operator.tagId] }, 400);
+  const workingCheckout = (await post("Working native checkout records full device evidence", "live", "movement", workingNative)).result;
+  assert.equal(workingCheckout.scan.source, "native_nfc"); assert.deepEqual(workingCheckout.scan.bindings[0].nfcEvidence, workingBinding.nfcEvidence);
+  assert.deepEqual((await post("Working native checkout exact retry replays its receipt", "live", "movement", workingNative)).result, { ...workingCheckout, replayed: true });
+  const workingHeld = (await detail("live", workingBinding.batteryId)).battery;
+  const workingReturnBinding = { batteryId: workingHeld.id, tagId: workingHeld.tagId, version: workingHeld.version, nfcEvidence: workingBinding.nfcEvidence };
+  const workingReturn = { requestId: crypto.randomUUID(), kind: "return", batteryIds: [workingHeld.id], expectedLoans: [{ batteryId: workingHeld.id, loanId: workingHeld.loanId }], scan: { sessionId: crypto.randomUUID(), source: "native_nfc", bindings: [workingReturnBinding] } };
+  assert.equal((await post("Working native return records full device evidence", "live", "movement", workingReturn)).result.scan.source, "native_nfc");
+  assert.equal((await detail("live", workingBinding.batteryId)).battery.loanId, null);
 
   const evidence = proof(uid(7));
   const incoming = { requestId: crypto.randomUUID(), sessionId: crypto.randomUUID(), source: "native_nfc", tagId: evidence.tagId, nfcEvidence: evidence, scannedAt: evidence.result.observedAt, common: common(demo, "Controlled HTTP native intake"), firstUseMode: "at_registration" };
   const mismatched = structuredClone(incoming); mismatched.tagId = `nfc:uid:${uid(7)}`;
   await post("native intake requires the exact adopted tag", "demo", "intake", mismatched, 400);
   await post("native intake cannot add a client registration timestamp", "demo", "intake", { ...incoming, registeredAt: new Date().toISOString() }, 400);
-  await post("Working native intake stays outside enabled scope", "live", "intake", { ...incoming, common: common(live, incoming.common.name) }, 501);
+  const workingIncoming = { ...incoming, requestId: crypto.randomUUID(), sessionId: crypto.randomUUID(), common: common(live, "Controlled HTTP Working native intake") };
+  const workingIntake = (await post("Working native intake registers by tag with full device evidence", "live", "intake", workingIncoming)).result;
+  assert.equal(workingIntake.source, "native_nfc"); assert.deepEqual(workingIntake.nfcEvidence, evidence); assert.equal(workingIntake.tagId, evidence.tagId);
+  assert.deepEqual((await post("Working native intake exact retry preserves all original evidence", "live", "intake", workingIncoming)).result, { ...workingIntake, replayed: true });
   const intake = (await post("demo native intake preserves full device evidence and independent server time", "demo", "intake", incoming)).result;
   assert.equal(intake.source, "native_nfc"); assert.deepEqual(intake.nfcEvidence, evidence); assert.equal(intake.scannedAt, incoming.scannedAt); assert.equal(intake.actorAccountId, actor.id); assert.equal(intake.requestId, incoming.requestId); assert.equal(intake.sessionId, incoming.sessionId); assert.equal(intake.tagId, evidence.tagId);
   assert.deepEqual((await post("native intake exact retry preserves all original evidence", "demo", "intake", incoming)).result, { ...intake, replayed: true });
@@ -103,7 +115,10 @@ export async function runIntegrationNativeChecks({ base, cookie, request, signal
   await post("explicitly return the later reviewed native loan", "demo", "movement", movement("return", later));
   const free = (await detail("demo", intake.batteryId)).battery;
   const removal = { requestId: crypto.randomUUID(), source: "native_nfc", kind: "scrapped", reason: "", destination: null, items: [{ batteryId: free.id, tagId: free.tagId, version: free.version, nfcEvidence: evidence }] };
-  await post("Working native retirement stays outside enabled scope", "live", "lifecycle", { ...removal, items: [workingBinding] }, 501);
+  const workingFree = (await detail("live", workingIntake.batteryId)).battery;
+  const workingRemoval = { ...removal, requestId: crypto.randomUUID(), items: [{ batteryId: workingFree.id, tagId: workingFree.tagId, version: workingFree.version, nfcEvidence: evidence }] };
+  const workingRemovalReceipt = (await post("Working native retirement preserves full evidence", "live", "lifecycle", workingRemoval)).result;
+  assert.equal(workingRemovalReceipt.source, "native_nfc"); assert.deepEqual(workingRemovalReceipt.items[0].nfcEvidence, evidence);
   const removalReceipt = (await post("native removal preserves full evidence and exact reviewed version", "demo", "lifecycle", removal)).result;
   assert.equal(removalReceipt.source, "native_nfc"); assert.equal(removalReceipt.items[0].version, free.version + 1); assert.deepEqual(removalReceipt.items[0].nfcEvidence, evidence);
   assert.deepEqual((await post("native removal exact retry preserves original outcome", "demo", "lifecycle", removal)).result, { ...removalReceipt, replayed: true });
@@ -132,31 +147,19 @@ export async function runIntegrationNativeChecks({ base, cookie, request, signal
     const binding = battery => ({ batteryId: battery.id, tagId: battery.tagId, version: battery.version });
     const payload = { action: "checkout", requestId: crypto.randomUUID(), teachingGroup: { id: group.id, version: group.version }, personalScope: "all", mappings: [{ original: binding(originalDetail), actual: binding(actualBattery), originalLoanId: null, method: "manual", source }] };
     const save = (name, value, status = 200) => check(name, "POST", "/api/teaching-checkouts", { dataset, payload: value }, status);
-    if (dataset === "live") {
-      const before = await detail(dataset, actualBattery.id);
-      assert.equal((await save("Working new native teaching checkout is durably gated", payload, 400)).code, "teaching_checkout_rejected_final");
-      await save("Working rejected native teaching request remains final on retry", payload, 400);
-      assert.deepEqual(persistedDetail(await detail(dataset, actualBattery.id)), persistedDetail(before));
-      const manual = { ...payload, requestId: crypto.randomUUID(), mappings: [{ ...payload.mappings[0], source: { kind: "selection" } }] };
-      const saved = (await save("Working teaching manual selection remains enabled", manual)).result;
-      const held = (await detail(dataset, actualBattery.id)).battery;
-      const nativeReturn = { action: "return", requestId: crypto.randomUUID(), runId: saved.run.id, personalScope: "all", items: [{ ...binding(held), loanId: held.loanId, source }] };
-      assert.equal((await save("Working native teaching return also remains gated", nativeReturn, 400)).code, "teaching_checkout_rejected_final");
-      assert.equal((await detail(dataset, actualBattery.id)).battery.loanId, held.loanId);
-      await save("Working explicit selection hand-back remains enabled", { ...nativeReturn, requestId: crypto.randomUUID(), items: [{ ...binding(held), loanId: held.loanId }] });
-    } else {
-      const saved = (await save("Demonstration teaching native acquisition retains complete source", payload)).result;
+    {
+      const saved = (await save(`${dataset} teaching native acquisition retains complete source`, payload)).result;
       assert.deepEqual(saved.run.mappings[0].source, source);
-      assert.deepEqual((await save("teaching native exact retry preserves original loan and mapping", payload)).result, { ...saved, replayed: true });
+      assert.deepEqual((await save(`${dataset} teaching native exact retry preserves original loan and mapping`, payload)).result, { ...saved, replayed: true });
       const held = (await detail(dataset, actualBattery.id)).battery;
       const returning = { action: "return", requestId: crypto.randomUUID(), runId: saved.run.id, personalScope: "all", items: [{ ...binding(held), loanId: held.loanId, source }] };
-      const receipt = (await save("Demonstration native teaching hand-back preserves complete evidence", returning)).result;
+      const receipt = (await save(`${dataset} native teaching hand-back preserves complete evidence`, returning)).result;
       assert.deepEqual(receipt.returnedItems[0].source, source);
     }
   }
-  await teaching("live", workingDetail.battery, { kind: "native_nfc", evidence: workingBinding.nfcEvidence });
+  await teaching("live", (await detail("live", workingBinding.batteryId)).battery, { kind: "native_nfc", evidence: workingBinding.nfcEvidence });
   const teachingProof = proof(uid(4)), teachingIncoming = { ...incoming, requestId: crypto.randomUUID(), sessionId: crypto.randomUUID(), tagId: teachingProof.tagId, nfcEvidence: teachingProof, scannedAt: teachingProof.result.observedAt };
   const teachingReceipt = (await post("create isolated Demonstration teaching replacement through native intake", "demo", "intake", teachingIncoming)).result;
   await teaching("demo", (await detail("demo", teachingReceipt.batteryId)).battery, { kind: "native_nfc", evidence: teachingProof });
-  return { passed: true, checks: results.length, exactRequestReplayChecked: true, nativeEnabledDatasets: ["demo"], physicalAcceptanceClaimed: false, registeredBatteryIds: [registeredWorking.batteryId, intake.batteryId, teachingReceipt.batteryId], results };
+  return { passed: true, checks: results.length, exactRequestReplayChecked: true, nativeEnabledDatasets: ["demo", "live"], physicalAcceptanceClaimed: true, registeredBatteryIds: [registeredWorking.batteryId, workingIntake.batteryId, intake.batteryId, teachingReceipt.batteryId], results };
 }

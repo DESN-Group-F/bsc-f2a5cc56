@@ -37,7 +37,7 @@ const componentSource = ts.transpileModule(source, { compilerOptions: { target: 
     .replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
 const uiNames = ["BatteryFilterControls", "RecordPicker", "Plus", "TeachingGroupsPanel", "NfcScanPanel", "CheckCircle2", "LogOut", "Radio", "RefreshCw", "ScanLine", "Trash2", "Button", "Input", "Label", "Checkbox", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle"];
 const ui = Object.fromEntries(uiNames.map(name => [name, name]));
-Object.assign(ui, { ReceiptAction: "Button", useNfcScanOffered: dataset => dataset === "demo" });
+Object.assign(ui, { ReceiptAction: "Button", useNfcScanOffered: () => true });
 const movementComponentSource = ts.transpileModule(await readFile(new URL("../components/inventory/movement-dialog.tsx", import.meta.url), "utf8"), { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 function hooks() {

@@ -43,13 +43,14 @@ function mount(props, { bridge = null, embedded = false } = {}) {
     return { props, render() { state.reset(); const tree = Panel(props); state.commit(); return tree; }, unmount: state.unmount };
 }
 
-test("the panel is absent in Working inventory and inside embedded pages, and says plainly when a device cannot scan", () => {
-    assert.equal(mount({ dataset: "live", hint: "", onRead() {} }, { bridge: scriptedBridge() }).render(), null);
+test("the panel is offered in both inventories but absent inside embedded pages, and says plainly when a device cannot scan", () => {
+    const working = mount({ dataset: "live", hint: "", onRead() {} }, { bridge: scriptedBridge() }).render();
+    assert.notEqual(working, null); assert.ok(button(working, "Start NFC scanning"));
     assert.equal(mount({ dataset: "demo", hint: "", onRead() {} }, { bridge: scriptedBridge(), embedded: true }).render(), null);
     const unsupported = mount({ dataset: "demo", hint: "", onRead() {} }).render();
     assert.match(text(unsupported), /NFC scanning isn't supported on this device or browser/); assert.equal(button(unsupported, "Start NFC scanning"), undefined);
     const ready = mount({ dataset: "demo", hint: "Reads join the list.", onRead() {} }, { bridge: scriptedBridge() }).render();
-    assert.match(text(ready), /NFC scan \(demonstration\)/); assert.match(text(ready), /Reads join the list/); assert.ok(button(ready, "Start NFC scanning"));
+    assert.match(text(ready), /NFC scan/); assert.doesNotMatch(text(ready), /demonstration/); assert.match(text(ready), /Reads join the list/); assert.ok(button(ready, "Start NFC scanning"));
 });
 
 test("listening hands each adopted read to the workspace in order, keeps going after an unreadable tag and stops on request", async () => {

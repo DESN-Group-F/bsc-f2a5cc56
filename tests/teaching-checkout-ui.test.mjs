@@ -14,7 +14,7 @@ import { inventoryResponse } from "../work/qa/client/inventory-request.mjs";
 // Execute real component handlers with inert visual boundaries; browser and NFC hardware are verified separately.
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 const ui = Object.fromEntries(["ArrowRight", "ArrowRightLeft", "ChevronDown", "RotateCcw", "MotionDisclosure", "LoadingState", "Input", "RefreshCw", "Button", "Checkbox", "Label", "Dialog", "DialogContent", "DialogDescription", "DialogFooter", "DialogHeader", "DialogTitle", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "BatteryFilterControls", "TeachingNfcInput"].map(name => [name, name]));
-ui.useNfcScanOffered = dataset => dataset === "demo";
+ui.useNfcScanOffered = () => true;
 function hooks() {
     const state = [], effects = []; let pointer = 0, effectPointer = 0, pending = [];
     return {
@@ -98,9 +98,9 @@ test("missing strict alternative supports shared filters, unknown manual specifi
     assert.deepEqual(page.data.teachingGroups[0].batteryIds, ["BAT-A", "BAT-B"]); assert.equal(page.changed.length, 1); assert.equal(page.entries.size, 0);
 });
 
-test("Working inventory offers no NFC scan source for alternatives; only typed tags and selection", async () => {
+test("Working inventory offers NFC scan for alternatives alongside typed tags and selection", async () => {
     const entries = new Map(), data = { ...fixture(), dataset: "live" }, page = await view({ entries, data }); chooseOriginal(page.render()); button(page.render(), "Choose").props.onClick();
-    assert.equal(nodes(page.render()).find(node => node.type === "Button" && content(node) === "NFC scan"), undefined); button(page.render(), "Entered tag"); button(page.render(), "Inventory selection");
+    assert.ok(nodes(page.render()).find(node => node.type === "Button" && content(node) === "NFC scan")); button(page.render(), "Entered tag"); button(page.render(), "Inventory selection");
 });
 
 test("explicit source switching clears only manual alternatives; exact tag and native evidence survive draft refresh", async () => {

@@ -40,7 +40,6 @@ export const lifecycleReceiptSchema = z.discriminatedUnion("source", [
 export type LifecycleReceipt = z.infer<typeof lifecycleReceiptSchema>;
 export function lifecycleStorageKey(actorAccountId: string, dataset: Dataset) { return `battery-lifecycle:${actorAccountId}:${dataset}`; }
 export function captureLifecycleAttempt(actorAccountId: string, dataset: Dataset, payload: LifecyclePayload): LifecycleAttempt {
-    if (payload.source === "native_nfc" && dataset !== "demo") throw new Error("Native NFC removal is available only in Demonstration inventory.");
     return { actorAccountId, dataset: datasetSchema.parse(dataset), payload: lifecyclePayloadSchema.parse(structuredClone(payload)) };
 }
 export function recoverLifecycleSession(raw: string | null, actorAccountId: string, dataset: Dataset): LifecycleAttempt | null {

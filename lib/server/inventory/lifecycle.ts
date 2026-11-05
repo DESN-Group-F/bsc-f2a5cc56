@@ -73,8 +73,6 @@ export class InventoryLifecycle {
         dataset: this.session.dataset,
         payload,
       });
-    if (payload.source === "native_nfc" && this.session.dataset !== "demo")
-      throw new DomainError(501, "Native NFC removal is available only in Demonstration inventory for functional testing.");
     const previous = await this.transactions.replay(
       payload.requestId,
       "battery_lifecycle",

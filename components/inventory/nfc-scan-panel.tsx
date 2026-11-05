@@ -28,8 +28,8 @@ function clientSupport(): Support {
 }
 const notEmbedded = () => !isEmbeddedPage();
 /**
- * Whether this page offers NFC scanning at all: a demonstration feature, so only where NFC is
- * enabled for the inventory (Demonstration) and never inside an embedded page (the Teams tab).
+ * Whether this page offers NFC scanning at all: wherever the server enables NFC for the
+ * inventory (both Working and Demonstration), but never inside an embedded page (the Teams tab).
  * A device that cannot scan still gets the offer, so the panel can say it is not supported.
  */
 export function useNfcScanOffered(dataset: Dataset) {
@@ -61,11 +61,11 @@ const MAX_WAITING_READS = 10;
 
 /**
  * NFC scanning for a workspace: continuous reads while listening, each handed to the
- * workspace's own review list in order. Like Mapping, this is a demonstration feature: it
- * appears only where `useNfcScanOffered` allows it, never in Working inventory (manual entry
- * only) and never inside an embedded page (the Teams tab).
+ * workspace's own review list in order. It appears only where `useNfcScanOffered` allows it
+ * (any inventory with NFC enabled) and never inside an embedded page (the Teams tab); manual
+ * entry and selection stay available alongside it.
  */
-export function NfcScanPanel({ dataset, disabled = false, title = "NFC scan (demonstration)", hint, onRead, onListeningChange }: NfcScanPanelProps) {
+export function NfcScanPanel({ dataset, disabled = false, title = "NFC scan", hint, onRead, onListeningChange }: NfcScanPanelProps) {
     const support = useSyncExternalStore(subscribe, clientSupport, () => "checking" as Support);
     const enabled = nativeNfcCapability(dataset).enabled;
     const [listening, setListening] = useState(false), [error, setError] = useState(""), [lastTag, setLastTag] = useState("");

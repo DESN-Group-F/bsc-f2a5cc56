@@ -105,16 +105,23 @@ test('native return guards the reviewed Loan ID and original return replay canno
   assert.equal(JSON.parse(returns[0].details_json).loanId, firstLoan); assertEventEvidence(returns[0], payload);
   assert.equal(saved.loans.find(item => item.id === firstLoan).returned_at, returnedAt); assert.equal(saved.loans.find(item => item.id === laterLoan).returned_at, null); assert.equal(saved.observations.length, 0);
 });
-test('working native lookup and movement reject the explicit demo-only gate before any D1 business mutation', async () => {
-  const context = await fixture('working-gate', 'live'), payload = await request(context), before = await history(context);
-  const blocked = error => error.status === 400 && error.code === 'native_nfc_demo_only';
-  await assert.rejects(context.store().scanLookup({ source: 'native_nfc', tagIds: ['nfc:uid:0004AB00'] }), blocked);
-  assert.deepEqual(await history(context), before);
-  await assert.rejects(context.store().movement(payload), blocked); assert.deepEqual(await history(context), before);
-  const manual = structuredClone(payload); manual.scan.source = 'manual'; manual.scan.bindings.forEach(item => delete item.nfcEvidence);
-  await context.store().movement(manual);
-  const returnPayload = await request(context, 'return'), loanState = await history(context);
-  await assert.rejects(context.store().movement(returnPayload), blocked); assert.deepEqual(await history(context), loanState);
+test('working native lookup, checkout and return record the same exact NFC evidence as Demonstration; simulated scans stay Demonstration-only', async () => {
+  const context = await fixture('working-native', 'live'), before = await history(context);
+  const lookup = await context.store().scanLookup({ source: 'native_nfc', tagIds: ['nfc:uid:0004AB00', 'nfc:uid:FFFFFFFF'] });
+  assert.equal(lookup.source, 'native_nfc'); assert.equal(lookup.results[0].battery.id, 'BAT-ONE'); assert.equal(lookup.results[1].battery, null);
+  assert.deepEqual(await history(context), before, 'A Working native lookup is side-effect-free');
+  await assert.rejects(context.store().scanLookup({ source: 'simulated', tagIds: ['nfc:uid:0004AB00'] }), error => error.status === 400);
+  const payload = await request(context), result = await context.store().movement(payload);
+  assert.equal(verifyMovementReceipt(result, payload, staff.id), result); assert.equal(result.borrowerAccountId, staff.id);
+  const checkedOut = await history(context), checkoutEvents = checkedOut.events.filter(item => item.action === 'checkout');
+  assert.equal(checkedOut.loans.length, 1); assert.equal(checkoutEvents.length, 1); assertEventEvidence(checkoutEvents[0], payload);
+  const returnPayload = await request(context, 'return'), returned = await context.store(staff, db, returnedAt).movement(returnPayload);
+  assert.ok(verifyMovementReceipt(returned, returnPayload, staff.id));
+  const saved = await history(context), returnEvents = saved.events.filter(item => item.action === 'return');
+  assert.equal(returnEvents.length, 1); assertEventEvidence(returnEvents[0], returnPayload);
+  assert.equal(saved.loans[0].returned_at, returnedAt); assert.equal(saved.observations.length, 0, 'A Working native read does not create a location observation');
+  const simulated = await request(context, 'checkout', ['BAT-TWO']); simulated.scan.source = 'simulated'; simulated.scan.bindings.forEach(item => delete item.nfcEvidence);
+  await assert.rejects(context.store().movement(simulated), error => error.status === 400); assert.deepEqual(await history(context), saved);
 });
 test('malformed, missing, mismatched and mixed-source native evidence creates neither loans nor movement audit evidence', async () => {
   const context = await fixture('invalid-evidence'), payload = await request(context), before = await history(context);

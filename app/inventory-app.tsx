@@ -768,12 +768,13 @@ export default function InventoryApp({
                       <div className="intake-panel">
                         <h3>Prepare new batteries</h3>
                         <p className="field-hint">
-                          Batch intake by NFC scan is a demonstration, like
-                          Mapping: set common details once, scan each new
-                          battery&apos;s tag into an editable pending list, then
-                          confirm all or selected batteries. It runs only in the
-                          Demonstration inventory; to register a battery by
-                          hand, use Register battery.
+                          Batch intake by NFC scan: set common details once,
+                          scan each new battery&apos;s tag into an editable
+                          pending list, then confirm all or selected batteries.
+                          In this browser it runs in the Demonstration
+                          inventory; in Working inventory, register by tag with
+                          the iPhone or Android app, or by hand with Register
+                          battery.
                         </p>
                         <Button onClick={startIntake} disabled={!ready}>
                           {pendingIntakes.length

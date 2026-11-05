@@ -35,7 +35,7 @@ const workflowStorage = await import(pathToFileURL(join(scratch, "client/workflo
 const source = await readFile(new URL("../components/inventory/removal-station.tsx", import.meta.url), "utf8");
 const compiled = ts.transpileModule(source, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext, jsx: ts.JsxEmit.ReactJSX } }).outputText.replace(/^import .*;\r?\n/gm, "").replace(/^export /gm, "");
 const ui = Object.fromEntries(["BatteryFilterControls", "NfcScanPanel", "CheckCircle2", "LogOut", "ScanLine", "Trash2", "Button", "Checkbox", "Input", "Label", "Textarea", "Select", "SelectContent", "SelectItem", "SelectTrigger", "SelectValue", "Table", "TableBody", "TableCell", "TableHead", "TableHeader", "TableRow"].map(name => [name, name]));
-Object.assign(ui, { ReceiptAction: "Button", useNfcScanOffered: dataset => dataset === "demo", RetiredAssetActionDialog: "RetiredAssetActionDialog", historyStyles: new Proxy({}, { get: (_, name) => String(name) }) });
+Object.assign(ui, { ReceiptAction: "Button", useNfcScanOffered: () => true, RetiredAssetActionDialog: "RetiredAssetActionDialog", historyStyles: new Proxy({}, { get: (_, name) => String(name) }) });
 const jsx = (type, props, key) => ({ type, props: props ?? {}, key });
 function hooks() {
     const state = [], effects = [];
@@ -83,8 +83,8 @@ function queue(view, id) { nodes(view.render()).find(node => node.type === "Butt
 function reason(view, value = "Retired after staff review") { control(view.render(), "removal-reason").props.onChange({ target: { value } }); }
 function setTag(view, value) { control(view.render(), "removal-tag").props.onChange({ target: { value } }); }
 
-test("NFC scan is a Demonstration-only removal source whose reads queue registered batteries with their own evidence", async () => environment(async ({ entries }) => {
-    const live = mount({ data: fixture("live") }); assert.equal(button(live.render(), "NFC scan"), undefined); assert.equal(nodes(live.render()).find(node => node.type === "NfcScanPanel"), undefined); live.unmount();
+test("NFC scan is a removal source in both inventories whose reads queue registered batteries with their own evidence", async () => environment(async ({ entries }) => {
+    const live = mount({ data: fixture("live") }); assert.ok(button(live.render(), "NFC scan")); live.unmount();
     const evidenceFor = uid => ({ attemptId: crypto.randomUUID(), source: "native-nfc-reader", platform: "android", startedAt: "2026-11-04T00:00:00.000Z", endedAt: "2026-11-04T00:00:01.000Z", adoptedAt: "2026-11-04T00:00:02.000Z", tagId: `nfc:uid:${uid}`, result: { uidHex: uid, technology: "Web NFC (Chrome on Android)", ndefStatus: "unknown", capacityBytes: null, records: [], observedAt: "2026-11-04T00:00:01.000Z" } });
     const evidence = evidenceFor("04A1B2C3D4E5F6"), data = fixture("demo"); data.batteries[0] = { ...data.batteries[0], tagId: evidence.tagId };
     const sent = [], view = mount({ data, async write(action, payload) { sent.push(structuredClone(payload)); return receipt(payload, { dataset: "demo" }); } });

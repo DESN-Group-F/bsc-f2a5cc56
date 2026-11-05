@@ -13,7 +13,7 @@ const removalDraftFields = {
 const removalDraftItemFields = { batteryId: identifier, version: z.number().int().positive().max(Number.MAX_SAFE_INTEGER - 1), tagId: z.string().min(1).max(128).nullable(), name: z.string().max(120) };
 export const removalDraftSchema = z.discriminatedUnion("source", [
     z.object({ ...removalDraftFields, source: z.enum(["tag_entry", "manual_selection"]), items: z.array(z.object({ ...removalDraftItemFields, nfcEvidence: z.never().optional() }).strict()).max(100) }).strict(),
-    z.object({ ...removalDraftFields, dataset: z.literal("demo"), source: z.literal("native_nfc"), items: z.array(z.object({ ...removalDraftItemFields, tagId: z.string().regex(/^nfc:uid:(?:[0-9A-F]{8}|[0-9A-F]{14}|[0-9A-F]{20})$/), nfcEvidence: teachingNfcEvidenceSchema }).strict()).max(100) }).strict(),
+    z.object({ ...removalDraftFields, source: z.literal("native_nfc"), items: z.array(z.object({ ...removalDraftItemFields, tagId: z.string().regex(/^nfc:uid:(?:[0-9A-F]{8}|[0-9A-F]{14}|[0-9A-F]{20})$/), nfcEvidence: teachingNfcEvidenceSchema }).strict()).max(100) }).strict(),
 ]).superRefine((value, context) => {
     if (value.source === "native_nfc" && value.items.some(item => item.tagId !== item.nfcEvidence.tagId)) context.addIssue({ code: z.ZodIssueCode.custom, path: ["items"], message: "Keep the exact adopted tag and full native NFC evidence in each removal draft entry." });
     const ids = new Set(value.items.map(item => item.batteryId));

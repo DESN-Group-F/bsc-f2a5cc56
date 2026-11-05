@@ -65,12 +65,18 @@ test('native intake keeps immutable common configuration and a single session so
   assert.equal(ledger.fingerprint, canonicalModelJson({ actorAccountId: actor.id, payload: legacy }));
 });
 
-test('server rejects native live intake and removal without stock writes', async () => {
-  const context = await fixture('live-gate', 'live');
-  const payload = input(context); await assert.rejects(context.intake().register(payload), error => error.status === 501);
-  const native = removal({ batteryId: 'BAT-NOT-CREATED', tagId: payload.tagId }, payload.nfcEvidence);
-  await assert.rejects(context.store().lifecycle(native), error => error.status === 501);
-  assert.equal((await rows('batteries', context.scope)).length, 0); assert.equal((await rows('operations', context.scope)).length, 0);
+test('Working native intake and removal record the same exact evidence as Demonstration; simulated intake stays Demonstration-only', async () => {
+  const context = await fixture('live-native', 'live');
+  const { payload, receipt } = await registered(context);
+  assert.equal(receipt.source, 'native_nfc'); assert.equal(receipt.tagId, 'nfc:uid:0004AB00'); assert.deepEqual(receipt.nfcEvidence, payload.nfcEvidence);
+  assert.deepEqual(verifyIntakeReceipt(receipt, { actorAccountId: actor.id, dataset: 'live', payload }), receipt);
+  const replay = await context.intake().register(payload); assert.equal(replay.replayed, true); assert.equal(replay.batteryId, receipt.batteryId);
+  const native = removal(receipt, evidence());
+  const removed = await context.store().lifecycle(native);
+  assert.deepEqual(verifyLifecycleReceipt(removed, { actorAccountId: actor.id, dataset: 'live', payload: native }), removed); assert.deepEqual(removed.items[0].nfcEvidence, native.items[0].nfcEvidence);
+  const simulated = { requestId: crypto.randomUUID(), sessionId: crypto.randomUUID(), tagId: 'DEMO-INTAKE-WORKING', common: context.common, firstUseMode: 'at_registration' };
+  await assert.rejects(context.intake().register(simulated), error => error.status === 501);
+  assert.equal((await rows('batteries', context.scope)).length, 1); assert.equal((await rows('observations', context.scope)).length, 0);
 });
 
 test('real D1 native removal stores complete per-item evidence, does not change metadata, and replays only the original bytes', async () => {

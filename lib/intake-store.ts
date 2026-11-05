@@ -375,10 +375,14 @@ export class IntakeStore<Mode extends RegistrationMode = "simulated_intake"> {
   }
   private async registerInput(input: unknown): Promise<RegistrationReceipt> {
     await this.requireActor();
-    if (this.dataset !== "demo" && this.mode !== "operator_registration")
+    // Working inventory registers by a native NFC read (intake with source "native_nfc") or
+    // by operator entry. Simulated intake and the operator-entered mobile registration test
+    // stay Demonstration-only.
+    const nativeIntake = this.mode === "simulated_intake" && !!input && typeof input === "object" && "source" in input && input.source === "native_nfc";
+    if (this.dataset !== "demo" && this.mode !== "operator_registration" && !nativeIntake)
       throw new DomainError(
         501,
-        this.mode === "manual_registration" ? "Operator-entered mobile registration is available only in Demonstration inventory until native hardware validation is complete." : input && typeof input === "object" && "source" in input && input.source === "native_nfc" ? "Native NFC intake is available only in Demonstration inventory for functional testing." : "Simulated first-time intake is available only in Demonstration inventory. Real RFID intake requires validated hardware.",
+        this.mode === "manual_registration" ? "Operator-entered mobile registration is available only in Demonstration inventory. Register by NFC tag or with Register battery." : "Simulated first-time intake is available only in Demonstration inventory. Register by NFC tag or with Register battery.",
       );
     const payload = this.mode === "operator_registration" ? operatorRegistrationPayloadSchema.parse(input) : this.mode === "manual_registration" ? mobileRegistrationPayloadSchema.parse(input) : intakePayloadSchema.parse(input),
       fingerprint = canonicalModelJson({
