@@ -10,6 +10,10 @@ struct ScanView: View {
     @State private var inkFrame: CGRect = .zero
     /// A scanned battery is in several groups: which one to check out.
     @State private var groupChoice: [TeachingGroup] = []
+    /// Where the next action's text comes in from: the side of the action picked or swiped to.
+    @State private var modeEdge: Edge = .trailing
+    /// The stage follows a horizontal swipe a little, so it feels like turning a page.
+    @State private var swipeX: CGFloat = 0
 
     private var scan: ScanModel { app.scan }
     private var isDone: Bool { if case .done = scan.phase { return true } else { return false } }
@@ -37,6 +41,8 @@ struct ScanView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .background { backdrop }
+        // Anywhere above the dock, including the empty backdrop: a sideways swipe changes action.
+        .simultaneousGesture(modeSwipe, including: canSwipe ? .all : .subviews)
         .coordinateSpace(.named("scan"))
         .safeAreaInset(edge: .bottom, spacing: 0) {
             dock.padding(.horizontal, 16).padding(.bottom, 8)
@@ -194,22 +200,25 @@ struct ScanView: View {
     private var modePicker: some View {
         HStack(spacing: 0) {
             ForEach(MovementKind.allCases) { kind in
+                let selected = scan.mode == kind
                 Button {
-                    scan.setMode(kind)
+                    pick(kind)
                 } label: {
                     HStack(spacing: 5) {
-                        Circle().fill(kind.tint).frame(width: 7, height: 7)
+                        Circle().fill(selected ? kind.onTint.opacity(0.85) : kind.tint).frame(width: 7, height: 7)
                         Text(kind.title).lineLimit(1).minimumScaleFactor(0.8)
                     }
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(scan.mode == kind ? Color.primary : Color.secondary)
+                    .font(.footnote.weight(selected ? .bold : .semibold))
+                    .foregroundStyle(selected ? kind.onTint : Color.secondary)
                     .frame(maxWidth: .infinity)
                     .frame(height: 44)
                     .background {
-                        if scan.mode == kind {
+                        // The chosen action is a solid pill in its own colour, so it stands out from
+                        // the tinted backdrop and the glass around it.
+                        if selected {
                             Capsule()
-                                .fill(Color(.secondarySystemGroupedBackground))
-                                .shadow(color: .black.opacity(0.08), radius: 6, y: 2)
+                                .fill(kind.tint)
+                                .shadow(color: kind.tint.opacity(0.35), radius: 8, y: 3)
                                 .matchedGeometryEffect(id: "selected", in: segment)
                         }
                     }
@@ -223,6 +232,9 @@ struct ScanView: View {
         .glassEffect(.regular, in: .capsule)
         .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .animation(.spring(response: 0.38, dampingFraction: 0.78), value: scan.mode)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Action")
+        .accessibilityHint("Swipe the screen left or right, or pick an action.")
         .disabled(scan.phase == .submitting || scan.phase == .uncertain)
     }
 
@@ -258,6 +270,7 @@ struct ScanView: View {
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .padding(.horizontal, 24)
                 .padding(.top, hasList ? 10 : 22)
+                .offset(x: swipeX)
                 .rise(app.stageShown, order: 2)
 
             if isDone, case let .done(summary) = scan.phase {
@@ -276,12 +289,57 @@ struct ScanView: View {
             } else {
                 alternatives
                     .padding(.top, 26)
+                    .offset(x: swipeX)
                     .rise(app.stageShown, order: 3)
                     .transition(.opacity)
             }
             Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity)
+    }
+
+    // MARK: Changing action
+
+    /// Swiping between actions works while nothing is in progress: no list, reader closed, nothing sending.
+    /// With a list, the picker still works and asks what to do with the list.
+    private var canSwipe: Bool {
+        !hasList && !scan.readerActive && (scan.phase == .scanning || isDone)
+    }
+
+    private var modeSwipe: some Gesture {
+        DragGesture(minimumDistance: 20)
+            .onChanged { value in
+                let dx = value.translation.width, dy = value.translation.height
+                guard abs(dx) > abs(dy) else { return }
+                let index = MovementKind.allCases.firstIndex(of: scan.mode) ?? 0
+                let atEdge = (dx > 0 && index == 0) || (dx < 0 && index == MovementKind.allCases.count - 1)
+                swipeX = dx * (atEdge ? 0.12 : 0.3)
+            }
+            .onEnded { value in
+                let dx = value.translation.width, dy = value.translation.height
+                let flung = abs(value.predictedEndTranslation.width) > 180
+                if abs(dx) > abs(dy) * 1.5 && (abs(dx) > 70 || flung) {
+                    step(dx < 0 ? 1 : -1)
+                }
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) { swipeX = 0 }
+            }
+    }
+
+    /// The next (1) or previous (-1) action, in the picker's order.
+    private func step(_ delta: Int) {
+        let all = MovementKind.allCases
+        guard let index = all.firstIndex(of: scan.mode) else { return }
+        let next = index + delta
+        guard all.indices.contains(next) else { return }
+        pick(all[next])
+    }
+
+    private func pick(_ kind: MovementKind) {
+        let all = MovementKind.allCases
+        if let from = all.firstIndex(of: scan.mode), let to = all.firstIndex(of: kind) {
+            modeEdge = to > from ? .trailing : .leading
+        }
+        scan.setMode(kind)
     }
 
     @ViewBuilder
@@ -300,16 +358,21 @@ struct ScanView: View {
                     }
                 }
             } else {
-                Text(emptyTitle)
-                    .font(.title.weight(.bold))
-                if scan.notice == nil {
-                    Text(emptyMessage)
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                        .multilineTextAlignment(.center)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .transition(.opacity)
+                // Each action's words slide in from the side it was picked or swiped from.
+                VStack(spacing: 8) {
+                    Text(emptyTitle)
+                        .font(.title.weight(.bold))
+                    if scan.notice == nil {
+                        Text(emptyMessage)
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .transition(.opacity)
+                    }
                 }
+                .id(scan.mode)
+                .transition(.push(from: modeEdge))
             }
             if let notice = scan.notice {
                 NoticeCapsule(notice: notice, tint: noticeTint(notice), onTint: notice.action.map(noticeOnTint) ?? .white) {
